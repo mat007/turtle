@@ -15,6 +15,7 @@
 
   <target name="configure" description="update external libraries">
     <update name="boost"/>
+    <update name="mockpp"/> <!-- boost.test.xml needs it -->
   </target>
 
   <target name="test" depends="turtle_test" description="run unit tests"/>
