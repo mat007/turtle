@@ -189,6 +189,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\mock.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\node.hpp"
 				>
 			</File>
@@ -210,10 +214,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\sequence.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libraries\turtle\tools.hpp"
 				>
 			</File>
 			<File

@@ -6,10 +6,7 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <turtle/object.hpp>
-#include <turtle/expectation.hpp>
-#include <turtle/constraint.hpp>
-#include <turtle/tools.hpp>
+#include <turtle/mock.hpp>
 
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework

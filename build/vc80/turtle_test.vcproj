@@ -209,6 +209,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\tests\turtle_test\mock_test.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tests\turtle_test\object_test.cpp"
 				>
 			</File>
@@ -226,10 +230,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\tests\turtle_test\sequence_test.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\tests\turtle_test\tools_test.cpp"
 				>
 			</File>
 		</Filter>
