@@ -1,0 +1,32 @@
+<project name="turtle" default="all">
+
+  <property environment="env"/>
+  <import file="${env.PONEY_HOME}/poney.xml"/>
+
+  <target name="turtle_test" description="build and run unit tests">
+    <build-test name="turtle" mode="all">
+      <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
+    </build-test>
+  </target>
+
+  <target name="clean" description="clean intermediate build artifacts">
+    <delete dir="${out.dir}"/>
+  </target>
+
+  <target name="configure" description="update external libraries">
+    <update name="boost"/>
+  </target>
+
+  <target name="test" depends="turtle_test" description="run unit tests"/>
+
+  <target name="export" description="export the distribution">
+    <deploy>
+      <module name="turtle">
+        <include name="**/*.hpp"/>
+      </module>
+    </deploy>
+  </target>
+
+  <target name="all" depends="configure,test,export" description="build, run tests and package application"/>
+
+</project>

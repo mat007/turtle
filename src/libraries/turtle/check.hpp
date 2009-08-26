@@ -1,0 +1,66 @@
+//
+//  Copyright Mathieu Champlon 2008
+//
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+//
+
+#ifndef MOCK_CHECK_HPP_INCLUDED
+#define MOCK_CHECK_HPP_INCLUDED
+
+#include "placeholder.hpp"
+#include "constraint.hpp"
+#include "format.hpp"
+#include <boost/function.hpp>
+#include <stdexcept>
+#include <ostream>
+
+namespace mock
+{
+namespace detail
+{
+    template< typename Arg >
+    class check
+    {
+        typedef BOOST_DEDUCED_TYPENAME
+            boost::function< bool( Arg ) > functor_type;
+
+    public:
+        template< typename T >
+        explicit check( const T& t )
+            : functor_( equal( t ).functor_ )
+            , desc_   ( detail::format( t ) )
+        {
+            if( !functor_ )
+                std::invalid_argument( "invalid functor" );
+        }
+
+        template< typename Constraint >
+        explicit check( const placeholder< Constraint >& c )
+            : functor_( c.functor_ )
+            , desc_   ( c.desc_ )
+        {
+            if( !functor_ )
+                std::invalid_argument( "invalid functor" );
+        }
+
+        template< typename Y >
+        bool operator()( Y& y ) const
+        {
+            return functor_( y );
+        }
+
+        friend std::ostream& operator<<( std::ostream& s, const check& c )
+        {
+            return s << c.desc_;
+        }
+
+    private:
+        functor_type functor_;
+        std::string desc_;
+    };
+}
+}
+
+#endif // #ifndef MOCK_CHECK_HPP_INCLUDED

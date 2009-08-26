@@ -1,0 +1,176 @@
+//
+//  Copyright Mathieu Champlon 2008
+//
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+//
+
+#ifndef MOCK_INVOCATION_HPP_INCLUDED
+#define MOCK_INVOCATION_HPP_INCLUDED
+
+#include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
+#include <stdexcept>
+#include <ostream>
+#include <limits>
+
+namespace mock
+{
+namespace detail
+{
+    class invocation : private boost::noncopyable
+    {
+    public:
+        invocation() {}
+
+        virtual ~invocation() {}
+
+        // Trigger invocation
+        // returns false if the invocation has failed
+        virtual bool invoke() = 0;
+
+        // Test whether the invocation is exhausted or not
+        // returns false if the invocation is exhausted
+        virtual bool is_valid() const = 0;
+
+        // Verify invocation
+        virtual bool verify() const = 0;
+
+        friend inline std::ostream& operator<<( std::ostream& s, const invocation& i )
+        {
+            return i.serialize( s );
+        }
+
+    private:
+        virtual std::ostream& serialize( std::ostream& s ) const = 0;
+    };
+
+    class between : public invocation
+    {
+    public:
+        between( std::size_t min, std::size_t max )
+            : min_  ( min )
+            , max_  ( max )
+            , count_( 0 )
+        {
+            if( min > max )
+                throw std::invalid_argument( "'min' > 'max'" );
+        }
+
+        virtual bool invoke()
+        {
+            if( count_ == max_ )
+                return false;
+            ++count_;
+            return true;
+        }
+
+        virtual bool is_valid() const
+        {
+            return count_ < max_;
+        }
+
+        virtual bool verify() const
+        {
+            return min_ <= count_ && count_ <= max_;
+        }
+
+    protected:
+        const std::size_t min_, max_;
+        std::size_t count_;
+
+    private:
+        virtual std::ostream& serialize( std::ostream& s ) const
+        {
+            return s << "between( " << count_ << "/[" << min_ << ',' << max_ <<  "] )";
+        }
+    };
+
+    class exactly : public between
+    {
+    public:
+        explicit exactly( std::size_t count )
+            : between( count, count )
+        {}
+
+    private:
+        virtual std::ostream& serialize( std::ostream& s ) const
+        {
+            return s << "exactly( " << count_ << '/' << max_ <<  " )";
+        }
+    };
+
+    class never : public exactly
+    {
+    public:
+        never()
+            : exactly( 0 )
+        {}
+
+    private:
+        virtual std::ostream& serialize( std::ostream& s ) const
+        {
+            return s << "never()";
+        }
+    };
+
+    class once : public exactly
+    {
+    public:
+        once()
+            : exactly( 1 )
+        {}
+
+    private:
+        virtual std::ostream& serialize( std::ostream& s ) const
+        {
+            return s << "once()";
+        }
+    };
+
+    class at_least : public between
+    {
+    public:
+        explicit at_least( std::size_t min )
+            : between( min, std::numeric_limits< std::size_t >::max() )
+        {}
+
+    private:
+        virtual std::ostream& serialize( std::ostream& s ) const
+        {
+            return s << "at_least( " << count_ << '/' << min_ <<  " )";
+        }
+    };
+
+    class at_most : public between
+    {
+    public:
+        explicit at_most( std::size_t max )
+            : between( 0, max )
+        {}
+
+    private:
+        virtual std::ostream& serialize( std::ostream& s ) const
+        {
+            return s << "at_most( " << count_ << '/' << max_ <<  " )";
+        }
+    };
+
+    class unlimited : public at_least
+    {
+    public:
+        unlimited()
+            : at_least( 0 )
+        {}
+
+    private:
+        virtual std::ostream& serialize( std::ostream& s ) const
+        {
+            return s << "unlimited()";
+        }
+    };
+}
+}
+
+#endif // #ifndef MOCK_INVOCATION_HPP_INCLUDED
