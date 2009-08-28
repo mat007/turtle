@@ -19,7 +19,7 @@ namespace
     template< typename T >
     void check( T )
     {
-        BOOST_STATIC_ASSERT(( mock::detail::is_functor< T >::value ));
+        BOOST_STATIC_ASSERT(( mock::detail::is_functor< T >::type::value ));
     }
 
     void f0 () {}

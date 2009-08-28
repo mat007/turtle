@@ -19,9 +19,9 @@ namespace detail
     typedef char false_type[1];
 
     template< typename T >
-    true_type& has_result_type_helper( T*, BOOST_DEDUCED_TYPENAME T::result_type* = 0 ) {}
+    true_type& has_result_type_helper( T*, BOOST_DEDUCED_TYPENAME T::result_type* = 0 );
     template< typename T >
-    false_type& has_result_type_helper( T, ... ) {}
+    false_type& has_result_type_helper( T, ... );
 
     template< typename T >
     struct has_result_type
@@ -34,13 +34,11 @@ namespace detail
     struct is_functor
     {
         typedef BOOST_DEDUCED_TYPENAME boost::function_types::is_callable_builtin< T >::type type;
-        enum { value = BOOST_DEDUCED_TYPENAME type::value };
     };
     template< typename T >
     struct is_functor< T, true >
     {
         typedef boost::true_type type;
-        enum { value = true };
     };
 }
 }
