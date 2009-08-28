@@ -185,6 +185,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\is_functor.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\matcher.hpp"
 				>
 			</File>

@@ -11,8 +11,10 @@
 
 #include "placeholder.hpp"
 #include "constraint.hpp"
+#include "is_functor.hpp"
 #include "format.hpp"
 #include <boost/function.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <stdexcept>
 #include <ostream>
 
@@ -27,15 +29,28 @@ namespace detail
             boost::function< bool( Arg ) > functor_type;
 
     public:
+        template< typename F >
+        explicit check( const F& f,
+            BOOST_DEDUCED_TYPENAME boost::enable_if<
+                BOOST_DEDUCED_TYPENAME detail::is_functor< F >::type
+            >::type* = 0 )
+            : functor_( f )
+            , desc_   ( "?" )
+        {
+            if( !functor_ )
+                std::invalid_argument( "invalid functor" );
+        }
         template< typename T >
-        explicit check( const T& t )
+        explicit check( const T& t,
+            BOOST_DEDUCED_TYPENAME boost::disable_if<
+                BOOST_DEDUCED_TYPENAME detail::is_functor< T >::type
+            >::type* = 0 )
             : functor_( equal( t ).functor_ )
             , desc_   ( detail::format( t ) )
         {
             if( !functor_ )
                 std::invalid_argument( "invalid functor" );
         }
-
         template< typename Constraint >
         explicit check( const placeholder< Constraint >& c )
             : functor_( c.functor_ )

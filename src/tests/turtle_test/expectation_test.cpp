@@ -303,12 +303,12 @@ BOOST_AUTO_TEST_CASE( triggering_an_expectation_with_failing_custom_constraint_t
 {
     {
         mock::expectation< void( int ) > e;
-        e.expect().with( mock::constraint( &custom_constraint ) );
+        e.expect().with( &custom_constraint );
         BOOST_CHECK_EXCEPTION_CONTAINS( e( 42 ), "unexpected call" );
     }
     {
         mock::expectation< int( int, const std::string& ) > e;
-        e.expect().with( mock::constraint( &custom_constraint ), "actual" );
+        e.expect().with( &custom_constraint, "actual" );
         BOOST_CHECK_EXCEPTION_CONTAINS( e( 42, "actual" ), "unexpected call" );
     }
 }
@@ -655,7 +655,7 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
     }
     {
         mock::expectation< void( int ) > e( "my expectation" );
-        e.expect().once().with( mock::constraint( &custom_constraint ) );
+        e.expect().once().with( &custom_constraint );
         std::stringstream s;
         s << e;
         const std::string expected = "my expectation\n"
