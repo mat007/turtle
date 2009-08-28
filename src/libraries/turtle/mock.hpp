@@ -6,8 +6,8 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef MOCK_TOOLS_HPP_INCLUDED
-#define MOCK_TOOLS_HPP_INCLUDED
+#ifndef MOCK_MOCK_HPP_INCLUDED
+#define MOCK_MOCK_HPP_INCLUDED
 
 #include "error.hpp"
 #include "object.hpp"
@@ -153,4 +153,4 @@ namespace detail
 #define MOCK_RESET(m,t) MOCK_MOCKER(m,t).reset()
 #define MOCK_VERIFY(m,t) MOCK_MOCKER(m,t).verify()
 
-#endif // #ifndef MOCK_TOOLS_HPP_INCLUDED
+#endif // #ifndef MOCK_MOCK_HPP_INCLUDED

@@ -29,12 +29,11 @@ namespace detail
     {};
 
     template< typename S >
-    eaten operator<<( S& s, const eater& );
+    eaten operator<<( S&, const eater& );
 
     template< int I >
     struct selector
-    {
-    };
+    {};
     template<>
     struct selector< sizeof( std::ostream& ) >
     {
