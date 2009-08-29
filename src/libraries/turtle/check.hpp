@@ -52,9 +52,9 @@ namespace detail
                 std::invalid_argument( "invalid functor" );
         }
         template< typename Constraint >
-        explicit check( const placeholder< Constraint >& c )
-            : functor_( c.functor_ )
-            , desc_   ( c.desc_ )
+        explicit check( const placeholder< Constraint >& p )
+            : functor_( p.functor_ )
+            , desc_   ( p.desc_ )
         {
             if( !functor_ )
                 std::invalid_argument( "invalid functor" );
