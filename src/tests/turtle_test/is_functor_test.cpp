@@ -24,6 +24,14 @@ namespace
 
     void f0 () {}
     bool f1( int ) { return false; }
+    bool f2( std::string, int ) { return false; }
+
+    struct unary_functor0 : public std::unary_function< void, void >
+    {
+    };
+    struct unary_functor1 : public std::unary_function< int, void >
+    {
+    };
 
     struct s
     {
@@ -35,17 +43,38 @@ BOOST_AUTO_TEST_CASE( function_is_functor )
 {
     check( f0 );
     check( f1 );
+    check( f2 );
 }
 
 BOOST_AUTO_TEST_CASE( function_pointer_is_functor )
 {
     check( &f0 );
     check( &f1 );
+    check( &f2 );
+}
+
+BOOST_AUTO_TEST_CASE( std_ptr_fun_is_functor )
+{
+    check( std::ptr_fun( &f1 ) );
+    check( std::ptr_fun( &f2 ) );
+}
+
+BOOST_AUTO_TEST_CASE( std_bind_first_is_functor )
+{
+    check( std::bind1st( std::ptr_fun( &f2 ), "" ) );
+}
+
+BOOST_AUTO_TEST_CASE( std_unary_functor_is_functor )
+{
+    check( unary_functor0() );
+    check( unary_functor1() );
 }
 
 BOOST_AUTO_TEST_CASE( boost_bind_is_functor )
 {
     check( boost::bind( &f0 ) );
+    check( boost::bind( &f1, _1 ) );
+    check( boost::bind( &f2, "", _1 ) );
 }
 
 BOOST_AUTO_TEST_CASE( boost_function_is_functor )
