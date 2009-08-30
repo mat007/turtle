@@ -9,6 +9,13 @@
 #include <turtle/is_functor.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#ifdef _MSC_VER
+#pragma warning( push, 0 )
+#endif
+#include <boost/lambda/lambda.hpp>
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
@@ -25,18 +32,6 @@ namespace
     void f0 () {}
     bool f1( int ) { return false; }
     bool f2( std::string, int ) { return false; }
-
-    struct unary_functor0 : public std::unary_function< void, void >
-    {
-    };
-    struct unary_functor1 : public std::unary_function< int, void >
-    {
-    };
-
-    struct s
-    {
-        typedef void result_type;
-    };
 }
 
 BOOST_AUTO_TEST_CASE( function_is_functor )
@@ -64,6 +59,15 @@ BOOST_AUTO_TEST_CASE( std_bind_first_is_functor )
     check( std::bind1st( std::ptr_fun( &f2 ), "" ) );
 }
 
+namespace
+{
+    struct unary_functor0 : public std::unary_function< void, void >
+    {
+    };
+    struct unary_functor1 : public std::unary_function< int, void >
+    {
+    };
+}
 BOOST_AUTO_TEST_CASE( std_unary_functor_is_functor )
 {
     check( unary_functor0() );
@@ -77,12 +81,40 @@ BOOST_AUTO_TEST_CASE( boost_bind_is_functor )
     check( boost::bind( &f2, "", _1 ) );
 }
 
+BOOST_AUTO_TEST_CASE( boost_lambda_is_functor )
+{
+    check( boost::lambda::_1 < 42 );
+}
+
 BOOST_AUTO_TEST_CASE( boost_function_is_functor )
 {
     check( boost::function< void() >() );
 }
 
+namespace
+{
+    struct result_type_functor
+    {
+        typedef void result_type;
+    };
+}
 BOOST_AUTO_TEST_CASE( class_with_result_type_is_functor )
 {
-    check( s() );
+    check( result_type_functor() );
+}
+
+namespace
+{
+    struct sig_functor
+    {
+        template< typename Args >
+        struct sig
+        {
+            typedef void type;
+        };
+    };
+}
+BOOST_AUTO_TEST_CASE( class_with_sig_is_functor )
+{
+    check( sig_functor() );
 }
