@@ -72,6 +72,20 @@ namespace detail
         return "?";
     }
 }
+
+    template< typename T >
+    std::string format( const T& t )
+    {
+        return detail::format( t );
+    }
+    inline std::string format( const std::string& s )
+    {
+        return '"' + s + '"';
+    }
+    inline std::string format( const char* s )
+    {
+        return '"' + std::string( s ) + '"';
+    }
 }
 
 #endif // #ifndef MOCK_FORMAT_HPP_INCLUDED

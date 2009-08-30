@@ -35,7 +35,7 @@ namespace mock
                                                      const T& t )
     {
         return detail::placeholder< Functor >( f,
-            name + "( " + detail::format( t ) + " )" );
+            name + "( " + format( t ) + " )" );
     }
 
 namespace detail

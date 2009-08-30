@@ -46,7 +46,7 @@ namespace detail
                 BOOST_DEDUCED_TYPENAME detail::is_functor< T >::type
             >::type* = 0 )
             : functor_( equal( t ).functor_ )
-            , desc_   ( detail::format( t ) )
+            , desc_   ( mock::format( t ) )
         {
             if( !functor_ )
                 std::invalid_argument( "invalid functor" );

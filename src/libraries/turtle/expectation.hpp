@@ -130,9 +130,9 @@ namespace mock
         }
 
 #define MOCK_EXPECTATION_PARAMETER(z, n, d) BOOST_PP_COMMA_IF(n) const_cast< A##n & >( a##n )
-#define MOCK_EXPECTATION_DETAIL(z, n, d) + ", " + detail::format( a##n )
+#define MOCK_EXPECTATION_DETAIL(z, n, d) + ", " + format( a##n )
 #define MOCK_EXPECTATION_PARAMETERS(n) \
-    detail::format( a0 ) BOOST_PP_REPEAT_FROM_TO(1, n, MOCK_EXPECTATION_DETAIL, BOOST_PP_EMPTY)
+    format( a0 ) BOOST_PP_REPEAT_FROM_TO(1, n, MOCK_EXPECTATION_DETAIL, BOOST_PP_EMPTY)
 #define MOCK_EXPECTATION_OPERATOR(z, n, d) \
         template< BOOST_PP_ENUM_PARAMS(n, typename A) > \
         result_type operator()( BOOST_PP_ENUM_BINARY_PARAMS(n, const A, & a) ) const \

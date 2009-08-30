@@ -608,8 +608,8 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
             std::stringstream s;
             s << e;
             const std::string expected = "?\n"
-                                         "v expect( never() ).with( less( first ) )\n"
-                                         ". expect( exactly( 1/2 ) ).with( second )";
+                                         "v expect( never() ).with( less( \"first\" ) )\n"
+                                         ". expect( exactly( 1/2 ) ).with( \"second\" )";
             BOOST_CHECK_EQUAL( expected, s.str() );
         }
         BOOST_CHECK_NO_THROW( e( "second" ) );
@@ -617,8 +617,8 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
             std::stringstream s;
             s << e;
             const std::string expected = "?\n"
-                                         "v expect( never() ).with( less( first ) )\n"
-                                         "v expect( exactly( 2/2 ) ).with( second )";
+                                         "v expect( never() ).with( less( \"first\" ) )\n"
+                                         "v expect( exactly( 2/2 ) ).with( \"second\" )";
             BOOST_CHECK_EQUAL( expected, s.str() );
         }
         e.reset();

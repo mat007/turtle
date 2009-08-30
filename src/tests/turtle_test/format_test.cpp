@@ -26,17 +26,17 @@ namespace
 
 BOOST_AUTO_TEST_CASE( type_not_serializable_in_standard_stream_yields_an_interrogation_mark_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "?", mock::detail::format( non_serializable_type() ) );
+    BOOST_CHECK_EQUAL( "?", mock::format( non_serializable_type() ) );
 }
 
 BOOST_AUTO_TEST_CASE( base_type_serializable_in_standard_stream_yields_its_value_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "42", mock::detail::format( 42 ) );
+    BOOST_CHECK_EQUAL( "42", mock::format( 42 ) );
 }
 
 BOOST_AUTO_TEST_CASE( custom_type_serializable_in_standard_stream_yields_its_value_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "serializable_type", mock::detail::format( serializable_type() ) );
+    BOOST_CHECK_EQUAL( "serializable_type", mock::format( serializable_type() ) );
 }
 
 namespace
@@ -49,7 +49,7 @@ namespace
 
 BOOST_AUTO_TEST_CASE( custom_type_convertible_to_base_type_yields_its_value_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "0", mock::detail::format( convertible_to_int() ) );
+    BOOST_CHECK_EQUAL( "0", mock::format( convertible_to_int() ) );
 }
 
 namespace
@@ -69,11 +69,17 @@ namespace
 
 BOOST_AUTO_TEST_CASE( custom_type_convertible_to_another_type_serializable_in_standard_stream_yields_its_value_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "serializable", mock::detail::format( convertible_to_serializable() ) );
+    BOOST_CHECK_EQUAL( "serializable", mock::format( convertible_to_serializable() ) );
 }
 
 BOOST_AUTO_TEST_CASE( booleans_are_serialized_as_booleans )
 {
-    BOOST_CHECK_EQUAL( "true", mock::detail::format( true ) );
-    BOOST_CHECK_EQUAL( "false", mock::detail::format( false ) );
+    BOOST_CHECK_EQUAL( "true", mock::format( true ) );
+    BOOST_CHECK_EQUAL( "false", mock::format( false ) );
+}
+
+BOOST_AUTO_TEST_CASE( strings_are_surrounded_with_double_quotes )
+{
+    BOOST_CHECK_EQUAL( "\"string\"", mock::format( "string" ) );
+    BOOST_CHECK_EQUAL( "\"string\"", mock::format( std::string( "string" ) ) );
 }
