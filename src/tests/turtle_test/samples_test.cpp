@@ -21,6 +21,24 @@
 
 namespace
 {
+    struct my_custom_mock_object : mock::object
+    {
+        my_custom_mock_object()
+            : mock::object( "my_custom_mock_object" )
+        {}
+        MOCK_METHOD_EXT( my_method, 0, void(), my_method )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros )
+{
+    my_custom_mock_object mock;
+    MOCK_EXPECT( mock, my_method );
+    mock.my_method();
+}
+
+namespace
+{
     MOCK_CLASS( my_mock )
     {
         MOCK_METHOD_EXT( my_method, 1, int( int ), my_method )
