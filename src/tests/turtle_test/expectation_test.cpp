@@ -760,3 +760,15 @@ BOOST_FIXTURE_TEST_CASE( adding_a_matcher_reactivates_the_verification_upon_dest
     e.expect().once();
     untriggered_expectation_exp.expect().once();
 }
+
+BOOST_FIXTURE_TEST_CASE( throwing_an_exception_disables_the_automatic_verification_upon_destruction, error_guard )
+{
+    try
+    {
+        mock::expectation< void(), mock_error > e;
+        e.expect().once();
+        throw std::exception();
+    }
+    catch( std::exception& )
+    {}
+}

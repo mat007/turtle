@@ -22,6 +22,7 @@
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <exception>
 #include <ostream>
 #include <list>
 
@@ -59,11 +60,12 @@ namespace mock
         virtual ~expectation()
         {
             parent_->remove( *this );
-            for( matchers_cit it = matchers_.begin();
-                it != matchers_.end(); ++it )
-                if( valid_ && ! it->verify() )
-                    ErrorPolicy::untriggered_expectation(
-                        context(), it->file(), it->line() );
+            if( ! std::uncaught_exception() )
+                for( matchers_cit it = matchers_.begin();
+                    it != matchers_.end(); ++it )
+                    if( valid_ && ! it->verify() )
+                        ErrorPolicy::untriggered_expectation(
+                            context(), it->file(), it->line() );
         }
 
         expectation& set_name( const std::string& name )
