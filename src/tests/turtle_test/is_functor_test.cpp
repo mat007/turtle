@@ -10,11 +10,11 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #ifdef _MSC_VER
-#pragma warning( push, 0 )
+#   pragma warning( push, 0 )
 #endif
 #include <boost/lambda/lambda.hpp>
 #ifdef _MSC_VER
-#pragma warning( pop )
+#   pragma warning( pop )
 #endif
 
 #include <boost/test/auto_unit_test.hpp>
