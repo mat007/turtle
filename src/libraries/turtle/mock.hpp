@@ -24,7 +24,7 @@
 #include <boost/function_types/function_type.hpp>
 #include <boost/mpl/vector.hpp>
 #include <boost/mpl/erase.hpp>
-#include <boost/mpl/insert_range.hpp>
+#include <boost/mpl/copy.hpp>
 #include <boost/mpl/back_inserter.hpp>
 #define BOOST_TYPEOF_SILENT
 #include <boost/typeof/typeof.hpp>

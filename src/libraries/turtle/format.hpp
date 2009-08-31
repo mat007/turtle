@@ -12,6 +12,7 @@
 #include <boost/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/integral_constant.hpp>
 #include <sstream>
 #include <ostream>
 
@@ -31,29 +32,17 @@ namespace detail
     template< typename S >
     eaten operator<<( S&, const eater& );
 
-    template< int I >
-    struct selector
-    {};
-    template<>
-    struct selector< sizeof( std::ostream& ) >
+    template< typename T >
+    struct is_serializable_impl
     {
-        typedef boost::true_type type;
-    };
-    template<>
-    struct selector< sizeof( eaten ) >
-    {
-        typedef boost::false_type type;
+        static std::ostream* s;
+        static T* t;
+        enum { value = sizeof( *s << *t ) == sizeof( std::ostream& ) };
     };
 
     template< typename T >
-    struct is_serializable
-    {
-        static std::ostream& s();
-        static const T& t();
-
-        typedef BOOST_DEDUCED_TYPENAME
-            selector< sizeof( s() << t() ) >::type type;
-    };
+    struct is_serializable : public boost::integral_constant< bool, is_serializable_impl< T >::value >
+    {};
 
     template< typename T >
     std::string format( const T& t,
