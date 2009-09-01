@@ -26,6 +26,12 @@ namespace
 
 // functor
 
+BOOST_AUTO_TEST_CASE( an_expectation_can_be_passed_as_functor )
+{
+    mock::expectation< void() > e;
+    boost::function< void() > f = e;
+}
+
 BOOST_AUTO_TEST_CASE( an_expectation_can_be_passed_as_functor_using_boost_bind_and_boost_ref )
 {
     mock::expectation< void() > e;
