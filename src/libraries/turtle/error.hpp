@@ -64,7 +64,7 @@ namespace detail
         {
             ++detail::errors.count_;
             static std::string m;
-            m = "mock error : unexpected call : " + context;
+            m = "mock error : sequence failed : " + context;
             throw mock::exception( m );
         }
 

@@ -22,7 +22,7 @@ namespace mock
         // return false if verification fails
         virtual bool verify() = 0;
 
-        // return to the initial state where calling verify won't throw
+        // return to the initial state
         virtual void reset() = 0;
     };
 }
