@@ -41,7 +41,7 @@ namespace detail
     };
 
     template< typename T >
-    struct is_serializable : public boost::integral_constant< bool, is_serializable_impl< T >::value >
+    struct is_serializable : boost::integral_constant< bool, is_serializable_impl< T >::value >
     {};
 
     template< typename T >

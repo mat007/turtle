@@ -36,7 +36,7 @@ namespace detail
     };
 
     template< typename T >
-    struct has_result_type : public boost::integral_constant< bool, has_result_type_impl< T >::value >
+    struct has_result_type : boost::integral_constant< bool, has_result_type_impl< T >::value >
     {
     };
 
@@ -53,7 +53,7 @@ namespace detail
     };
 
     template< typename T >
-    struct has_sig : public boost::integral_constant< bool, has_sig_impl< T >::value >
+    struct has_sig : boost::integral_constant< bool, has_sig_impl< T >::value >
     {
     };
 
