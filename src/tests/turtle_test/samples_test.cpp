@@ -94,12 +94,12 @@ namespace
         int value_;
     };
 
-    MOCK_INTERFACE( my_mock_observer, my_observer )
+    MOCK_BASE_CLASS( my_mock_observer, my_observer )
     {
         MOCK_METHOD( notify, 1 )
     };
 
-    MOCK_INTERFACE( my_mock_manager, my_manager )
+    MOCK_BASE_CLASS( my_mock_manager, my_manager )
     {
         MOCK_METHOD( get_observer, 0 )
     };
@@ -138,7 +138,7 @@ namespace
         virtual void my_method( int ) = 0;
     };
 
-    MOCK_INTERFACE( my_ambiguited_mock, my_ambiguited_interface )
+    MOCK_BASE_CLASS( my_ambiguited_mock, my_ambiguited_interface )
     {
         MOCK_METHOD_EXT( my_method, 0, void(), tag1 )
         MOCK_METHOD_EXT( my_method, 1, void( int ), tag2 )
@@ -164,7 +164,7 @@ namespace
         virtual void my_method() const = 0;
     };
 
-    MOCK_INTERFACE( my_const_ambiguited_mock, my_const_ambiguited_interface )
+    MOCK_BASE_CLASS( my_const_ambiguited_mock, my_const_ambiguited_interface )
     {
         MOCK_NON_CONST_METHOD_EXT( my_method, 0, void(), tag1 )
         MOCK_CONST_METHOD_EXT( my_method, 0, void(), tag2 )

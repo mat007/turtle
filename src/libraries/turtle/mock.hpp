@@ -78,7 +78,7 @@ namespace detail
     }; \
     struct T##_super_class; \
     typedef T##_mock_mixin< T##_super_class > T;
-#define MOCK_INTERFACE(T, I) \
+#define MOCK_BASE_CLASS(T, I) \
     MOCK_MIXIN(T) \
     struct T##_typedef { typedef I interface_type; }; \
     struct T##_super_class : I, mock::object, private T##_typedef
