@@ -19,12 +19,12 @@ namespace mock
     class object : public node
     {
     public:
-        explicit object( node& parent = detail::root, const std::string& name = "" )
+        explicit object( node& parent = root, const std::string& name = "" )
             : node( parent )
             , name_( name )
         {}
         explicit object( const std::string& name )
-            : node( detail::root )
+            : node( root )
             , name_( name )
         {}
 
