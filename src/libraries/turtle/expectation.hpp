@@ -46,11 +46,11 @@ namespace mock
                 matcher_type;
 
     public:
-        expectation( node& parent = root, const std::string& name = "?" )
+        expectation( node& parent = detail::root, const std::string& name = "?" )
             : impl_( new expectation_impl( parent, name ) )
         {}
         expectation( const std::string& name )
-            : impl_( new expectation_impl( root, name ) )
+            : impl_( new expectation_impl( detail::root, name ) )
         {}
 
         expectation& set_name( const std::string& name )
