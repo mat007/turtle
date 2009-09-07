@@ -68,7 +68,7 @@ namespace mock
                 std::mem_fun( &verifiable::reset ) );
         }
 
-        friend std::ostream& operator<<( std::ostream& s, node& n )
+        friend std::ostream& operator<<( std::ostream& s, const node& n )
         {
             if( n.parent_ )
                 s << *n.parent_;
