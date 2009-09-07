@@ -66,13 +66,6 @@ namespace detail
             return result;
         }
 
-        matcher_base& in( sequence& s )
-        {
-            s.add( *this );
-            sequences_.push_back( &s );
-            return *this;
-        }
-
         const std::string& file() const
         {
             return file_;
@@ -88,6 +81,12 @@ namespace detail
         void expect( detail::invocation* i )
         {
             i_.reset( i );
+        }
+
+        void add( sequence& s )
+        {
+            s.add( *this );
+            sequences_.push_back( &s );
         }
 
     private:
@@ -110,7 +109,12 @@ namespace detail
     {
     };
 
-#define MOCK_INVOCATIONS \
+#define MOCK_MATCHER_METHODS \
+        matcher& in( sequence& s ) \
+        { \
+            add( s ); \
+            return *this; \
+        } \
         matcher& once() \
         { \
             expect( new detail::once() ); \
@@ -152,7 +156,7 @@ namespace detail
             return i_->is_valid();
         }
 
-        MOCK_INVOCATIONS
+        MOCK_MATCHER_METHODS
 
         friend std::ostream& operator<<( std::ostream& s, const matcher& m )
         {
@@ -192,7 +196,7 @@ namespace detail
             return i_->is_valid() \
                 BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_MATCHER_IS_VALID, BOOST_PP_EMPTY); \
         } \
-        MOCK_INVOCATIONS \
+        MOCK_MATCHER_METHODS \
         friend std::ostream& operator<<( std::ostream& s, const matcher& m ) \
         { \
             return s << (m.i_->is_valid() ? '.' : 'v') \
@@ -206,7 +210,7 @@ namespace detail
     };
     BOOST_PP_REPEAT_FROM_TO(1, MOCK_MAX_ARGS, MOCK_MATCHER, BOOST_PP_EMPTY)
 
-#undef MOCK_INVOCATIONS
+#undef MOCK_MATCHER_METHODS
 #undef MOCK_MATCHER_TYPEDEF
 #undef MOCK_MATCHER_CONSTRUCTOR
 #undef MOCK_MATCHER_WITH

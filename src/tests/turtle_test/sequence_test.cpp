@@ -76,3 +76,19 @@ BOOST_AUTO_TEST_CASE( resetting_an_expectation_removes_it_from_order_call_enforc
     e1.reset();
     BOOST_CHECK_NO_THROW( e2() );
 }
+
+BOOST_AUTO_TEST_CASE( an_expectation_can_be_used_in_several_sequences )
+{
+    mock::sequence s1, s2;
+    mock::expectation< void() > e;
+    e.expect().once().in( s1 ).in( s2 );
+    BOOST_CHECK_NO_THROW( e() );
+}
+
+BOOST_AUTO_TEST_CASE( a_result_specification_is_set_after_a_sequence )
+{
+    mock::sequence s;
+    mock::expectation< int() > e;
+    e.expect().once().in( s ).returns( 3 );
+    BOOST_CHECK_EQUAL( 3, e() );
+}
