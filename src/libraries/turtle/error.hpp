@@ -14,6 +14,7 @@
 #include <boost/test/test_tools.hpp>
 #include <boost/test/execution_monitor.hpp>
 #include <boost/test/utils/trivial_singleton.hpp>
+#include <boost/exception/enable_current_exception.hpp>
 
 namespace mock
 {
@@ -48,7 +49,7 @@ namespace detail
             ++detail::errors.count_;
             static std::string m;
             m = "mock error : missing result specification";
-            throw mock::exception( m );
+            throw boost::enable_current_exception( mock::exception( m ) );
         }
 
         static Result no_match( const std::string& context )
@@ -56,7 +57,7 @@ namespace detail
             ++detail::errors.count_;
             static std::string m;
             m = "mock error : unexpected call : " + context;
-            throw mock::exception( m );
+            throw boost::enable_current_exception( mock::exception( m ) );
         }
 
         static void sequence_failed( const std::string& context,
@@ -65,7 +66,7 @@ namespace detail
             ++detail::errors.count_;
             static std::string m;
             m = "mock error : sequence failed : " + context;
-            throw mock::exception( m );
+            throw boost::enable_current_exception( mock::exception( m ) );
         }
 
         static void verification_failed( const std::string& context,
