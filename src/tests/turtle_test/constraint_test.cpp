@@ -14,9 +14,6 @@
 
 BOOST_AUTO_TEST_CASE( all_comparison_constraints_can_be_instanciated )
 {
-    mock::any;
-    mock::negate;
-    mock::evaluate;
     mock::equal( 0 );
     mock::less( 0 );
     mock::greater( 0 );

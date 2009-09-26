@@ -221,6 +221,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\type_name.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\verifiable.hpp"
 				>
 			</File>

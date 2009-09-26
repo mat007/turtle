@@ -12,6 +12,7 @@
 #include "error.hpp"
 #include "object.hpp"
 #include "expectation.hpp"
+#include "type_name.hpp"
 #include <boost/function.hpp>
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/inc.hpp>
@@ -60,36 +61,7 @@ namespace detail
             throw std::invalid_argument( "derefencing null pointer" );
         return *t;
     }
-}
-}
 
-#define MOCK_MIXIN(T) \
-    template< typename U > struct T##_mock_mixin : U \
-    { \
-        explicit T##_mock_mixin( const std::string& tag = "" ) \
-        { \
-            mock::object::set_name( BOOST_PP_STRINGIZE(T) + tag ); \
-        } \
-        explicit T##_mock_mixin( mock::node& parent, const std::string& tag = "" ) \
-        { \
-            mock::object::set_name( BOOST_PP_STRINGIZE(T) + tag ); \
-            mock::node::set_parent( parent ); \
-        } \
-    }; \
-    struct T##_super_class; \
-    typedef T##_mock_mixin< T##_super_class > T;
-#define MOCK_BASE_CLASS(T, I) \
-    MOCK_MIXIN(T) \
-    struct T##_typedef { typedef I interface_type; }; \
-    struct T##_super_class : I, mock::object, private T##_typedef
-#define MOCK_CLASS(T) \
-    MOCK_MIXIN(T) \
-    struct T##_super_class : mock::object
-
-namespace mock
-{
-namespace detail
-{
     template< typename M >
     struct signature
     {
@@ -112,45 +84,116 @@ namespace detail
                 >::type
             >::type type;
     };
+
+    template< typename E >
+    void set_parent( E& e, const object& o )
+    {
+        o.set_parent( e );
+    }
+    template< typename E, typename T >
+    void set_parent( E&, const T&,
+        BOOST_DEDUCED_TYPENAME boost::disable_if<
+            BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >::type
+        >::type* = 0 )
+    {}
+    template< typename E >
+    void tag( E& e, const object& o, const std::string& type_name, const std::string& name )
+    {
+        e.set_name( type_name + o.tag() + "::" + name );
+    }
+    template< typename E, typename T >
+    void tag( E& e, const T&, const std::string& type_name, const std::string& name,
+        BOOST_DEDUCED_TYPENAME boost::disable_if<
+            BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >::type
+        >::type* = 0 )
+    {
+        e.set_name( type_name + "::" + name );
+    }
+
+    template< typename E >
+    E& configure( typename E::expectation_tag, const std::string& name, E& e )
+    {
+        e.set_name( name );
+        return e;
+    }
+    template< typename E, typename T >
+    E& configure( E& e, const std::string& name, const T& t )
+    {
+        set_parent( e, t );
+        tag( e, t, type_name< T >(), name );
+        return e;
+    }
+
+    template< typename T >
+    struct base
+    {
+        typedef T base_type;
+    };
 }
 }
 
-#define MOCK_METHOD_ARG(z, n, S) BOOST_PP_COMMA_IF(n) \
-    BOOST_PP_CAT(BOOST_PP_CAT(boost::function< S >::arg, BOOST_PP_INC(n)),_type) \
+#define MOCK_BASE_CLASS(T, I) \
+    struct T : I, mock::object, mock::detail::base< I >
+#define MOCK_CLASS(T) \
+    struct T : mock::object
+#define MOCK_FUNCTOR(S) \
+    mock::expectation< S >
+
+#define MOCK_MOCKER(o, t) \
+    mock::detail::configure( mock::detail::ref( o ).t##_exp, \
+        BOOST_PP_STRINGIZE(t), mock::detail::ref( o ) )
+
+#define MOCK_METHOD_ARG(z, n, arg) BOOST_PP_COMMA_IF(n) \
+    BOOST_PP_CAT(BOOST_PP_CAT(arg, BOOST_PP_INC(n)),_type) \
     BOOST_PP_CAT(a, BOOST_PP_INC(n))
-#define MOCK_METHOD_ARGS(n, S) \
-    BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_METHOD_ARG, S)
+#define MOCK_METHOD_ARGS(n, arg) \
+    BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_METHOD_ARG, arg)
 #define MOCK_MOCKER_ARG(z, n, d) \
     BOOST_PP_COMMA_IF(n) BOOST_PP_CAT(a, BOOST_PP_INC(n))
-#define MOCK_MOCKER_ARGS(n, M) \
+#define MOCK_MOCKER_ARGS(n) \
     BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_MOCKER_ARG, BOOST_PP_EMPTY)
-#define MOCK_METHOD_STUB(M, n, S, t, c) \
-    boost::function< S >::result_type M( MOCK_METHOD_ARGS(n, S) ) c \
-    { \
-        return MOCK_MOCKER(*this, t)( MOCK_MOCKER_ARGS(n, M) ); \
-    }
 #define MOCK_METHOD_EXPECTATION(S, t) \
     mutable mock::expectation< S > t##_exp;
+
+#define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
+    tpn boost::function< S >::result_type M( \
+        MOCK_METHOD_ARGS(n, tpn boost::function< S >::arg) ) c \
+    { \
+        return MOCK_MOCKER(this, t)( MOCK_MOCKER_ARGS(n) ); \
+    }
+#define MOCK_SIGNATURE(M) \
+    mock::detail::signature< BOOST_TYPEOF(&base_type::M) >::type
+#define MOCK_SIGNATURE_TPL(M) \
+    BOOST_DEDUCED_TYPENAME mock::detail::signature< BOOST_TYPEOF_TPL(&base_type::M) >::type
+
 #define MOCK_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t,) \
-    MOCK_METHOD_STUB(M, n, S, t, const) \
+    MOCK_METHOD_STUB(M, n, S, t,,) \
+    MOCK_METHOD_STUB(M, n, S, t, const,) \
     MOCK_METHOD_EXPECTATION(S, t)
 #define MOCK_CONST_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t, const) \
+    MOCK_METHOD_STUB(M, n, S, t, const,) \
     MOCK_METHOD_EXPECTATION(S, t)
 #define MOCK_NON_CONST_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t,) \
+    MOCK_METHOD_STUB(M, n, S, t,,) \
     MOCK_METHOD_EXPECTATION(S, t)
 #define MOCK_METHOD(M, n) \
-    MOCK_METHOD_EXT(M, n, MOCK_SIGNATURE(&interface_type::M), M)
-#define MOCK_SIGNATURE(pM) \
-    mock::detail::signature< BOOST_TYPEOF(pM) >::type
-#define MOCK_MOCKER(m, t) \
-    mock::detail::ref( m ).t##_exp.set_name( BOOST_PP_STRINGIZE(t) ).set_parent( \
-        const_cast< mock::object& >( dynamic_cast< const mock::object& >( mock::detail::ref( m ) ) ) )
+    MOCK_METHOD_EXT(M, n, MOCK_SIGNATURE(M), M)
 
-#define MOCK_EXPECT(m,t) MOCK_MOCKER(m,t).expect( __FILE__, __LINE__ )
-#define MOCK_RESET(m,t) MOCK_MOCKER(m,t).reset()
-#define MOCK_VERIFY(m,t) MOCK_MOCKER(m,t).verify()
+#define MOCK_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_STUB(M, n, S, t,,BOOST_DEDUCED_TYPENAME) \
+    MOCK_METHOD_STUB(M, n, S, t, const,BOOST_DEDUCED_TYPENAME) \
+    MOCK_METHOD_EXPECTATION(S, t)
+#define MOCK_CONST_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_STUB(M, n, S, t, const,BOOST_DEDUCED_TYPENAME) \
+    MOCK_METHOD_EXPECTATION(S, t)
+#define MOCK_NON_CONST_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_STUB(M, n, S, t,,BOOST_DEDUCED_TYPENAME) \
+    MOCK_METHOD_EXPECTATION(S, t)
+#define MOCK_METHOD_TPL(M, n) \
+    MOCK_METHOD_EXT_TPL(M, n, MOCK_SIGNATURE_TPL(M), M)
+
+#define MOCK_EXPECT(o,t) MOCK_MOCKER(o,t).expect( __FILE__, __LINE__ )
+#define MOCK_RESET(o,t) MOCK_MOCKER(o,t).reset()
+#define MOCK_VERIFY(o,t) MOCK_MOCKER(o,t).verify()
 
 #endif // #ifndef MOCK_MOCK_HPP_INCLUDED

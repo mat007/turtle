@@ -141,3 +141,55 @@ BOOST_AUTO_TEST_CASE( MOCK_EXPECT_macro )
     MOCK_EXPECT( m, my_method ).once().with( 42 );
     m.my_method( 42 );
 }
+
+namespace
+{
+    template< typename T >
+    std::string to_string( const T& t )
+    {
+        std::stringstream s;
+        s << t;
+        return s.str();
+    }
+}
+
+BOOST_AUTO_TEST_CASE( mock_object_is_named )
+{
+    my_mock m;
+    BOOST_CHECK_EQUAL( "my_mock::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( mock_object_with_tag_is_named )
+{
+    my_mock m;
+    m.tag( "(my tag)" );
+    BOOST_CHECK_EQUAL( "my_mock(my tag)::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
+}
+
+namespace
+{
+    struct my_custom_mock
+    {
+        MOCK_METHOD_EXT( my_method, 0, void(), my_method )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_and_without_inheriting_from_object_is_named )
+{
+    my_custom_mock m;
+    BOOST_CHECK_EQUAL( "my_custom_mock::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
+}
+
+namespace
+{
+    struct my_custom_mock_object : mock::object
+    {
+        MOCK_METHOD_EXT( my_method, 0, void(), my_method )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_is_named )
+{
+    my_custom_mock_object m;
+    BOOST_CHECK_EQUAL( "my_custom_mock_object::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
+}

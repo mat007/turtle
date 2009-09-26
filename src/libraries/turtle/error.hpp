@@ -9,8 +9,6 @@
 #ifndef MOCK_ERROR_HPP_INCLUDED
 #define MOCK_ERROR_HPP_INCLUDED
 
-#include <stdexcept>
-#include <string>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/execution_monitor.hpp>
 #include <boost/test/utils/trivial_singleton.hpp>
@@ -22,13 +20,8 @@ namespace detail
 {
     class errors_t : public boost::unit_test::singleton< errors_t >
     {
-    public:
-        long count_;
     private:
         friend class boost::unit_test::singleton< errors_t >;
-        errors_t()
-            : count_( 0 )
-        {}
     };
     BOOST_TEST_SINGLETON_INST( errors )
 }
@@ -46,7 +39,6 @@ namespace detail
     {
         static void missing_result_specification()
         {
-            ++detail::errors.count_;
             static std::string m;
             m = "mock error : missing result specification";
             throw boost::enable_current_exception( mock::exception( m ) );
@@ -54,7 +46,6 @@ namespace detail
 
         static Result no_match( const std::string& context )
         {
-            ++detail::errors.count_;
             static std::string m;
             m = "mock error : unexpected call : " + context;
             throw boost::enable_current_exception( mock::exception( m ) );
@@ -63,7 +54,6 @@ namespace detail
         static void sequence_failed( const std::string& context,
             const std::string& /*file*/, int /*line*/ )
         {
-            ++detail::errors.count_;
             static std::string m;
             m = "mock error : sequence failed : " + context;
             throw boost::enable_current_exception( mock::exception( m ) );
@@ -78,8 +68,7 @@ namespace detail
         static void untriggered_expectation( const std::string& context,
             const std::string& file, int line )
         {
-            if( detail::errors.count_ == 0 )
-                notify( "untriggered expectation : " + context, file, line );
+            notify( "untriggered expectation : " + context, file, line );
         }
 
         static void notify( const std::string& message,

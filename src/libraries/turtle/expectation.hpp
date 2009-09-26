@@ -46,25 +46,24 @@ namespace mock
                 matcher_type;
 
     public:
-        expectation( node& parent = root, const std::string& name = "?" )
-            : impl_( new expectation_impl( parent, name ) )
-        {}
-        expectation( const std::string& name )
+        struct expectation_tag
+        {};
+        expectation_tag operator_exp;
+
+        expectation( const std::string& name = "?" )
             : impl_( new expectation_impl( root, name ) )
         {}
 
-        expectation& set_name( const std::string& name )
+        void set_name( const std::string& name )
         {
             impl_->set_name( name );
-            return *this;
         }
-        expectation& set_parent( node& parent )
+        void set_parent( node& parent )
         {
             impl_->set_parent( parent );
-            return *this;
         }
 
-        bool verify()
+        bool verify() const
         {
             return impl_->verify();
         }
@@ -134,7 +133,7 @@ namespace mock
                 parent_ = &parent;
             }
 
-            virtual bool verify()
+            virtual bool verify() const
             {
                 for( matchers_cit it = matchers_.begin();
                     it != matchers_.end(); ++it )
@@ -231,14 +230,14 @@ namespace mock
             std::string context() const
             {
                 std::stringstream s;
-                s << *parent_ << name_;
+                s << name_;
                 serialize( s );
                 return s.str();
             }
             std::string context( const std::string& parameters ) const
             {
                 std::stringstream s;
-                s << *parent_ << name_;
+                s << name_;
                 if( parameters.empty() )
                     s << "()";
                 else

@@ -11,36 +11,61 @@
 
 #include "node.hpp"
 #include "root.hpp"
-#include <string>
+#include <boost/shared_ptr.hpp>
 #include <ostream>
+#include <string>
 
 namespace mock
 {
-    class object : public node
+    class object
     {
     public:
-        explicit object( node& parent = root, const std::string& name = "" )
-            : node( parent )
-            , name_( name )
-        {}
-        explicit object( const std::string& name )
-            : node( root )
-            , name_( name )
+        explicit object( const std::string& name = "" )
+            : impl_( new object_impl( name ) )
         {}
 
-        void set_name( const std::string& name )
+        void tag( const std::string& name )
         {
-            name_ = name;
+            impl_->name_ = name;
+        }
+        const std::string& tag() const
+        {
+            return impl_->name_;
+        }
+
+        template< typename T >
+        void set_parent( T& t ) const
+        {
+            t.set_parent( *impl_ );
+        }
+
+        bool verify() const
+        {
+            return impl_->verify();
+        }
+        void reset()
+        {
+            impl_->reset();
         }
 
     private:
-        virtual void serialize( std::ostream& s ) const
+        class object_impl : public node
         {
-            s << (name_.empty() ? "?" : name_) << "::";
-        }
+        public:
+            explicit object_impl( const std::string& name )
+                : name_( name )
+            {}
 
-    private:
-        std::string name_;
+            std::string name_;
+
+        private:
+            virtual void serialize( std::ostream& s ) const
+            {
+                s << (name_.empty() ? "?" : name_) << "::";
+            }
+        };
+
+        boost::shared_ptr< object_impl > impl_;
     };
 }
 

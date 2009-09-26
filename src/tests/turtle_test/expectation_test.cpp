@@ -580,6 +580,17 @@ BOOST_AUTO_TEST_CASE( best_matcher_is_selected_first )
 
 // error report
 
+namespace
+{
+    template< typename T >
+    std::string to_string( const T& t )
+    {
+        std::stringstream s;
+        s << t;
+        return s.str();
+    }
+}
+
 BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
 {
     {
@@ -587,22 +598,18 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
         e.expect().once().with( 1 );
         e.expect().once().with( 2 );
         BOOST_CHECK_NO_THROW( e( 2 ) );
-        std::stringstream s;
-        s << e;
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( 1 )\n"
                                      "v expect( once() ).with( 2 )";
-        BOOST_CHECK_EQUAL( expected, s.str() );
+        BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
     {
         mock::expectation< void( int ) > e( "my expectation" );
         e.expect().never().with( 1 );
-        std::stringstream s;
-        s << e;
         const std::string expected = "my expectation\n"
                                      "v expect( never() ).with( 1 )";
-        BOOST_CHECK_EQUAL( expected, s.str() );
+        BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
     {
@@ -611,82 +618,66 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
         e.expect().exactly( 2 ).with( "second" );
         BOOST_CHECK_NO_THROW( e( "second" ) );
         {
-            std::stringstream s;
-            s << e;
             const std::string expected = "?\n"
                                          "v expect( never() ).with( less( \"first\" ) )\n"
                                          ". expect( exactly( 1/2 ) ).with( \"second\" )";
-            BOOST_CHECK_EQUAL( expected, s.str() );
+            BOOST_CHECK_EQUAL( expected, to_string( e ) );
         }
         BOOST_CHECK_NO_THROW( e( "second" ) );
         {
-            std::stringstream s;
-            s << e;
             const std::string expected = "?\n"
                                          "v expect( never() ).with( less( \"first\" ) )\n"
                                          "v expect( exactly( 2/2 ) ).with( \"second\" )";
-            BOOST_CHECK_EQUAL( expected, s.str() );
+            BOOST_CHECK_EQUAL( expected, to_string( e ) );
         }
         e.reset();
     }
     {
         mock::expectation< void( int ) > e( "my expectation" );
         e.expect().once();
-        std::stringstream s;
-        s << e;
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( any )";
-        BOOST_CHECK_EQUAL( expected, s.str() );
+        BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
     {
         mock::expectation< void( int ) > e( "my expectation" );
         e.expect().once().with( mock::any );
-        std::stringstream s;
-        s << e;
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( any )";
-        BOOST_CHECK_EQUAL( expected, s.str() );
+        BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
     {
         mock::expectation< void( int ) > e( "my expectation" );
         e.expect().once();
-        std::stringstream s;
-        s << e;
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( any )";
-        BOOST_CHECK_EQUAL( expected, s.str() );
+        BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
     {
         mock::expectation< void( int ) > e( "my expectation" );
         e.expect().once().with( &custom_constraint );
-        std::stringstream s;
-        s << e;
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( ? )";
-        BOOST_CHECK_EQUAL( expected, s.str() );
+        BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
     {
         mock::expectation< void( int ) > e( "my expectation" );
         e.expect().once().with( mock::constraint( &custom_constraint, "custom constraint" ) );
-        std::stringstream s;
-        s << e;
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( custom constraint )";
-        BOOST_CHECK_EQUAL( expected, s.str() );
+        BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
     {
         mock::expectation< void( int ) > e( "my expectation" );
         e.expect().once().with( mock::constraint( &custom_constraint, true ) );
-        std::stringstream s;
-        s << e;
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( true )";
-        BOOST_CHECK_EQUAL( expected, s.str() );
+        BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
 }

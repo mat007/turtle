@@ -205,6 +205,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\tests\turtle_test\integration_test.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tests\turtle_test\invocation_test.cpp"
 				>
 			</File>
@@ -219,18 +223,6 @@
 			<File
 				RelativePath="..\..\src\tests\turtle_test\object_test.cpp"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\tests\turtle_test\samples_test.cpp"
-				>
-				<FileConfiguration
-					Name="release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						GeneratePreprocessedFile="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\tests\turtle_test\sequence_test.cpp"

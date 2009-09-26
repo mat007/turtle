@@ -35,7 +35,8 @@ namespace
 BOOST_AUTO_TEST_CASE( verifying_an_object_containing_a_failing_expectation_fails )
 {
     mock::object o;
-    mock::expectation< void(), silent_error > e( o );
+    mock::expectation< void(), silent_error > e;
+    o.set_parent( e );
     e.expect().once();
     BOOST_CHECK( ! o.verify() );
 }
@@ -43,30 +44,37 @@ BOOST_AUTO_TEST_CASE( verifying_an_object_containing_a_failing_expectation_fails
 BOOST_AUTO_TEST_CASE( resetting_an_object_containing_a_failing_expectation_and_verifying_it_succeeds )
 {
     mock::object o;
-    mock::expectation< void() > e( o );
+    mock::expectation< void() > e;
+    o.set_parent( e );
     e.expect().once();
     o.reset();
     BOOST_CHECK( o.verify() );
-    BOOST_CHECK( e.verify() );
 }
 
-BOOST_AUTO_TEST_CASE( verifying_an_object_containing_another_object_with_a_failing_expectation_fails )
+BOOST_AUTO_TEST_CASE( an_object_is_assignable_by_sharing_its_state )
 {
     mock::object o1;
-    mock::object o2( o1 );
-    mock::expectation< void(), silent_error > e( o2 );
-    e.expect().once();
+    mock::expectation< void(), silent_error > e;
+    {
+        mock::object o2;
+        o2.set_parent( e );
+        e.expect().once();
+        o1 = o2;
+        BOOST_CHECK( ! o2.verify() );
+        BOOST_CHECK( ! o1.verify() );
+    }
     BOOST_CHECK( ! o1.verify() );
 }
 
-BOOST_AUTO_TEST_CASE( resetting_an_object_containing_another_object_with_a_failing_expectation_and_verifying_it_succeeds )
+BOOST_AUTO_TEST_CASE( an_object_is_copiable_by_sharing_its_state )
 {
-    mock::object o1;
-    mock::object o2( o1 );
-    mock::expectation< void() > e( o2 );
+    std::auto_ptr< mock::object > o2( new mock::object );
+    const mock::object o1( *o2 );
+    mock::expectation< void(), silent_error > e;
+    o2->set_parent( e );
     e.expect().once();
-    o1.reset();
-    BOOST_CHECK( o1.verify() );
-    BOOST_CHECK( o2.verify() );
-    BOOST_CHECK( e.verify() );
+    BOOST_CHECK( ! o2->verify() );
+    BOOST_CHECK( ! o1.verify() );
+    o2.reset();
+    BOOST_CHECK( ! o1.verify() );
 }

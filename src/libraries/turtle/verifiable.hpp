@@ -20,7 +20,7 @@ namespace mock
         virtual ~verifiable() {}
 
         // return false if verification fails
-        virtual bool verify() = 0;
+        virtual bool verify() const = 0;
 
         // return to the initial state
         virtual void reset() = 0;
