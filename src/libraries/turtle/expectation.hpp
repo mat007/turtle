@@ -50,13 +50,17 @@ namespace mock
         {};
         expectation_tag exp_;
 
-        expectation( const std::string& name = "?" )
-            : impl_( new expectation_impl( root, name ) )
+        expectation()
+            : impl_( new expectation_impl() )
         {}
 
         void tag( const std::string& name )
         {
             impl_->tag( name );
+        }
+        const std::string& tag() const
+        {
+            return impl_->tag();
         }
         void set_parent( node& parent )
         {
@@ -104,9 +108,9 @@ namespace mock
         class expectation_impl : private verifiable
         {
         public:
-            expectation_impl( node& parent, const std::string& name )
-                : name_( name )
-                , parent_( &parent )
+            expectation_impl()
+                : name_( "?" )
+                , parent_( &root )
                 , valid_( true )
             {
                 parent_->add( *this );
@@ -125,6 +129,10 @@ namespace mock
             void tag( const std::string& name )
             {
                 name_ = name;
+            }
+            const std::string& tag() const
+            {
+                return name_;
             }
             void set_parent( node& parent )
             {

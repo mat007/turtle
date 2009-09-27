@@ -199,3 +199,10 @@ BOOST_AUTO_TEST_CASE( mock_functor_is_named )
     MOCK_FUNCTOR( void() ) f;
     BOOST_CHECK_EQUAL( "f", to_string( MOCK_MOCKER( f, _ ) ) );
 }
+
+BOOST_AUTO_TEST_CASE( mock_functor_with_tag_has_no_effect )
+{
+    MOCK_FUNCTOR( int( float, const std::string& ) ) f;
+    f.tag( "my functor" );
+    BOOST_CHECK_EQUAL( "f", to_string( MOCK_MOCKER( f, _ ) ) );
+}

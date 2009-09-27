@@ -136,11 +136,6 @@ BOOST_AUTO_TEST_CASE( mock_functor_in_function_is_supported )
     BOOST_CHECK_EQUAL( 42, func( 3, "op" ) );
 }
 
-BOOST_AUTO_TEST_CASE( mock_functor_name_can_be_customised )
-{
-    MOCK_FUNCTOR( int( float, const std::string& ) ) f( "my functor" );
-}
-
 namespace
 {
     struct functor_fixture

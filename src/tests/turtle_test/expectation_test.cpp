@@ -594,7 +594,8 @@ namespace
 BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
 {
     {
-        mock::expectation< void( int ) > e( "my expectation" );
+        mock::expectation< void( int ) > e;
+        e.tag( "my expectation" );
         e.expect().once().with( 1 );
         e.expect().once().with( 2 );
         BOOST_CHECK_NO_THROW( e( 2 ) );
@@ -605,7 +606,8 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
         e.reset();
     }
     {
-        mock::expectation< void( int ) > e( "my expectation" );
+        mock::expectation< void( int ) > e;
+        e.tag( "my expectation" );
         e.expect().never().with( 1 );
         const std::string expected = "my expectation\n"
                                      "v expect( never() ).with( 1 )";
@@ -633,7 +635,8 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
         e.reset();
     }
     {
-        mock::expectation< void( int ) > e( "my expectation" );
+        mock::expectation< void( int ) > e;
+        e.tag( "my expectation" );
         e.expect().once();
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( any )";
@@ -641,7 +644,8 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
         e.reset();
     }
     {
-        mock::expectation< void( int ) > e( "my expectation" );
+        mock::expectation< void( int ) > e;
+        e.tag( "my expectation" );
         e.expect().once().with( mock::any );
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( any )";
@@ -649,7 +653,8 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
         e.reset();
     }
     {
-        mock::expectation< void( int ) > e( "my expectation" );
+        mock::expectation< void( int ) > e;
+        e.tag( "my expectation" );
         e.expect().once();
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( any )";
@@ -657,7 +662,8 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
         e.reset();
     }
     {
-        mock::expectation< void( int ) > e( "my expectation" );
+        mock::expectation< void( int ) > e;
+        e.tag( "my expectation" );
         e.expect().once().with( &custom_constraint );
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( ? )";
@@ -665,7 +671,8 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
         e.reset();
     }
     {
-        mock::expectation< void( int ) > e( "my expectation" );
+        mock::expectation< void( int ) > e;
+        e.tag( "my expectation" );
         e.expect().once().with( mock::constraint( &custom_constraint, "custom constraint" ) );
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( custom constraint )";
@@ -673,7 +680,8 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
         e.reset();
     }
     {
-        mock::expectation< void( int ) > e( "my expectation" );
+        mock::expectation< void( int ) > e;
+        e.tag( "my expectation" );
         e.expect().once().with( mock::constraint( &custom_constraint, true ) );
         const std::string expected = "my expectation\n"
                                      ". expect( once() ).with( true )";
@@ -684,13 +692,31 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
 
 namespace
 {
-    mock::expectation< void() > no_match_exp( "no_match" );
-    mock::expectation< void() > sequence_failed_exp( "sequence_failed" );
-    mock::expectation< void() > verification_failed_exp( "verification_failed" );
-    mock::expectation< void() > untriggered_expectation_exp( "untriggered_expectation" );
+    mock::expectation< void() > no_match_exp;
+    mock::expectation< void() > sequence_failed_exp;
+    mock::expectation< void() > verification_failed_exp;
+    mock::expectation< void() > untriggered_expectation_exp;
 
-    struct mock_error
+    struct error_fixture
     {
+        error_fixture()
+        {
+            no_match_exp.tag( "no_match" );
+            sequence_failed_exp.tag( "sequence_failed" );
+            verification_failed_exp.tag( "verification_failed" );
+            untriggered_expectation_exp.tag( "untriggered_expectation" );
+        }
+        ~error_fixture()
+        {
+            no_match_exp.verify();
+            no_match_exp.reset();
+            sequence_failed_exp.verify();
+            sequence_failed_exp.reset();
+            verification_failed_exp.verify();
+            verification_failed_exp.reset();
+            untriggered_expectation_exp.verify();
+            untriggered_expectation_exp.reset();
+        }
         static void no_match( const std::string& /*context*/ )
         {
             no_match_exp();
@@ -711,58 +737,44 @@ namespace
             untriggered_expectation_exp();
         }
     };
-    struct error_guard
-    {
-        ~error_guard()
-        {
-            no_match_exp.verify();
-            no_match_exp.reset();
-            sequence_failed_exp.verify();
-            sequence_failed_exp.reset();
-            verification_failed_exp.verify();
-            verification_failed_exp.reset();
-            untriggered_expectation_exp.verify();
-            untriggered_expectation_exp.reset();
-        }
-    };
 }
 
-BOOST_FIXTURE_TEST_CASE( expectation_with_remaining_untriggered_matches_notifies_an_error_upon_destructions, error_guard )
+BOOST_FIXTURE_TEST_CASE( expectation_with_remaining_untriggered_matches_notifies_an_error_upon_destructions, error_fixture )
 {
-    mock::expectation< void(), mock_error > e;
+    mock::expectation< void(), error_fixture > e;
     e.expect().once();
     untriggered_expectation_exp.expect().once();
 }
 
-BOOST_FIXTURE_TEST_CASE( verifying_expectation_with_remaining_matches_disables_the_automatic_verification_upon_destruction, error_guard )
+BOOST_FIXTURE_TEST_CASE( verifying_expectation_with_remaining_matches_disables_the_automatic_verification_upon_destruction, error_fixture )
 {
-    mock::expectation< void(), mock_error > e;
+    mock::expectation< void(), error_fixture > e;
     e.expect().once();
     verification_failed_exp.expect();
     e.verify();
 }
 
-BOOST_FIXTURE_TEST_CASE( triggering_no_match_call_disables_the_automatic_verification_upon_destruction, error_guard )
+BOOST_FIXTURE_TEST_CASE( triggering_no_match_call_disables_the_automatic_verification_upon_destruction, error_fixture )
 {
-    mock::expectation< void(), mock_error > e;
+    mock::expectation< void(), error_fixture > e;
     no_match_exp.expect();
     e();
 }
 
-BOOST_FIXTURE_TEST_CASE( adding_a_matcher_reactivates_the_verification_upon_destruction, error_guard )
+BOOST_FIXTURE_TEST_CASE( adding_a_matcher_reactivates_the_verification_upon_destruction, error_fixture )
 {
-    mock::expectation< void(), mock_error > e;
+    mock::expectation< void(), error_fixture > e;
     no_match_exp.expect();
     e();
     e.expect().once();
     untriggered_expectation_exp.expect().once();
 }
 
-BOOST_FIXTURE_TEST_CASE( throwing_an_exception_disables_the_automatic_verification_upon_destruction, error_guard )
+BOOST_FIXTURE_TEST_CASE( throwing_an_exception_disables_the_automatic_verification_upon_destruction, error_fixture )
 {
     try
     {
-        mock::expectation< void(), mock_error > e;
+        mock::expectation< void(), error_fixture > e;
         e.expect().once();
         throw std::exception();
     }

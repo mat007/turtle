@@ -97,12 +97,14 @@ namespace detail
         >::type* = 0 )
     {}
     template< typename E >
-    void tag( E& e, const object& o, const std::string& type_name, const std::string& name )
+    void tag( E& e, const object& o, const std::string& type_name,
+              const std::string& name )
     {
         e.tag( type_name + o.tag() + "::" + name );
     }
     template< typename E, typename T >
-    void tag( E& e, const T&, const std::string& type_name, const std::string& name,
+    void tag( E& e, const T&, const std::string& type_name,
+              const std::string& name,
         BOOST_DEDUCED_TYPENAME boost::disable_if<
             BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >::type
         >::type* = 0 )
@@ -111,13 +113,15 @@ namespace detail
     }
 
     template< typename E >
-    E& configure( typename E::expectation_tag, const std::string& name, E& e )
+    E& configure( typename E::expectation_tag, const std::string& object,
+                  const std::string& name, E& e )
     {
-        e.tag( name );
+        e.tag( name == "_" ? object : name );
         return e;
     }
     template< typename E, typename T >
-    E& configure( E& e, const std::string& name, const T& t )
+    E& configure( E& e, const std::string& /*object*/,
+                  const std::string& name, const T& t )
     {
         set_parent( e, t );
         tag( e, t, type_name< T >(), name );
@@ -129,12 +133,6 @@ namespace detail
     {
         typedef T base_type;
     };
-
-    inline std::string name( const std::string& object,
-                             const std::string& tag )
-    {
-        return tag == "_" ? object : tag;
-    }
 }
 }
 
@@ -147,8 +145,7 @@ namespace detail
 
 #define MOCK_MOCKER(o, t) \
     mock::detail::configure( mock::detail::ref( o ).exp##t, \
-        mock::detail::name( BOOST_PP_STRINGIZE(o), BOOST_PP_STRINGIZE(t) ), \
-        mock::detail::ref( o ) )
+        BOOST_PP_STRINGIZE(o), BOOST_PP_STRINGIZE(t), mock::detail::ref( o ) )
 
 #define MOCK_METHOD_ARG(z, n, arg) BOOST_PP_COMMA_IF(n) \
     BOOST_PP_CAT(BOOST_PP_CAT(arg, BOOST_PP_INC(n)),_type) \
