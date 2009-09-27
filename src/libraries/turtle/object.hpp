@@ -10,7 +10,6 @@
 #define MOCK_OBJECT_HPP_INCLUDED
 
 #include "node.hpp"
-#include "root.hpp"
 #include <boost/shared_ptr.hpp>
 #include <ostream>
 #include <string>
@@ -20,8 +19,8 @@ namespace mock
     class object
     {
     public:
-        explicit object( const std::string& name = "" )
-            : impl_( new object_impl( name ) )
+        object()
+            : impl_( new object_impl() )
         {}
 
         void tag( const std::string& name )
@@ -52,10 +51,6 @@ namespace mock
         class object_impl : public node
         {
         public:
-            explicit object_impl( const std::string& name )
-                : name_( name )
-            {}
-
             std::string name_;
 
         private:

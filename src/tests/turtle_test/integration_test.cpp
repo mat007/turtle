@@ -36,11 +36,8 @@ BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_and_without_inheriting_f
 
 namespace
 {
-    struct my_custom_mock_object : mock::object
+    struct my_custom_mock_object
     {
-        my_custom_mock_object()
-            : mock::object( "my_custom_mock_object" )
-        {}
         MOCK_METHOD_EXT( my_method, 0, void(), my_method )
     };
 }
