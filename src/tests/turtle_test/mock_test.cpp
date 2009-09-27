@@ -193,3 +193,9 @@ BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_is_named )
     my_custom_mock_object m;
     BOOST_CHECK_EQUAL( "my_custom_mock_object::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
 }
+
+BOOST_AUTO_TEST_CASE( mock_functor_is_named )
+{
+    MOCK_FUNCTOR( void() ) f;
+    BOOST_CHECK_EQUAL( "f", to_string( MOCK_MOCKER( f, _ ) ) );
+}

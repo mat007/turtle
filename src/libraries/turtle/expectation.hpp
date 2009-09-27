@@ -54,9 +54,9 @@ namespace mock
             : impl_( new expectation_impl( root, name ) )
         {}
 
-        void set_name( const std::string& name )
+        void tag( const std::string& name )
         {
-            impl_->set_name( name );
+            impl_->tag( name );
         }
         void set_parent( node& parent )
         {
@@ -122,7 +122,7 @@ namespace mock
                                 context(), it->file(), it->line() );
             }
 
-            void set_name( const std::string& name )
+            void tag( const std::string& name )
             {
                 name_ = name;
             }

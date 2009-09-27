@@ -99,7 +99,7 @@ namespace detail
     template< typename E >
     void tag( E& e, const object& o, const std::string& type_name, const std::string& name )
     {
-        e.set_name( type_name + o.tag() + "::" + name );
+        e.tag( type_name + o.tag() + "::" + name );
     }
     template< typename E, typename T >
     void tag( E& e, const T&, const std::string& type_name, const std::string& name,
@@ -107,13 +107,13 @@ namespace detail
             BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >::type
         >::type* = 0 )
     {
-        e.set_name( type_name + "::" + name );
+        e.tag( type_name + "::" + name );
     }
 
     template< typename E >
     E& configure( typename E::expectation_tag, const std::string& name, E& e )
     {
-        e.set_name( name );
+        e.tag( name );
         return e;
     }
     template< typename E, typename T >
@@ -129,6 +129,12 @@ namespace detail
     {
         typedef T base_type;
     };
+
+    inline std::string name( const std::string& object,
+                             const std::string& tag )
+    {
+        return tag == "_" ? object : tag;
+    }
 }
 }
 
@@ -141,7 +147,8 @@ namespace detail
 
 #define MOCK_MOCKER(o, t) \
     mock::detail::configure( mock::detail::ref( o ).exp##t, \
-        BOOST_PP_STRINGIZE(t), mock::detail::ref( o ) )
+        mock::detail::name( BOOST_PP_STRINGIZE(o), BOOST_PP_STRINGIZE(t) ), \
+        mock::detail::ref( o ) )
 
 #define MOCK_METHOD_ARG(z, n, arg) BOOST_PP_COMMA_IF(n) \
     BOOST_PP_CAT(BOOST_PP_CAT(arg, BOOST_PP_INC(n)),_type) \
