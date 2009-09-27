@@ -140,7 +140,7 @@ namespace detail
     mock::expectation< S >
 
 #define MOCK_MOCKER(o, t) \
-    mock::detail::configure( mock::detail::ref( o ).t##_exp, \
+    mock::detail::configure( mock::detail::ref( o ).exp##t, \
         BOOST_PP_STRINGIZE(t), mock::detail::ref( o ) )
 
 #define MOCK_METHOD_ARG(z, n, arg) BOOST_PP_COMMA_IF(n) \
@@ -153,7 +153,7 @@ namespace detail
 #define MOCK_MOCKER_ARGS(n) \
     BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_MOCKER_ARG, BOOST_PP_EMPTY)
 #define MOCK_METHOD_EXPECTATION(S, t) \
-    mutable mock::expectation< S > t##_exp;
+    mutable mock::expectation< S > exp##t;
 
 #define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
     tpn boost::function< S >::result_type M( \

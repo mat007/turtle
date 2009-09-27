@@ -48,7 +48,7 @@ namespace mock
     public:
         struct expectation_tag
         {};
-        expectation_tag operator_exp;
+        expectation_tag exp_;
 
         expectation( const std::string& name = "?" )
             : impl_( new expectation_impl( root, name ) )

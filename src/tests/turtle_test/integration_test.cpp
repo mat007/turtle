@@ -133,7 +133,7 @@ BOOST_AUTO_TEST_CASE( mock_functor_in_function_is_supported )
     boost::function< int( float, const std::string& ) > func;
     {
         MOCK_FUNCTOR( int( float, const std::string& ) ) f;
-        MOCK_EXPECT(f, operator).once().with( 3, "op" ).returns( 42 );
+        MOCK_EXPECT( f, _ ).once().with( 3, "op" ).returns( 42 );
         func = f;
     }
     BOOST_CHECK_EQUAL( 42, func( 3, "op" ) );
@@ -154,7 +154,7 @@ namespace
 
 BOOST_FIXTURE_TEST_CASE( mock_functor_in_fixture_is_supported, functor_fixture )
 {
-    MOCK_EXPECT(f, operator).once().with( 3, "op" ).returns( 42 );
+    MOCK_EXPECT( f, _ ).once().with( 3, "op" ).returns( 42 );
     BOOST_CHECK_EQUAL( 42, f( 3.f, "op" ) );
 }
 
