@@ -15,10 +15,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/ref.hpp>
 
-#ifdef _MSC_VER
-#   pragma warning( disable : 4355 4505 )
-#endif
-
 namespace
 {
     struct my_custom_mock
