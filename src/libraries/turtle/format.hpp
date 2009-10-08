@@ -45,7 +45,7 @@ namespace detail
     {};
 
     template< typename T >
-    std::string format( const T& t,
+    std::string serialize( const T& t,
         BOOST_DEDUCED_TYPENAME boost::enable_if<
             BOOST_DEDUCED_TYPENAME detail::is_serializable< T >::type >::type* = 0 )
     {
@@ -54,7 +54,7 @@ namespace detail
         return s.str();
     }
     template< typename T >
-    std::string format( const T&,
+    std::string serialize( const T&,
         BOOST_DEDUCED_TYPENAME boost::disable_if<
             BOOST_DEDUCED_TYPENAME detail::is_serializable< T >::type >::type* = 0 )
     {
@@ -65,7 +65,7 @@ namespace detail
     template< typename T >
     std::string format( const T& t )
     {
-        return detail::format( t );
+        return detail::serialize( t );
     }
     inline std::string format( const std::string& s )
     {
