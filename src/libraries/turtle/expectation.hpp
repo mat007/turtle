@@ -38,6 +38,12 @@ namespace mock
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature >::result_type result_type;
 
+        template< typename Args >
+        struct sig
+        {
+            typedef result_type type;
+        };
+
     private:
         typedef detail::matcher< result_type,
                                  Signature,
