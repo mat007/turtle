@@ -14,10 +14,6 @@
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
 
-#ifdef _MSC_VER
-#   pragma warning( disable : 4355 )
-#endif
-
 namespace
 {
     void f1();
