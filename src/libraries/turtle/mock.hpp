@@ -159,10 +159,11 @@ namespace detail
 #define MOCK_METHOD_EXPECTATION(S, t) \
     mutable mock::expectation< S > exp##t;
 
-#define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
+#define MOCK_METHOD_STUB(M, n, S, t, c, tpn, fix) \
     tpn boost::function< S >::result_type M( \
         MOCK_METHOD_ARGS(n, tpn boost::function< S >::arg) ) c \
     { \
+        fix \
         return MOCK_MOCKER(this, t)( MOCK_MOCKER_ARGS(n) ); \
     }
 #define MOCK_SIGNATURE(M) \
@@ -170,31 +171,41 @@ namespace detail
 #define MOCK_SIGNATURE_TPL(M) \
     BOOST_DEDUCED_TYPENAME mock::detail::signature< BOOST_TYPEOF_TPL(&base_type::M) >::type
 
-#define MOCK_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t,,) \
-    MOCK_METHOD_STUB(M, n, S, t, const,) \
+#ifdef _MSC_VER
+#define MOCK_FIX_C4505(M) &base_type::M;
+#else
+#define MOCK_FIX_C4505(M)
+#endif
+
+#define MOCK_METHOD_EXT_(M, n, S, t, fix) \
+    MOCK_METHOD_STUB(M, n, S, t,,, fix) \
+    MOCK_METHOD_STUB(M, n, S, t, const,,) \
     MOCK_METHOD_EXPECTATION(S, t)
+#define MOCK_METHOD_EXT(M, n, S, t) \
+    MOCK_METHOD_EXT_(M, n, S, t,)
 #define MOCK_CONST_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t, const,) \
+    MOCK_METHOD_STUB(M, n, S, t, const,,) \
     MOCK_METHOD_EXPECTATION(S, t)
 #define MOCK_NON_CONST_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t,,) \
+    MOCK_METHOD_STUB(M, n, S, t,,,) \
     MOCK_METHOD_EXPECTATION(S, t)
 #define MOCK_METHOD(M, n) \
-    MOCK_METHOD_EXT(M, n, MOCK_SIGNATURE(M), M)
+    MOCK_METHOD_EXT_(M, n, MOCK_SIGNATURE(M), M, MOCK_FIX_C4505(M))
 
-#define MOCK_METHOD_EXT_TPL(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_STUB(M, n, S, t, const, BOOST_DEDUCED_TYPENAME) \
+#define MOCK_METHOD_EXT_TPL_(M, n, S, t, fix) \
+    MOCK_METHOD_STUB(M, n, S, t,, BOOST_DEDUCED_TYPENAME,fix) \
+    MOCK_METHOD_STUB(M, n, S, t, const, BOOST_DEDUCED_TYPENAME,) \
     MOCK_METHOD_EXPECTATION(S, t)
+#define MOCK_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_EXT_TPL_(M, n, S, t,)
 #define MOCK_CONST_METHOD_EXT_TPL(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t, const, BOOST_DEDUCED_TYPENAME) \
+    MOCK_METHOD_STUB(M, n, S, t, const, BOOST_DEDUCED_TYPENAME,) \
     MOCK_METHOD_EXPECTATION(S, t)
 #define MOCK_NON_CONST_METHOD_EXT_TPL(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
+    MOCK_METHOD_STUB(M, n, S, t,, BOOST_DEDUCED_TYPENAME,) \
     MOCK_METHOD_EXPECTATION(S, t)
 #define MOCK_METHOD_TPL(M, n) \
-    MOCK_METHOD_EXT_TPL(M, n, MOCK_SIGNATURE_TPL(M), M)
+    MOCK_METHOD_EXT_TPL_(M, n, MOCK_SIGNATURE_TPL(M), M, MOCK_FIX_C4505(M))
 
 #define MOCK_EXPECT(o,t) MOCK_MOCKER(o,t).expect( __FILE__, __LINE__ )
 #define MOCK_RESET(o,t) MOCK_MOCKER(o,t).reset()
