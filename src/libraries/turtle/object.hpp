@@ -10,6 +10,7 @@
 #define MOCK_OBJECT_HPP_INCLUDED
 
 #include "node.hpp"
+#include "root.hpp"
 #include <boost/shared_ptr.hpp>
 #include <ostream>
 #include <string>
@@ -51,6 +52,15 @@ namespace mock
         class object_impl : public node
         {
         public:
+            object_impl()
+            {
+                root.add( *this );
+            }
+            virtual ~object_impl()
+            {
+                root.remove( *this );
+            }
+
             std::string name_;
 
         private:

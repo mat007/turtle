@@ -10,7 +10,6 @@
 #define MOCK_NODE_HPP_INCLUDED
 
 #include "verifiable.hpp"
-#include <boost/noncopyable.hpp>
 #include <functional>
 #include <algorithm>
 #include <ostream>
@@ -19,7 +18,7 @@
 
 namespace mock
 {
-    class node : private boost::noncopyable
+    class node : protected verifiable
     {
     public:
         void add( verifiable& e )
@@ -31,7 +30,7 @@ namespace mock
             v_.erase( std::remove( v_.begin(), v_.end(), &e ), v_.end() );
         }
 
-        bool verify() const
+        virtual bool verify() const
         {
             bool valid = true;
             for( verifiables_cit it = v_.begin(); it != v_.end(); ++it )
@@ -39,7 +38,7 @@ namespace mock
                     valid = false;
             return valid;
         }
-        void reset()
+        virtual void reset()
         {
             std::for_each( v_.begin(), v_.end(),
                 std::mem_fun( &verifiable::reset ) );

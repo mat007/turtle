@@ -41,6 +41,15 @@ BOOST_AUTO_TEST_CASE( verifying_an_object_containing_a_failing_expectation_fails
     BOOST_CHECK( ! o.verify() );
 }
 
+BOOST_AUTO_TEST_CASE( verifying_all_objects_with_one_of_them_containing_a_failing_expectation_fails )
+{
+    mock::object o;
+    mock::expectation< void(), silent_error > e;
+    o.set_parent( e );
+    e.expect().once();
+    BOOST_CHECK( ! mock::verify() );
+}
+
 BOOST_AUTO_TEST_CASE( resetting_an_object_containing_a_failing_expectation_and_verifying_it_succeeds )
 {
     mock::object o;
