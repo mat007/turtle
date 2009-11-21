@@ -202,3 +202,17 @@ BOOST_AUTO_TEST_CASE( mock_functor_with_tag_has_no_effect )
     f.tag( "my functor" );
     BOOST_CHECK_EQUAL( "f", to_string( MOCK_MOCKER( f, _ ) ) );
 }
+
+namespace
+{
+    MOCK_CLASS( my_destroyed_class )
+    {
+        MOCK_DESTRUCTOR( my_destroyed_class, destructor )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mocking_a_destructor )
+{
+    my_destroyed_class c;
+    MOCK_EXPECT( c, destructor ).once();
+}

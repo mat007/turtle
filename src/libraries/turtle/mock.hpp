@@ -196,6 +196,10 @@ namespace detail
 #define MOCK_METHOD_TPL(M, n) \
     MOCK_METHOD_EXT_TPL(M, n, MOCK_SIGNATURE_TPL(M), M)
 
+#define MOCK_DESTRUCTOR( T, t ) \
+    ~T() { exp##t(); } \
+    MOCK_METHOD_EXPECTATION(void(), t)
+
 #define MOCK_EXPECT(o,t) MOCK_MOCKER(o,t).expect( __FILE__, __LINE__ )
 #define MOCK_RESET(o,t) MOCK_MOCKER(o,t).reset()
 #define MOCK_VERIFY(o,t) MOCK_MOCKER(o,t).verify()
