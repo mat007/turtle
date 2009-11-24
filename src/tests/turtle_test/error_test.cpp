@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE( a_mock_exception_is_not_an_std_exception_to_not_mess_with_
 {
     try
     {
-        throw mock::exception( "" );
+        throw mock::exception();
     }
     catch( std::exception& )
     {

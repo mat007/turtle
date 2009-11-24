@@ -217,6 +217,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\tests\turtle_test\mock_error.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tests\turtle_test\mock_test.cpp"
 				>
 			</File>
@@ -226,6 +230,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\tests\turtle_test\sequence_test.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\turtle_test\silent_error.hpp"
 				>
 			</File>
 		</Filter>

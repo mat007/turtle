@@ -6,11 +6,14 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <turtle/mock.hpp>
+#include "silent_error.hpp"
 
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
+
+#define MOCK_ERROR_POLICY silent_error
+#include <turtle/mock.hpp>
 
 #include <boost/noncopyable.hpp>
 #include <boost/ref.hpp>
@@ -91,7 +94,7 @@ BOOST_AUTO_TEST_CASE( mock_object_method_disambiguation )
     my_ambiguited_mock mock;
     MOCK_EXPECT( mock, tag1 );
     BOOST_CHECK_NO_THROW( mock.my_method() );
-    BOOST_CHECK_THROW( mock.my_method( 12 ), mock::exception );
+    BOOST_CHECK_THROW( mock.my_method( 12 ), std::exception );
 }
 
 namespace
@@ -118,7 +121,7 @@ BOOST_AUTO_TEST_CASE( mock_object_method_const_disambiguation )
     MOCK_EXPECT( mock, tag1 );
     BOOST_CHECK_NO_THROW( mock.my_method() );
     const my_const_ambiguited_mock const_mock;
-    BOOST_CHECK_THROW( const_mock.my_method(), mock::exception );
+    BOOST_CHECK_THROW( const_mock.my_method(), std::exception );
 }
 
 BOOST_AUTO_TEST_CASE( mock_functor_in_function_is_supported )

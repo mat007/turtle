@@ -6,13 +6,14 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <turtle/sequence.hpp>
-#include <turtle/expectation.hpp>
-#include <turtle/constraint.hpp>
+#include "silent_error.hpp"
 
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
+
+#define MOCK_ERROR_POLICY mock::silent_error
+#include <turtle/mock.hpp>
 
 BOOST_AUTO_TEST_CASE( registering_to_a_sequence_and_calling_out_of_order_throws )
 {
@@ -21,7 +22,7 @@ BOOST_AUTO_TEST_CASE( registering_to_a_sequence_and_calling_out_of_order_throws 
     e.expect().once().with( 1 ).in( s );
     e.expect().once().with( 2 ).in( s );
     BOOST_CHECK_NO_THROW( e( 2 ) );
-    BOOST_CHECK_THROW( e( 1 ), mock::exception );
+    BOOST_CHECK_THROW( e( 1 ), std::exception );
 }
 
 BOOST_AUTO_TEST_CASE( registering_to_a_sequence_and_calling_out_of_order_multiple_invocations_throws )
@@ -32,7 +33,7 @@ BOOST_AUTO_TEST_CASE( registering_to_a_sequence_and_calling_out_of_order_multipl
     e.expect().once().with( 2 ).in( s );
     BOOST_CHECK_NO_THROW( e( 1 ) );
     BOOST_CHECK_NO_THROW( e( 2 ) );
-    BOOST_CHECK_THROW( e( 1 ), mock::exception );
+    BOOST_CHECK_THROW( e( 1 ), std::exception );
 }
 
 BOOST_AUTO_TEST_CASE( registering_to_a_sequence_and_calling_in_order_is_valid )
@@ -52,7 +53,7 @@ BOOST_AUTO_TEST_CASE( registering_to_a_sequence_enforces_call_order_verification
     e1.expect().once().in( s );
     e2.expect().once().in( s );
     BOOST_CHECK_NO_THROW( e2() );
-    BOOST_CHECK_THROW( e1(), mock::exception );
+    BOOST_CHECK_THROW( e1(), std::exception );
 }
 
 BOOST_AUTO_TEST_CASE( destroying_a_sequence_removes_order_call_enforcement )

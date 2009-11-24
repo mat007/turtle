@@ -18,7 +18,7 @@ namespace mock
 {
 namespace detail
 {
-    template< typename T, typename Signature, typename ErrorPolicy >
+    template< typename T, typename Signature >
     class result
     {
         typedef BOOST_DEDUCED_TYPENAME
@@ -46,8 +46,6 @@ namespace detail
 
         const functor_type& functor() const
         {
-            if( !f_ )
-                ErrorPolicy::missing_result_specification();
             return f_;
         }
 
@@ -76,8 +74,8 @@ namespace detail
         functor_type f_;
     };
 
-    template< typename T, typename Signature, typename ErrorPolicy >
-    class result< T*, Signature, ErrorPolicy >
+    template< typename T, typename Signature >
+    class result< T*, Signature >
     {
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
@@ -108,8 +106,6 @@ namespace detail
 
         const functor_type& functor() const
         {
-            if( !f_ )
-                ErrorPolicy::missing_result_specification();
             return f_;
         }
 
@@ -128,8 +124,8 @@ namespace detail
         functor_type f_;
     };
 
-    template< typename Signature, typename ErrorPolicy >
-    class result< void, Signature, ErrorPolicy >
+    template< typename Signature >
+    class result< void, Signature >
     {
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
@@ -170,8 +166,8 @@ namespace detail
         functor_type f_;
     };
 
-    template< typename T, typename Signature, typename ErrorPolicy >
-    class result< std::auto_ptr< T >, Signature, ErrorPolicy >
+    template< typename T, typename Signature >
+    class result< std::auto_ptr< T >, Signature >
     {
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
@@ -208,8 +204,6 @@ namespace detail
 
         const functor_type& functor() const
         {
-            if( !f_ )
-                ErrorPolicy::missing_result_specification();
             return f_;
         }
 

@@ -104,7 +104,7 @@ namespace detail
         int line_;
     };
 
-    template< typename Result, typename Signature, typename ErrorPolicy, int >
+    template< typename Result, typename Signature, int >
     class matcher
     {
     };
@@ -146,9 +146,9 @@ namespace detail
             return *this; \
         }
 
-    template< typename Result, typename Signature, typename ErrorPolicy >
-    class matcher< Result, Signature, ErrorPolicy, 0 >
-        : public matcher_base, public result< Result, Signature, ErrorPolicy >
+    template< typename Result, typename Signature >
+    class matcher< Result, Signature, 0 >
+        : public matcher_base, public result< Result, Signature >
     {
     public:
         bool is_valid() const
@@ -176,9 +176,9 @@ namespace detail
 #define MOCK_MATCHER_IS_VALID(z, n, d) && c##n##_( a##n )
 #define MOCK_MATCHER_SERIALIZE(z, n, d) << ", " << m.c##n##_
 #define MOCK_MATCHER(z, n, d) \
-    template< typename Result, typename Signature, typename ErrorPolicy > \
-    class matcher< Result, Signature, ErrorPolicy, n > \
-        : public matcher_base, public result< Result, Signature, ErrorPolicy > \
+    template< typename Result, typename Signature > \
+    class matcher< Result, Signature, n > \
+        : public matcher_base, public result< Result, Signature > \
     { \
         BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_MATCHER_TYPEDEF, BOOST_PP_EMPTY) \
     public: \

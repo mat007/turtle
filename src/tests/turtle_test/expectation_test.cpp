@@ -6,33 +6,62 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#define BOOST_AUTO_TEST_MAIN
-#include <turtle/expectation.hpp>
-#include <turtle/constraint.hpp>
+#include "mock_error.hpp"
 
+#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
 
+#define MOCK_ERROR_POLICY mock_error
+#include <turtle/mock.hpp>
+
+#define CHECK_ERROR( expr, error ) \
+    BOOST_CHECK( verify() ); \
+    expr; \
+    BOOST_CHECK_EQUAL( 1, error##_count ); \
+    reset();
+
 namespace
 {
-    bool check_exception_contains( const mock::exception& e, const std::string& str )
+    struct error_fixture
     {
-        return e.what().find( str ) != std::string::npos;
-    }
+        error_fixture()
+        {
+            reset();
+        }
+        ~error_fixture()
+        {
+            BOOST_CHECK( verify() );
+        }
+        void reset()
+        {
+            missing_result_specification_count = 0;
+            no_match_count = 0;
+            sequence_failed_count = 0;
+            verification_failed_count = 0;
+            untriggered_expectation_count = 0;
+        }
+        bool verify() const
+        {
+            return missing_result_specification_count == 0 &&
+                no_match_count == 0 &&
+                sequence_failed_count == 0 &&
+                verification_failed_count == 0 &&
+                untriggered_expectation_count == 0;
+        }
+    };
 }
-#define BOOST_CHECK_EXCEPTION_CONTAINS( S, C ) \
-    BOOST_CHECK_EXCEPTION( S, mock::exception, boost::bind( &check_exception_contains, _1, C ) );
 
 // functor
 
-BOOST_AUTO_TEST_CASE( an_expectation_can_be_passed_as_functor )
+BOOST_FIXTURE_TEST_CASE( an_expectation_can_be_passed_as_functor, error_fixture )
 {
     mock::expectation< void() > e;
     boost::function< void() > f = e;
 }
 
-BOOST_AUTO_TEST_CASE( an_expectation_can_be_passed_as_functor_using_boost_bind_and_boost_ref )
+BOOST_FIXTURE_TEST_CASE( an_expectation_can_be_passed_as_functor_using_boost_bind_and_boost_ref, error_fixture )
 {
     mock::expectation< void() > e;
     boost::function< void() > f = boost::bind( boost::ref( e ) );
@@ -40,66 +69,66 @@ BOOST_AUTO_TEST_CASE( an_expectation_can_be_passed_as_functor_using_boost_bind_a
 
 // invocations
 
-BOOST_AUTO_TEST_CASE( triggering_an_empty_expectation_throws )
+BOOST_FIXTURE_TEST_CASE( triggering_an_empty_expectation_calls_no_match_error, error_fixture )
 {
     {
         mock::expectation< void() > e;
-        BOOST_CHECK_EXCEPTION_CONTAINS( e(), "unexpected call" );
+        CHECK_ERROR( e(), no_match );
     }
     {
         mock::expectation< int( int, const std::string& ) > e;
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 1, "s" ), "unexpected call" );
+        CHECK_ERROR( e( 1, "s" ), no_match );
     }
 }
 
-BOOST_AUTO_TEST_CASE( triggering_a_never_expectation_throws )
+BOOST_FIXTURE_TEST_CASE( triggering_a_never_expectation_calls_no_match_error, error_fixture )
 {
     {
         mock::expectation< void() > e;
         e.expect().never();
-        BOOST_CHECK_EXCEPTION_CONTAINS( e(), "unexpected call" );
+        CHECK_ERROR( e(), no_match );
     }
     {
         mock::expectation< int( int, const std::string& ) > e;
         e.expect().never();
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 1, "s" ), "unexpected call" );
+        CHECK_ERROR( e( 1, "s" ), no_match );
     }
 }
 
-BOOST_AUTO_TEST_CASE( triggering_an_unlimited_expectation_never_throws )
+BOOST_FIXTURE_TEST_CASE( triggering_an_unlimited_expectation_is_valid, error_fixture )
 {
     {
         mock::expectation< void() > e;
         e.expect();
-        BOOST_CHECK_NO_THROW( e() );
-        BOOST_CHECK_NO_THROW( e() );
+        e();
+        e();
     }
     {
         mock::expectation< void( int, const std::string& ) > e;
         e.expect();
-        BOOST_CHECK_NO_THROW( e( 1, "s" ) );
-        BOOST_CHECK_NO_THROW( e( 1, "s" ) );
+        e( 1, "s" );
+        e( 1, "s" );
     }
 }
 
-BOOST_AUTO_TEST_CASE( triggering_a_once_expectation_throws_after_one_call )
+BOOST_FIXTURE_TEST_CASE( triggering_a_once_expectation_calls_no_match_error_after_one_call, error_fixture )
 {
     {
         mock::expectation< void() > e;
         e.expect().once();
-        BOOST_CHECK_NO_THROW( e() );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e(), "unexpected call" );
+        e();
+        CHECK_ERROR( e(), no_match );
     }
     {
         mock::expectation< void( int, const std::string& ) > e;
         e.expect().once();
-        BOOST_CHECK_NO_THROW( e( 1, "s" ) );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 1, "s" ), "unexpected call" );
+        e( 1, "s" );
+        CHECK_ERROR( e( 1, "s" ), no_match );
     }
 }
 
 /*
-BOOST_AUTO_TEST_CASE( literal_zero_can_be_used_in_expectation_operator_call_as_pointers )
+BOOST_FIXTURE_TEST_CASE( literal_zero_can_be_used_in_expectation_operator_call_as_pointers, error_fixture )
 {
     mock::expectation< void( int* ) > e;
     e( 0 );
@@ -108,7 +137,7 @@ BOOST_AUTO_TEST_CASE( literal_zero_can_be_used_in_expectation_operator_call_as_p
 
 // verify
 
-BOOST_AUTO_TEST_CASE( verifying_an_empty_expectation_succeeds )
+BOOST_FIXTURE_TEST_CASE( verifying_an_empty_expectation_succeeds, error_fixture )
 {
     {
         mock::expectation< void() > e;
@@ -120,7 +149,7 @@ BOOST_AUTO_TEST_CASE( verifying_an_empty_expectation_succeeds )
     }
 }
 
-BOOST_AUTO_TEST_CASE( verifying_an_unlimited_expectation_succeeds )
+BOOST_FIXTURE_TEST_CASE( verifying_an_unlimited_expectation_succeeds, error_fixture )
 {
     {
         mock::expectation< void() > e;
@@ -134,7 +163,7 @@ BOOST_AUTO_TEST_CASE( verifying_an_unlimited_expectation_succeeds )
     }
 }
 
-BOOST_AUTO_TEST_CASE( verifying_a_once_expectation_after_one_call_succeeds )
+BOOST_FIXTURE_TEST_CASE( verifying_a_once_expectation_after_one_call_succeeds, error_fixture )
 {
     {
         mock::expectation< void() > e;
@@ -150,60 +179,39 @@ BOOST_AUTO_TEST_CASE( verifying_a_once_expectation_after_one_call_succeeds )
     }
 }
 
-namespace
-{
-    template< typename Result >
-    struct silent_error
-    {
-        static Result no_match( const std::string& context )
-        {
-            throw std::runtime_error( __FUNCTION__ );
-        }
-        static void sequence_failed( const std::string& /*context*/,
-            const std::string& /*file*/, int /*line*/ )
-        {}
-        static void verification_failed( const std::string& /*context*/,
-            const std::string& /*file*/, int /*line*/ )
-        {}
-        static void untriggered_expectation( const std::string& /*context*/,
-            const std::string& /*file*/, int /*line*/ )
-        {}
-    };
-}
-
-BOOST_AUTO_TEST_CASE( verifying_a_once_expectation_before_the_call_fails )
+BOOST_FIXTURE_TEST_CASE( verifying_a_once_expectation_before_the_call_fails, error_fixture )
 {
     {
-        mock::expectation< void(), silent_error< void > > e;
+        mock::expectation< void() > e;
         e.expect().once();
-        BOOST_CHECK( ! e.verify() );
+        CHECK_ERROR( BOOST_CHECK( ! e.verify() ), verification_failed );
     }
     {
-        mock::expectation< int( int, const std::string& ), silent_error< int > > e;
+        mock::expectation< int( int, const std::string& ) > e;
         e.expect().once();
-        BOOST_CHECK( ! e.verify() );
+        CHECK_ERROR( BOOST_CHECK( ! e.verify() ), verification_failed );
     }
 }
 
 // reset
 
-BOOST_AUTO_TEST_CASE( triggering_a_reset_expectation_throws )
+BOOST_FIXTURE_TEST_CASE( triggering_a_reset_expectation_calls_no_match_error, error_fixture )
 {
     {
         mock::expectation< void() > e;
         e.expect();
         e.reset();
-        BOOST_CHECK_EXCEPTION_CONTAINS( e(), "unexpected call" );
+        CHECK_ERROR( e(), no_match );
     }
     {
         mock::expectation< int( int, const std::string& ) > e;
         e.expect();
         e.reset();
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 1, "s" ), "unexpected call" );
+        CHECK_ERROR( e( 1, "s" ), no_match );
     }
 }
 
-BOOST_AUTO_TEST_CASE( verifying_a_reset_expectation_succeeds )
+BOOST_FIXTURE_TEST_CASE( verifying_a_reset_expectation_succeeds, error_fixture )
 {
     {
         mock::expectation< void() > e;
@@ -221,49 +229,35 @@ BOOST_AUTO_TEST_CASE( verifying_a_reset_expectation_succeeds )
 
 // constraints
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in_equal_constraint_throws )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in_equal_constraint_calls_no_match_error, error_fixture )
 {
     {
         mock::expectation< void( int ) > e;
         e.expect().with( 42 );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 43 ), "unexpected call" );
+        CHECK_ERROR( e( 43 ), no_match );
     }
     {
         mock::expectation< int( int, const std::string& ) > e;
         e.expect().with( 42, "expected" );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 42, "actual" ), "unexpected call" );
+        CHECK_ERROR( e( 42, "actual" ), no_match );
     }
 }
 
-BOOST_AUTO_TEST_CASE( passing_raw_parameter_as_constraint_falls_back_to_using_the_equal_constraint )
-{
-    {
-        mock::expectation< void( int ) > e;
-        e.expect().with( 42 );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 43 ), "unexpected call" );
-    }
-    {
-        mock::expectation< int( int, const std::string& ) > e;
-        e.expect().with( 42, "expected" );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 42, "actual" ), "unexpected call" );
-    }
-}
-
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in_equal_or_less_constraint_throws )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in_equal_or_less_constraint_calls_no_match_error, error_fixture )
 {
     mock::expectation< void( int ) > e;
     e.expect().with( mock::equal( 42 ) || mock::less( 42 ) );
-    BOOST_CHECK_NO_THROW( e( 41 ) );
-    BOOST_CHECK_NO_THROW( e( 42 ) );
-    BOOST_CHECK_EXCEPTION_CONTAINS( e( 43 ), "unexpected call" );
+    e( 41 );
+    e( 42 );
+    CHECK_ERROR( e( 43 ), no_match );
 }
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in_equal_and_not_less_constraint_throws )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in_equal_and_not_less_constraint_calls_no_match_error, error_fixture )
 {
     mock::expectation< void( int ) > e;
     e.expect().with( mock::equal( 42 ) && ! mock::less( 41 ) );
-    BOOST_CHECK_NO_THROW( e( 42 ) );
-    BOOST_CHECK_EXCEPTION_CONTAINS( e( 43 ), "unexpected call" );
+    e( 42 );
+    CHECK_ERROR( e( 43 ), no_match );
 }
 
 namespace
@@ -281,7 +275,7 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( passing_call_values_by_reference_is_transparent )
+BOOST_FIXTURE_TEST_CASE( passing_call_values_by_reference_is_transparent, error_fixture )
 {
     {
         mock::expectation< void( my_interface& ) > e;
@@ -305,28 +299,29 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_with_failing_custom_constraint_throws )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_failing_custom_constraint_calls_no_match_error, error_fixture )
 {
     {
         mock::expectation< void( int ) > e;
         e.expect().with( &custom_constraint );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 42 ), "unexpected call" );
+        CHECK_ERROR( e( 42 ), no_match );
     }
     {
         mock::expectation< int( int, const std::string& ) > e;
         e.expect().with( &custom_constraint, "actual" );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 42, "actual" ), "unexpected call" );
+        CHECK_ERROR( e( 42, "actual" ), no_match );
     }
 }
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in_custom_constraint_throws )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in_custom_constraint_calls_no_match_error, error_fixture )
 {
     mock::expectation< void( int ) > e;
     e.expect().with( mock::constraint( &custom_constraint, "custom constraint" ) );
-    BOOST_CHECK_EXCEPTION_CONTAINS( e( 42 ), "custom constraint" );
+    CHECK_ERROR( e( 42 ), no_match );
 }
+
 /*
-BOOST_AUTO_TEST_CASE( literal_zero_can_be_used_in_place_of_null_pointers_in_constraints )
+BOOST_FIXTURE_TEST_CASE( literal_zero_can_be_used_in_place_of_null_pointers_in_constraints, error_fixture )
 {
     mock::expectation< void( int* ) > e;
     e.expect().with( 0 );
@@ -336,26 +331,26 @@ BOOST_AUTO_TEST_CASE( literal_zero_can_be_used_in_place_of_null_pointers_in_cons
 
 // result handling
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_with_no_return_set_throws )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_no_return_set_calls_missing_result_specification, error_fixture )
 {
     {
         mock::expectation< int() > e;
         e.expect();
-        BOOST_CHECK_EXCEPTION_CONTAINS( e(), "missing result specification" );
+        CHECK_ERROR( e(), missing_result_specification );
     }
     {
         mock::expectation< int&() > e;
         e.expect();
-        BOOST_CHECK_EXCEPTION_CONTAINS( e(), "missing result specification" );
+        CHECK_ERROR( e(), missing_result_specification );
     }
     {
         mock::expectation< const std::string&() > e;
         e.expect();
-        BOOST_CHECK_EXCEPTION_CONTAINS( e(), "missing result specification" );
+        CHECK_ERROR( e(), missing_result_specification );
     }
 }
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_returns_the_set_value )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_value, error_fixture )
 {
     {
         mock::expectation< int() > e;
@@ -435,7 +430,7 @@ namespace
     struct B : A {};
 }
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_value )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_value, error_fixture )
 {
     {
         mock::expectation< std::auto_ptr< int >() > e;
@@ -491,7 +486,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_calls_the_custom_functor )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_calls_the_custom_functor, error_fixture )
 {
     mock::expectation< int() > e;
     e.expect().calls( &custom_result );
@@ -506,21 +501,21 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_with_parameters )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_with_parameters, error_fixture )
 {
     mock::expectation< int( int ) > e;
     e.expect().calls( &custom_result_with_parameter );
     BOOST_CHECK_EQUAL( 42, e( 42 ) );
 }
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_without_parameters_thanks_to_boost_bind )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_without_parameters_thanks_to_boost_bind, error_fixture )
 {
     mock::expectation< int( int ) > e;
     e.expect().calls( boost::bind( &custom_result ) );
     BOOST_CHECK_EQUAL( 42, e( 17 ) );
 }
 
-BOOST_AUTO_TEST_CASE( triggering_an_expectation_throws_the_set_exception )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_throws_the_set_exception, error_fixture )
 {
     mock::expectation< void() > e;
     e.expect().throws( std::runtime_error( "some exception" ) );
@@ -538,43 +533,43 @@ BOOST_AUTO_TEST_CASE( triggering_an_expectation_throws_the_set_exception )
 
 // multiple matchers
 
-BOOST_AUTO_TEST_CASE( expecting_twice_a_single_expectation_makes_it_callable_twice )
+BOOST_FIXTURE_TEST_CASE( expecting_twice_a_single_expectation_makes_it_callable_twice, error_fixture )
 {
     {
         mock::expectation< void() > e;
         e.expect().once();
         e.expect().once();
-        BOOST_CHECK_NO_THROW( e() );
-        BOOST_CHECK_NO_THROW( e() );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e(), "unexpected call" );
+        e();
+        e();
+        CHECK_ERROR( e(), no_match );
     }
     {
         mock::expectation< void( const std::string& ) > e;
         e.expect().once().with( "first" );
         e.expect().once().with( "second" );
-        BOOST_CHECK_NO_THROW( e( "first" ) );
-        BOOST_CHECK_NO_THROW( e( "second" ) );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( "third" ), "unexpected call" );
+        e( "first" );
+        e( "second" );
+        CHECK_ERROR( e( "third"), no_match );
     }
 }
 
-BOOST_AUTO_TEST_CASE( best_matcher_is_selected_first )
+BOOST_FIXTURE_TEST_CASE( best_matcher_is_selected_first, error_fixture )
 {
     {
         mock::expectation< void( int ) > e;
         e.expect().once().with( 1 );
         e.expect().once().with( 2 );
-        BOOST_CHECK_NO_THROW( e( 2 ) );
-        BOOST_CHECK_NO_THROW( e( 1 ) );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( 3 ), "unexpected call" );
+        e( 2 );
+        e( 1 );
+        CHECK_ERROR( e( 3 ), no_match );
     }
     {
         mock::expectation< void( const std::string& ) > e;
         e.expect().once().with( "first" );
         e.expect().once().with( "second" );
-        BOOST_CHECK_NO_THROW( e( "second" ) );
-        BOOST_CHECK_NO_THROW( e( "first" ) );
-        BOOST_CHECK_EXCEPTION_CONTAINS( e( "third" ), "unexpected call" );
+        e( "second" );
+        e( "first" );
+        CHECK_ERROR( e( "third"), no_match );
     }
 }
 
@@ -591,7 +586,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
+BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, error_fixture )
 {
     {
         mock::expectation< void( int ) > e;
@@ -690,91 +685,39 @@ BOOST_AUTO_TEST_CASE( expectation_can_be_serialized_to_be_human_readable )
     }
 }
 
-namespace
+BOOST_FIXTURE_TEST_CASE( expectation_with_remaining_untriggered_matches_upon_destruction_calls_untriggered_expectation, error_fixture )
 {
-    mock::expectation< void() > no_match_exp;
-    mock::expectation< void() > sequence_failed_exp;
-    mock::expectation< void() > verification_failed_exp;
-    mock::expectation< void() > untriggered_expectation_exp;
-
-    struct error_fixture
-    {
-        error_fixture()
-        {
-            no_match_exp.tag( "no_match" );
-            sequence_failed_exp.tag( "sequence_failed" );
-            verification_failed_exp.tag( "verification_failed" );
-            untriggered_expectation_exp.tag( "untriggered_expectation" );
-        }
-        ~error_fixture()
-        {
-            no_match_exp.verify();
-            no_match_exp.reset();
-            sequence_failed_exp.verify();
-            sequence_failed_exp.reset();
-            verification_failed_exp.verify();
-            verification_failed_exp.reset();
-            untriggered_expectation_exp.verify();
-            untriggered_expectation_exp.reset();
-        }
-        static void no_match( const std::string& /*context*/ )
-        {
-            no_match_exp();
-        }
-        static void sequence_failed( const std::string& /*context*/,
-            const std::string& /*file*/, int /*line*/ )
-        {
-            sequence_failed_exp();
-        }
-        static void verification_failed( const std::string& /*context*/,
-            const std::string& /*file*/, int /*line*/ )
-        {
-            verification_failed_exp();
-        }
-        static void untriggered_expectation( const std::string& /*context*/,
-            const std::string& /*file*/, int /*line*/ )
-        {
-            untriggered_expectation_exp();
-        }
-    };
-}
-
-BOOST_FIXTURE_TEST_CASE( expectation_with_remaining_untriggered_matches_notifies_an_error_upon_destructions, error_fixture )
-{
-    mock::expectation< void(), error_fixture > e;
-    e.expect().once();
-    untriggered_expectation_exp.expect().once();
+    std::auto_ptr< mock::expectation< void() > > e( new mock::expectation< void() > );
+    e->expect().once();
+    CHECK_ERROR( e.reset(), untriggered_expectation );
 }
 
 BOOST_FIXTURE_TEST_CASE( verifying_expectation_with_remaining_matches_disables_the_automatic_verification_upon_destruction, error_fixture )
 {
-    mock::expectation< void(), error_fixture > e;
+    mock::expectation< void() > e;
     e.expect().once();
-    verification_failed_exp.expect();
-    e.verify();
+    CHECK_ERROR( e.verify(), verification_failed );
 }
 
 BOOST_FIXTURE_TEST_CASE( triggering_no_match_call_disables_the_automatic_verification_upon_destruction, error_fixture )
 {
-    mock::expectation< void(), error_fixture > e;
-    no_match_exp.expect();
-    e();
+    mock::expectation< void() > e;
+    CHECK_ERROR( e(), no_match );
 }
 
 BOOST_FIXTURE_TEST_CASE( adding_a_matcher_reactivates_the_verification_upon_destruction, error_fixture )
 {
-    mock::expectation< void(), error_fixture > e;
-    no_match_exp.expect();
-    e();
-    e.expect().once();
-    untriggered_expectation_exp.expect().once();
+    std::auto_ptr< mock::expectation< void() > > e( new mock::expectation< void() > );
+    CHECK_ERROR( (*e)(), no_match );
+    e->expect().once();
+    CHECK_ERROR( e.reset(), untriggered_expectation );
 }
 
 BOOST_FIXTURE_TEST_CASE( throwing_an_exception_disables_the_automatic_verification_upon_destruction, error_fixture )
 {
     try
     {
-        mock::expectation< void(), error_fixture > e;
+        mock::expectation< void() > e;
         e.expect().once();
         throw std::exception();
     }

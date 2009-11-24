@@ -29,9 +29,9 @@
 namespace mock
 {
     template< typename Signature,
-              typename ErrorPolicy = boost_test_error_policy<
+              typename ErrorPolicy = MOCK_ERROR_POLICY<
                   BOOST_DEDUCED_TYPENAME boost::function<
-                      Signature >::result_type > > // $$$$ MAT : concept check Signature is actually a signature
+                      Signature >::result_type > >
     class expectation
     {
     public:
@@ -47,7 +47,6 @@ namespace mock
     private:
         typedef detail::matcher< result_type,
                                  Signature,
-                                 ErrorPolicy,
                                  boost::function< Signature >::arity >
                 matcher_type;
 
@@ -185,12 +184,15 @@ namespace mock
                     it != matchers_.end(); ++it )
                     if( it->is_valid() )
                     {
-                        if( !it->invoke() )
+                        if( ! it->invoke() )
                         {
                             valid_ = false;
                             ErrorPolicy::sequence_failed( context( "" ),
                                 it->file(), it->line() );
                         }
+                        if( ! it->functor() )
+                            return ErrorPolicy::missing_result_specification(
+                                context( "" ), it->file(), it->line() );
                         return it->functor()();
                     }
                 valid_ = false;
@@ -208,11 +210,14 @@ namespace mock
                 for( matchers_cit it = matchers_.begin(); it != matchers_.end(); ++it ) \
                     if( it->is_valid( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_PARAMETER, BOOST_PP_EMPTY) ) ) \
                     { \
-                        if( !it->invoke() ) \
+                        if( ! it->invoke() ) \
                         { \
                             valid_ = false; \
                             ErrorPolicy::sequence_failed( context( MOCK_EXPECTATION_PARAMETERS(n) ), it->file(), it->line() ); \
                         } \
+                        if( ! it->functor() ) \
+                            return ErrorPolicy::missing_result_specification( \
+                                context( MOCK_EXPECTATION_PARAMETERS(n) ), it->file(), it->line() ); \
                         return it->functor()( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_PARAMETER, BOOST_PP_EMPTY) ); \
                     } \
                 valid_ = false; \
