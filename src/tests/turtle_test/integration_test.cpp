@@ -243,10 +243,6 @@ namespace
 
     struct fixture
     {
-        fixture()
-        {
-            manager.tag( "(the only one)" );
-        }
         my_mock_manager manager;
         my_mock_observer observer;
     };

@@ -24,15 +24,6 @@ namespace mock
             : impl_( new object_impl() )
         {}
 
-        void tag( const std::string& name )
-        {
-            impl_->name_ = name;
-        }
-        const std::string& tag() const
-        {
-            return impl_->name_;
-        }
-
         template< typename T >
         void set_parent( T& t ) const
         {
@@ -59,14 +50,6 @@ namespace mock
             virtual ~object_impl()
             {
                 root.remove( *this );
-            }
-
-            std::string name_;
-
-        private:
-            virtual void serialize( std::ostream& s ) const
-            {
-                s << (name_.empty() ? "?" : name_) << "::";
             }
         };
 

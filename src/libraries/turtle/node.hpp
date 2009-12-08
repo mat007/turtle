@@ -44,17 +44,9 @@ namespace mock
                 std::mem_fun( &verifiable::reset ) );
         }
 
-        friend std::ostream& operator<<( std::ostream& s, const node& n )
-        {
-            n.serialize( s );
-            return s;
-        }
-
     protected:
         virtual ~node()
         {}
-
-        virtual void serialize( std::ostream& s ) const = 0;
 
     private:
         typedef std::vector< verifiable* > verifiables_type;

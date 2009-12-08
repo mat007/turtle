@@ -18,8 +18,6 @@ namespace mock
     class root_t : public boost::unit_test::singleton< root_t >, public node
     {
     private:
-        virtual void serialize( std::ostream& /*s*/ ) const
-        {}
         BOOST_TEST_SINGLETON_CONS( root_t );
     };
     BOOST_TEST_SINGLETON_INST( root )

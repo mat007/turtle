@@ -29,6 +29,7 @@
 #include <boost/mpl/back_inserter.hpp>
 #define BOOST_TYPEOF_SILENT
 #include <boost/typeof/typeof.hpp>
+#include <boost/shared_ptr.hpp>
 #include <stdexcept>
 
 namespace mock
@@ -86,45 +87,57 @@ namespace detail
     };
 
     template< typename E >
-    void set_parent( E& e, const object& o )
+    E& set_parent( E& e, const object& o )
     {
         o.set_parent( e );
-    }
-    template< typename E, typename T >
-    void set_parent( E&, const T&,
-        BOOST_DEDUCED_TYPENAME boost::disable_if<
-            BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >::type
-        >::type* = 0 )
-    {}
-    template< typename E >
-    void tag( E& e, const object& o, const std::string& type_name,
-              const std::string& name )
-    {
-        e.tag( type_name + o.tag() + "::" + name );
-    }
-    template< typename E, typename T >
-    void tag( E& e, const T&, const std::string& type_name,
-              const std::string& name,
-        BOOST_DEDUCED_TYPENAME boost::disable_if<
-            BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >::type
-        >::type* = 0 )
-    {
-        e.tag( type_name + "::" + name );
-    }
-
-    template< typename E >
-    E& configure( typename E::expectation_tag, const std::string& object,
-                  const std::string& name, E& e )
-    {
-        e.tag( name == "_" ? object : name );
         return e;
     }
     template< typename E, typename T >
-    E& configure( E& e, const std::string& /*object*/,
-                  const std::string& name, const T& t )
+    E& set_parent( E& e, const T&,
+        BOOST_DEDUCED_TYPENAME boost::disable_if<
+            BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >::type
+        >::type* = 0 )
+    {
+        return e;
+    }
+
+    template< typename T >
+    std::string op( T& )
+    {
+        return ".";
+    }
+    template< typename T >
+    std::string op( T* )
+    {
+        return "->";
+    }
+    template< typename T >
+    std::string op( std::auto_ptr< T >& )
+    {
+        return "->";
+    }
+    template< typename T >
+    std::string op( boost::shared_ptr< T >& )
+    {
+        return "->";
+    }
+
+    template< typename E >
+    E& configure( BOOST_DEDUCED_TYPENAME E::expectation_tag,
+        const std::string& object, const std::string& /*op*/,
+        const std::string& /*name*/, E& e )
+    {
+        if( object != "?" || e.tag() == "?" )
+            e.tag( object );
+        return e;
+    }
+    template< typename E, typename T >
+    E& configure( E& e, const std::string& object, const std::string& op,
+        const std::string& name, const T& t )
     {
         set_parent( e, t );
-        tag( e, t, type_name< T >(), name );
+        if( object != "?" || e.tag() == "?" )
+            e.tag( object + op + type_name< T >() + "::" + name );
         return e;
     }
 
@@ -145,7 +158,11 @@ namespace detail
 
 #define MOCK_MOCKER(o, t) \
     mock::detail::configure( mock::detail::ref( o ).exp##t, \
-        BOOST_PP_STRINGIZE(o), BOOST_PP_STRINGIZE(t), mock::detail::ref( o ) )
+        BOOST_PP_STRINGIZE(o), mock::detail::op( o ), \
+        BOOST_PP_STRINGIZE(t), mock::detail::ref( o ) )
+#define MOCK_ANONYMOUS_MOCKER(o, t) \
+    mock::detail::configure( mock::detail::ref( o ).exp##t, \
+        "?", ".", BOOST_PP_STRINGIZE(t), mock::detail::ref( o ) )
 
 #define MOCK_METHOD_ARG(z, n, arg) BOOST_PP_COMMA_IF(n) \
     BOOST_PP_CAT(BOOST_PP_CAT(arg, BOOST_PP_INC(n)),_type) \
@@ -163,7 +180,7 @@ namespace detail
     tpn boost::function< S >::result_type M( \
         MOCK_METHOD_ARGS(n, tpn boost::function< S >::arg) ) c \
     { \
-        return MOCK_MOCKER(this, t)( MOCK_MOCKER_ARGS(n) ); \
+        return MOCK_ANONYMOUS_MOCKER(this, t)( MOCK_MOCKER_ARGS(n) ); \
     }
 #define MOCK_SIGNATURE(M) \
     mock::detail::signature< BOOST_TYPEOF(&base_type::M) >::type
