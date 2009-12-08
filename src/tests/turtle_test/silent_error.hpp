@@ -10,26 +10,34 @@
 #define MOCK_TEST_SILENT_ERROR_HPP_INCLUDED
 
 #include <string>
-#include <exception>
+#include <sstream>
+#include <stdexcept>
 
 namespace mock
 {
     template< typename Result >
     struct silent_error
     {
-        static Result no_match( const std::string& /*context*/ )
+        static std::string to_string( int i )
         {
-            throw std::exception();
+            std::stringstream s;
+            s << i;
+            return s.str();
         }
-        static Result missing_result_specification( const std::string& /*context*/,
-            const std::string& /*file*/, int /*line*/ )
+
+        static Result no_match( const std::string& context )
         {
-            throw std::exception();
+            throw std::runtime_error( "no_match : " + context );
         }
-        static void sequence_failed( const std::string& /*context*/,
-            const std::string& /*file*/, int /*line*/ )
+        static Result missing_result_specification( const std::string& context,
+            const std::string& file, int line )
         {
-            throw std::exception();
+            throw std::runtime_error( "missing_result_specification : " + context + " " + file + "(" + to_string( line ) + ")" );
+        }
+        static void sequence_failed( const std::string& context,
+            const std::string& file, int line )
+        {
+            throw std::runtime_error( "sequence_failed : " + context + " " + file + "(" + to_string( line ) + ")" );
         }
         static void verification_failed( const std::string& /*context*/,
             const std::string& /*file*/, int /*line*/ )
