@@ -43,27 +43,21 @@ namespace detail
         guard g( result );
         if( result )
             return result;
-        else
-            return name;
-#else
-        return name;
 #endif
-    }
-
-    template< typename T >
-    std::string type_full_name()
-    {
-        return type_full_name( typeid( T ) );
+        return name;
     }
 
     template< typename T >
     std::string type_name()
     {
-        const std::string name = type_full_name< T >();
+        const std::string name = type_full_name( typeid( T ) );
         std::size_t p = name.rfind( "::" );
         if( p != std::string::npos )
             return name.substr( p + 2 );
-        return "";
+        p = name.rfind( " " );
+        if( p != std::string::npos )
+            return name.substr( p + 1 );
+        return name;
     }
 }
 }

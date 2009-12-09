@@ -236,6 +236,10 @@
 				RelativePath="..\..\src\tests\turtle_test\silent_error.hpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\tests\turtle_test\type_name_test.cpp"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
