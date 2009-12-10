@@ -16,7 +16,7 @@ struct my_type_from_default_namespace {};
 
 BOOST_AUTO_TEST_CASE( name_of_type_from_default_namespace_is_extracted )
 {
-    BOOST_CHECK_EQUAL( "my_type_from_default_namespace", mock::detail::type_name< my_type_from_default_namespace >() );
+    BOOST_CHECK_EQUAL( "my_type_from_default_namespace", mock::detail::type_name( typeid( my_type_from_default_namespace ) ) );
 }
 
 namespace
@@ -26,7 +26,7 @@ namespace
 
 BOOST_AUTO_TEST_CASE( name_of_type_from_anonymous_namespace_is_extracted )
 {
-    BOOST_CHECK_EQUAL( "my_type_from_anonymous_namespace", mock::detail::type_name< my_type_from_anonymous_namespace >() );
+    BOOST_CHECK_EQUAL( "my_type_from_anonymous_namespace", mock::detail::type_name( typeid( my_type_from_anonymous_namespace ) ) );
 }
 
 namespace nm
@@ -36,7 +36,7 @@ namespace nm
 
 BOOST_AUTO_TEST_CASE( name_of_type_from_named_namespace_is_extracted )
 {
-    BOOST_CHECK_EQUAL( "my_type_from_named_namespace", mock::detail::type_name< nm::my_type_from_named_namespace >() );
+    BOOST_CHECK_EQUAL( "my_type_from_named_namespace", mock::detail::type_name( typeid( nm::my_type_from_named_namespace ) ) );
 }
 
 namespace nm
@@ -49,7 +49,7 @@ namespace inner
 
 BOOST_AUTO_TEST_CASE( name_of_type_from_named_inner_namespace_is_extracted )
 {
-    BOOST_CHECK_EQUAL( "my_type_from_named_inner_namespace", mock::detail::type_name< nm::inner::my_type_from_named_inner_namespace >() );
+    BOOST_CHECK_EQUAL( "my_type_from_named_inner_namespace", mock::detail::type_name( typeid( nm::inner::my_type_from_named_inner_namespace ) ) );
 }
 
 namespace
@@ -62,5 +62,11 @@ namespace inner
 
 BOOST_AUTO_TEST_CASE( name_of_type_from_unnamed_inner_namespace_is_extracted )
 {
-    BOOST_CHECK_EQUAL( "my_type_from_unnamed_inner_namespace", mock::detail::type_name< inner::my_type_from_unnamed_inner_namespace >() );
+    BOOST_CHECK_EQUAL( "my_type_from_unnamed_inner_namespace", mock::detail::type_name( typeid( inner::my_type_from_unnamed_inner_namespace ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( name_of_local_type_is_extracted )
+{
+    struct my_local_type {};
+    BOOST_CHECK_EQUAL( "my_local_type", mock::detail::type_name( typeid( my_local_type ) ) );
 }

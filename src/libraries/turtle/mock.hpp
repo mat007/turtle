@@ -137,7 +137,7 @@ namespace detail
     {
         set_parent( e, t );
         if( parent != "?" || e.tag() == "?" )
-            e.tag( parent + op + type_name< T >() + "::" + name );
+            e.tag( parent + op + type_name( typeid( T ) ) + "::" + name );
         return e;
     }
 

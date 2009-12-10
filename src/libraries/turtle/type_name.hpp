@@ -20,19 +20,6 @@ namespace mock
 {
 namespace detail
 {
-    struct guard
-    {
-        explicit guard( char* p )
-            : p_( p )
-        {}
-        ~guard()
-        {
-            free( p_ );
-        }
-    private:
-        char* p_;
-    };
-
     inline std::string type_full_name( const std::type_info& info )
     {
         const char* name = info.name();
@@ -40,17 +27,26 @@ namespace detail
         size_t size = 0;
         int status = 0;
         char* result = abi::__cxa_demangle( name, NULL, &size, &status );
-        guard g( result );
+        struct guard
+        {
+            explicit guard( char* p )
+                : p_( p )
+            {}
+            ~guard()
+            {
+                free( p_ );
+            }
+        private:
+            char* p_;
+        } g( result );
         if( result )
             return result;
 #endif
         return name;
     }
-
-    template< typename T >
-    std::string type_name()
+    inline std::string type_name( const std::type_info& info )
     {
-        const std::string name = type_full_name( typeid( T ) );
+        const std::string name = type_full_name( info );
         std::size_t p = name.rfind( "::" );
         if( p != std::string::npos )
             return name.substr( p + 2 );
