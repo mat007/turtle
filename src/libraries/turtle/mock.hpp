@@ -124,20 +124,20 @@ namespace detail
 
     template< typename E >
     E& configure( BOOST_DEDUCED_TYPENAME E::expectation_tag,
-        const std::string& object, const std::string& /*op*/,
+        const std::string& parent, const std::string& /*op*/,
         const std::string& /*name*/, E& e )
     {
-        if( object != "?" || e.tag() == "?" )
-            e.tag( object );
+        if( parent != "?" || e.tag() == "?" )
+            e.tag( parent );
         return e;
     }
     template< typename E, typename T >
-    E& configure( E& e, const std::string& object, const std::string& op,
+    E& configure( E& e, const std::string& parent, const std::string& op,
         const std::string& name, const T& t )
     {
         set_parent( e, t );
-        if( object != "?" || e.tag() == "?" )
-            e.tag( object + op + type_name< T >() + "::" + name );
+        if( parent != "?" || e.tag() == "?" )
+            e.tag( parent + op + type_name< T >() + "::" + name );
         return e;
     }
 

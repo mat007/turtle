@@ -9,25 +9,12 @@
 #ifndef MOCK_SEQUENCE_HPP_INCLUDED
 #define MOCK_SEQUENCE_HPP_INCLUDED
 
+#include "orderable.hpp"
 #include <vector>
 #include <algorithm>
 
 namespace mock
 {
-    class sequence;
-
-namespace detail
-{
-    class orderable
-    {
-    public:
-        orderable() {}
-        virtual ~orderable() {}
-
-        virtual void remove( sequence& s ) = 0;
-    };
-}
-
     class sequence
     {
     public:
