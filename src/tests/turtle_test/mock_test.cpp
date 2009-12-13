@@ -7,8 +7,7 @@
 //
 
 #include <turtle/mock.hpp>
-#include <boost/static_assert.hpp>
-#include <boost/mpl/equal.hpp>
+#include <boost/mpl/assert.hpp>
 
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
@@ -19,12 +18,10 @@ namespace
     void f1();
     int f2( float );
 
-    BOOST_STATIC_ASSERT( (boost::mpl::equal< mock::expectation< void() >,
-                                             mock::expectation< BOOST_TYPEOF( f1 ) >
-                          >::value) );
-    BOOST_STATIC_ASSERT( (boost::mpl::equal< mock::expectation< int( float ) >,
-                                             mock::expectation< BOOST_TYPEOF( f2 ) >
-                          >::value) );
+    BOOST_MPL_ASSERT(( boost::is_same< mock::expectation< void() >,
+                                       mock::expectation< BOOST_TYPEOF( f1 ) > > ));
+    BOOST_MPL_ASSERT(( boost::is_same< mock::expectation< int( float ) >,
+                                       mock::expectation< BOOST_TYPEOF( f2 ) > > ));
 
     struct example
     {
@@ -33,7 +30,7 @@ namespace
     };
 
     BOOST_STATIC_ASSERT(
-        (boost::mpl::equal<
+        (boost::is_same<
             mock::expectation< void() >,
             mock::expectation<
                 mock::detail::signature<
@@ -42,7 +39,7 @@ namespace
             >
          >::value) );
     BOOST_STATIC_ASSERT(
-        (boost::mpl::equal<
+        (boost::is_same<
             mock::expectation< float( int ) >,
             mock::expectation<
                 mock::detail::signature<
