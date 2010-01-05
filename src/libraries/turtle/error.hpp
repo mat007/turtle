@@ -63,6 +63,7 @@ namespace mock
         static void fail( const std::string& message,
             const std::string& file, int line )
         {
+            boost::unit_test::framework::assertion_result( false );
             boost::unit_test::unit_test_log
                 << boost::unit_test::log::begin( file, (std::size_t)line )
                 << boost::unit_test::log_all_errors
