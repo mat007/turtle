@@ -25,7 +25,7 @@ namespace mock
         static Result missing_result_specification( const std::string& context,
             const std::string& file, int line )
         {
-            notify( "mock error : missing result specification : " + context,
+            fail( "mock error : missing result specification : " + context,
                 file, line );
             throw boost::enable_current_exception(
                 boost::execution_aborted() );
@@ -33,7 +33,7 @@ namespace mock
 
         static Result no_match( const std::string& context )
         {
-            notify( "mock error : unexpected call : " + context,
+            fail( "mock error : unexpected call : " + context,
                 "unknown location", 0 );
             throw boost::enable_current_exception(
                 boost::execution_aborted() );
@@ -42,7 +42,7 @@ namespace mock
         static void sequence_failed( const std::string& context,
             const std::string& /*file*/, int /*line*/ )
         {
-            notify( "mock error : sequence failed : " + context,
+            fail( "mock error : sequence failed : " + context,
                 "unknown location", 0 );
             throw boost::enable_current_exception(
                 boost::execution_aborted() );
@@ -51,16 +51,16 @@ namespace mock
         static void verification_failed( const std::string& context,
             const std::string& file, int line )
         {
-            notify( "verification failed : " + context, file, line );
+            fail( "verification failed : " + context, file, line );
         }
 
         static void untriggered_expectation( const std::string& context,
             const std::string& file, int line )
         {
-            notify( "untriggered expectation : " + context, file, line );
+            fail( "untriggered expectation : " + context, file, line );
         }
 
-        static void notify( const std::string& message,
+        static void fail( const std::string& message,
             const std::string& file, int line )
         {
             boost::unit_test::unit_test_log
