@@ -142,7 +142,7 @@ namespace detail
         } \
         matcher& between( std::size_t min, std::size_t max ) \
         { \
-            expect( new detail::at_most( min, max ) ); \
+            expect( new detail::between( min, max ) ); \
             return *this; \
         }
 
