@@ -3,12 +3,6 @@
   <property environment="env"/>
   <import file="${env.PONEY_HOME}/poney.xml"/>
 
-  <target name="turtle_test" description="build and run unit tests">
-    <build-test name="turtle" mode="all">
-      <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
-    </build-test>
-  </target>
-
   <target name="clean" description="clean intermediate build artifacts">
     <delete dir="${out.dir}"/>
   </target>
@@ -18,7 +12,11 @@
     <update name="mockpp"/> <!-- boost.test.xml needs it -->
   </target>
 
-  <target name="test" depends="turtle_test" description="run unit tests"/>
+  <target name="test" description="run unit tests">
+    <build-test name="turtle" mode="all">
+      <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
+    </build-test>
+  </target>
 
   <target name="export" description="export the distribution">
     <deploy>
