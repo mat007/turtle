@@ -160,8 +160,7 @@ namespace detail
 
         friend std::ostream& operator<<( std::ostream& s, const matcher& m )
         {
-            return s << (m.i_->is_valid() ? '.' : 'v')
-                << " expect( " << *m.i_ << " )";
+            return s << (m.i_->is_valid() ? '.' : 'v') << ' ' << *m.i_;
         }
     };
 
@@ -199,8 +198,7 @@ namespace detail
         MOCK_MATCHER_METHODS \
         friend std::ostream& operator<<( std::ostream& s, const matcher& m ) \
         { \
-            return s << (m.i_->is_valid() ? '.' : 'v') \
-                << " expect( " << *m.i_ << " ).with( " \
+            return s << (m.i_->is_valid() ? '.' : 'v') << ' ' << *m.i_ << ".with( " \
                 << m.c0_ \
                 BOOST_PP_REPEAT_FROM_TO(1, n, MOCK_MATCHER_SERIALIZE, BOOST_PP_EMPTY) \
                 << " )"; \

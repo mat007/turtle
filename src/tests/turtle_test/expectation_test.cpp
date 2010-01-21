@@ -595,8 +595,8 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
         e.expect().once().with( 2 );
         BOOST_CHECK_NO_THROW( e( 2 ) );
         const std::string expected = "my expectation\n"
-                                     ". expect( once() ).with( 1 )\n"
-                                     "v expect( once() ).with( 2 )";
+                                     ". once().with( 1 )\n"
+                                     "v once().with( 2 )";
         BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
@@ -605,7 +605,7 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
         e.tag( "my expectation" );
         e.expect().never().with( 1 );
         const std::string expected = "my expectation\n"
-                                     "v expect( never() ).with( 1 )";
+                                     "v never().with( 1 )";
         BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
@@ -616,15 +616,15 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
         BOOST_CHECK_NO_THROW( e( "second" ) );
         {
             const std::string expected = "?\n"
-                                         "v expect( never() ).with( less( \"first\" ) )\n"
-                                         ". expect( exactly( 1/2 ) ).with( \"second\" )";
+                                         "v never().with( less( \"first\" ) )\n"
+                                         ". exactly( 1/2 ).with( \"second\" )";
             BOOST_CHECK_EQUAL( expected, to_string( e ) );
         }
         BOOST_CHECK_NO_THROW( e( "second" ) );
         {
             const std::string expected = "?\n"
-                                         "v expect( never() ).with( less( \"first\" ) )\n"
-                                         "v expect( exactly( 2/2 ) ).with( \"second\" )";
+                                         "v never().with( less( \"first\" ) )\n"
+                                         "v exactly( 2/2 ).with( \"second\" )";
             BOOST_CHECK_EQUAL( expected, to_string( e ) );
         }
         e.reset();
@@ -634,7 +634,7 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
         e.tag( "my expectation" );
         e.expect().once();
         const std::string expected = "my expectation\n"
-                                     ". expect( once() ).with( any )";
+                                     ". once().with( any )";
         BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
@@ -643,7 +643,7 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
         e.tag( "my expectation" );
         e.expect().once().with( mock::any );
         const std::string expected = "my expectation\n"
-                                     ". expect( once() ).with( any )";
+                                     ". once().with( any )";
         BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
@@ -652,7 +652,7 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
         e.tag( "my expectation" );
         e.expect().once();
         const std::string expected = "my expectation\n"
-                                     ". expect( once() ).with( any )";
+                                     ". once().with( any )";
         BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
@@ -661,7 +661,7 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
         e.tag( "my expectation" );
         e.expect().once().with( &custom_constraint );
         const std::string expected = "my expectation\n"
-                                     ". expect( once() ).with( ? )";
+                                     ". once().with( ? )";
         BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
@@ -670,7 +670,7 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
         e.tag( "my expectation" );
         e.expect().once().with( mock::constraint( &custom_constraint, "custom constraint" ) );
         const std::string expected = "my expectation\n"
-                                     ". expect( once() ).with( custom constraint )";
+                                     ". once().with( custom constraint )";
         BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
@@ -679,7 +679,7 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
         e.tag( "my expectation" );
         e.expect().once().with( mock::constraint( &custom_constraint, true ) );
         const std::string expected = "my expectation\n"
-                                     ". expect( once() ).with( true )";
+                                     ". once().with( true )";
         BOOST_CHECK_EQUAL( expected, to_string( e ) );
         e.reset();
     }
