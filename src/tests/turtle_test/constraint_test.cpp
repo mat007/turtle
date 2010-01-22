@@ -88,6 +88,12 @@ BOOST_AUTO_TEST_CASE( retrieve )
         BOOST_CHECK_EQUAL( i, &j );
     }
     {
+        const int* i = 0;
+        int j = 1;
+        BOOST_CHECK( mock::retrieve( i ).functor_( j ) );
+        BOOST_CHECK_EQUAL( i, &j );
+    }
+    {
         int* i = 0;
         int j = 1;
         BOOST_CHECK( mock::retrieve( i ).functor_( j ) );

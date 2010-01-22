@@ -138,7 +138,7 @@ namespace detail
         template< typename Y >
         bool operator()( const Y& y,
             BOOST_DEDUCED_TYPENAME boost::disable_if<
-                boost::is_convertible< Y*, T >, Y >::type* = 0 ) const
+                boost::is_convertible< const Y*, T >, Y >::type* = 0 ) const
         {
             t_.get() = y;
             return true;
