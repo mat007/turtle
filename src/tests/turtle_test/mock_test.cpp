@@ -106,11 +106,11 @@ namespace
 {
     MOCK_CLASS( my_mock )
     {
-        MOCK_METHOD_EXT( my_method, 1, void( int ), my_method )
+        MOCK_CONST_METHOD_EXT( my_method, 1, void( int ), my_method )
     };
 }
 
-BOOST_AUTO_TEST_CASE( MOCK_METHOD_EXT_macro_defines_a_bindable_method )
+BOOST_AUTO_TEST_CASE( MOCK_CONST_METHOD_EXT_macro_defines_a_bindable_method )
 {
     my_mock m;
     boost::bind( &my_mock::my_method, &m, 42 );
