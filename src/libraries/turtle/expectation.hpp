@@ -17,11 +17,13 @@
 #include "root.hpp"
 #include "format.hpp"
 #include "invocation.hpp"
-#include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/function_types/result_type.hpp>
+#include <boost/function_types/function_arity.hpp>
+#include <boost/function_types/parameter_types.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/shared_ptr.hpp>
 #include <exception>
 #include <ostream>
 #include <list>
@@ -30,13 +32,17 @@ namespace mock
 {
     template< typename Signature,
               typename ErrorPolicy = MOCK_ERROR_POLICY<
-                  BOOST_DEDUCED_TYPENAME boost::function<
-                      Signature >::result_type > >
+                  BOOST_DEDUCED_TYPENAME
+                      boost::function_types::result_type< Signature >::type > >
     class expectation
     {
     public:
         typedef BOOST_DEDUCED_TYPENAME
-            boost::function< Signature >::result_type result_type;
+            boost::function_types::result_type< Signature >::type result_type;
+        typedef BOOST_DEDUCED_TYPENAME
+            boost::function_types::function_arity< Signature > arity;
+        typedef BOOST_DEDUCED_TYPENAME
+            boost::function_types::parameter_types< Signature >::type parameter_types;
 
         template< typename Args >
         struct sig
@@ -45,10 +51,7 @@ namespace mock
         };
 
     private:
-        typedef detail::matcher< result_type,
-                                 Signature,
-                                 boost::function< Signature >::arity >
-                matcher_type;
+        typedef detail::matcher< result_type, Signature, arity::value > matcher_type;
 
     public:
         struct expectation_tag

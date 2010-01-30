@@ -10,15 +10,18 @@
 #define MOCK_ERROR_HPP_INCLUDED
 
 #include "config.hpp"
+#ifdef MOCK_USE_BOOST_TEST
 #include <boost/test/framework.hpp>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 #include <boost/test/execution_monitor.hpp>
 #include <boost/exception/enable_current_exception.hpp>
+#endif // MOCK_USE_BOOST_TEST
 #include <iostream>
 
 namespace mock
 {
+#ifdef MOCK_USE_BOOST_TEST
     template< typename Result >
     struct boost_test_error_policy
     {
@@ -71,6 +74,7 @@ namespace mock
                 << boost::unit_test::log::end();
         }
     };
+#endif // MOCK_USE_BOOST_TEST
 
     struct exception
     {};

@@ -217,3 +217,87 @@ BOOST_AUTO_TEST_CASE( mocking_a_destructor )
     my_destroyed_class c;
     MOCK_EXPECT( c, destructor ).once();
 }
+
+BOOST_MPL_ASSERT(( boost::is_same< float, mock::detail::arg< void( float ), 1, 1 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< float, mock::detail::arg< void( float, int ), 1, 2 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< int, mock::detail::arg< void( float, int ), 2, 2 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< mock::detail::no_type, mock::detail::arg< void( float ), 1, 2 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< mock::detail::no_type, mock::detail::arg< void( float ), 2, 2 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< mock::detail::no_type, mock::detail::arg< void( float, int ), 1, 1 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< mock::detail::no_type, mock::detail::arg< void( float, int ), 1, 3 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< mock::detail::no_type, mock::detail::arg< void( float, int ), 2, 3 >::type > ));
+
+BOOST_AUTO_TEST_CASE( call_selects_proper_form )
+{
+    {
+        mock::expectation< void() > e;
+        e.expect().once();
+        mock::detail::call( e );
+    }
+    {
+        mock::expectation< void( int ) > e;
+        e.expect().once();
+        mock::detail::call( e, 3 );
+    }
+    {
+        mock::expectation< int() > e;
+        e.expect().once().returns( 0 );
+        mock::detail::call( e );
+    }
+    {
+        mock::expectation< int( int ) > e;
+        e.expect().once().returns( 0 );
+        mock::detail::call( e, 3 );
+    }
+}
+
+namespace
+{
+    struct mock_class_0
+    {
+        MOCK_METHOD_EXT_ALT( method, void(), method )
+    };
+    struct mock_class_1
+    {
+        MOCK_METHOD_EXT_ALT( method, void( float ), method )
+    };
+
+    struct mock_class_r0
+    {
+        MOCK_METHOD_EXT_ALT( method, int(), method )
+    };
+    struct mock_class_r1
+    {
+        MOCK_METHOD_EXT_ALT( method, int( float ), method )
+    };
+
+    struct forward_declared_only;
+    struct defined_but_non_copiable : private boost::noncopyable
+    {
+    };
+    struct base_class
+    {
+        virtual ~base_class() {}
+        virtual void some_method( int, float&, const std::string& ) = 0;
+        virtual void some_other_method() = 0;
+        virtual int another_method() = 0;
+        virtual void yet_another_method( forward_declared_only& ) = 0;
+        virtual void yet_again_some_other_method( defined_but_non_copiable& ) = 0;
+    };
+    MOCK_BASE_CLASS( mock_base_class, base_class )
+    {
+        MOCK_METHOD_ALT( some_method )
+        MOCK_METHOD_ALT( some_other_method )
+        MOCK_METHOD_ALT( another_method )
+        MOCK_METHOD_ALT( yet_another_method )
+        MOCK_METHOD_ALT( yet_again_some_other_method )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( experimental_macros_slow_as_hell_to_compile )
+{
+    mock_base_class c;
+    MOCK_EXPECT( c, some_method ).once();
+    float f = 4.f;
+    c.some_method( 3, f, "" );
+}
