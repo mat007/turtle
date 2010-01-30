@@ -15,11 +15,12 @@
 #include "sequence.hpp"
 #include "check.hpp"
 #include "constraint.hpp"
-#include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/function_types/parameter_types.hpp>
+#include <boost/mpl/at.hpp>
 #include <ostream>
 #include <vector>
 
@@ -166,7 +167,11 @@ namespace detail
 
 #define MOCK_MATCHER_TYPEDEF(z, n, d) \
     typedef BOOST_DEDUCED_TYPENAME \
-        boost::function< Signature >::BOOST_PP_CAT(BOOST_PP_CAT(arg, BOOST_PP_INC(n)), _type) arg##n##_type; \
+        boost::mpl::at_c< \
+            BOOST_DEDUCED_TYPENAME \
+                boost::function_types::parameter_types< Signature >::type, \
+            n \
+        >::type arg##n##_type; \
     typedef detail::check< arg##n##_type > constraint##n##_type;
 #define MOCK_MATCHER_CONSTRUCTOR(z, n, d) BOOST_PP_COMMA_IF(n) c##n##_ ( any )
 #define MOCK_MATCHER_WITH(z, n, d) c##n##_ = constraint##n##_type( c##n );

@@ -13,7 +13,6 @@
 #include "object.hpp"
 #include "expectation.hpp"
 #include "type_name.hpp"
-#include <boost/function.hpp>
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/inc.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>

@@ -9,7 +9,7 @@
 #ifndef MOCK_RESULT_HPP_INCLUDED
 #define MOCK_RESULT_HPP_INCLUDED
 
-#include <boost/function.hpp>
+#include "config.hpp"
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 #include <memory>
