@@ -13,6 +13,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/integral_constant.hpp>
+#include <boost/detail/container_fwd.hpp>
 #include <sstream>
 #include <ostream>
 
@@ -67,14 +68,68 @@ namespace detail
     {
         return detail::serialize( t );
     }
-    inline std::string format( const std::string& s )
-    {
-        return '"' + s + '"';
-    }
+
     inline std::string format( const char* s )
     {
         return '"' + std::string( s ) + '"';
     }
+
+#ifndef MOCK_NO_STL_FORMAT
+    inline std::string format( const std::string& s )
+    {
+        return '"' + s + '"';
+    }
+    template< typename T1, typename T2 >
+    inline std::string format( const std::pair< T1, T2 >& p )
+    {
+        return '(' + format( p.first ) + ',' + format( p.second ) + ')';
+    }
+    template< typename T >
+    std::string format( const T& begin, const T& end )
+    {
+        std::stringstream s;
+        s << '(';
+        for( T it = begin; it != end; ++it )
+            s << (it == begin ? "" : ",") << format( *it );
+        s << ')';
+        return s.str();
+    }
+    template< typename T, typename A >
+    std::string format( const std::deque< T, A >& d )
+    {
+        return format( d.begin(), d.end() );
+    }
+    template< typename T, typename A >
+    std::string format( const std::list< T, A >& l )
+    {
+        return format( l.begin(), l.end() );
+    }
+    template< typename T, typename A >
+    std::string format( const std::vector< T, A >& v )
+    {
+        return format( v.begin(), v.end() );
+    }
+    template< typename K, typename T, typename C, typename A >
+    std::string format( const std::map< K, T, C, A >& m )
+    {
+        return format( m.begin(), m.end() );
+    }
+    template< typename K, typename T, typename C, typename A >
+    std::string format( const std::multimap< K, T, C, A >& m )
+    {
+        return format( m.begin(), m.end() );
+    }
+    template< typename T, typename C, typename A >
+    std::string format( const std::set< T, C, A >& s )
+    {
+        return format( s.begin(), s.end() );
+    }
+    template< typename T, typename C, typename A >
+    std::string format( const std::multiset< T, C, A >& s )
+    {
+        return format( s.begin(), s.end() );
+    }
+#endif // MOCK_NO_STL_FORMAT
 }
 
 #endif // #ifndef MOCK_FORMAT_HPP_INCLUDED
