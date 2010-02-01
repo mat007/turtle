@@ -12,6 +12,7 @@
 #include <boost/ref.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 namespace mock
 {
@@ -153,6 +154,22 @@ namespace detail
         }
     private:
         boost::reference_wrapper< T > t_;
+    };
+
+    template< typename T >
+    class container
+    {
+    public:
+        explicit container( const T& t )
+            : t_( t )
+        {}
+        template< typename Y >
+        bool operator()( const Y& y ) const
+        {
+            return boost::algorithm::contains( y, t_ );
+        }
+    private:
+        T t_;
     };
 }
 }

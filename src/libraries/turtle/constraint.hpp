@@ -127,6 +127,12 @@ namespace detail
         return constraint( detail::retrieval< T >( boost::ref( t ) ),
             "retrieve", t );
     }
+
+    template< typename T >
+    detail::placeholder< detail::container< T > > contain( T t )
+    {
+        return constraint( detail::container< T >( t ), "contain", t );
+    }
 }
 
 #endif // #ifndef MOCK_CONSTRAINT_HPP_INCLUDED

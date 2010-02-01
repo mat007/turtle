@@ -165,3 +165,9 @@ BOOST_AUTO_TEST_CASE( evaluate )
     BOOST_CHECK( mock::evaluate.functor_( &return_true ) );
     BOOST_CHECK( ! mock::evaluate.functor_( &return_false ) );
 }
+
+BOOST_AUTO_TEST_CASE( contain )
+{
+    BOOST_CHECK( mock::contain( "string" ).functor_( "this is a string" ) );
+    BOOST_CHECK( ! mock::contain( "not found" ).functor_( "this is a string" ) );
+}
