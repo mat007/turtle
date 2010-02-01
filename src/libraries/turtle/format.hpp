@@ -13,7 +13,9 @@
 #include <boost/static_assert.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/integral_constant.hpp>
+#ifndef MOCK_NO_STL_FORMAT
 #include <boost/detail/container_fwd.hpp>
+#endif // MOCK_NO_STL_FORMAT
 #include <sstream>
 #include <ostream>
 
@@ -131,5 +133,23 @@ namespace detail
     }
 #endif // MOCK_NO_STL_FORMAT
 }
+
+#ifndef MOCK_NO_BOOST_FORMAT
+namespace boost
+{
+namespace assign_detail
+{
+    template< typename T > class generic_list;
+}
+}
+namespace mock
+{
+    template< typename T >
+    std::string format( const boost::assign_detail::generic_list< T >& l )
+    {
+        return format( l.begin(), l.end() );
+    }
+}
+#endif // MOCK_NO_BOOST_FORMAT
 
 #endif // #ifndef MOCK_FORMAT_HPP_INCLUDED

@@ -7,13 +7,13 @@
 //
 
 #include <turtle/format.hpp>
+#include <boost/assign.hpp>
 #include <ostream>
 #include <deque>
 #include <list>
 #include <vector>
 #include <map>
 #include <set>
-#include <boost/assign.hpp>
 
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
@@ -149,4 +149,14 @@ BOOST_AUTO_TEST_CASE( std_multisets_are_serialized )
     s.insert( 12 );
     s.insert( 42 );
     BOOST_CHECK_EQUAL( "(12,42)", mock::format( s ) );
+}
+
+BOOST_AUTO_TEST_CASE( boost_assign_list_of_are_serialized )
+{
+    BOOST_CHECK_EQUAL( "(12,42)", mock::format( boost::assign::list_of( 12 )( 42 ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized )
+{
+    BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", mock::format( boost::assign::map_list_of( 12, "12" )( 42, "42" ) ) );
 }
