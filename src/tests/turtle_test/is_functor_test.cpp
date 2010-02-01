@@ -23,6 +23,8 @@
 
 namespace
 {
+    BOOST_STATIC_ASSERT( sizeof( mock::detail::true_type ) != sizeof( mock::detail::false_type ) );
+
     template< typename T >
     void check( T )
     {

@@ -20,7 +20,7 @@ namespace detail
     typedef char true_type;
     struct false_type
     {
-       char padding[8];
+       true_type padding[2];
     };
 
     template< typename T >
