@@ -4,6 +4,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "turtle", "turtle.vcproj", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "turtle_test", "turtle_test.vcproj", "{74810A2A-33D8-47D6-9A50-71261F1683F5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "turtle_bench", "turtle_bench.vcproj", "{2D607783-30B9-46DE-81E2-28513B31D5D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		debug|Win32 = debug|Win32
@@ -18,6 +20,10 @@ Global
 		{74810A2A-33D8-47D6-9A50-71261F1683F5}.debug|Win32.Build.0 = debug|Win32
 		{74810A2A-33D8-47D6-9A50-71261F1683F5}.release|Win32.ActiveCfg = release|Win32
 		{74810A2A-33D8-47D6-9A50-71261F1683F5}.release|Win32.Build.0 = release|Win32
+		{2D607783-30B9-46DE-81E2-28513B31D5D2}.debug|Win32.ActiveCfg = debug|Win32
+		{2D607783-30B9-46DE-81E2-28513B31D5D2}.debug|Win32.Build.0 = debug|Win32
+		{2D607783-30B9-46DE-81E2-28513B31D5D2}.release|Win32.ActiveCfg = release|Win32
+		{2D607783-30B9-46DE-81E2-28513B31D5D2}.release|Win32.Build.0 = release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

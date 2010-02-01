@@ -18,6 +18,12 @@
     </build-test>
   </target>
 
+  <target name="bench" description="run benchmark">
+    <build-app name="turtle_bench" mode="all">
+      <includepath path="${applications.dir}/turtle_bench"/>
+    </build-app>
+  </target>
+
   <target name="export" description="export the distribution">
     <deploy>
       <module name="turtle">
@@ -26,6 +32,12 @@
     </deploy>
   </target>
 
-  <target name="all" depends="configure,test,export" description="build, run tests and package application"/>
+  <target name="package" depends="export" description="package the distribution">
+    <mkdir dir="${dist.dir}"/>
+    <zip destfile="${dist.dir}/${ant.project.name}.zip" basedir="${dist.dir}" includes="include/**"/>
+    <tar destfile="${dist.dir}/${ant.project.name}.tar.bz2" basedir="${dist.dir}" includes="include/**" compression="bzip2"/>
+  </target>
+
+  <target name="all" depends="configure,test,export,package" description="build, run tests and package application"/>
 
 </project>
