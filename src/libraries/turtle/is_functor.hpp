@@ -31,8 +31,8 @@ namespace detail
     };
 
     MOCK_IS_FUNCTION_HELPER( has_result_type, result_type )
-    MOCK_IS_FUNCTION_HELPER( has_sig, sig< void > )
-    MOCK_IS_FUNCTION_HELPER( has_result, result< void > )
+    MOCK_IS_FUNCTION_HELPER( has_sig, template sig< void > )
+    MOCK_IS_FUNCTION_HELPER( has_result, template result< void > )
 
 #undef MOCK_IS_FUNCTION_HELPER
 
