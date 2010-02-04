@@ -11,7 +11,7 @@
 
 #include "config.hpp"
 #include "invocation.hpp"
-#include "result.hpp"
+#include "action.hpp"
 #include "sequence.hpp"
 #include "check.hpp"
 #include "constraint.hpp"
@@ -149,7 +149,7 @@ namespace detail
 
     template< typename Result, typename Signature >
     class matcher< Result, Signature, 0 >
-        : public matcher_base, public result< Result, Signature >
+        : public matcher_base, public action< Result, Signature >
     {
     public:
         bool is_valid() const
@@ -182,7 +182,7 @@ namespace detail
 #define MOCK_MATCHER(z, n, d) \
     template< typename Result, typename Signature > \
     class matcher< Result, Signature, n > \
-        : public matcher_base, public result< Result, Signature > \
+        : public matcher_base, public action< Result, Signature > \
     { \
         BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_MATCHER_TYPEDEF, BOOST_PP_EMPTY) \
     public: \

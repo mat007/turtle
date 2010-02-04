@@ -147,16 +147,16 @@ namespace detail
         typedef T base_type;
     };
 
-    struct no_type
+    struct invalid_type
     {
     private:
-        no_type();
+        invalid_type();
     };
 
     template< typename S, int n, bool B >
     struct arg_imp
     {
-        typedef no_type type;
+        typedef invalid_type type;
     };
     template< typename S, int n >
     struct arg_imp< S, n, true >
@@ -195,7 +195,7 @@ namespace detail
             BOOST_DEDUCED_TYPENAME E::parameter_types, \
             n \
         >::type t##n
-#define MOCK_CALL_NO_TYPE(z, n, d) no_type
+#define MOCK_CALL_INVALID_TYPE(z, n, d) invalid_type
 #define MOCK_CALL(z, n, d) \
     template< typename E > \
     BOOST_DEDUCED_TYPENAME boost::enable_if< \
@@ -211,13 +211,13 @@ namespace detail
         BOOST_DEDUCED_TYPENAME has_arity< E, n >::type, \
         BOOST_DEDUCED_TYPENAME E::result_type \
     >::type \
-        call( E BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM(n, MOCK_CALL_NO_TYPE, BOOST_PP_EMPTY) ) \
+        call( E BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM(n, MOCK_CALL_INVALID_TYPE, BOOST_PP_EMPTY) ) \
     { \
         throw std::logic_error( "should never be called" ); \
     }
     BOOST_PP_REPEAT_FROM_TO(0, MOCK_MAX_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
 #undef MOCK_CALL
-#undef MOCK_CALL_NO_TYPE
+#undef MOCK_CALL_INVALID_TYPE
 #undef MOCK_CALL_PARAM
 }
 }

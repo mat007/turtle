@@ -221,11 +221,11 @@ BOOST_AUTO_TEST_CASE( mocking_a_destructor )
 BOOST_MPL_ASSERT(( boost::is_same< float, mock::detail::arg< void( float ), 1, 1 >::type > ));
 BOOST_MPL_ASSERT(( boost::is_same< float, mock::detail::arg< void( float, int ), 1, 2 >::type > ));
 BOOST_MPL_ASSERT(( boost::is_same< int, mock::detail::arg< void( float, int ), 2, 2 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< mock::detail::no_type, mock::detail::arg< void( float ), 1, 2 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< mock::detail::no_type, mock::detail::arg< void( float ), 2, 2 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< mock::detail::no_type, mock::detail::arg< void( float, int ), 1, 1 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< mock::detail::no_type, mock::detail::arg< void( float, int ), 1, 3 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< mock::detail::no_type, mock::detail::arg< void( float, int ), 2, 3 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float ), 1, 2 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float ), 2, 2 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float, int ), 1, 1 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float, int ), 1, 3 >::type > ));
+BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float, int ), 2, 3 >::type > ));
 
 BOOST_AUTO_TEST_CASE( call_selects_proper_form )
 {

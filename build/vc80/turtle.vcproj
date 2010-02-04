@@ -153,6 +153,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\libraries\turtle\action.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\check.hpp"
 				>
 			</File>
@@ -210,10 +214,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\placeholder.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libraries\turtle\result.hpp"
 				>
 			</File>
 			<File

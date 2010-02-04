@@ -6,8 +6,8 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef MOCK_RESULT_HPP_INCLUDED
-#define MOCK_RESULT_HPP_INCLUDED
+#ifndef MOCK_ACTION_HPP_INCLUDED
+#define MOCK_ACTION_HPP_INCLUDED
 
 #include "config.hpp"
 #include <boost/bind.hpp>
@@ -19,7 +19,7 @@ namespace mock
 namespace detail
 {
     template< typename T, typename Signature >
-    class result
+    class action
     {
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
@@ -75,7 +75,7 @@ namespace detail
     };
 
     template< typename T, typename Signature >
-    class result< T*, Signature >
+    class action< T*, Signature >
     {
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
@@ -125,13 +125,13 @@ namespace detail
     };
 
     template< typename Signature >
-    class result< void, Signature >
+    class action< void, Signature >
     {
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
 
     public:
-        result()
+        action()
             : f_( boost::bind( &nothing ) )
         {}
 
@@ -167,18 +167,18 @@ namespace detail
     };
 
     template< typename T, typename Signature >
-    class result< std::auto_ptr< T >, Signature >
+    class action< std::auto_ptr< T >, Signature >
     {
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
 
     public:
-        result()
+        action()
             : t_()
             , f_()
         {}
-        result( const result& rhs )
-            : t_( const_cast< result& >( rhs ).t_.release() )
+        action( const action& rhs )
+            : t_( const_cast< action& >( rhs ).t_.release() )
             , f_( t_.get() ? boost::bind( &return_value, boost::ref( t_ ) ) : rhs.f_ )
         {}
 
@@ -245,4 +245,4 @@ namespace detail
 }
 }
 
-#endif // #ifndef MOCK_RESULT_HPP_INCLUDED
+#endif // #ifndef MOCK_ACTION_HPP_INCLUDED

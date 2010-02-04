@@ -13,6 +13,7 @@
 #   pragma warning( push, 0 )
 #endif
 #include <boost/lambda/lambda.hpp>
+#include <boost/spirit/home/phoenix.hpp>
 #ifdef _MSC_VER
 #   pragma warning( pop )
 #endif
@@ -23,7 +24,7 @@
 
 namespace
 {
-    BOOST_STATIC_ASSERT( sizeof( mock::detail::true_type ) != sizeof( mock::detail::false_type ) );
+    BOOST_STATIC_ASSERT( sizeof( mock::detail::yes_type ) != sizeof( mock::detail::no_type ) );
 
     template< typename T >
     void check( T )
@@ -86,6 +87,11 @@ BOOST_AUTO_TEST_CASE( boost_bind_is_functor )
 BOOST_AUTO_TEST_CASE( boost_lambda_is_functor )
 {
     check( boost::lambda::_1 < 42 );
+}
+
+BOOST_AUTO_TEST_CASE( boost_phoenix_is_functor )
+{
+    check( boost::phoenix::arg_names::arg1 < 42 );
 }
 
 BOOST_AUTO_TEST_CASE( boost_function_is_functor )
