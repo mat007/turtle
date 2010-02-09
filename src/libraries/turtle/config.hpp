@@ -13,6 +13,8 @@
 #include <boost/preprocessor/debug/assert.hpp>
 #include <boost/function.hpp>
 
+#define MOCK_VERSION 1.0.0
+
 #ifndef MOCK_MAX_ARGS
 #  define MOCK_MAX_ARGS 10
 #endif // MOCK_MAX_ARGS
