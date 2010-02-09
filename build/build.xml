@@ -9,7 +9,6 @@
 
   <target name="configure" description="update external libraries">
     <update name="boost"/>
-    <update name="mockpp"/> <!-- boost.test.xml needs it -->
   </target>
 
   <target name="test" description="run unit tests">
