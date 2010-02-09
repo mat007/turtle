@@ -92,6 +92,7 @@ BOOST_AUTO_TEST_CASE( boost_lambda_is_functor )
 BOOST_AUTO_TEST_CASE( boost_phoenix_is_functor )
 {
     check( boost::phoenix::arg_names::arg1 < 42 );
+    check( boost::phoenix::arg_names::_1 < 42 );
 }
 
 BOOST_AUTO_TEST_CASE( boost_function_is_functor )
