@@ -109,7 +109,7 @@ namespace mock
         { \
             return (*impl_)( BOOST_PP_ENUM_PARAMS(n, a) ); \
         }
-        BOOST_PP_REPEAT_FROM_TO(1, MOCK_MAX_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
+        BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
 #undef MOCK_EXPECTATION_OPERATOR
 
         friend std::ostream& operator<<( std::ostream& s, const expectation& e )
@@ -228,7 +228,7 @@ namespace mock
                 ErrorPolicy::no_match( context( MOCK_EXPECTATION_PARAMETERS(n) ) ); \
                 return ErrorPolicy::abort(); \
             }
-            BOOST_PP_REPEAT_FROM_TO(1, MOCK_MAX_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
+            BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
 #undef MOCK_EXPECTATION_PARAMETER
 #undef MOCK_EXPECTATION_PARAMETERS
 #undef MOCK_EXPECTATION_DETAIL

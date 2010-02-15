@@ -215,7 +215,7 @@ namespace detail
     { \
         throw std::logic_error( "should never be called" ); \
     }
-    BOOST_PP_REPEAT_FROM_TO(0, MOCK_MAX_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
+    BOOST_PP_REPEAT_FROM_TO(0, MOCK_NUM_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
 #undef MOCK_CALL
 #undef MOCK_CALL_INVALID_TYPE
 #undef MOCK_CALL_PARAM
@@ -307,7 +307,7 @@ namespace detail
 // alternate experimental macros below, way too slow to compile to be really usable
 
 #define MOCK_METHOD_STUB_ALT(M, S, t, c, tpn) \
-    BOOST_PP_REPEAT_FROM_TO(0, MOCK_MAX_ARGS, MOCK_METHOD_STUB_PROXY, (5,(M, S, t, c, tpn)))
+    BOOST_PP_REPEAT_FROM_TO(0, MOCK_NUM_ARGS, MOCK_METHOD_STUB_PROXY, (5,(M, S, t, c, tpn)))
 
 #define MOCK_METHOD_EXT_ALT(M, S, t) \
     MOCK_METHOD_STUB_ALT(M, S, t,,) \

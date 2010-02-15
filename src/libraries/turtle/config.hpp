@@ -11,11 +11,13 @@
 
 #include <boost/preprocessor/comparison/less_equal.hpp>
 #include <boost/preprocessor/debug/assert.hpp>
+#include <boost/preprocessor/inc.hpp>
 #include <boost/function.hpp>
 
 #ifndef MOCK_MAX_ARGS
 #  define MOCK_MAX_ARGS 10
-#endif // MOCK_MAX_ARGS
+#endif
+#define MOCK_NUM_ARGS BOOST_PP_INC(MOCK_MAX_ARGS)
 
 BOOST_PP_ASSERT( BOOST_PP_LESS_EQUAL(MOCK_MAX_ARGS, BOOST_FUNCTION_MAX_ARGS) )
 
