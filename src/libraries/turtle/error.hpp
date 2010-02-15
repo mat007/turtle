@@ -25,38 +25,34 @@ namespace mock
     template< typename Result >
     struct boost_test_error_policy
     {
-        static Result missing_result_specification( const std::string& context,
+        static Result abort()
+        {
+            throw boost::enable_current_exception(
+                boost::execution_aborted() );
+        }
+
+        static void missing_action( const std::string& context,
             const std::string& file, int line )
         {
             fail( "mock error : missing result specification : " + context,
                 file, line );
-            throw boost::enable_current_exception(
-                boost::execution_aborted() );
         }
-
-        static Result no_match( const std::string& context )
+        static void no_match( const std::string& context )
         {
             fail( "mock error : unexpected call : " + context,
                 "unknown location", 0 );
-            throw boost::enable_current_exception(
-                boost::execution_aborted() );
         }
-
         static void sequence_failed( const std::string& context,
             const std::string& /*file*/, int /*line*/ )
         {
             fail( "mock error : sequence failed : " + context,
                 "unknown location", 0 );
-            throw boost::enable_current_exception(
-                boost::execution_aborted() );
         }
-
         static void verification_failed( const std::string& context,
             const std::string& file, int line )
         {
             fail( "verification failed : " + context, file, line );
         }
-
         static void untriggered_expectation( const std::string& context,
             const std::string& file, int line )
         {
@@ -82,44 +78,42 @@ namespace mock
     template< typename Result >
     struct basic_error_policy
     {
+        static Result abort()
+        {
+            throw exception();
+        }
+
+        static void missing_action( const std::string& context,
+            const std::string& file, int line )
+        {
+            log( "missing result specification", context, file, line );
+        }
+        static void no_match( const std::string& context )
+        {
+            log( "unexpected call", context );
+        }
+        static void sequence_failed( const std::string& context,
+            const std::string& /*file*/, int /*line*/ )
+        {
+            log( "sequence failed", context );
+        }
+        static void verification_failed( const std::string& context,
+            const std::string& file, int line )
+        {
+            log( "verification failed", context, file, line );
+        }
+        static void untriggered_expectation( const std::string& context,
+            const std::string& file, int line )
+        {
+            log( "untriggered expectation", context, file, line );
+        }
+
         static void log( const std::string& message,
             const std::string& context,
             const std::string& file = "unknown location", int line = 0 )
         {
             std::cerr << file << '(' << line << "): "
                 << "mock error: " << message << ": " << context << std::endl;
-        }
-
-        static Result missing_result_specification( const std::string& context,
-            const std::string& file, int line )
-        {
-            log( "missing result specification", context, file, line );
-            throw exception();
-        }
-
-        static Result no_match( const std::string& context )
-        {
-            log( "unexpected call", context );
-            throw exception();
-        }
-
-        static void sequence_failed( const std::string& context,
-            const std::string& /*file*/, int /*line*/ )
-        {
-            log( "sequence failed", context );
-            throw exception();
-        }
-
-        static void verification_failed( const std::string& context,
-            const std::string& file, int line )
-        {
-            log( "verification failed", context, file, line );
-        }
-
-        static void untriggered_expectation( const std::string& context,
-            const std::string& file, int line )
-        {
-            log( "untriggered expectation", context, file, line );
         }
     };
 }

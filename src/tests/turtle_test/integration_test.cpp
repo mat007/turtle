@@ -259,3 +259,41 @@ BOOST_FIXTURE_TEST_CASE( basic_mock_object_collaboration_usage, fixture )
     MOCK_EXPECT( observer, notify ).once().with( 3 );
     subject.increment();
 }
+
+namespace
+{
+    MOCK_CLASS( my_destroyed_class )
+    {
+        MOCK_DESTRUCTOR( my_destroyed_class, destructor )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mocking_a_destructor )
+{
+    my_destroyed_class c;
+    MOCK_EXPECT( c, destructor ).once();
+}
+
+BOOST_AUTO_TEST_CASE( failed_expectation_in_mocked_destructor_does_not_throw )
+{
+    try
+    {
+        my_destroyed_class c;
+        throw std::runtime_error( "should not crash" );
+    }
+    catch( std::runtime_error& )
+    {
+    }
+}
+
+BOOST_AUTO_TEST_CASE( failed_sequence_in_mocked_destructor_does_not_throw )
+{
+    mock::sequence s;
+    my_custom_mock m;
+    {
+        my_destroyed_class c;
+        MOCK_EXPECT( c, destructor ).once().in( s );
+        MOCK_EXPECT( m, my_method ).once().in( s );
+        m.my_method();
+    }
+}

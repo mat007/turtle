@@ -93,6 +93,11 @@ namespace mock
             return impl_->expect();
         }
 
+        void test() const
+        {
+            return impl_->test();
+        }
+
         result_type operator()() const
         {
             return (*impl_)();
@@ -181,25 +186,18 @@ namespace mock
                 return matchers_.back();
             }
 
+            struct no_throw_abort
+            {
+                static void abort() {}
+            };
+            void test() const
+            {
+                invoke< no_throw_abort >();
+            }
+
             result_type operator()() const
             {
-                for( matchers_cit it = matchers_.begin();
-                    it != matchers_.end(); ++it )
-                    if( it->is_valid() )
-                    {
-                        if( ! it->invoke() )
-                        {
-                            valid_ = false;
-                            ErrorPolicy::sequence_failed( context( "" ),
-                                it->file(), it->line() );
-                        }
-                        if( ! it->functor() )
-                            return ErrorPolicy::missing_result_specification(
-                                context( "" ), it->file(), it->line() );
-                        return it->functor()();
-                    }
-                valid_ = false;
-                return ErrorPolicy::no_match( context( "" ) );
+                return invoke< ErrorPolicy >();
             }
 
 #define MOCK_EXPECTATION_PARAMETER(z, n, d) BOOST_PP_COMMA_IF(n) const_cast< A##n & >( a##n )
@@ -217,14 +215,18 @@ namespace mock
                         { \
                             valid_ = false; \
                             ErrorPolicy::sequence_failed( context( MOCK_EXPECTATION_PARAMETERS(n) ), it->file(), it->line() ); \
+                            return ErrorPolicy::abort(); \
                         } \
                         if( ! it->functor() ) \
-                            return ErrorPolicy::missing_result_specification( \
-                                context( MOCK_EXPECTATION_PARAMETERS(n) ), it->file(), it->line() ); \
+                        { \
+                            ErrorPolicy::missing_action( context( MOCK_EXPECTATION_PARAMETERS(n) ), it->file(), it->line() ); \
+                            return ErrorPolicy::abort(); \
+                        } \
                         return it->functor()( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_PARAMETER, BOOST_PP_EMPTY) ); \
                     } \
                 valid_ = false; \
-                return ErrorPolicy::no_match( context( MOCK_EXPECTATION_PARAMETERS(n) ) ); \
+                ErrorPolicy::no_match( context( MOCK_EXPECTATION_PARAMETERS(n) ) ); \
+                return ErrorPolicy::abort(); \
             }
             BOOST_PP_REPEAT_FROM_TO(1, MOCK_MAX_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
 #undef MOCK_EXPECTATION_PARAMETER
@@ -235,6 +237,34 @@ namespace mock
             friend std::ostream& operator<<( std::ostream& s, const expectation_impl& e )
             {
                 return s << e.context();
+            }
+        private:
+
+            template< typename T >
+            result_type invoke() const
+            {
+                for( matchers_cit it = matchers_.begin();
+                    it != matchers_.end(); ++it )
+                    if( it->is_valid() )
+                    {
+                        if( ! it->invoke() )
+                        {
+                            valid_ = false;
+                            ErrorPolicy::sequence_failed( context( "" ),
+                                it->file(), it->line() );
+                            return T::abort();
+                        }
+                        if( ! it->functor() )
+                        {
+                            ErrorPolicy::missing_action( context( "" ),
+                                it->file(), it->line() );
+                            return T::abort();
+                        }
+                        return it->functor()();
+                    }
+                valid_ = false;
+                ErrorPolicy::no_match( context( "" ) );
+                return T::abort();
             }
 
         private:

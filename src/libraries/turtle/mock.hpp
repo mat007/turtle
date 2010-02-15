@@ -233,9 +233,11 @@ namespace detail
     mock::detail::configure( mock::detail::ref( o ).exp##t, \
         BOOST_PP_STRINGIZE(o), mock::detail::op( o ), \
         BOOST_PP_STRINGIZE(t), mock::detail::ref( o ) )
-#define MOCK_ANONYMOUS_MOCKER(o, t) \
+#define MOCK_ANONYMOUS_MOCKER_EXT(o, M, t) \
     mock::detail::configure( mock::detail::ref( o ).exp##t, \
-        "?", ".", BOOST_PP_STRINGIZE(t), mock::detail::ref( o ) )
+        "?", ".", BOOST_PP_STRINGIZE(M), mock::detail::ref( o ) )
+#define MOCK_ANONYMOUS_MOCKER(o, t) \
+    MOCK_ANONYMOUS_MOCKER_EXT( o, t, t )
 
 #define MOCK_METHOD_EXPECTATION(S, t) \
     mutable mock::expectation< S > exp##t;
@@ -295,7 +297,7 @@ namespace detail
     MOCK_METHOD_EXT_TPL(M, n, MOCK_SIGNATURE_TPL(M), M)
 
 #define MOCK_DESTRUCTOR(T, t) \
-    ~T() { exp##t(); } \
+    ~T() { MOCK_ANONYMOUS_MOCKER_EXT(this, ~T, t).test(); } \
     MOCK_METHOD_EXPECTATION(void(), t)
 
 #define MOCK_EXPECT(o,t) MOCK_MOCKER(o,t).expect( __FILE__, __LINE__ )

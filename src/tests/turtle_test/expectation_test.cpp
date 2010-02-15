@@ -36,7 +36,7 @@ namespace
         }
         void reset()
         {
-            missing_result_specification_count = 0;
+            missing_action_count = 0;
             no_match_count = 0;
             sequence_failed_count = 0;
             verification_failed_count = 0;
@@ -44,7 +44,7 @@ namespace
         }
         bool verify() const
         {
-            return missing_result_specification_count == 0 &&
+            return missing_action_count == 0 &&
                 no_match_count == 0 &&
                 sequence_failed_count == 0 &&
                 verification_failed_count == 0 &&
@@ -331,22 +331,22 @@ BOOST_FIXTURE_TEST_CASE( literal_zero_can_be_used_in_place_of_null_pointers_in_c
 
 // result handling
 
-BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_no_return_set_calls_missing_result_specification, error_fixture )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_no_return_set_calls_missing_action, error_fixture )
 {
     {
         mock::expectation< int() > e;
         e.expect();
-        CHECK_ERROR( e(), missing_result_specification );
+        CHECK_ERROR( e(), missing_action );
     }
     {
         mock::expectation< int&() > e;
         e.expect();
-        CHECK_ERROR( e(), missing_result_specification );
+        CHECK_ERROR( e(), missing_action );
     }
     {
         mock::expectation< const std::string&() > e;
         e.expect();
-        CHECK_ERROR( e(), missing_result_specification );
+        CHECK_ERROR( e(), missing_action );
     }
 }
 

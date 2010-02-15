@@ -14,7 +14,7 @@
 
 namespace
 {
-    int missing_result_specification_count = 0;
+    int missing_action_count = 0;
     int no_match_count = 0;
     int sequence_failed_count = 0;
     int verification_failed_count = 0;
@@ -25,27 +25,33 @@ namespace mock
     template< typename Result >
     struct mock_error
     {
-        static Result missing_result_specification( const std::string& /*context*/, const std::string& /*file*/, int /*line*/ )
+        static Result abort()
         {
-            ++missing_result_specification_count;
             static BOOST_DEDUCED_TYPENAME boost::remove_reference< Result >::type r;
             return r;
         }
-        static Result no_match( const std::string& /*context*/ )
+
+        static void missing_action( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
+        {
+            ++missing_action_count;
+        }
+        static void no_match( const std::string& /*context*/ )
         {
             ++no_match_count;
-            static BOOST_DEDUCED_TYPENAME boost::remove_reference< Result >::type r;
-            return r;
         }
-        static void sequence_failed( const std::string& /*context*/, const std::string& /*file*/, int /*line*/ )
+        static void sequence_failed( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
         {
             ++sequence_failed_count;
         }
-        static void verification_failed( const std::string& /*context*/, const std::string& /*file*/, int /*line*/ )
+        static void verification_failed( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
         {
             ++verification_failed_count;
         }
-        static void untriggered_expectation( const std::string& /*context*/, const std::string& /*file*/, int /*line*/ )
+        static void untriggered_expectation( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
         {
             ++untriggered_expectation_count;
         }
@@ -53,23 +59,29 @@ namespace mock
     template<>
     struct mock_error< void >
     {
-        static void missing_result_specification( const std::string& /*context*/, const std::string& /*file*/, int /*line*/ )
+        static void abort()
+        {}
+        static void missing_action( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
         {
-            ++missing_result_specification_count;
+            ++missing_action_count;
         }
         static void no_match( const std::string& /*context*/ )
         {
             ++no_match_count;
         }
-        static void sequence_failed( const std::string& /*context*/, const std::string& /*file*/, int /*line*/ )
+        static void sequence_failed( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
         {
             ++sequence_failed_count;
         }
-        static void verification_failed( const std::string& /*context*/, const std::string& /*file*/, int /*line*/ )
+        static void verification_failed( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
         {
             ++verification_failed_count;
         }
-        static void untriggered_expectation( const std::string& /*context*/, const std::string& /*file*/, int /*line*/ )
+        static void untriggered_expectation( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
         {
             ++untriggered_expectation_count;
         }

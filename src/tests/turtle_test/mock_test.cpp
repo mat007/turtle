@@ -6,6 +6,7 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
+#define MOCK_USE_BOOST_TEST
 #include <turtle/mock.hpp>
 #include <boost/mpl/assert.hpp>
 
@@ -202,20 +203,6 @@ BOOST_AUTO_TEST_CASE( mock_functor_is_named )
 {
     MOCK_FUNCTOR( void() ) f;
     BOOST_CHECK_EQUAL( "f", to_string( MOCK_MOCKER( f, _ ) ) );
-}
-
-namespace
-{
-    MOCK_CLASS( my_destroyed_class )
-    {
-        MOCK_DESTRUCTOR( my_destroyed_class, destructor )
-    };
-}
-
-BOOST_AUTO_TEST_CASE( mocking_a_destructor )
-{
-    my_destroyed_class c;
-    MOCK_EXPECT( c, destructor ).once();
 }
 
 BOOST_MPL_ASSERT(( boost::is_same< float, mock::detail::arg< void( float ), 1, 1 >::type > ));

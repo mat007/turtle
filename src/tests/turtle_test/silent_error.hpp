@@ -25,20 +25,18 @@ namespace mock
             return s.str();
         }
 
-        static Result no_match( const std::string& context )
+        static Result abort()
         {
-            throw std::runtime_error( "no_match : " + context );
+            throw std::runtime_error( "abort" );
         }
-        static Result missing_result_specification( const std::string& context,
-            const std::string& file, int line )
-        {
-            throw std::runtime_error( "missing_result_specification : " + context + " " + file + "(" + to_string( line ) + ")" );
-        }
-        static void sequence_failed( const std::string& context,
-            const std::string& file, int line )
-        {
-            throw std::runtime_error( "sequence_failed : " + context + " " + file + "(" + to_string( line ) + ")" );
-        }
+        static void no_match( const std::string& /*context*/ )
+        {}
+        static void missing_action( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
+        {}
+        static void sequence_failed( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
+        {}
         static void verification_failed( const std::string& /*context*/,
             const std::string& /*file*/, int /*line*/ )
         {}
