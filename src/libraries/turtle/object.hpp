@@ -29,6 +29,10 @@ namespace mock
         {
             t.set_parent( *impl_ );
         }
+        void tag( const std::string& name ) const
+        {
+            impl_->tag( name );
+        }
 
         bool verify() const
         {

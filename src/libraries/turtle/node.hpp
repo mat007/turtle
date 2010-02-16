@@ -12,7 +12,6 @@
 #include "verifiable.hpp"
 #include <functional>
 #include <algorithm>
-#include <ostream>
 #include <vector>
 #include <string>
 
@@ -44,6 +43,15 @@ namespace mock
                 std::mem_fun( &verifiable::reset ) );
         }
 
+        void tag( const std::string& name )
+        {
+            name_ = name;
+        }
+        const std::string& tag() const
+        {
+            return name_;
+        }
+
     protected:
         virtual ~node()
         {}
@@ -53,6 +61,7 @@ namespace mock
         typedef verifiables_type::const_iterator verifiables_cit;
 
         std::vector< verifiable* > v_;
+        std::string name_;
     };
 }
 

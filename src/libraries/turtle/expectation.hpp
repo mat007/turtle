@@ -282,7 +282,7 @@ namespace mock
             std::string context() const
             {
                 std::stringstream s;
-                s << name_;
+                s << parent_->tag() << name_;
                 serialize( s );
                 return s.str();
             }

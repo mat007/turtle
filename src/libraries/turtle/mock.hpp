@@ -87,17 +87,39 @@ namespace detail
     };
 
     template< typename E >
-    E& set_parent( E& e, const object& o )
+    void set_parent( E& e, const std::string& prefix,
+        const std::string& name, const object& o )
     {
         o.set_parent( e );
-        return e;
+        o.tag( prefix );
+        e.tag( name );
     }
     template< typename E, typename T >
-    E& set_parent( E& e, const T&,
+    void set_parent( E& e, const std::string& prefix,
+        const std::string& name, const T&,
         BOOST_DEDUCED_TYPENAME boost::disable_if<
             BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >::type
         >::type* = 0 )
     {
+        e.tag( prefix + name );
+    }
+
+    template< typename E >
+    E& configure( BOOST_DEDUCED_TYPENAME E::expectation_tag,
+        const std::string& parent, const std::string& /*op*/,
+        const std::string& /*name*/, E& e )
+    {
+        if( parent != "?" || e.tag() == "?" )
+            e.tag( parent );
+        return e;
+    }
+    template< typename E, typename T >
+    E& configure( E& e, const std::string& parent, const std::string& op,
+        const std::string& name, const T& t )
+    {
+        if( parent != "?" || e.tag() == "?" )
+            set_parent( e, parent + op + type_name( typeid( T ) ) + "::",
+                name, t );
         return e;
     }
 
@@ -120,25 +142,6 @@ namespace detail
     std::string op( boost::shared_ptr< T >& )
     {
         return "->";
-    }
-
-    template< typename E >
-    E& configure( BOOST_DEDUCED_TYPENAME E::expectation_tag,
-        const std::string& parent, const std::string& /*op*/,
-        const std::string& /*name*/, E& e )
-    {
-        if( parent != "?" || e.tag() == "?" )
-            e.tag( parent );
-        return e;
-    }
-    template< typename E, typename T >
-    E& configure( E& e, const std::string& parent, const std::string& op,
-        const std::string& name, const T& t )
-    {
-        set_parent( e, t );
-        if( parent != "?" || e.tag() == "?" )
-            e.tag( parent + op + type_name( typeid( T ) ) + "::" + name );
-        return e;
     }
 
     template< typename T >

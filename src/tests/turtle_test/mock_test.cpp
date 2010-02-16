@@ -108,6 +108,7 @@ namespace
     MOCK_CLASS( my_mock )
     {
         MOCK_CONST_METHOD_EXT( my_method, 1, void( int ), my_method )
+        MOCK_CONST_METHOD_EXT( my_method_2, 1, void( int ), my_method_2 )
     };
 }
 
@@ -151,7 +152,9 @@ BOOST_AUTO_TEST_CASE( mock_object_is_named )
 {
     my_mock m;
     BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_mock::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method_2 ) ) );
     BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
+    BOOST_CHECK_EQUAL( "m.my_mock::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method_2 ) ) );
     BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method ) ) );
     BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
 }
@@ -170,6 +173,7 @@ namespace
     struct my_custom_mock
     {
         MOCK_METHOD_EXT( my_method, 0, void(), my_method )
+        MOCK_METHOD_EXT( my_method_2, 0, void(), my_method_2 )
     };
 }
 
@@ -177,7 +181,9 @@ BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_and_without_inheriting_f
 {
     my_custom_mock m;
     BOOST_CHECK_EQUAL( "?.my_custom_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method_2 ) ) );
     BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method_2 ) ) );
     BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method ) ) );
     BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
 }
@@ -187,6 +193,7 @@ namespace
     struct my_custom_mock_object : mock::object
     {
         MOCK_METHOD_EXT( my_method, 0, void(), my_method )
+        MOCK_METHOD_EXT( my_method_2, 0, void(), my_method_2 )
     };
 }
 
@@ -194,7 +201,9 @@ BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_is_named )
 {
     my_custom_mock_object m;
     BOOST_CHECK_EQUAL( "?.my_custom_mock_object::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock_object::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method_2 ) ) );
     BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method_2 ) ) );
     BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m, my_method ) ) );
     BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_MOCKER( m, my_method ) ) );
 }
