@@ -169,7 +169,7 @@ namespace detail
     typedef BOOST_DEDUCED_TYPENAME \
         boost::mpl::at_c< \
             BOOST_DEDUCED_TYPENAME \
-                boost::function_types::parameter_types< Signature >::type, \
+                boost::function_types::parameter_types< Signature >, \
             n \
         >::type arg##n##_type; \
     typedef detail::check< arg##n##_type > constraint##n##_type;

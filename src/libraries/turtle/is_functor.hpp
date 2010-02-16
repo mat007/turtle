@@ -21,14 +21,12 @@ namespace detail
     typedef boost::type_traits::yes_type yes_type;
     typedef boost::type_traits::no_type no_type;
 
-#define MOCK_IS_FUNCTION_HELPER(name, check) \
-    template< typename T > yes_type& name##_helper( T*, BOOST_DEDUCED_TYPENAME T::check* = 0 ); \
-    template< typename T > no_type& name##_helper( T, ... ); \
-    template< typename T > struct name \
-    { \
-        static T* t; \
-        enum { value = sizeof( name##_helper( t ) ) == sizeof( yes_type ) }; \
-    };
+#define MOCK_IS_FUNCTION_HELPER(N, M) \
+    template< typename T > yes_type& N##_helper( BOOST_DEDUCED_TYPENAME T::M* ); \
+    template< typename T > no_type& N##_helper( ... ); \
+    template< typename T > struct N \
+        : boost::mpl::bool_< sizeof( N##_helper< T >( 0 ) ) == sizeof( yes_type ) > \
+    {};
 
     MOCK_IS_FUNCTION_HELPER( has_result_type, result_type )
     MOCK_IS_FUNCTION_HELPER( has_sig, BOOST_NESTED_TEMPLATE sig< void > )
@@ -40,10 +38,10 @@ namespace detail
     struct is_functor
     {
         typedef BOOST_DEDUCED_TYPENAME boost::mpl::or_<
-                    BOOST_DEDUCED_TYPENAME boost::function_types::is_callable_builtin< T >::type,
-                    BOOST_DEDUCED_TYPENAME boost::integral_constant< bool, has_result_type< T >::value >::type,
-                    BOOST_DEDUCED_TYPENAME boost::integral_constant< bool, has_result< T >::value >::type,
-                    BOOST_DEDUCED_TYPENAME boost::integral_constant< bool, has_sig< T >::value >::type
+                    boost::function_types::is_callable_builtin< T >,
+                    has_result_type< T >,
+                    has_result< T >,
+                    has_sig< T >
                 >::type type;
     };
 }

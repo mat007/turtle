@@ -164,7 +164,7 @@ namespace detail
         typedef BOOST_DEDUCED_TYPENAME
             boost::mpl::at_c<
                 BOOST_DEDUCED_TYPENAME
-                    boost::function_types::parameter_types< S >::type,
+                    boost::function_types::parameter_types< S >,
                 n - 1
             >::type type;
     };
