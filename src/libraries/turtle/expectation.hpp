@@ -17,6 +17,7 @@
 #include "root.hpp"
 #include "format.hpp"
 #include "invocation.hpp"
+#include "args.hpp"
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/function_arity.hpp>
 #include <boost/function_types/parameter_types.hpp>
@@ -39,10 +40,9 @@ namespace mock
     public:
         typedef BOOST_DEDUCED_TYPENAME
             boost::function_types::result_type< Signature >::type result_type;
+        typedef Signature signature_type;
         typedef BOOST_DEDUCED_TYPENAME
             boost::function_types::function_arity< Signature > arity;
-        typedef BOOST_DEDUCED_TYPENAME
-            boost::function_types::parameter_types< Signature >::type parameter_types;
 
         template< typename Args >
         struct sig
@@ -104,10 +104,9 @@ namespace mock
         }
 
 #define MOCK_EXPECTATION_OPERATOR(z, n, d) \
-        template< BOOST_PP_ENUM_PARAMS(n, typename A) > \
-        result_type operator()( BOOST_PP_ENUM_BINARY_PARAMS(n, const A, & a) ) const \
+        MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
         { \
-            return (*impl_)( BOOST_PP_ENUM_PARAMS(n, a) ); \
+            return (*impl_)( BOOST_PP_ENUM_PARAMS(n, p) ); \
         }
         BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
 #undef MOCK_EXPECTATION_OPERATOR
@@ -200,38 +199,35 @@ namespace mock
                 return invoke< ErrorPolicy >();
             }
 
-#define MOCK_EXPECTATION_PARAMETER(z, n, d) BOOST_PP_COMMA_IF(n) const_cast< A##n & >( a##n )
-#define MOCK_EXPECTATION_DETAIL(z, n, d) + ", " + format( a##n )
-#define MOCK_EXPECTATION_PARAMETERS(n) \
-    format( a0 ) BOOST_PP_REPEAT_FROM_TO(1, n, MOCK_EXPECTATION_DETAIL, BOOST_PP_EMPTY)
+#define MOCK_EXPECTATION_FORMAT(z, n, d) BOOST_PP_IF(n, + ", " +,) format( p##n )
+#define MOCK_EXPECTATION_CONTEXT(n) \
+    context( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_FORMAT, BOOST_PP_EMPTY) )
 #define MOCK_EXPECTATION_OPERATOR(z, n, d) \
-            template< BOOST_PP_ENUM_PARAMS(n, typename A) > \
-            result_type operator()( BOOST_PP_ENUM_BINARY_PARAMS(n, const A, & a) ) const \
-            { \
-                for( matchers_cit it = matchers_.begin(); it != matchers_.end(); ++it ) \
-                    if( it->is_valid( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_PARAMETER, BOOST_PP_EMPTY) ) ) \
+        MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
+        { \
+            for( matchers_cit it = matchers_.begin(); it != matchers_.end(); ++it ) \
+                if( it->is_valid( BOOST_PP_ENUM_PARAMS(n, p) ) ) \
+                { \
+                    if( ! it->invoke() ) \
                     { \
-                        if( ! it->invoke() ) \
-                        { \
-                            valid_ = false; \
-                            ErrorPolicy::sequence_failed( context( MOCK_EXPECTATION_PARAMETERS(n) ), it->file(), it->line() ); \
-                            return ErrorPolicy::abort(); \
-                        } \
-                        if( ! it->functor() ) \
-                        { \
-                            ErrorPolicy::missing_action( context( MOCK_EXPECTATION_PARAMETERS(n) ), it->file(), it->line() ); \
-                            return ErrorPolicy::abort(); \
-                        } \
-                        return it->functor()( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_PARAMETER, BOOST_PP_EMPTY) ); \
+                        valid_ = false; \
+                        ErrorPolicy::sequence_failed( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
+                        return ErrorPolicy::abort(); \
                     } \
-                valid_ = false; \
-                ErrorPolicy::no_match( context( MOCK_EXPECTATION_PARAMETERS(n) ) ); \
-                return ErrorPolicy::abort(); \
-            }
-            BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
-#undef MOCK_EXPECTATION_PARAMETER
-#undef MOCK_EXPECTATION_PARAMETERS
-#undef MOCK_EXPECTATION_DETAIL
+                    if( ! it->functor() ) \
+                    { \
+                        ErrorPolicy::missing_action( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
+                        return ErrorPolicy::abort(); \
+                    } \
+                    return it->functor()( BOOST_PP_ENUM_PARAMS(n, p) ); \
+                } \
+            valid_ = false; \
+            ErrorPolicy::no_match( MOCK_EXPECTATION_CONTEXT(n) ); \
+            return ErrorPolicy::abort(); \
+        }
+        BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
+#undef MOCK_EXPECTATION_CONTEXT
+#undef MOCK_EXPECTATION_FORMAT
 #undef MOCK_EXPECTATION_OPERATOR
 
             friend std::ostream& operator<<( std::ostream& s, const expectation_impl& e )

@@ -127,13 +127,12 @@ BOOST_FIXTURE_TEST_CASE( triggering_a_once_expectation_calls_no_match_error_afte
     }
 }
 
-/*
 BOOST_FIXTURE_TEST_CASE( literal_zero_can_be_used_in_expectation_operator_call_as_pointers, error_fixture )
 {
     mock::expectation< void( int* ) > e;
+    e.expect().once();
     e( 0 );
 }
-*/
 
 // verify
 

@@ -176,9 +176,9 @@ namespace detail
 #define MOCK_MATCHER_CONSTRUCTOR(z, n, d) BOOST_PP_COMMA_IF(n) c##n##_ ( any )
 #define MOCK_MATCHER_WITH(z, n, d) c##n##_ = constraint##n##_type( c##n );
 #define MOCK_MATCHER_MEMBER(z, n, d) constraint##n##_type c##n##_;
-#define MOCK_MATCHER_IS_VALID_PARAMS(z, n, d) BOOST_PP_COMMA_IF(n) arg##n##_type a##n
+#define MOCK_MATCHER_ARGS(z, n, d) BOOST_PP_COMMA_IF(n) arg##n##_type a##n
 #define MOCK_MATCHER_IS_VALID(z, n, d) && c##n##_( a##n )
-#define MOCK_MATCHER_SERIALIZE(z, n, d) << ", " << m.c##n##_
+#define MOCK_MATCHER_SERIALIZE(z, n, d) BOOST_PP_IF(n, << ", " <<,) m.c##n##_
 #define MOCK_MATCHER(z, n, d) \
     template< typename Result, typename Signature > \
     class matcher< Result, Signature, n > \
@@ -195,7 +195,7 @@ namespace detail
             BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_MATCHER_WITH, BOOST_PP_EMPTY) \
             return *this; \
         } \
-        bool is_valid( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_MATCHER_IS_VALID_PARAMS, BOOST_PP_EMPTY) ) const \
+        bool is_valid( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_MATCHER_ARGS, BOOST_PP_EMPTY) ) const \
         { \
             return i_->is_valid() \
                 BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_MATCHER_IS_VALID, BOOST_PP_EMPTY); \
@@ -204,8 +204,8 @@ namespace detail
         friend std::ostream& operator<<( std::ostream& s, const matcher& m ) \
         { \
             return s << (m.i_->is_valid() ? '.' : 'v') << ' ' << *m.i_ << ".with( " \
-                << m.c0_ \
-                BOOST_PP_REPEAT_FROM_TO(1, n, MOCK_MATCHER_SERIALIZE, BOOST_PP_EMPTY) \
+                << \
+                BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_MATCHER_SERIALIZE, BOOST_PP_EMPTY) \
                 << " )"; \
         } \
     private: \
@@ -218,7 +218,7 @@ namespace detail
 #undef MOCK_MATCHER_CONSTRUCTOR
 #undef MOCK_MATCHER_WITH
 #undef MOCK_MATCHER_MEMBER
-#undef MOCK_MATCHER_IS_VALID_PARAMS
+#undef MOCK_MATCHER_ARGS
 #undef MOCK_MATCHER_IS_VALID
 #undef MOCK_MATCHER_SERIALIZE
 #undef MOCK_MATCHER

@@ -13,19 +13,21 @@
 #include "object.hpp"
 #include "expectation.hpp"
 #include "type_name.hpp"
+#include "args.hpp"
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/inc.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/preprocessor/seq/push_back.hpp>
 #include <boost/preprocessor/seq/pop_back.hpp>
-#include <boost/function_types/result_type.hpp>
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_type.hpp>
+#include <boost/function_types/result_type.hpp>
+#include <boost/mpl/equal_to.hpp>
+#include <boost/mpl/size_t.hpp>
 #include <boost/mpl/vector.hpp>
 #include <boost/mpl/erase.hpp>
 #include <boost/mpl/copy.hpp>
-#include <boost/mpl/equal_to.hpp>
 #include <boost/mpl/back_inserter.hpp>
 #define BOOST_TYPEOF_SILENT
 #include <boost/typeof/typeof.hpp>
@@ -150,78 +152,22 @@ namespace detail
         typedef T base_type;
     };
 
-    struct invalid_type
-    {
-    private:
-        invalid_type();
-    };
-
-    template< typename S, int n, bool B >
-    struct arg_imp
-    {
-        typedef invalid_type type;
-    };
-    template< typename S, int n >
-    struct arg_imp< S, n, true >
-    {
-        typedef BOOST_DEDUCED_TYPENAME
-            boost::mpl::at_c<
-                BOOST_DEDUCED_TYPENAME
-                    boost::function_types::parameter_types< S >,
-                n - 1
-            >::type type;
-    };
-    template< typename S, int n, int N >
-    struct arg
-    {
-        BOOST_MPL_ASSERT_RELATION( n, >, 0 );
-        BOOST_MPL_ASSERT_RELATION( n, <=, N );
-        typedef BOOST_DEDUCED_TYPENAME
-            arg_imp< S, n,
-                boost::function_types::function_arity< S >::value == N
-            >::type type;
-    };
-
     template< typename E, int N >
-    struct has_arity
-    {
-        typedef BOOST_DEDUCED_TYPENAME
-            boost::mpl::equal_to<
-                BOOST_DEDUCED_TYPENAME E::arity,
-                boost::mpl::size_t< N >
-            >::type type;
-    };
+    struct has_arity : boost::mpl::equal_to< BOOST_DEDUCED_TYPENAME E::arity, boost::mpl::size_t< N > >
+    {};
 
-#define MOCK_CALL_PARAM(z, n, d) \
-    BOOST_DEDUCED_TYPENAME \
-        boost::mpl::at_c< \
-            BOOST_DEDUCED_TYPENAME E::parameter_types, \
-            n \
-        >::type t##n
-#define MOCK_CALL_INVALID_TYPE(z, n, d) invalid_type
 #define MOCK_CALL(z, n, d) \
     template< typename E > \
     BOOST_DEDUCED_TYPENAME boost::enable_if< \
         BOOST_DEDUCED_TYPENAME has_arity< E, n >::type, \
         BOOST_DEDUCED_TYPENAME E::result_type \
     >::type \
-        call( E e BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM(n, MOCK_CALL_PARAM, BOOST_PP_EMPTY) ) \
+        call( E e BOOST_PP_COMMA_IF(n) MOCK_ARGS(n, BOOST_DEDUCED_TYPENAME E::signature_type, BOOST_DEDUCED_TYPENAME ) ) \
     { \
-        return e( BOOST_PP_ENUM_PARAMS(n, t) ); \
-    } \
-    template< typename E > \
-    BOOST_DEDUCED_TYPENAME boost::disable_if< \
-        BOOST_DEDUCED_TYPENAME has_arity< E, n >::type, \
-        BOOST_DEDUCED_TYPENAME E::result_type \
-    >::type \
-        call( E BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM(n, MOCK_CALL_INVALID_TYPE, BOOST_PP_EMPTY) ) \
-    { \
-        throw std::logic_error( "should never be called" ); \
+        return e( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
     BOOST_PP_REPEAT_FROM_TO(0, MOCK_NUM_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
 #undef MOCK_CALL
-#undef MOCK_CALL_INVALID_TYPE
-#undef MOCK_CALL_PARAM
 }
 }
 
@@ -249,29 +195,12 @@ namespace detail
 #define MOCK_SIGNATURE_TPL(M) \
     BOOST_DEDUCED_TYPENAME mock::detail::signature< BOOST_TYPEOF_TPL(&base_type::M) >::type
 
-#define MOCK_METHOD_ARG(N, n, S, tpn) \
-    BOOST_PP_COMMA_IF(n) tpn mock::detail::arg< S, BOOST_PP_INC(n), N >::type BOOST_PP_CAT(p, n)
-#define MOCK_METHOD_ARG_PROXY(z, n, d) \
-    MOCK_METHOD_ARG( \
-        BOOST_PP_ARRAY_ELEM(0, d), \
-        n, \
-        BOOST_PP_ARRAY_ELEM(1, d), \
-        BOOST_PP_ARRAY_ELEM(2, d) )
 #define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
-    tpn boost::function_types::result_type< S >::type M( \
-        BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_METHOD_ARG_PROXY, (3, (n, S, tpn))) ) c \
+    MOCK_DECL(M, n, S, c, tpn) \
     { \
         return mock::detail::call( MOCK_ANONYMOUS_MOCKER(this, t) \
             BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
-#define MOCK_METHOD_STUB_PROXY(z, n, d) \
-    MOCK_METHOD_STUB( \
-        BOOST_PP_ARRAY_ELEM(0, d), \
-        n, \
-        BOOST_PP_ARRAY_ELEM(1, d), \
-        BOOST_PP_ARRAY_ELEM(2, d), \
-        BOOST_PP_ARRAY_ELEM(3, d), \
-        BOOST_PP_ARRAY_ELEM(4, d))
 
 #define MOCK_METHOD_EXT(M, n, S, t) \
     MOCK_METHOD_STUB(M, n, S, t,,) \
@@ -308,6 +237,34 @@ namespace detail
 #define MOCK_VERIFY(o,t) MOCK_MOCKER(o,t).verify()
 
 // alternate experimental macros below, way too slow to compile to be really usable
+
+namespace mock
+{
+namespace detail
+{
+#define MOCK_CALL_INVALID_TYPE(z, n, d) invalid_type
+#define MOCK_CALL(z, n, d) \
+    template< typename E > \
+    BOOST_DEDUCED_TYPENAME boost::disable_if< \
+        BOOST_DEDUCED_TYPENAME has_arity< E, n >::type, \
+        BOOST_DEDUCED_TYPENAME E::result_type \
+    >::type \
+        call( E BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM(n, MOCK_CALL_INVALID_TYPE, BOOST_PP_EMPTY) ) \
+    {}
+    BOOST_PP_REPEAT_FROM_TO(0, MOCK_NUM_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
+#undef MOCK_CALL
+#undef MOCK_CALL_INVALID_TYPE
+}
+}
+
+#define MOCK_METHOD_STUB_PROXY(z, n, d) \
+    MOCK_METHOD_STUB( \
+        BOOST_PP_ARRAY_ELEM(0, d), \
+        n, \
+        BOOST_PP_ARRAY_ELEM(1, d), \
+        BOOST_PP_ARRAY_ELEM(2, d), \
+        BOOST_PP_ARRAY_ELEM(3, d), \
+        BOOST_PP_ARRAY_ELEM(4, d))
 
 #define MOCK_METHOD_STUB_ALT(M, S, t, c, tpn) \
     BOOST_PP_REPEAT_FROM_TO(0, MOCK_NUM_ARGS, MOCK_METHOD_STUB_PROXY, (5,(M, S, t, c, tpn)))
