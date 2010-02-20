@@ -36,14 +36,13 @@ namespace detail
 
     template< typename T >
     struct is_functor
-    {
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::or_<
-                    boost::function_types::is_callable_builtin< T >,
-                    has_result_type< T >,
-                    has_result< T >,
-                    has_sig< T >
-                >::type type;
-    };
+        : boost::mpl::or_<
+            boost::function_types::is_callable_builtin< T >,
+            has_result_type< T >,
+            has_result< T >,
+            has_sig< T >
+        >
+    {};
 }
 }
 
