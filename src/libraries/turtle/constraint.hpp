@@ -41,65 +41,65 @@ namespace mock
 namespace detail
 {
     template<>
-    struct placeholder< nothing >
+    struct placeholder< any >
     {
         placeholder()
             : desc_( "any" )
         {}
-        nothing functor_;
+        any functor_;
         std::string desc_;
     };
     template<>
-    struct placeholder< negation >
+    struct placeholder< negate >
     {
         placeholder()
             : desc_( "negate" )
         {}
-        negation functor_;
+        negate functor_;
         std::string desc_;
     };
     template<>
-    struct placeholder< evaluation >
+    struct placeholder< evaluate >
     {
         placeholder()
             : desc_( "evaluate" )
         {}
-        evaluation functor_;
+        evaluate functor_;
         std::string desc_;
     };
 }
-    const detail::placeholder< detail::nothing > any;
-    const detail::placeholder< detail::negation > negate;
-    const detail::placeholder< detail::evaluation > evaluate;
+    const detail::placeholder< detail::any > any;
+    const detail::placeholder< detail::negate > negate;
+    const detail::placeholder< detail::evaluate > evaluate;
 
     template< typename T >
-    detail::placeholder< detail::equality< T > > equal( T t )
+    detail::placeholder< detail::equal< T > > equal( T t )
     {
-        return constraint( detail::equality< T >( t ), "equal", t );
+        return constraint( detail::equal< T >( t ), "equal", t );
     }
 
     template< typename T >
-    detail::placeholder< detail::identity< T > > same( T& t )
+    detail::placeholder< detail::same< T > > same( T& t )
     {
-        return constraint( detail::identity< T >( boost::ref( t ) ),
+        return constraint( detail::same< T >( boost::ref( t ) ),
             "same", &t );
     }
 
     template< typename T >
-    detail::placeholder< detail::inferiority< T > > less( T t )
+    detail::placeholder< detail::less< T > > less( T t )
     {
-        return constraint( detail::inferiority< T >( t ), "less", t );
+        return constraint( detail::less< T >( t ), "less", t );
     }
 
     template< typename T >
-    detail::placeholder< detail::superiority< T > > greater( T t )
+    detail::placeholder< detail::greater< T > > greater( T t )
     {
-        return constraint( detail::superiority< T >( t ), "greater", t );
+        return constraint( detail::greater< T >( t ), "greater", t );
     }
 
     template< typename T >
     detail::placeholder<
-        detail::or_< detail::inferiority< T >, detail::equality< T > > >
+        detail::or_< detail::less< T >, detail::equal< T > > >
     less_equal( T t )
     {
         return constraint( (less( t ) || equal( t )).functor_,
@@ -108,7 +108,7 @@ namespace detail
 
     template< typename T >
     detail::placeholder<
-        detail::or_< detail::superiority< T >, detail::equality< T > > >
+        detail::or_< detail::greater< T >, detail::equal< T > > >
     greater_equal( T t )
     {
         return constraint( (greater( t ) || equal( t )).functor_,
@@ -116,22 +116,22 @@ namespace detail
     }
 
     template< typename T >
-    detail::placeholder< detail::assignment< T > > assign( T t )
+    detail::placeholder< detail::assign< T > > assign( T t )
     {
-        return constraint( detail::assignment< T >( t ), "assign", t );
+        return constraint( detail::assign< T >( t ), "assign", t );
     }
 
     template< typename T >
-    detail::placeholder< detail::retrieval< T > > retrieve( T& t )
+    detail::placeholder< detail::retrieve< T > > retrieve( T& t )
     {
-        return constraint( detail::retrieval< T >( boost::ref( t ) ),
+        return constraint( detail::retrieve< T >( boost::ref( t ) ),
             "retrieve", t );
     }
 
     template< typename T >
-    detail::placeholder< detail::container< T > > contain( T t )
+    detail::placeholder< detail::contains< T > > contain( T t )
     {
-        return constraint( detail::container< T >( t ), "contain", t );
+        return constraint( detail::contains< T >( t ), "contain", t );
     }
 }
 

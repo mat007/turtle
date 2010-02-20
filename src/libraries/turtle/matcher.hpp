@@ -173,7 +173,7 @@ namespace detail
             n \
         >::type arg##n##_type; \
     typedef detail::check< arg##n##_type > constraint##n##_type;
-#define MOCK_MATCHER_CONSTRUCTOR(z, n, d) BOOST_PP_COMMA_IF(n) c##n##_ ( any )
+#define MOCK_MATCHER_CONSTRUCTOR(z, n, d) BOOST_PP_COMMA_IF(n) c##n##_( mock::any )
 #define MOCK_MATCHER_WITH(z, n, d) c##n##_ = constraint##n##_type( c##n );
 #define MOCK_MATCHER_MEMBER(z, n, d) constraint##n##_type c##n##_;
 #define MOCK_MATCHER_ARGS(z, n, d) BOOST_PP_COMMA_IF(n) arg##n##_type a##n

@@ -22,48 +22,47 @@ namespace mock
 {
 namespace detail
 {
-    template< typename Arg >
+    template< typename Actual >
     class check
     {
         typedef BOOST_DEDUCED_TYPENAME
-            boost::function< bool( Arg ) > functor_type;
+            boost::function< bool( Actual ) > functor_type;
 
     public:
-        template< typename F >
-        explicit check( const F& f,
+        template< typename Functor >
+        explicit check( const Functor& functor,
             BOOST_DEDUCED_TYPENAME boost::enable_if<
-                BOOST_DEDUCED_TYPENAME detail::is_functor< F >::type
+                BOOST_DEDUCED_TYPENAME detail::is_functor< Functor >
             >::type* = 0 )
-            : functor_( f )
+            : functor_( functor )
             , desc_   ( "?" )
         {
             if( !functor_ )
                 std::invalid_argument( "invalid functor" );
         }
-        template< typename T >
-        explicit check( const T& t,
+        template< typename Expected >
+        explicit check( const Expected& expected,
             BOOST_DEDUCED_TYPENAME boost::disable_if<
-                BOOST_DEDUCED_TYPENAME detail::is_functor< T >::type
+                BOOST_DEDUCED_TYPENAME detail::is_functor< Expected >
             >::type* = 0 )
-            : functor_( equal( t ).functor_ )
-            , desc_   ( format( t ) )
+            : functor_( mock::equal( expected ).functor_ )
+            , desc_   ( format( expected ) )
         {
             if( !functor_ )
                 std::invalid_argument( "invalid functor" );
         }
         template< typename Constraint >
-        explicit check( const placeholder< Constraint >& p )
-            : functor_( p.functor_ )
-            , desc_   ( p.desc_ )
+        explicit check( const placeholder< Constraint >& ph )
+            : functor_( ph.functor_ )
+            , desc_   ( ph.desc_ )
         {
             if( !functor_ )
                 std::invalid_argument( "invalid functor" );
         }
 
-        template< typename Y >
-        bool operator()( Y& y ) const
+        bool operator()( Actual actual ) const
         {
-            return functor_( y );
+            return functor_( actual );
         }
 
         friend std::ostream& operator<<( std::ostream& s, const check& c )

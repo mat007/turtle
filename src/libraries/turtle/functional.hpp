@@ -18,158 +18,158 @@ namespace mock
 {
 namespace detail
 {
-    class nothing
+    class any
     {
     public:
-        template< typename Y >
-        bool operator()( const Y& ) const
+        template< typename Actual >
+        bool operator()( const Actual& ) const
         {
             return true;
         }
     };
 
-    class negation
+    class negate
     {
     public:
-        template< typename Y >
-        bool operator()( const Y& y ) const
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
         {
-            return ! y;
+            return ! actual;
         }
     };
 
-    class evaluation
+    class evaluate
     {
     public:
-        template< typename Y >
-        bool operator()( const Y& y ) const
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
         {
-            return y();
+            return actual();
         }
     };
 
-    template< typename T >
-    class equality
+    template< typename Expected >
+    class equal
     {
     public:
-        explicit equality( const T& t )
-            : t_( t )
+        explicit equal( const Expected& expected )
+            : expected_( expected )
         {}
-        template< typename Y >
-        bool operator()( const Y& y ) const
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
         {
-            return y == t_;
+            return actual == expected_;
         }
     private:
-        T t_;
+        Expected expected_;
     };
 
-    template< typename T >
-    class identity
+    template< typename Expected >
+    class same
     {
     public:
-        explicit identity( const boost::reference_wrapper< T >& t )
-            : t_( t )
+        explicit same( const boost::reference_wrapper< Expected >& expected )
+            : expected_( expected )
         {}
-        template< typename Y >
-        bool operator()( const Y& y ) const
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
         {
-            return &y == t_.get_pointer();
+            return &actual == expected_.get_pointer();
         }
     private:
-        boost::reference_wrapper< T > t_;
+        boost::reference_wrapper< Expected > expected_;
     };
 
-    template< typename T >
-    class inferiority
+    template< typename Expected >
+    class less
     {
     public:
-        explicit inferiority( const T& t )
-            : t_( t )
+        explicit less( const Expected& expected )
+            : expected_( expected )
         {}
-        template< typename Y >
-        bool operator()( const Y& y ) const
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
         {
-            return y < t_;
+            return actual < expected_;
         }
     private:
-        T t_;
+        Expected expected_;
     };
 
-    template< typename T >
-    class superiority
+    template< typename Expected >
+    class greater
     {
     public:
-        explicit superiority( const T& t )
-            : t_( t )
+        explicit greater( const Expected& expected )
+            : expected_( expected )
         {}
-        template< typename Y >
-        bool operator()( const Y& y ) const
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
         {
-            return y > t_;
+            return actual > expected_;
         }
     private:
-        T t_;
+        Expected expected_;
     };
 
-    template< typename T >
-    class assignment
+    template< typename Expected >
+    class assign
     {
     public:
-        explicit assignment( const T& t )
-            : t_( t )
+        explicit assign( const Expected& expected )
+            : expected_( expected )
         {}
-        template< typename Y >
-        bool operator()( Y& y ) const
+        template< typename Actual >
+        bool operator()( Actual& actual ) const
         {
-            y = t_;
+            actual = expected_;
             return true;
         }
     private:
-        T t_;
+        Expected expected_;
     };
 
-    template< typename T >
-    class retrieval
+    template< typename Expected >
+    class retrieve
     {
     public:
-        explicit retrieval( const boost::reference_wrapper< T >& t )
-            : t_( t )
+        explicit retrieve( const boost::reference_wrapper< Expected >& expected )
+            : expected_( expected )
         {}
-        template< typename Y >
-        bool operator()( const Y& y,
+        template< typename Actual >
+        bool operator()( const Actual& actual,
             BOOST_DEDUCED_TYPENAME boost::disable_if<
-                boost::is_convertible< const Y*, T >, Y >::type* = 0 ) const
+                boost::is_convertible< const Actual*, Expected >, Actual >::type* = 0 ) const
         {
-            t_.get() = y;
+            expected_.get() = actual;
             return true;
         }
-        template< typename Y >
-        bool operator()( Y& y,
+        template< typename Actual >
+        bool operator()( Actual& actual,
             BOOST_DEDUCED_TYPENAME boost::enable_if<
-                boost::is_convertible< Y*, T >, Y >::type* = 0 ) const
+                boost::is_convertible< Actual*, Expected >, Actual >::type* = 0 ) const
         {
-            t_.get() = &y;
+            expected_.get() = &actual;
             return true;
         }
     private:
-        boost::reference_wrapper< T > t_;
+        boost::reference_wrapper< Expected > expected_;
     };
 
-    template< typename T >
-    class container
+    template< typename Expected >
+    class contains
     {
     public:
-        explicit container( const T& t )
-            : t_( t )
+        explicit contains( const Expected& expected )
+            : expected_( expected )
         {}
-        template< typename Y >
-        bool operator()( const Y& y ) const
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
         {
-            return boost::algorithm::contains( y, t_ );
+            return boost::algorithm::contains( actual, expected_ );
         }
     private:
-        T t_;
+        Expected expected_;
     };
 }
 }
