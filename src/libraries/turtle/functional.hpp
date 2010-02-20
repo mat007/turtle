@@ -58,7 +58,7 @@ namespace detail
         template< typename Y >
         bool operator()( const Y& y ) const
         {
-             return y == t_;
+            return y == t_;
         }
     private:
         T t_;
@@ -74,7 +74,7 @@ namespace detail
         template< typename Y >
         bool operator()( const Y& y ) const
         {
-             return &y == t_.get_pointer();
+            return &y == t_.get_pointer();
         }
     private:
         boost::reference_wrapper< T > t_;

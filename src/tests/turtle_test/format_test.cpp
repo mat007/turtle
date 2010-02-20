@@ -22,12 +22,6 @@
 namespace
 {
     struct non_serializable_type {};
-
-    struct serializable_type {};
-    std::ostream& operator<<( std::ostream& s, const serializable_type& )
-    {
-        return s << "serializable_type";
-    }
 }
 
 BOOST_AUTO_TEST_CASE( type_not_serializable_in_standard_stream_yields_an_interrogation_mark_when_serialized )
@@ -40,6 +34,16 @@ BOOST_AUTO_TEST_CASE( base_type_serializable_in_standard_stream_yields_its_value
     BOOST_CHECK_EQUAL( "42", mock::format( 42 ) );
 }
 
+namespace
+{
+    struct serializable_type {};
+
+    std::ostream& operator<<( std::ostream& s, const serializable_type& )
+    {
+        return s << "serializable_type";
+    }
+}
+
 BOOST_AUTO_TEST_CASE( custom_type_serializable_in_standard_stream_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "serializable_type", mock::format( serializable_type() ) );
@@ -49,13 +53,13 @@ namespace
 {
     struct convertible_to_int
     {
-        operator int() const { return 0; }
+        operator int() const { return 12; }
     };
 }
 
 BOOST_AUTO_TEST_CASE( custom_type_convertible_to_base_type_yields_its_value_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "0", mock::format( convertible_to_int() ) );
+    BOOST_CHECK_EQUAL( "12", mock::format( convertible_to_int() ) );
 }
 
 namespace
