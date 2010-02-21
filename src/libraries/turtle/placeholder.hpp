@@ -34,10 +34,10 @@ namespace detail
             : c1_( c1 )
             , c2_( c2 )
         {}
-        template< typename Y >
-        bool operator()( const Y& y ) const
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
         {
-            return c1_( y ) && c2_( y );
+            return c1_( actual ) && c2_( actual );
         }
     private:
         Constraint1 c1_;
@@ -52,10 +52,10 @@ namespace detail
             : c1_( c1 )
             , c2_( c2 )
         {}
-        template< typename Y >
-        bool operator()( const Y& y ) const
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
         {
-            return c1_( y ) || c2_( y );
+            return c1_( actual ) || c2_( actual );
         }
     private:
         Constraint1 c1_;
@@ -69,10 +69,10 @@ namespace detail
         explicit not_( const Constraint& c )
             : c_( c )
         {}
-        template< typename Y >
-        bool operator()( const Y& y ) const
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
         {
-            return ! c_( y );
+            return ! c_( actual );
         }
     private:
         Constraint c_;
