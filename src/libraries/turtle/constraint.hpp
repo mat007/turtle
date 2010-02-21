@@ -46,7 +46,7 @@ namespace detail
         placeholder()
             : desc_( "any" )
         {}
-        any functor_;
+        any constraint_;
         std::string desc_;
     };
     template<>
@@ -55,7 +55,7 @@ namespace detail
         placeholder()
             : desc_( "negate" )
         {}
-        negate functor_;
+        negate constraint_;
         std::string desc_;
     };
     template<>
@@ -64,7 +64,7 @@ namespace detail
         placeholder()
             : desc_( "evaluate" )
         {}
-        evaluate functor_;
+        evaluate constraint_;
         std::string desc_;
     };
 }
@@ -102,7 +102,7 @@ namespace detail
         detail::or_< detail::less< T >, detail::equal< T > > >
     less_equal( T t )
     {
-        return constraint( (less( t ) || equal( t )).functor_,
+        return constraint( (less( t ) || equal( t )).constraint_,
             "less_equal", t );
     }
 
@@ -111,7 +111,7 @@ namespace detail
         detail::or_< detail::greater< T >, detail::equal< T > > >
     greater_equal( T t )
     {
-        return constraint( (greater( t ) || equal( t )).functor_,
+        return constraint( (greater( t ) || equal( t )).constraint_,
             "greater_equal", t );
     }
 

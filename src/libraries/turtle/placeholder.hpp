@@ -15,14 +15,14 @@ namespace mock
 {
 namespace detail
 {
-    template< typename Functor >
+    template< typename Constraint >
     struct placeholder
     {
-        placeholder( const Functor& f, const std::string& desc )
-            : functor_( f )
-            , desc_   ( desc )
+        placeholder( const Constraint& c, const std::string& desc )
+            : constraint_( c )
+            , desc_      ( desc )
         {}
-        Functor functor_;
+        Constraint constraint_;
         std::string desc_;
     };
 
@@ -84,7 +84,7 @@ namespace detail
                     const placeholder< F2 >& rhs )
     {
         return placeholder< or_< F1, F2 > >(
-            or_< F1, F2 >( lhs.functor_, rhs.functor_ ),
+            or_< F1, F2 >( lhs.constraint_, rhs.constraint_ ),
             "(" + lhs.desc_ + " || " + rhs.desc_ + ")" );
     }
 
@@ -94,7 +94,7 @@ namespace detail
                     const placeholder< F2 >& rhs )
     {
         return placeholder< and_< F1, F2 > >(
-            and_< F1, F2 >( lhs.functor_, rhs.functor_ ),
+            and_< F1, F2 >( lhs.constraint_, rhs.constraint_ ),
             "(" + lhs.desc_ + " && " + rhs.desc_ + ")" );
     }
 
@@ -103,7 +103,7 @@ namespace detail
         operator!( const placeholder< F >& ph )
     {
         return placeholder< not_< F > >(
-            not_< F >( ph.functor_ ), "! " + ph.desc_ );
+            not_< F >( ph.constraint_ ), "! " + ph.desc_ );
     }
 }
 }
