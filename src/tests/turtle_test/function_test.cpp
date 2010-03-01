@@ -530,7 +530,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_throws_the_set_exception, err
     BOOST_FAIL( "should have thrown" );
 }
 
-// multiple matchers
+// multiple expectations
 
 BOOST_FIXTURE_TEST_CASE( expecting_twice_a_single_expectation_makes_it_callable_twice, error_fixture )
 {
@@ -552,7 +552,7 @@ BOOST_FIXTURE_TEST_CASE( expecting_twice_a_single_expectation_makes_it_callable_
     }
 }
 
-BOOST_FIXTURE_TEST_CASE( best_matcher_is_selected_first, error_fixture )
+BOOST_FIXTURE_TEST_CASE( best_expectation_is_selected_first, error_fixture )
 {
     {
         mock::function< void( int ) > e;
@@ -704,7 +704,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_no_match_call_disables_the_automatic_verific
     CHECK_ERROR( e(), no_match );
 }
 
-BOOST_FIXTURE_TEST_CASE( adding_a_matcher_reactivates_the_verification_upon_destruction, error_fixture )
+BOOST_FIXTURE_TEST_CASE( adding_a_expectation_reactivates_the_verification_upon_destruction, error_fixture )
 {
     std::auto_ptr< mock::function< void() > > e( new mock::function< void() > );
     CHECK_ERROR( (*e)(), no_match );

@@ -51,7 +51,8 @@ namespace mock
         };
 
     private:
-        typedef detail::expectation< result_type, Signature, arity::value > matcher_type;
+        typedef detail::expectation< result_type, Signature, arity::value >
+            expectation_type;
 
     public:
         struct expectation_tag
@@ -84,11 +85,11 @@ namespace mock
             impl_->reset();
         }
 
-        matcher_type& expect( const std::string& file, int line )
+        expectation_type& expect( const std::string& file, int line )
         {
             return impl_->expect( file, line );
         }
-        matcher_type& expect()
+        expectation_type& expect()
         {
             return impl_->expect();
         }
@@ -131,8 +132,8 @@ namespace mock
             {
                 parent_->remove( *this );
                 if( ! std::uncaught_exception() )
-                    for( matchers_cit it = matchers_.begin();
-                        it != matchers_.end(); ++it )
+                    for( expectations_cit it = expectations_.begin();
+                        it != expectations_.end(); ++it )
                         if( valid_ && ! it->verify() )
                             ErrorPolicy::untriggered_expectation(
                                 context(), it->file(), it->line() );
@@ -155,8 +156,8 @@ namespace mock
 
             virtual bool verify() const
             {
-                for( matchers_cit it = matchers_.begin();
-                    it != matchers_.end(); ++it )
+                for( expectations_cit it = expectations_.begin();
+                    it != expectations_.end(); ++it )
                     if( !it->verify() )
                     {
                         valid_ = false;
@@ -168,21 +169,21 @@ namespace mock
             virtual void reset()
             {
                 valid_ = true;
-                matchers_.clear();
+                expectations_.clear();
             }
 
-            matcher_type& expect( const std::string& file, int line )
+            expectation_type& expect( const std::string& file, int line )
             {
-                matchers_.push_back( matcher_type() );
-                matchers_.back().set_location( file, line );
+                expectations_.push_back( expectation_type() );
+                expectations_.back().set_location( file, line );
                 valid_ = true;
-                return matchers_.back();
+                return expectations_.back();
             }
-            matcher_type& expect()
+            expectation_type& expect()
             {
-                matchers_.push_back( matcher_type() );
+                expectations_.push_back( expectation_type() );
                 valid_ = true;
-                return matchers_.back();
+                return expectations_.back();
             }
 
             struct no_throw_abort
@@ -199,33 +200,34 @@ namespace mock
                 return invoke< ErrorPolicy >();
             }
 
-#define MOCK_EXPECTATION_FORMAT(z, n, d) BOOST_PP_IF(n, + ", " +,) format( p##n )
+#define MOCK_EXPECTATION_FORMAT(z, n, d) \
+    BOOST_PP_IF(n, + ", " +,) format( p##n )
 #define MOCK_EXPECTATION_CONTEXT(n) \
     context( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_FORMAT, BOOST_PP_EMPTY) )
 #define MOCK_EXPECTATION_OPERATOR(z, n, d) \
-        MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
-        { \
-            for( matchers_cit it = matchers_.begin(); it != matchers_.end(); ++it ) \
-                if( it->is_valid( BOOST_PP_ENUM_PARAMS(n, p) ) ) \
+    MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
+    { \
+        for( expectations_cit it = expectations_.begin(); it != expectations_.end(); ++it ) \
+            if( it->is_valid( BOOST_PP_ENUM_PARAMS(n, p) ) ) \
+            { \
+                if( ! it->invoke() ) \
                 { \
-                    if( ! it->invoke() ) \
-                    { \
-                        valid_ = false; \
-                        ErrorPolicy::sequence_failed( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
-                        return ErrorPolicy::abort(); \
-                    } \
-                    if( ! it->functor() ) \
-                    { \
-                        ErrorPolicy::missing_action( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
-                        return ErrorPolicy::abort(); \
-                    } \
-                    return it->functor()( BOOST_PP_ENUM_PARAMS(n, p) ); \
+                    valid_ = false; \
+                    ErrorPolicy::sequence_failed( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
+                    return ErrorPolicy::abort(); \
                 } \
-            valid_ = false; \
-            ErrorPolicy::no_match( MOCK_EXPECTATION_CONTEXT(n) ); \
-            return ErrorPolicy::abort(); \
-        }
-        BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
+                if( ! it->functor() ) \
+                { \
+                    ErrorPolicy::missing_action( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
+                    return ErrorPolicy::abort(); \
+                } \
+                return it->functor()( BOOST_PP_ENUM_PARAMS(n, p) ); \
+            } \
+        valid_ = false; \
+        ErrorPolicy::no_match( MOCK_EXPECTATION_CONTEXT(n) ); \
+        return ErrorPolicy::abort(); \
+    }
+    BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
 #undef MOCK_EXPECTATION_CONTEXT
 #undef MOCK_EXPECTATION_FORMAT
 #undef MOCK_EXPECTATION_OPERATOR
@@ -239,8 +241,8 @@ namespace mock
             template< typename T >
             result_type invoke() const
             {
-                for( matchers_cit it = matchers_.begin();
-                    it != matchers_.end(); ++it )
+                for( expectations_cit it = expectations_.begin();
+                    it != expectations_.end(); ++it )
                     if( it->is_valid() )
                     {
                         if( ! it->invoke() )
@@ -264,14 +266,14 @@ namespace mock
             }
 
         private:
-            typedef std::list< matcher_type > matchers_type;
+            typedef std::list< expectation_type > expectations_type;
             typedef BOOST_DEDUCED_TYPENAME
-                matchers_type::const_iterator matchers_cit;
+                expectations_type::const_iterator expectations_cit;
 
             void serialize( std::ostream& s ) const
             {
-                for( matchers_cit it = matchers_.begin();
-                    it != matchers_.end(); ++it )
+                for( expectations_cit it = expectations_.begin();
+                    it != expectations_.end(); ++it )
                     s << std::endl << *it;
             }
 
@@ -297,7 +299,7 @@ namespace mock
             std::string name_;
             node* parent_;
             mutable bool valid_;
-            matchers_type matchers_;
+            expectations_type expectations_;
         };
 
     private:

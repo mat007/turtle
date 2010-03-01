@@ -28,15 +28,15 @@ namespace mock
 {
 namespace detail
 {
-    class matcher_base : private orderable
+    class expectation_base : private orderable
     {
     public:
-        matcher_base()
+        expectation_base()
             : i_( new detail::unlimited() )
             , file_( "unknown location" )
             , line_( 0 )
         {}
-        virtual ~matcher_base()
+        virtual ~expectation_base()
         {
             for( sequences_cit it = sequences_.begin();
                 it != sequences_.end(); ++it )
@@ -149,7 +149,7 @@ namespace detail
 
     template< typename Result, typename Signature >
     class expectation< Result, Signature, 0 >
-        : public matcher_base, public action< Result, Signature >
+        : public expectation_base, public action< Result, Signature >
     {
     public:
         bool is_valid() const
@@ -182,7 +182,7 @@ namespace detail
 #define MOCK_EXPECTATION(z, n, d) \
     template< typename Result, typename Signature > \
     class expectation< Result, Signature, n > \
-        : public matcher_base, public action< Result, Signature > \
+        : public expectation_base, public action< Result, Signature > \
     { \
         BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_TYPEDEF, BOOST_PP_EMPTY) \
     public: \
