@@ -197,11 +197,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\expectation_test.cpp"
+				RelativePath="..\..\src\tests\turtle_test\format_test.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\format_test.cpp"
+				RelativePath="..\..\src\tests\turtle_test\function_test.cpp"
 				>
 			</File>
 			<File

@@ -11,7 +11,7 @@
 
 #include "error.hpp"
 #include "object.hpp"
-#include "expectation.hpp"
+#include "function.hpp"
 #include "type_name.hpp"
 #include "args.hpp"
 #include <boost/preprocessor/cat.hpp>
@@ -176,7 +176,7 @@ namespace detail
 #define MOCK_CLASS(T) \
     struct T : mock::object
 #define MOCK_FUNCTOR(S) \
-    mock::expectation< S >
+    mock::function< S >
 
 #define MOCK_MOCKER(o, t) \
     mock::detail::configure( mock::detail::ref( o ).exp##t, \
@@ -189,7 +189,7 @@ namespace detail
     MOCK_ANONYMOUS_MOCKER_EXT( o, t, t )
 
 #define MOCK_METHOD_EXPECTATION(S, t) \
-    mutable mock::expectation< S > exp##t;
+    mutable mock::function< S > exp##t;
 #define MOCK_SIGNATURE(M) \
     mock::detail::signature< BOOST_TYPEOF(&base_type::M) >::type
 #define MOCK_SIGNATURE_TPL(M) \

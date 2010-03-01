@@ -177,11 +177,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libraries\turtle\expectation.hpp"
+				RelativePath="..\..\src\libraries\turtle\format.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libraries\turtle\format.hpp"
+				RelativePath="..\..\src\libraries\turtle\function.hpp"
 				>
 			</File>
 			<File

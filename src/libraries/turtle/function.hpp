@@ -35,7 +35,7 @@ namespace mock
               typename ErrorPolicy = MOCK_ERROR_POLICY<
                   BOOST_DEDUCED_TYPENAME
                       boost::function_types::result_type< Signature >::type > >
-    class expectation
+    class function
     {
     public:
         typedef BOOST_DEDUCED_TYPENAME
@@ -58,7 +58,7 @@ namespace mock
         {};
         expectation_tag exp_;
 
-        expectation()
+        function()
             : impl_( new expectation_impl() )
         {}
 
@@ -111,7 +111,7 @@ namespace mock
         BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
 #undef MOCK_EXPECTATION_OPERATOR
 
-        friend std::ostream& operator<<( std::ostream& s, const expectation& e )
+        friend std::ostream& operator<<( std::ostream& s, const function& e )
         {
             return s << *e.impl_;
         }

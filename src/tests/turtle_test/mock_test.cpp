@@ -19,10 +19,10 @@ namespace
     void f1();
     int f2( float );
 
-    BOOST_MPL_ASSERT(( boost::is_same< mock::expectation< void() >,
-                                       mock::expectation< BOOST_TYPEOF( f1 ) > > ));
-    BOOST_MPL_ASSERT(( boost::is_same< mock::expectation< int( float ) >,
-                                       mock::expectation< BOOST_TYPEOF( f2 ) > > ));
+    BOOST_MPL_ASSERT(( boost::is_same< mock::function< void() >,
+                                       mock::function< BOOST_TYPEOF( f1 ) > > ));
+    BOOST_MPL_ASSERT(( boost::is_same< mock::function< int( float ) >,
+                                       mock::function< BOOST_TYPEOF( f2 ) > > ));
 
     struct example
     {
@@ -32,8 +32,8 @@ namespace
 
     BOOST_STATIC_ASSERT(
         (boost::is_same<
-            mock::expectation< void() >,
-            mock::expectation<
+            mock::function< void() >,
+            mock::function<
                 mock::detail::signature<
                     BOOST_TYPEOF( &example::method1 )
                 >::type
@@ -41,8 +41,8 @@ namespace
          >::value) );
     BOOST_STATIC_ASSERT(
         (boost::is_same<
-            mock::expectation< float( int ) >,
-            mock::expectation<
+            mock::function< float( int ) >,
+            mock::function<
                 mock::detail::signature<
                     BOOST_TYPEOF( &example::method2 )
                 >::type
@@ -226,22 +226,22 @@ BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg
 BOOST_AUTO_TEST_CASE( call_selects_proper_form )
 {
     {
-        mock::expectation< void() > e;
+        mock::function< void() > e;
         e.expect().once();
         mock::detail::call( e );
     }
     {
-        mock::expectation< void( int ) > e;
+        mock::function< void( int ) > e;
         e.expect().once();
         mock::detail::call( e, 3 );
     }
     {
-        mock::expectation< int() > e;
+        mock::function< int() > e;
         e.expect().once().returns( 0 );
         mock::detail::call( e );
     }
     {
-        mock::expectation< int( int ) > e;
+        mock::function< int( int ) > e;
         e.expect().once().returns( 0 );
         mock::detail::call( e, 3 );
     }
