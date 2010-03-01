@@ -6,13 +6,13 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef MOCK_EXPECTATION_HPP_INCLUDED
-#define MOCK_EXPECTATION_HPP_INCLUDED
+#ifndef MOCK_FUNCTION_HPP_INCLUDED
+#define MOCK_FUNCTION_HPP_INCLUDED
 
 #include "config.hpp"
 #include "error.hpp"
 #include "verifiable.hpp"
-#include "matcher.hpp"
+#include "expectation.hpp"
 #include "node.hpp"
 #include "root.hpp"
 #include "format.hpp"
@@ -51,7 +51,7 @@ namespace mock
         };
 
     private:
-        typedef detail::matcher< result_type, Signature, arity::value > matcher_type;
+        typedef detail::expectation< result_type, Signature, arity::value > matcher_type;
 
     public:
         struct expectation_tag
@@ -305,4 +305,4 @@ namespace mock
     };
 }
 
-#endif // #ifndef MOCK_EXPECTATION_HPP_INCLUDED
+#endif // #ifndef MOCK_FUNCTION_HPP_INCLUDED

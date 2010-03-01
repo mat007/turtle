@@ -177,6 +177,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\expectation.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\format.hpp"
 				>
 			</File>
@@ -194,10 +198,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\is_functor.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libraries\turtle\matcher.hpp"
 				>
 			</File>
 			<File
