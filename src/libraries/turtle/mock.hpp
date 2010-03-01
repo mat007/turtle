@@ -107,7 +107,7 @@ namespace detail
     }
 
     template< typename E >
-    E& configure( BOOST_DEDUCED_TYPENAME E::expectation_tag,
+    E& configure( BOOST_DEDUCED_TYPENAME E::function_tag,
         const std::string& parent, const std::string& /*op*/,
         const std::string& /*name*/, E& e )
     {

@@ -55,12 +55,12 @@ namespace mock
             expectation_type;
 
     public:
-        struct expectation_tag
+        struct function_tag
         {};
-        expectation_tag exp_;
+        function_tag exp_;
 
         function()
-            : impl_( new expectation_impl() )
+            : impl_( new function_impl() )
         {}
 
         void tag( const std::string& name )
@@ -118,17 +118,17 @@ namespace mock
         }
 
     private:
-        class expectation_impl : private verifiable
+        class function_impl : private verifiable
         {
         public:
-            expectation_impl()
+            function_impl()
                 : name_( "?" )
                 , parent_( &root )
                 , valid_( true )
             {
                 parent_->add( *this );
             }
-            virtual ~expectation_impl()
+            virtual ~function_impl()
             {
                 parent_->remove( *this );
                 if( ! std::uncaught_exception() )
@@ -232,7 +232,7 @@ namespace mock
 #undef MOCK_EXPECTATION_FORMAT
 #undef MOCK_EXPECTATION_OPERATOR
 
-            friend std::ostream& operator<<( std::ostream& s, const expectation_impl& e )
+            friend std::ostream& operator<<( std::ostream& s, const function_impl& e )
             {
                 return s << e.context();
             }
@@ -303,7 +303,7 @@ namespace mock
         };
 
     private:
-        boost::shared_ptr< expectation_impl > impl_;
+        boost::shared_ptr< function_impl > impl_;
     };
 }
 
