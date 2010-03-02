@@ -66,9 +66,6 @@ BOOST_AUTO_TEST_CASE( basic_mock_object_usage )
     BOOST_CHECK_EQUAL( 0, m.my_method( 13 ) );
     mock::verify();
     mock::reset();
-//    MOCK_EXPECT( m, my_method ).once().with( &f ).returns( 7 );
-//    MOCK_EXPECT( m, my_method ).once().with( mock::equal( "" ) ).returns( 7 );
-//    MOCK_EXPECT( m, my_method ).once().with( "" ).returns( 7 );
     MOCK_EXPECT( m, my_method ).once().with( 42 ).returns( 7 );
     BOOST_CHECK_EQUAL( 7, m.my_method( 42 ) );
     mock::verify();

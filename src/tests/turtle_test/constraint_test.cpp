@@ -48,21 +48,21 @@ BOOST_AUTO_TEST_CASE( same )
     int i = 0;
     int j = 0;
     BOOST_CHECK_EQUAL( i, j );
-    BOOST_CHECK( ! mock::same( i ).constraint_( j ) );
-    BOOST_CHECK( mock::same( i ).constraint_( i ) );
+    BOOST_CHECK( ! mock::same( i ).f_( j ) );
+    BOOST_CHECK( mock::same( i ).f_( i ) );
 }
 
 BOOST_AUTO_TEST_CASE( assign )
 {
     {
         int i = 0;
-        BOOST_CHECK( mock::assign( 3 ).constraint_( i ) );
+        BOOST_CHECK( mock::assign( 3 ).f_( i ) );
         BOOST_CHECK_EQUAL( 3, i );
     }
     {
         const int* i = 0;
         const int j = 1;
-        BOOST_CHECK( mock::assign( &j ).constraint_( i ) );
+        BOOST_CHECK( mock::assign( &j ).f_( i ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
 }
@@ -72,49 +72,49 @@ BOOST_AUTO_TEST_CASE( retrieve )
     {
         int i = 0;
         const int j = 1;
-        BOOST_CHECK( mock::retrieve( i ).constraint_( j ) );
+        BOOST_CHECK( mock::retrieve( i ).f_( j ) );
         BOOST_CHECK_EQUAL( i, j );
     }
     {
         int* i = 0;
         int j = 1;
-        BOOST_CHECK( mock::retrieve( i ).constraint_( &j ) );
+        BOOST_CHECK( mock::retrieve( i ).f_( &j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
     {
         const int* i = 0;
         const int j = 1;
-        BOOST_CHECK( mock::retrieve( i ).constraint_( j ) );
+        BOOST_CHECK( mock::retrieve( i ).f_( j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
     {
         const int* i = 0;
         int j = 1;
-        BOOST_CHECK( mock::retrieve( i ).constraint_( j ) );
+        BOOST_CHECK( mock::retrieve( i ).f_( j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
     {
         int* i = 0;
         int j = 1;
-        BOOST_CHECK( mock::retrieve( i ).constraint_( j ) );
+        BOOST_CHECK( mock::retrieve( i ).f_( j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
     {
         const int* i = 0;
         const int j = 1;
-        BOOST_CHECK( mock::retrieve( i ).constraint_( j ) );
+        BOOST_CHECK( mock::retrieve( i ).f_( j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
     {
         int** i = 0;
         int* j = 0;
-        BOOST_CHECK( mock::retrieve( i ).constraint_( j ) );
+        BOOST_CHECK( mock::retrieve( i ).f_( j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
     {
         const int** i = 0;
         const int* j = 0;
-        BOOST_CHECK( mock::retrieve( i ).constraint_( j ) );
+        BOOST_CHECK( mock::retrieve( i ).f_( j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
 }
@@ -137,15 +137,15 @@ BOOST_AUTO_TEST_CASE( retrieve_uses_assignment_operator )
 {
     B b;
     const A a = A();
-    mock::retrieve( b ).constraint_( a );
+    mock::retrieve( b ).f_( a );
 }
 
 BOOST_AUTO_TEST_CASE( negate )
 {
     int* i = 0;
     int j;
-    BOOST_CHECK( mock::negate.constraint_( i ) );
-    BOOST_CHECK( ! mock::negate.constraint_( &j ) );
+    BOOST_CHECK( mock::negate.f_( i ) );
+    BOOST_CHECK( ! mock::negate.f_( &j ) );
 }
 
 namespace
@@ -162,12 +162,12 @@ namespace
 
 BOOST_AUTO_TEST_CASE( evaluate )
 {
-    BOOST_CHECK( mock::evaluate.constraint_( &return_true ) );
-    BOOST_CHECK( ! mock::evaluate.constraint_( &return_false ) );
+    BOOST_CHECK( mock::evaluate.f_( &return_true ) );
+    BOOST_CHECK( ! mock::evaluate.f_( &return_false ) );
 }
 
 BOOST_AUTO_TEST_CASE( contain )
 {
-    BOOST_CHECK( mock::contain( "string" ).constraint_( "this is a string" ) );
-    BOOST_CHECK( ! mock::contain( "not found" ).constraint_( "this is a string" ) );
+    BOOST_CHECK( mock::contain( "string" ).f_( "this is a string" ) );
+    BOOST_CHECK( ! mock::contain( "not found" ).f_( "this is a string" ) );
 }

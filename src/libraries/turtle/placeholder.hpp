@@ -15,67 +15,67 @@ namespace mock
 {
 namespace detail
 {
-    template< typename Constraint >
+    template< typename Functor >
     struct placeholder
     {
-        placeholder( const Constraint& c, const std::string& desc )
-            : constraint_( c )
-            , desc_      ( desc )
+        placeholder( const Functor& f, const std::string& desc )
+            : f_( f )
+            , desc_( desc )
         {}
-        Constraint constraint_;
+        Functor f_;
         std::string desc_;
     };
 
-    template< typename Constraint1, typename Constraint2 >
+    template< typename Functor1, typename Functor2 >
     class and_
     {
     public:
-        and_( const Constraint1& c1, const Constraint2& c2 )
-            : c1_( c1 )
-            , c2_( c2 )
+        and_( const Functor1& f1, const Functor2& f2 )
+            : f1_( f1 )
+            , f2_( f2 )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return c1_( actual ) && c2_( actual );
+            return f1_( actual ) && f2_( actual );
         }
     private:
-        Constraint1 c1_;
-        Constraint2 c2_;
+        Functor1 f1_;
+        Functor2 f2_;
     };
 
-    template< typename Constraint1, typename Constraint2 >
+    template< typename Functor1, typename Functor2 >
     class or_
     {
     public:
-        or_( const Constraint1& c1, const Constraint2& c2 )
-            : c1_( c1 )
-            , c2_( c2 )
+        or_( const Functor1& f1, const Functor2& f2 )
+            : f1_( f1 )
+            , f2_( f2 )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return c1_( actual ) || c2_( actual );
+            return f1_( actual ) || f2_( actual );
         }
     private:
-        Constraint1 c1_;
-        Constraint2 c2_;
+        Functor1 f1_;
+        Functor2 f2_;
     };
 
-    template< typename Constraint >
+    template< typename Functor >
     class not_
     {
     public:
-        explicit not_( const Constraint& c )
-            : c_( c )
+        explicit not_( const Functor& f )
+            : f_( f )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return ! c_( actual );
+            return ! f_( actual );
         }
     private:
-        Constraint c_;
+        Functor f_;
     };
 
     template< typename F1, typename F2 >
@@ -84,7 +84,7 @@ namespace detail
                     const placeholder< F2 >& rhs )
     {
         return placeholder< or_< F1, F2 > >(
-            or_< F1, F2 >( lhs.constraint_, rhs.constraint_ ),
+            or_< F1, F2 >( lhs.f_, rhs.f_ ),
             "(" + lhs.desc_ + " || " + rhs.desc_ + ")" );
     }
 
@@ -94,7 +94,7 @@ namespace detail
                     const placeholder< F2 >& rhs )
     {
         return placeholder< and_< F1, F2 > >(
-            and_< F1, F2 >( lhs.constraint_, rhs.constraint_ ),
+            and_< F1, F2 >( lhs.f_, rhs.f_ ),
             "(" + lhs.desc_ + " && " + rhs.desc_ + ")" );
     }
 
@@ -103,7 +103,7 @@ namespace detail
         operator!( const placeholder< F >& ph )
     {
         return placeholder< not_< F > >(
-            not_< F >( ph.constraint_ ), "! " + ph.desc_ );
+            not_< F >( ph.f_ ), "! " + ph.desc_ );
     }
 }
 }
