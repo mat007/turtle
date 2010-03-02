@@ -35,6 +35,7 @@ namespace detail
         virtual bool is_valid() const = 0;
 
         // Verify invocation
+        // returns false if the verification fails
         virtual bool verify() const = 0;
 
         friend inline std::ostream& operator<<( std::ostream& s, const invocation& i )

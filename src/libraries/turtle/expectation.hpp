@@ -28,7 +28,7 @@ namespace mock
 {
 namespace detail
 {
-    class expectation_base : private orderable
+    class expectation_base : private sequenceable
     {
     public:
         expectation_base()

@@ -9,7 +9,7 @@
 #ifndef MOCK_SEQUENCE_HPP_INCLUDED
 #define MOCK_SEQUENCE_HPP_INCLUDED
 
-#include "orderable.hpp"
+#include "sequenceable.hpp"
 #include <vector>
 #include <algorithm>
 
@@ -20,50 +20,49 @@ namespace mock
     public:
         ~sequence()
         {
-            for( elements_it it = elements_.begin();
-                it != elements_.end(); ++it )
+            for( orderables_it it = orderables_.begin();
+                it != orderables_.end(); ++it )
                 (*it)->remove( *this );
-            for( elements_it it = called_.begin();
+            for( orderables_it it = called_.begin();
                 it != called_.end(); ++it )
                 (*it)->remove( *this );
         }
 
-        void add( detail::orderable& e )
+        void add( detail::sequenceable& o )
         {
-            elements_.push_back( &e );
+            orderables_.push_back( &o );
         }
-        void remove( detail::orderable& e )
+        void remove( detail::sequenceable& o )
         {
-            elements_.erase( std::remove( elements_.begin(),
-                elements_.end(), &e ), elements_.end() );
+            orderables_.erase( std::remove( orderables_.begin(),
+                orderables_.end(), &o ), orderables_.end() );
             called_.erase( std::remove( called_.begin(),
-                called_.end(), &e ), called_.end() );
+                called_.end(), &o ), called_.end() );
         }
 
-        bool is_valid( const detail::orderable& e ) const
+        bool is_valid( const detail::sequenceable& o ) const
         {
-            return std::find( called_.begin(), called_.end(), &e )
+            return std::find( called_.begin(), called_.end(), &o )
                 == called_.end();
         }
 
-        void call( const detail::orderable& e )
+        void call( const detail::sequenceable& o )
         {
-            elements_it it =
-                std::find( elements_.begin(), elements_.end(), &e );
-            if( it != elements_.end() )
+            orderables_it it =
+                std::find( orderables_.begin(), orderables_.end(), &o );
+            if( it != orderables_.end() )
             {
-                std::copy( elements_.begin(), it,
+                std::copy( orderables_.begin(), it,
                     std::back_inserter( called_ ) );
-                elements_.erase( elements_.begin(), it );
+                orderables_.erase( orderables_.begin(), it );
             }
         }
 
     private:
-        typedef std::vector< detail::orderable* > elements_type;
-        typedef elements_type::iterator elements_it;
+        typedef std::vector< detail::sequenceable* > orderables_type;
+        typedef orderables_type::iterator orderables_it;
 
-        elements_type elements_;
-        elements_type called_;
+        orderables_type orderables_, called_;
     };
 }
 

@@ -6,8 +6,8 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef MOCK_ORDERABLE_HPP_INCLUDED
-#define MOCK_ORDERABLE_HPP_INCLUDED
+#ifndef MOCK_SEQUENCEABLE_HPP_INCLUDED
+#define MOCK_SEQUENCEABLE_HPP_INCLUDED
 
 namespace mock
 {
@@ -15,11 +15,11 @@ namespace mock
 
 namespace detail
 {
-    class orderable
+    class sequenceable
     {
     public:
-        orderable() {}
-        virtual ~orderable() {}
+        sequenceable() {}
+        virtual ~sequenceable() {}
 
         virtual void remove( sequence& s ) = 0;
     };
@@ -27,4 +27,4 @@ namespace detail
 
 }
 
-#endif // #ifndef MOCK_ORDERABLE_HPP_INCLUDED
+#endif // #ifndef MOCK_SEQUENCEABLE_HPP_INCLUDED
