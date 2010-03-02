@@ -6,38 +6,14 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef MOCK_CONSTRAINT_HPP_INCLUDED
-#define MOCK_CONSTRAINT_HPP_INCLUDED
+#ifndef MOCK_CONSTRAINTS_HPP_INCLUDED
+#define MOCK_CONSTRAINTS_HPP_INCLUDED
 
-#include "placeholder.hpp"
 #include "functional.hpp"
-#include "format.hpp"
-#include <sstream>
+#include "operators.hpp"
 
 namespace mock
 {
-    template< typename Functor, typename Description >
-    const detail::placeholder< Functor > constraint( const Functor& f,
-                                                     const Description& desc )
-    {
-        std::stringstream s;
-        s << std::boolalpha << desc;
-        return detail::placeholder< Functor >( f, s.str() );
-    }
-    template< typename Functor >
-    const detail::placeholder< Functor > constraint( const Functor& f )
-    {
-        return detail::placeholder< Functor >( f, "?" );
-    }
-    template< typename Functor, typename T >
-    const detail::placeholder< Functor > constraint( const Functor& f,
-                                                     const std::string& name,
-                                                     const T& t )
-    {
-        return detail::placeholder< Functor >( f,
-            name + "( " + format( t ) + " )" );
-    }
-
 namespace detail
 {
     template<>
@@ -135,4 +111,4 @@ namespace detail
     }
 }
 
-#endif // #ifndef MOCK_CONSTRAINT_HPP_INCLUDED
+#endif // #ifndef MOCK_CONSTRAINTS_HPP_INCLUDED

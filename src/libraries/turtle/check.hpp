@@ -10,8 +10,8 @@
 #define MOCK_CHECK_HPP_INCLUDED
 
 #include "placeholder.hpp"
-#include "constraint.hpp"
 #include "is_functor.hpp"
+#include "constraints.hpp"
 #include "format.hpp"
 #include <boost/function.hpp>
 #include <boost/utility/enable_if.hpp>

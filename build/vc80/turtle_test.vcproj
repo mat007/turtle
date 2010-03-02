@@ -191,7 +191,7 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx;h;hpp;hxx;hm;inl;inc;xsd"
 			>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\constraint_test.cpp"
+				RelativePath="..\..\src\tests\turtle_test\constraints_test.cpp"
 				>
 			</File>
 			<File

@@ -9,7 +9,7 @@
 #ifndef MOCK_PLACEHOLDER_HPP_INCLUDED
 #define MOCK_PLACEHOLDER_HPP_INCLUDED
 
-#include <string>
+#include "format.hpp"
 
 namespace mock
 {
@@ -25,87 +25,29 @@ namespace detail
         Functor f_;
         std::string desc_;
     };
-
-    template< typename Functor1, typename Functor2 >
-    class and_
-    {
-    public:
-        and_( const Functor1& f1, const Functor2& f2 )
-            : f1_( f1 )
-            , f2_( f2 )
-        {}
-        template< typename Actual >
-        bool operator()( const Actual& actual ) const
-        {
-            return f1_( actual ) && f2_( actual );
-        }
-    private:
-        Functor1 f1_;
-        Functor2 f2_;
-    };
-
-    template< typename Functor1, typename Functor2 >
-    class or_
-    {
-    public:
-        or_( const Functor1& f1, const Functor2& f2 )
-            : f1_( f1 )
-            , f2_( f2 )
-        {}
-        template< typename Actual >
-        bool operator()( const Actual& actual ) const
-        {
-            return f1_( actual ) || f2_( actual );
-        }
-    private:
-        Functor1 f1_;
-        Functor2 f2_;
-    };
-
-    template< typename Functor >
-    class not_
-    {
-    public:
-        explicit not_( const Functor& f )
-            : f_( f )
-        {}
-        template< typename Actual >
-        bool operator()( const Actual& actual ) const
-        {
-            return ! f_( actual );
-        }
-    private:
-        Functor f_;
-    };
-
-    template< typename F1, typename F2 >
-    const placeholder< or_< F1, F2 > >
-        operator||( const placeholder< F1 >& lhs,
-                    const placeholder< F2 >& rhs )
-    {
-        return placeholder< or_< F1, F2 > >(
-            or_< F1, F2 >( lhs.f_, rhs.f_ ),
-            "(" + lhs.desc_ + " || " + rhs.desc_ + ")" );
-    }
-
-    template< typename F1, typename F2 >
-    const placeholder< and_< F1, F2 > >
-        operator&&( const placeholder< F1 >& lhs,
-                    const placeholder< F2 >& rhs )
-    {
-        return placeholder< and_< F1, F2 > >(
-            and_< F1, F2 >( lhs.f_, rhs.f_ ),
-            "(" + lhs.desc_ + " && " + rhs.desc_ + ")" );
-    }
-
-    template< typename F >
-    const placeholder< not_< F > >
-        operator!( const placeholder< F >& ph )
-    {
-        return placeholder< not_< F > >(
-            not_< F >( ph.f_ ), "! " + ph.desc_ );
-    }
 }
+
+    template< typename Functor, typename Description >
+    const detail::placeholder< Functor > constraint( const Functor& f,
+                                                     const Description& desc )
+    {
+        std::stringstream s;
+        s << std::boolalpha << desc;
+        return detail::placeholder< Functor >( f, s.str() );
+    }
+    template< typename Functor >
+    const detail::placeholder< Functor > constraint( const Functor& f )
+    {
+        return detail::placeholder< Functor >( f, "?" );
+    }
+    template< typename Functor, typename T >
+    const detail::placeholder< Functor > constraint( const Functor& f,
+                                                     const std::string& name,
+                                                     const T& t )
+    {
+        return detail::placeholder< Functor >( f,
+            name + "( " + format( t ) + " )" );
+    }
 }
 
 #endif // #ifndef MOCK_PLACEHOLDER_HPP_INCLUDED
