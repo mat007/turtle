@@ -11,12 +11,9 @@
 
 #include "config.hpp"
 #include "error.hpp"
-#include "verifiable.hpp"
 #include "expectation.hpp"
-#include "node.hpp"
 #include "root.hpp"
 #include "format.hpp"
-#include "invocation.hpp"
 #include "args.hpp"
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/function_arity.hpp>
