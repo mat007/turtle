@@ -267,30 +267,28 @@ namespace mock
             typedef BOOST_DEDUCED_TYPENAME
                 expectations_type::const_iterator expectations_cit;
 
-            void serialize( std::ostream& s ) const
-            {
-                for( expectations_cit it = expectations_.begin();
-                    it != expectations_.end(); ++it )
-                    s << std::endl << *it;
-            }
-
             std::string context() const
             {
                 std::stringstream s;
-                s << parent_->tag() << name_;
-                serialize( s );
+                serialize( s, "" );
                 return s.str();
             }
             std::string context( const std::string& parameters ) const
             {
                 std::stringstream s;
-                s << name_;
                 if( parameters.empty() )
-                    s << "()";
+                    serialize( s, "()" );
                 else
-                    s << "( " << parameters << " )";
-                serialize( s );
+                    serialize( s, "( " + parameters + " )" );
                 return s.str();
+            }
+            void serialize( std::ostream& s,
+                const std::string& parameters ) const
+            {
+                s << parent_->tag() << name_ << parameters;
+                for( expectations_cit it = expectations_.begin();
+                    it != expectations_.end(); ++it )
+                    s << std::endl << *it;
             }
 
             std::string name_;
