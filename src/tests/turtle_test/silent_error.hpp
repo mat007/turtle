@@ -18,13 +18,6 @@ namespace mock
     template< typename Result >
     struct silent_error
     {
-        static std::string to_string( int i )
-        {
-            std::stringstream s;
-            s << i;
-            return s.str();
-        }
-
         static Result abort()
         {
             throw std::runtime_error( "abort" );
