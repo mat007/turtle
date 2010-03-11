@@ -232,6 +232,17 @@ namespace detail
     ~T() { MOCK_ANONYMOUS_MOCKER_EXT(this, ~T, t).test(); } \
     MOCK_METHOD_EXPECTATION(void(), t)
 
+#define MOCK_CONST_CONVERSION_OPERATOR(T, t) \
+    operator T() const { return MOCK_ANONYMOUS_MOCKER_EXT(this, operator T, t)(); } \
+    MOCK_METHOD_EXPECTATION(T(), t)
+#define MOCK_NON_CONST_CONVERSION_OPERATOR(T, t) \
+    operator T() { return MOCK_ANONYMOUS_MOCKER_EXT(this, operator T, t)(); } \
+    MOCK_METHOD_EXPECTATION(T(), t)
+#define MOCK_CONVERSION_OPERATOR(T, t) \
+    operator T() const { return MOCK_ANONYMOUS_MOCKER_EXT(this, operator T, t)(); } \
+    operator T() { return MOCK_ANONYMOUS_MOCKER_EXT(this, operator T, t)(); } \
+    MOCK_METHOD_EXPECTATION(T(), t)
+
 #define MOCK_EXPECT(o,t) MOCK_MOCKER(o,t).expect( __FILE__, __LINE__ )
 #define MOCK_RESET(o,t) MOCK_MOCKER(o,t).reset()
 #define MOCK_VERIFY(o,t) MOCK_MOCKER(o,t).verify()

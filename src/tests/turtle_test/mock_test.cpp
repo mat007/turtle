@@ -105,6 +105,54 @@ BOOST_AUTO_TEST_CASE( mock_addition_operator )
 
 namespace
 {
+    MOCK_CLASS( mock_class_with_conversion_operator )
+    {
+        MOCK_CONVERSION_OPERATOR( int, conversion )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mock_conversion_operator )
+{
+    mock_class_with_conversion_operator mock;
+    MOCK_EXPECT( mock, conversion ).once().returns( 42 );
+    int i = mock;
+    BOOST_CHECK_EQUAL( 42, i );
+}
+
+namespace
+{
+    MOCK_CLASS( mock_class_with_const_conversion_operator )
+    {
+        MOCK_CONST_CONVERSION_OPERATOR( int, conversion )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mock_const_conversion_operator )
+{
+    mock_class_with_const_conversion_operator mock;
+    MOCK_EXPECT( mock, conversion ).once().returns( 42 );
+    int i = mock;
+    BOOST_CHECK_EQUAL( 42, i );
+}
+
+namespace
+{
+    MOCK_CLASS( mock_class_with_non_const_conversion_operator )
+    {
+        MOCK_CONST_CONVERSION_OPERATOR( int, conversion )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mock_non_const_conversion_operator )
+{
+    mock_class_with_non_const_conversion_operator mock;
+    MOCK_EXPECT( mock, conversion ).once().returns( 42 );
+    int i = mock;
+    BOOST_CHECK_EQUAL( 42, i );
+}
+
+namespace
+{
     MOCK_CLASS( my_mock )
     {
         MOCK_CONST_METHOD_EXT( my_method, 1, void( int ), my_method )
