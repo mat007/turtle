@@ -42,6 +42,8 @@ namespace mock
             std::for_each( v_.begin(), v_.end(),
                 std::mem_fun( &verifiable::reset ) );
         }
+        virtual void untie()
+        {}
 
         void tag( const std::string& name )
         {
@@ -54,7 +56,10 @@ namespace mock
 
     protected:
         virtual ~node()
-        {}
+        {
+            std::for_each( v_.begin(), v_.end(),
+                std::mem_fun( &verifiable::untie ) );
+        }
 
     private:
         typedef std::vector< verifiable* > verifiables_type;

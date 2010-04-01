@@ -127,7 +127,8 @@ namespace mock
             }
             virtual ~function_impl()
             {
-                parent_->remove( *this );
+                if( parent_ )
+                    parent_->remove( *this );
                 if( ! std::uncaught_exception() )
                     for( expectations_cit it = expectations_.begin();
                         it != expectations_.end(); ++it )
@@ -146,7 +147,8 @@ namespace mock
             }
             void set_parent( node& parent )
             {
-                parent_->remove( *this );
+                if( parent_ )
+                    parent_->remove( *this );
                 parent.add( *this );
                 parent_ = &parent;
             }
@@ -167,6 +169,10 @@ namespace mock
             {
                 valid_ = true;
                 expectations_.clear();
+            }
+            virtual void untie()
+            {
+                parent_ = 0;
             }
 
             expectation_type& expect( const std::string& file, int line )
@@ -285,7 +291,9 @@ namespace mock
             void serialize( std::ostream& s,
                 const std::string& parameters ) const
             {
-                s << parent_->tag() << name_ << parameters;
+                if( parent_ )
+                    s << parent_->tag();
+                s << name_ << parameters;
                 for( expectations_cit it = expectations_.begin();
                     it != expectations_.end(); ++it )
                     s << std::endl << *it;

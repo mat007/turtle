@@ -19,11 +19,11 @@ namespace mock
         verifiable() {}
         virtual ~verifiable() {}
 
-        // return false if verification fails
         virtual bool verify() const = 0;
 
-        // return to the initial state
         virtual void reset() = 0;
+
+        virtual void untie() = 0;
     };
 }
 

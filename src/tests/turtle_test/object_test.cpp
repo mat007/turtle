@@ -81,3 +81,13 @@ BOOST_AUTO_TEST_CASE( an_object_is_copiable_by_sharing_its_state )
     o2.reset();
     BOOST_CHECK( ! o1.verify() );
 }
+
+BOOST_AUTO_TEST_CASE( an_object_can_be_destroyed_before_its_children_functions )
+{
+    mock::function< void() > f;
+    {
+        mock::object o;
+        o.set_child( f );
+    }
+    f.test();
+}

@@ -53,6 +53,13 @@ namespace
     };
 }
 
+// static
+
+namespace
+{
+    boost::function< void() > static_f;
+}
+
 // functor
 
 BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor, error_fixture )
