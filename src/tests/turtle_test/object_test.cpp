@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE( verifying_an_object_containing_a_failing_expectation_fails
 {
     mock::object o;
     mock::function< void() > e;
-    o.set_parent( e );
+    o.set_child( e );
     e.expect().once();
     BOOST_CHECK( ! o.verify() );
     o.reset();
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE( verifying_all_objects_with_one_of_them_containing_a_failin
 {
     mock::object o;
     mock::function< void() > e;
-    o.set_parent( e );
+    o.set_child( e );
     e.expect().once();
     BOOST_CHECK( ! mock::verify() );
     mock::reset();
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE( resetting_an_object_containing_a_failing_expectation_and_v
 {
     mock::object o;
     mock::function< void() > e;
-    o.set_parent( e );
+    o.set_child( e );
     e.expect().once();
     o.reset();
     BOOST_CHECK( o.verify() );
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE( an_object_is_assignable_by_sharing_its_state )
     mock::function< void() > e;
     {
         mock::object o2;
-        o2.set_parent( e );
+        o2.set_child( e );
         e.expect().once();
         o1 = o2;
         BOOST_CHECK( ! o2.verify() );
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE( an_object_is_copiable_by_sharing_its_state )
     std::auto_ptr< mock::object > o2( new mock::object );
     const mock::object o1( *o2 );
     mock::function< void() > e;
-    o2->set_parent( e );
+    o2->set_child( e );
     e.expect().once();
     BOOST_CHECK( ! o2->verify() );
     BOOST_CHECK( ! o1.verify() );

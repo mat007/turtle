@@ -92,7 +92,7 @@ namespace detail
     void set_parent( E& e, const std::string& prefix,
         const std::string& name, const object& o )
     {
-        o.set_parent( e );
+        o.set_child( e );
         o.tag( prefix );
         e.tag( name );
     }

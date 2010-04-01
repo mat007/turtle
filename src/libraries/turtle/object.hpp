@@ -25,7 +25,7 @@ namespace mock
         {}
 
         template< typename T >
-        void set_parent( T& t ) const
+        void set_child( T& t ) const
         {
             t.set_parent( *impl_ );
         }
