@@ -120,11 +120,9 @@ namespace mock
         public:
             function_impl()
                 : name_( "?" )
-                , parent_( &root() )
+                , parent_( 0 )
                 , valid_( true )
-            {
-                parent_->add( *this );
-            }
+            {}
             virtual ~function_impl()
             {
                 if( parent_ )
@@ -177,13 +175,14 @@ namespace mock
 
             expectation_type& expect( const std::string& file, int line )
             {
-                expectations_.push_back( expectation_type() );
-                expectations_.back().set_location( file, line );
-                valid_ = true;
-                return expectations_.back();
+                expectation_type& e = expect();
+                e.set_location( file, line );
+                return e;
             }
             expectation_type& expect()
             {
+                if( ! parent_ )
+                    set_parent( root );
                 expectations_.push_back( expectation_type() );
                 valid_ = true;
                 return expectations_.back();

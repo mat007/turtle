@@ -58,10 +58,6 @@ namespace mock
                 std::mem_fun( &verifiable::reset ) );
         }
 
-    protected:
-        virtual void untie()
-        {}
-
     private:
         typedef std::vector< verifiable* > verifiables_type;
         typedef verifiables_type::const_iterator verifiables_cit;

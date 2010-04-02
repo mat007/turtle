@@ -27,7 +27,7 @@ namespace mock
         template< typename T >
         void set_child( T& t ) const
         {
-            t.set_parent( *impl_ );
+            impl_->set_child( t );
         }
         void tag( const std::string& name ) const
         {
@@ -48,13 +48,32 @@ namespace mock
         {
         public:
             object_impl()
-            {
-                root().add( *this );
-            }
+                : parent_( 0 )
+            {}
             virtual ~object_impl()
             {
-                root().remove( *this );
+                if( parent_ )
+                    parent_->remove( *this );
             }
+            template< typename T >
+            void set_child( T& t )
+            {
+                if( ! parent_ )
+                {
+                    root.add( *this );
+                    parent_ = &root;
+                }
+                t.set_parent( *this );
+            }
+
+        protected:
+            virtual void untie()
+            {
+                parent_ = 0;
+            }
+
+        private:
+            node* parent_;
         };
 
         boost::shared_ptr< object_impl > impl_;

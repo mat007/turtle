@@ -11,22 +11,27 @@
 
 #include "config.hpp"
 #include "node.hpp"
+#include <boost/test/utils/trivial_singleton.hpp>
 
 namespace mock
 {
-    inline node& root()
+    class root_t : public boost::unit_test::singleton< root_t >, public node
     {
-        static node r;
-        return r;
-    }
+    protected:
+        virtual void untie()
+        {}
+    private:
+        BOOST_TEST_SINGLETON_CONS( root_t );
+    };
+    BOOST_TEST_SINGLETON_INST( root )
 
     inline bool verify()
     {
-        return root().verify();
+        return root.verify();
     }
     inline void reset()
     {
-        root().reset();
+        root.reset();
     }
 }
 

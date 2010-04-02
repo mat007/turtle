@@ -16,6 +16,11 @@
 #include <turtle/object.hpp>
 #include <turtle/function.hpp>
 
+namespace
+{
+    mock::object static_o;
+}
+
 BOOST_AUTO_TEST_CASE( verifying_an_empty_object_succeeds )
 {
     mock::object o;
