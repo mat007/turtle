@@ -49,11 +49,11 @@ namespace mock
         public:
             object_impl()
             {
-                root.add( *this );
+                root().add( *this );
             }
             virtual ~object_impl()
             {
-                root.remove( *this );
+                root().remove( *this );
             }
         };
 

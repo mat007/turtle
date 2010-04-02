@@ -120,7 +120,7 @@ namespace mock
         public:
             function_impl()
                 : name_( "?" )
-                , parent_( &root )
+                , parent_( &root() )
                 , valid_( true )
             {
                 parent_->add( *this );
