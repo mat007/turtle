@@ -10,12 +10,13 @@
 #define MOCK_SEQUENCE_HPP_INCLUDED
 
 #include "sequenceable.hpp"
-#include <vector>
+#include <boost/noncopyable.hpp>
 #include <algorithm>
+#include <vector>
 
 namespace mock
 {
-    class sequence
+    class sequence : private boost::noncopyable
     {
     public:
         ~sequence()
