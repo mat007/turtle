@@ -23,6 +23,8 @@ namespace mock
 {
 namespace detail
 {
+namespace protect
+{
     struct eater
     {
         template< typename T >
@@ -50,7 +52,7 @@ namespace detail
     template< typename T >
     std::string serialize( const T& t,
         BOOST_DEDUCED_TYPENAME boost::enable_if<
-            BOOST_DEDUCED_TYPENAME detail::is_serializable< T > >::type* = 0 )
+            BOOST_DEDUCED_TYPENAME is_serializable< T > >::type* = 0 )
     {
         std::stringstream s;
         static_cast< std::ostream& >( s ) << std::boolalpha << t;
@@ -59,16 +61,17 @@ namespace detail
     template< typename T >
     std::string serialize( const T&,
         BOOST_DEDUCED_TYPENAME boost::disable_if<
-            BOOST_DEDUCED_TYPENAME detail::is_serializable< T > >::type* = 0 )
+            BOOST_DEDUCED_TYPENAME is_serializable< T > >::type* = 0 )
     {
         return "?";
     }
+}
 }
 
     template< typename T >
     std::string format( const T& t )
     {
-        return detail::serialize( t );
+        return detail::protect::serialize( t );
     }
 
     inline std::string format( const char* s )
