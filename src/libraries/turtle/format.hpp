@@ -52,7 +52,7 @@ namespace protect
     template< typename T >
     std::string serialize( const T& t,
         BOOST_DEDUCED_TYPENAME boost::enable_if<
-            BOOST_DEDUCED_TYPENAME is_serializable< T > >::type* = 0 )
+            BOOST_DEDUCED_TYPENAME protect::is_serializable< T > >::type* = 0 )
     {
         std::stringstream s;
         static_cast< std::ostream& >( s ) << std::boolalpha << t;
@@ -61,7 +61,7 @@ namespace protect
     template< typename T >
     std::string serialize( const T&,
         BOOST_DEDUCED_TYPENAME boost::disable_if<
-            BOOST_DEDUCED_TYPENAME is_serializable< T > >::type* = 0 )
+            BOOST_DEDUCED_TYPENAME protect::is_serializable< T > >::type* = 0 )
     {
         return "?";
     }
