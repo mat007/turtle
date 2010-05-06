@@ -22,13 +22,16 @@
 namespace mock
 {
 #ifdef MOCK_USE_BOOST_TEST
+
+    struct exception : public boost::execution_aborted
+    {};
+
     template< typename Result >
     struct boost_test_error_policy
     {
         static Result abort()
         {
-            throw boost::enable_current_exception(
-                boost::execution_aborted() );
+            throw boost::enable_current_exception( exception() );
         }
 
         static void missing_action( const std::string& context,
@@ -70,10 +73,13 @@ namespace mock
                 << boost::unit_test::log::end();
         }
     };
-#endif // MOCK_USE_BOOST_TEST
+
+#else // MOCK_USE_BOOST_TEST
 
     struct exception
     {};
+
+#endif // MOCK_USE_BOOST_TEST
 
     template< typename Result >
     struct basic_error_policy
