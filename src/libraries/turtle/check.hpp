@@ -81,7 +81,7 @@ namespace detail
             BOOST_DEDUCED_TYPENAME boost::disable_if<
                 BOOST_DEDUCED_TYPENAME detail::is_functor< Expected >
             >::type* = 0 )
-            : desc_( format( expected ) )
+            : desc_( mock::format( expected ) )
         {
             BOOST_CONCEPT_ASSERT(( EqualityComparable< Expected, Actual > ));
             f_ = mock::equal( expected ).f_;

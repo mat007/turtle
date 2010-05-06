@@ -46,7 +46,7 @@ namespace detail
                                                      const T& t )
     {
         return detail::placeholder< Functor >( f,
-            name + "( " + format( t ) + " )" );
+            name + "( " + mock::format( t ) + " )" );
     }
 }
 

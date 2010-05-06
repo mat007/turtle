@@ -120,7 +120,8 @@ namespace detail
         const std::string& name, const T& t )
     {
         if( parent != "?" || e.tag() == "?" )
-            set_parent( e, parent + op + type_name( typeid( T ) ) + "::",
+            mock::detail::set_parent( e,
+                parent + op + mock::detail::type_name( typeid( T ) ) + "::",
                 name, t );
         return e;
     }

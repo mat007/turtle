@@ -203,7 +203,7 @@ namespace mock
             }
 
 #define MOCK_EXPECTATION_FORMAT(z, n, d) \
-    BOOST_PP_IF(n, + ", " +,) format( p##n )
+    BOOST_PP_IF(n, + ", " +,) mock::format( p##n )
 #define MOCK_EXPECTATION_CONTEXT(n) \
     context( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_FORMAT, BOOST_PP_EMPTY) )
 #define MOCK_EXPECTATION_OPERATOR(z, n, d) \

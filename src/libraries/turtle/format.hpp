@@ -87,7 +87,7 @@ namespace protect
     template< typename T1, typename T2 >
     inline std::string format( const std::pair< T1, T2 >& p )
     {
-        return '(' + format( p.first ) + ',' + format( p.second ) + ')';
+        return '(' + mock::format( p.first ) + ',' + mock::format( p.second ) + ')';
     }
     template< typename T >
     std::string format( const T& begin, const T& end )
@@ -95,7 +95,7 @@ namespace protect
         std::stringstream s;
         s << '(';
         for( T it = begin; it != end; ++it )
-            s << (it == begin ? "" : ",") << format( *it );
+            s << (it == begin ? "" : ",") << mock::format( *it );
         s << ')';
         return s.str();
     }
