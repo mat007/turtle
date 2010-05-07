@@ -20,6 +20,7 @@
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/function_types/parameter_types.hpp>
+#include <boost/function_types/result_type.hpp>
 #include <boost/mpl/at.hpp>
 #include <ostream>
 #include <vector>
@@ -105,7 +106,7 @@ namespace detail
         int line_;
     };
 
-    template< typename Result, typename Signature, int >
+    template< typename Signature, int >
     class expectation
     {
     };
@@ -147,9 +148,11 @@ namespace detail
             return *this; \
         }
 
-    template< typename Result, typename Signature >
-    class expectation< Result, Signature, 0 >
-        : public expectation_base, public action< Result, Signature >
+    template< typename Signature >
+    class expectation< Signature, 0 >
+        : public expectation_base
+        , public action< BOOST_DEDUCED_TYPENAME
+            boost::function_types::result_type< Signature >::type, Signature >
     {
     public:
         bool is_valid() const
@@ -180,9 +183,11 @@ namespace detail
 #define MOCK_EXPECTATION_IS_VALID(z, n, d) && c##n##_( a##n )
 #define MOCK_EXPECTATION_SERIALIZE(z, n, d) BOOST_PP_IF(n, << ", " <<,) m.c##n##_
 #define MOCK_EXPECTATION(z, n, d) \
-    template< typename Result, typename Signature > \
-    class expectation< Result, Signature, n > \
-        : public expectation_base, public action< Result, Signature > \
+    template< typename Signature > \
+    class expectation< Signature, n > \
+        : public expectation_base \
+        , public action< BOOST_DEDUCED_TYPENAME \
+            boost::function_types::result_type< Signature >::type, Signature > \
     { \
         BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_TYPEDEF, BOOST_PP_EMPTY) \
     public: \

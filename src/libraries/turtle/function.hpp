@@ -48,8 +48,8 @@ namespace mock
         };
 
     private:
-        typedef detail::expectation< result_type, Signature, arity::value >
-            expectation_type;
+        typedef BOOST_DEDUCED_TYPENAME
+            detail::expectation< Signature, arity::value > expectation_type;
 
     public:
         struct function_tag
