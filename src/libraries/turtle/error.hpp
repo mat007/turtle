@@ -26,100 +26,90 @@ namespace mock
     struct exception : public boost::execution_aborted
     {};
 
+namespace detail
+{
+    template< typename Result >
+    Result abort()
+    {
+        throw boost::enable_current_exception( exception() );
+    }
+
+    inline void fail(
+        const std::string& message, const std::string& context,
+        const std::string& file = "unknown location", int line = 0 )
+    {
+        boost::unit_test::framework::assertion_result( false );
+        boost::unit_test::unit_test_log
+            << boost::unit_test::log::begin( file, (std::size_t)line )
+            << boost::unit_test::log_all_errors
+            << boost::unit_test::lazy_ostream::instance()
+            << "mock error: " << message << ": " << context
+            << boost::unit_test::log::end();
+    }
+}
+
     template< typename Result >
     struct boost_test_error_policy
     {
-        static Result abort()
-        {
-            throw boost::enable_current_exception( exception() );
-        }
-
-        static void missing_action( const std::string& context,
-            const std::string& file, int line )
-        {
-            fail( "mock error : missing result specification : " + context,
-                file, line );
-        }
-        static void no_match( const std::string& context )
-        {
-            fail( "mock error : unexpected call : " + context,
-                "unknown location", 0 );
-        }
-        static void sequence_failed( const std::string& context,
-            const std::string& /*file*/, int /*line*/ )
-        {
-            fail( "mock error : sequence failed : " + context,
-                "unknown location", 0 );
-        }
-        static void verification_failed( const std::string& context,
-            const std::string& file, int line )
-        {
-            fail( "verification failed : " + context, file, line );
-        }
-        static void untriggered_expectation( const std::string& context,
-            const std::string& file, int line )
-        {
-            fail( "untriggered expectation : " + context, file, line );
-        }
-
-        static void fail( const std::string& message,
-            const std::string& file, int line )
-        {
-            boost::unit_test::framework::assertion_result( false );
-            boost::unit_test::unit_test_log
-                << boost::unit_test::log::begin( file, (std::size_t)line )
-                << boost::unit_test::log_all_errors
-                << boost::unit_test::lazy_ostream::instance() << message
-                << boost::unit_test::log::end();
-        }
-    };
 
 #else // MOCK_USE_BOOST_TEST
 
     struct exception
     {};
 
-#endif // MOCK_USE_BOOST_TEST
+namespace detail
+{
+    template< typename Result >
+    Result abort()
+    {
+        throw exception();
+    }
+
+    inline void fail(
+        const std::string& message, const std::string& context,
+        const std::string& file = "unknown location", int line = 0 )
+    {
+        std::cerr << file << '(' << line << "): "
+            << "mock error: " << message << ": " << context << std::endl;
+    }
+}
 
     template< typename Result >
     struct basic_error_policy
     {
+
+#endif // MOCK_USE_BOOST_TEST
+
         static Result abort()
         {
-            throw exception();
+            return mock::detail::abort< Result >();
         }
 
         static void missing_action( const std::string& context,
             const std::string& file, int line )
         {
-            log( "missing result specification", context, file, line );
+            mock::detail::fail( "missing action", context,
+                file, line );
         }
-        static void no_match( const std::string& context )
+        static void unexpected_call( const std::string& context )
         {
-            log( "unexpected call", context );
+            mock::detail::fail( "unexpected call", context );
         }
         static void sequence_failed( const std::string& context,
             const std::string& /*file*/, int /*line*/ )
         {
-            log( "sequence failed", context );
+            mock::detail::fail( "sequence failed", context );
         }
         static void verification_failed( const std::string& context,
             const std::string& file, int line )
         {
-            log( "verification failed", context, file, line );
+            mock::detail::fail( "verification failed", context, file, line );
         }
         static void untriggered_expectation( const std::string& context,
             const std::string& file, int line )
         {
-            log( "untriggered expectation", context, file, line );
-        }
-
-        static void log( const std::string& message,
-            const std::string& context,
-            const std::string& file = "unknown location", int line = 0 )
-        {
-            std::cerr << file << '(' << line << "): "
-                << "mock error: " << message << ": " << context << std::endl;
+            mock::detail::fail( "untriggered expectation", context,
+                file, line );
         }
     };
 }

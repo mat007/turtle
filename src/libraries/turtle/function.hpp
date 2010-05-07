@@ -226,7 +226,7 @@ namespace mock
                 return it->functor()( BOOST_PP_ENUM_PARAMS(n, p) ); \
             } \
         valid_ = false; \
-        ErrorPolicy::no_match( MOCK_EXPECTATION_CONTEXT(n) ); \
+        ErrorPolicy::unexpected_call( MOCK_EXPECTATION_CONTEXT(n) ); \
         return ErrorPolicy::abort(); \
     }
     BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
@@ -263,7 +263,7 @@ namespace mock
                         return it->functor()();
                     }
                 valid_ = false;
-                ErrorPolicy::no_match( context( "" ) );
+                ErrorPolicy::unexpected_call( context( "" ) );
                 return T::abort();
             }
 

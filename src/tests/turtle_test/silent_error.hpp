@@ -22,7 +22,7 @@ namespace mock
         {
             throw std::runtime_error( "abort" );
         }
-        static void no_match( const std::string& /*context*/ )
+        static void unexpected_call( const std::string& /*context*/ )
         {}
         static void missing_action( const std::string& /*context*/,
             const std::string& /*file*/, int /*line*/ )
