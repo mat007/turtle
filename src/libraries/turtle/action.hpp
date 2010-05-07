@@ -18,7 +18,7 @@ namespace mock
 {
 namespace detail
 {
-    template< typename T, typename Signature >
+    template< typename Result, typename Signature >
     class action
     {
         typedef BOOST_DEDUCED_TYPENAME
@@ -50,23 +50,23 @@ namespace detail
         }
 
     private:
-        void set( T t )
+        void set( Result r )
         {
-            f_ = boost::bind( &return_value, t );
+            f_ = boost::bind( &return_value, r );
         }
         template< typename Y >
-        void set( const boost::reference_wrapper< Y >& t )
+        void set( const boost::reference_wrapper< Y >& r )
         {
-            f_ = boost::bind( &return_value, t );
+            f_ = boost::bind( &return_value, r );
         }
 
-        static T return_value( T t )
+        static Result return_value( Result r )
         {
-            return t;
+            return r;
         }
 
         template< typename Exception >
-        static T throw_exception( const Exception& e )
+        static Result throw_exception( const Exception& e )
         {
             throw e;
         }
@@ -74,21 +74,21 @@ namespace detail
         functor_type f_;
     };
 
-    template< typename T, typename Signature >
-    class action< T*, Signature >
+    template< typename Result, typename Signature >
+    class action< Result*, Signature >
     {
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
 
     public:
-        void returns( T* t )
+        void returns( Result* r )
         {
-            f_ = boost::bind( &return_value, t );
+            f_ = boost::bind( &return_value, r );
         }
         template< typename Y >
-        void returns( const boost::reference_wrapper< Y >& t )
+        void returns( const boost::reference_wrapper< Y >& r )
         {
-            f_ = boost::bind( &return_value, t );
+            f_ = boost::bind( &return_value, r );
         }
 
         void calls( const functor_type& f )
@@ -110,13 +110,13 @@ namespace detail
         }
 
     private:
-        static T* return_value( T* t )
+        static Result* return_value( Result* r )
         {
-            return t;
+            return r;
         }
 
         template< typename Exception >
-        static T* throw_exception( const Exception& e )
+        static Result* throw_exception( const Exception& e )
         {
             throw e;
         }
@@ -166,20 +166,20 @@ namespace detail
         functor_type f_;
     };
 
-    template< typename T, typename Signature >
-    class action< std::auto_ptr< T >, Signature >
+    template< typename Result, typename Signature >
+    class action< std::auto_ptr< Result >, Signature >
     {
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
 
     public:
         action()
-            : t_()
+            : r_()
             , f_()
         {}
         action( const action& rhs )
-            : t_( const_cast< action& >( rhs ).t_.release() )
-            , f_( t_.get() ? boost::bind( &return_value, boost::ref( t_ ) ) : rhs.f_ )
+            : r_( const_cast< action& >( rhs ).r_.release() )
+            , f_( r_.get() ? boost::bind( &return_value, boost::ref( r_ ) ) : rhs.f_ )
         {}
 
         template< typename Value >
@@ -199,7 +199,7 @@ namespace detail
         void throws( Exception e )
         {
             f_ = boost::bind( &throw_exception< Exception >, e );
-            t_.reset();
+            r_.reset();
         }
 
         const functor_type& functor() const
@@ -209,36 +209,36 @@ namespace detail
 
     private:
         template< typename Y >
-        void set( std::auto_ptr< Y > t )
+        void set( std::auto_ptr< Y > r )
         {
-            t_ = t;
-            f_ = boost::bind( &return_value, boost::ref( t_ ) );
+            r_ = r;
+            f_ = boost::bind( &return_value, boost::ref( r_ ) );
         }
         template< typename Y >
-        void set( const boost::reference_wrapper< Y >& t )
+        void set( const boost::reference_wrapper< Y >& r )
         {
-            f_ = boost::bind( &return_value, t );
-            t_.reset();
+            f_ = boost::bind( &return_value, r );
+            r_.reset();
         }
         template< typename Y >
-        void set( Y* t )
+        void set( Y* r )
         {
-            t_.reset( t );
-            f_ = boost::bind( &return_value, boost::ref( t_ ) );
+            r_.reset( r );
+            f_ = boost::bind( &return_value, boost::ref( r_ ) );
         }
 
-        static std::auto_ptr< T > return_value( std::auto_ptr< T > t )
+        static std::auto_ptr< Result > return_value( std::auto_ptr< Result > r )
         {
-            return t;
+            return r;
         }
 
         template< typename Exception >
-        static std::auto_ptr< T > throw_exception( const Exception& e )
+        static std::auto_ptr< Result > throw_exception( const Exception& e )
         {
             throw e;
         }
 
-        mutable std::auto_ptr< T > t_;
+        mutable std::auto_ptr< Result > r_;
         functor_type f_;
     };
 
