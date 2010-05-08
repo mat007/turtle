@@ -194,8 +194,8 @@ namespace detail
         expectation() \
             : BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_CONSTRUCTOR, BOOST_PP_EMPTY) \
         {} \
-        template< BOOST_PP_ENUM_PARAMS(n, typename C) > \
-        expectation& with( BOOST_PP_ENUM_BINARY_PARAMS(n, const C, & c) ) \
+        template< BOOST_PP_ENUM_PARAMS(n, typename Constraint) > \
+        expectation& with( BOOST_PP_ENUM_BINARY_PARAMS(n, const Constraint, & c) ) \
         { \
             BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_WITH, BOOST_PP_EMPTY) \
             return *this; \
