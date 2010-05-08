@@ -26,90 +26,73 @@ namespace mock
     struct exception : public boost::execution_aborted
     {};
 
-namespace detail
-{
-    template< typename Result >
-    Result abort()
-    {
-        throw boost::enable_current_exception( exception() );
-    }
-
-    inline void fail(
-        const std::string& message, const std::string& context,
-        const std::string& file = "unknown location", int line = 0 )
-    {
-        boost::unit_test::framework::assertion_result( false );
-        boost::unit_test::unit_test_log
-            << boost::unit_test::log::begin( file, (std::size_t)line )
-            << boost::unit_test::log_all_errors
-            << boost::unit_test::lazy_ostream::instance()
-            << "mock error: " << message << ": " << context
-            << boost::unit_test::log::end();
-    }
-}
-
     template< typename Result >
     struct boost_test_error_policy
     {
+        static Result abort()
+        {
+            throw boost::enable_current_exception( exception() );
+        }
+
+        static void fail(
+            const std::string& message, const std::string& context,
+            const std::string& file = "unknown location", int line = 0 )
+        {
+            boost::unit_test::framework::assertion_result( false );
+            boost::unit_test::unit_test_log
+                << boost::unit_test::log::begin( file, (std::size_t)line )
+                << boost::unit_test::log_all_errors
+                << boost::unit_test::lazy_ostream::instance()
+                << "mock error: " << message << ": " << context
+                << boost::unit_test::log::end();
+        }
 
 #else // MOCK_USE_BOOST_TEST
 
     struct exception
     {};
 
-namespace detail
-{
-    template< typename Result >
-    Result abort()
-    {
-        throw exception();
-    }
-
-    inline void fail(
-        const std::string& message, const std::string& context,
-        const std::string& file = "unknown location", int line = 0 )
-    {
-        std::cerr << file << '(' << line << "): "
-            << "mock error: " << message << ": " << context << std::endl;
-    }
-}
-
     template< typename Result >
     struct basic_error_policy
     {
-
-#endif // MOCK_USE_BOOST_TEST
-
         static Result abort()
         {
-            return mock::detail::abort< Result >();
+            throw exception();
         }
+
+        static void fail(
+            const std::string& message, const std::string& context,
+            const std::string& file = "unknown location", int line = 0 )
+        {
+            std::cerr << file << '(' << line << "): "
+                << "mock error: " << message << ": " << context << std::endl;
+        }
+
+#endif // MOCK_USE_BOOST_TEST
 
         static void missing_action( const std::string& context,
             const std::string& file, int line )
         {
-            mock::detail::fail( "missing action", context,
-                file, line );
+            fail( "missing action", context, file, line );
         }
         static void unexpected_call( const std::string& context )
         {
-            mock::detail::fail( "unexpected call", context );
+            fail( "unexpected call", context );
         }
         static void sequence_failed( const std::string& context,
             const std::string& /*file*/, int /*line*/ )
         {
-            mock::detail::fail( "sequence failed", context );
+            fail( "sequence failed", context );
         }
         static void verification_failed( const std::string& context,
             const std::string& file, int line )
         {
-            mock::detail::fail( "verification failed", context, file, line );
+            fail( "verification failed", context, file, line );
         }
         static void untriggered_expectation( const std::string& context,
             const std::string& file, int line )
         {
-            mock::detail::fail( "untriggered expectation", context,
-                file, line );
+            fail( "untriggered expectation", context, file, line );
         }
     };
 }
