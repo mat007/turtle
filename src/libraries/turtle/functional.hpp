@@ -9,7 +9,6 @@
 #ifndef MOCK_FUNCTIONAL_HPP_INCLUDED
 #define MOCK_FUNCTIONAL_HPP_INCLUDED
 
-#include <boost/ref.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -68,16 +67,16 @@ namespace detail
     class same
     {
     public:
-        explicit same( const boost::reference_wrapper< Expected >& expected )
-            : expected_( expected )
+        explicit same( const Expected& expected )
+            : expected_( &expected )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return &actual == expected_.get_pointer();
+            return &actual == expected_;
         }
     private:
-        boost::reference_wrapper< Expected > expected_;
+        const Expected* expected_;
     };
 
     template< typename Expected >
@@ -119,10 +118,21 @@ namespace detail
         explicit assign( const Expected& expected )
             : expected_( expected )
         {}
+
         template< typename Actual >
-        bool operator()( Actual& actual ) const
+        bool operator()( Actual& actual,
+            BOOST_DEDUCED_TYPENAME boost::disable_if<
+                boost::is_convertible< Expected*, Actual >, Actual >::type* = 0 ) const
         {
             actual = expected_;
+            return true;
+        }
+        template< typename Actual >
+        bool operator()( Actual* actual,
+            BOOST_DEDUCED_TYPENAME boost::enable_if<
+                boost::is_convertible< Expected, Actual >, Actual >::type* = 0 ) const
+        {
+            *actual = expected_;
             return true;
         }
     private:
@@ -133,15 +143,15 @@ namespace detail
     class retrieve
     {
     public:
-        explicit retrieve( const boost::reference_wrapper< Expected >& expected )
-            : expected_( expected )
+        explicit retrieve( Expected& expected )
+            : expected_( &expected )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual,
             BOOST_DEDUCED_TYPENAME boost::disable_if<
                 boost::is_convertible< const Actual*, Expected >, Actual >::type* = 0 ) const
         {
-            expected_.get() = actual;
+            *expected_ = actual;
             return true;
         }
         template< typename Actual >
@@ -149,11 +159,11 @@ namespace detail
             BOOST_DEDUCED_TYPENAME boost::enable_if<
                 boost::is_convertible< Actual*, Expected >, Actual >::type* = 0 ) const
         {
-            expected_.get() = &actual;
+            *expected_ = &actual;
             return true;
         }
     private:
-        boost::reference_wrapper< Expected > expected_;
+        Expected* expected_;
     };
 
     template< typename Expected >

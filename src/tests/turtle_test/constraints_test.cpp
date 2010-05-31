@@ -60,6 +60,11 @@ BOOST_AUTO_TEST_CASE( assign )
         BOOST_CHECK_EQUAL( 3, i );
     }
     {
+        int i = 0;
+        BOOST_CHECK( mock::assign( 3 ).f_( &i ) );
+        BOOST_CHECK_EQUAL( 3, i );
+    }
+    {
         const int* i = 0;
         const int j = 1;
         BOOST_CHECK( mock::assign( &j ).f_( i ) );

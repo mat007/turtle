@@ -57,8 +57,7 @@ namespace detail
     template< typename T >
     detail::placeholder< detail::same< T > > same( T& t )
     {
-        return constraint( detail::same< T >( boost::ref( t ) ),
-            "same", &t );
+        return constraint( detail::same< T >( t ), "same", &t );
     }
 
     template< typename T >
@@ -100,8 +99,7 @@ namespace detail
     template< typename T >
     detail::placeholder< detail::retrieve< T > > retrieve( T& t )
     {
-        return constraint( detail::retrieve< T >( boost::ref( t ) ),
-            "retrieve", t );
+        return constraint( detail::retrieve< T >( t ), "retrieve", t );
     }
 
     template< typename T >
