@@ -14,12 +14,8 @@
 #include "function.hpp"
 #include "type_name.hpp"
 #include "args.hpp"
-#include <boost/preprocessor/cat.hpp>
-#include <boost/preprocessor/inc.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/stringize.hpp>
-#include <boost/preprocessor/seq/push_back.hpp>
-#include <boost/preprocessor/seq/pop_back.hpp>
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_type.hpp>
 #include <boost/function_types/result_type.hpp>
