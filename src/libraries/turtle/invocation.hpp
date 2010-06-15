@@ -10,7 +10,6 @@
 #define MOCK_INVOCATION_HPP_INCLUDED
 
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 #include <stdexcept>
 #include <ostream>
 #include <limits>
