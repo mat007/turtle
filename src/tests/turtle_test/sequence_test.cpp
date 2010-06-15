@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE( registering_to_a_sequence_enforces_call_order_verification
     BOOST_CHECK_THROW( e1(), std::exception );
 }
 
-BOOST_AUTO_TEST_CASE( destroying_a_sequence_removes_order_call_enforcement )
+BOOST_AUTO_TEST_CASE( destroying_a_sequence_does_not_remove_order_call_enforcement )
 {
     mock::function< void() > e1, e2;
     {
@@ -79,9 +79,7 @@ BOOST_AUTO_TEST_CASE( destroying_a_sequence_removes_order_call_enforcement )
         e2.expect().once().in( s );
     }
     BOOST_CHECK_NO_THROW( e2() );
-    BOOST_CHECK_NO_THROW( e1() );
-    BOOST_CHECK( e1.verify() );
-    BOOST_CHECK( e2.verify() );
+    BOOST_CHECK_THROW( e1(), std::exception );
 }
 
 BOOST_AUTO_TEST_CASE( resetting_an_expectation_removes_it_from_order_call_enforcement )

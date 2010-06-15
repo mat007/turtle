@@ -9,61 +9,58 @@
 #ifndef MOCK_SEQUENCE_HPP_INCLUDED
 #define MOCK_SEQUENCE_HPP_INCLUDED
 
-#include "sequenceable.hpp"
 #include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
 #include <algorithm>
 #include <vector>
 
 namespace mock
 {
-    class sequence : private boost::noncopyable
+namespace detail
+{
+    class sequence_impl : private boost::noncopyable
     {
     public:
-        ~sequence()
+        void add( void* e )
         {
-            for( orderables_it it = orderables_.begin();
-                it != orderables_.end(); ++it )
-                (*it)->remove( *this );
-            for( orderables_it it = called_.begin();
-                it != called_.end(); ++it )
-                (*it)->remove( *this );
+            elements_.push_back( e );
+        }
+        void remove( void* e )
+        {
+            elements_.erase( std::remove( elements_.begin(),
+                elements_.end(), e ), elements_.end() );
         }
 
-        void add( detail::sequenceable& o )
+        bool is_valid( const void* e ) const
         {
-            orderables_.push_back( &o );
-        }
-        void remove( detail::sequenceable& o )
-        {
-            orderables_.erase( std::remove( orderables_.begin(),
-                orderables_.end(), &o ), orderables_.end() );
-            called_.erase( std::remove( called_.begin(),
-                called_.end(), &o ), called_.end() );
+            return std::find( elements_.begin(), elements_.end(), e )
+                != elements_.end();
         }
 
-        bool is_valid( const detail::sequenceable& o ) const
+        void invalidate( const void* e )
         {
-            return std::find( called_.begin(), called_.end(), &o )
-                == called_.end();
-        }
-
-        void call( const detail::sequenceable& o )
-        {
-            orderables_it it =
-                std::find( orderables_.begin(), orderables_.end(), &o );
-            if( it != orderables_.end() )
-            {
-                std::copy( orderables_.begin(), it,
-                    std::back_inserter( called_ ) );
-                orderables_.erase( orderables_.begin(), it );
-            }
+            elements_it it =
+                std::find( elements_.begin(), elements_.end(), e );
+            if( it != elements_.end() )
+                elements_.erase( elements_.begin(), it );
         }
 
     private:
-        typedef std::vector< detail::sequenceable* > orderables_type;
-        typedef orderables_type::iterator orderables_it;
+        typedef std::vector< void* > elements_type;
+        typedef elements_type::iterator elements_it;
 
-        orderables_type orderables_, called_;
+        elements_type elements_;
+    };
+}
+
+    class sequence
+    {
+    public:
+        sequence()
+            : impl_( new detail::sequence_impl() )
+        {}
+
+        boost::shared_ptr< detail::sequence_impl > impl_;
     };
 }
 

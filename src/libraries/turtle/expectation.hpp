@@ -29,7 +29,7 @@ namespace mock
 {
 namespace detail
 {
-    class expectation_base : private sequenceable
+    class expectation_base
     {
     public:
         expectation_base()
@@ -41,7 +41,7 @@ namespace detail
         {
             for( sequences_cit it = sequences_.begin();
                 it != sequences_.end(); ++it )
-                (*it)->remove( *this );
+                (*it)->remove( this );
         }
 
         void set_location( const std::string& file, int line )
@@ -59,12 +59,12 @@ namespace detail
         {
             for( sequences_cit it = sequences_.begin();
                 it != sequences_.end(); ++it )
-                if( ! (*it)->is_valid( *this ) )
+                if( ! (*it)->is_valid( this ) )
                     return false;
             bool result = i_->invoke();
             for( sequences_cit it = sequences_.begin();
                 it != sequences_.end(); ++it )
-                (*it)->call( *this );
+                (*it)->invalidate( this );
             return result;
         }
 
@@ -85,20 +85,14 @@ namespace detail
             i_.reset( i );
         }
 
-        void add( sequence& s )
+        void add( boost::shared_ptr< detail::sequence_impl > s )
         {
-            s.add( *this );
-            sequences_.push_back( &s );
+            s->add( this );
+            sequences_.push_back( s );
         }
 
     private:
-        virtual void remove( sequence& s )
-        {
-            sequences_.erase( std::remove( sequences_.begin(),
-                sequences_.end(), &s ), sequences_.end() );
-        }
-
-        typedef std::vector< sequence* > sequences_type;
+        typedef std::vector< boost::shared_ptr< detail::sequence_impl > > sequences_type;
         typedef sequences_type::const_iterator sequences_cit;
 
         sequences_type sequences_;
@@ -114,7 +108,7 @@ namespace detail
 #define MOCK_EXPECTATION_METHODS \
         expectation& in( sequence& s ) \
         { \
-            add( s ); \
+            add( s.impl_ ); \
             return *this; \
         } \
         expectation& once() \
