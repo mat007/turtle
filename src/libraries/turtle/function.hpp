@@ -92,7 +92,7 @@ namespace mock
 
         void test() const
         {
-            return impl_->test();
+            impl_->test();
         }
 
         result_type operator()() const
