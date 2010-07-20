@@ -12,7 +12,7 @@
   </target>
 
   <target name="test" description="run unit tests">
-    <build-test name="turtle" mode="all">
+    <build-test name="turtle" depends="boost" mode="all">
       <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
     </build-test>
   </target>
