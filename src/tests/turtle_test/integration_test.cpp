@@ -55,8 +55,6 @@ namespace
     {
         MOCK_METHOD_EXT( my_method, 1, int( int ), my_method )
     };
-
-    void f() {}
 }
 
 BOOST_AUTO_TEST_CASE( basic_mock_object_usage )
@@ -183,13 +181,8 @@ namespace
     template< typename T >
     MOCK_BASE_CLASS( my_template_base_class_mock, my_template_base_class< T > )
     {
-#if (defined __CYGWIN__) && (__GNUC__ == 3)
         MOCK_METHOD_EXT_TPL( my_method, 1, void( T ), my_method )
         MOCK_METHOD_EXT_TPL( my_other_method, 0, void(), my_other_method )
-#else
-        MOCK_METHOD_TPL( my_method, 1 )
-        MOCK_METHOD_TPL( my_other_method, 0 )
-#endif
     };
 }
 
