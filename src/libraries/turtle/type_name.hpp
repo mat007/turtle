@@ -13,7 +13,7 @@
 #include <typeinfo>
 #ifdef __GNUC__
 #include <cxxabi.h>
-#include <memory.h>
+#include <cstdlib>
 #endif
 
 namespace mock
