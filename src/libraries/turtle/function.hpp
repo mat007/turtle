@@ -222,6 +222,7 @@ namespace mock
                     ErrorPolicy::missing_action( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
                     return ErrorPolicy::abort(); \
                 } \
+                ErrorPolicy::expected_call( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
                 return it->functor()( BOOST_PP_ENUM_PARAMS(n, p) ); \
             } \
         valid_ = false; \
@@ -259,6 +260,8 @@ namespace mock
                                 it->file(), it->line() );
                             return T::abort();
                         }
+                        ErrorPolicy::expected_call( context( "" ),
+                                it->file(), it->line() );
                         return it->functor()();
                     }
                 valid_ = false;

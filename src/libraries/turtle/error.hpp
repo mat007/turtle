@@ -31,6 +31,8 @@ namespace mock
     {
         static Result abort()
         {
+            boost::unit_test::framework::test_unit_aborted(
+                boost::unit_test::framework::current_test_case() );
             throw boost::enable_current_exception( exception() );
         }
 
@@ -44,6 +46,18 @@ namespace mock
                 << boost::unit_test::log_all_errors
                 << boost::unit_test::lazy_ostream::instance()
                 << "mock error: " << message << ": " << context
+                << boost::unit_test::log::end();
+        }
+
+        static void expected_call( const std::string& context,
+            const std::string& file, int line )
+        {
+            boost::unit_test::framework::assertion_result( true );
+            boost::unit_test::unit_test_log
+                << boost::unit_test::log::begin( file, (std::size_t)line )
+                << boost::unit_test::log_successful_tests
+                << boost::unit_test::lazy_ostream::instance()
+                << "mock expectation fulfilled: " << context
                 << boost::unit_test::log::end();
         }
 
@@ -67,6 +81,10 @@ namespace mock
             std::cerr << file << '(' << line << "): "
                 << "mock error: " << message << ": " << context << std::endl;
         }
+
+        static void expected_call( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
+        {}
 
 #endif // MOCK_USE_BOOST_TEST
 

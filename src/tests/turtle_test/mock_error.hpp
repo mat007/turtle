@@ -36,6 +36,9 @@ namespace mock
         {
             ++missing_action_count;
         }
+        static void expected_call( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
+        {}
         static void unexpected_call( const std::string& /*context*/ )
         {
             ++unexpected_call_count;
@@ -66,6 +69,9 @@ namespace mock
         {
             ++missing_action_count;
         }
+        static void expected_call( const std::string& /*context*/,
+            const std::string& /*file*/, int /*line*/ )
+        {}
         static void unexpected_call( const std::string& /*context*/ )
         {
             ++unexpected_call_count;
