@@ -29,6 +29,10 @@ namespace detail
         // returns false if the invocation has failed
         virtual bool invoke() = 0;
 
+        // Test whether the invocation has been invoked or not
+        // returns true if the invocation has been invoked
+        virtual bool invoked() const = 0;
+
         // Test whether the invocation is exhausted or not
         // returns false if the invocation is exhausted
         virtual bool is_valid() const = 0;
@@ -64,6 +68,11 @@ namespace detail
                 return false;
             ++count_;
             return true;
+        }
+
+        virtual bool invoked() const
+        {
+            return count_ > 0;
         }
 
         virtual bool is_valid() const

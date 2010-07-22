@@ -126,12 +126,17 @@ namespace mock
             {
                 if( parent_ )
                     parent_->remove( *this );
-                if( ! std::uncaught_exception() )
+                if( valid_ && ! std::uncaught_exception() )
                     for( expectations_cit it = expectations_.begin();
                         it != expectations_.end(); ++it )
-                        if( valid_ && ! it->verify() )
+                    {
+                        if( ! it->verify() )
                             ErrorPolicy::untriggered_expectation(
                                 context(), it->file(), it->line() );
+                        else if( ! it->invoked() )
+                            ErrorPolicy::expected_call(
+                                context(), it->file(), it->line() );
+                    }
             }
 
             void tag( const std::string& name )

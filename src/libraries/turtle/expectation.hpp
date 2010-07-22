@@ -68,6 +68,11 @@ namespace detail
             return result;
         }
 
+        bool invoked() const
+        {
+            return i_->invoked();
+        }
+
         const std::string& file() const
         {
             return file_;
