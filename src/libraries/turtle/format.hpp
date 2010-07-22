@@ -10,9 +10,8 @@
 #define MOCK_FORMAT_HPP_INCLUDED
 
 #include <boost/type_traits.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/integral_constant.hpp>
+#include <boost/exception/detail/is_output_streamable.hpp>
 #ifndef MOCK_NO_STL_FORMAT
 #include <boost/detail/container_fwd.hpp>
 #endif // MOCK_NO_STL_FORMAT
@@ -23,55 +22,28 @@ namespace mock
 {
 namespace detail
 {
-namespace protect
-{
-    struct eater
-    {
-        template< typename T >
-        eater( const T& ) {}
-    };
-
-    struct eaten
-    {};
-
-    template< typename S >
-    eaten operator<<( S&, const eater& );
-
-    template< typename T >
-    struct is_serializable_impl
-    {
-        static std::ostream* s;
-        static T* t;
-        enum { value = sizeof( *s << *t ) == sizeof( std::ostream& ) };
-    };
-
-    template< typename T >
-    struct is_serializable : boost::integral_constant< bool, is_serializable_impl< T >::value >
-    {};
-
     template< typename T >
     std::string serialize( const T& t,
         BOOST_DEDUCED_TYPENAME boost::enable_if<
-            BOOST_DEDUCED_TYPENAME protect::is_serializable< T > >::type* = 0 )
+            BOOST_DEDUCED_TYPENAME boost::is_output_streamable< T > >::type* = 0 )
     {
         std::stringstream s;
-        static_cast< std::ostream& >( s ) << std::boolalpha << t;
+        s << std::boolalpha << t;
         return s.str();
     }
     template< typename T >
     std::string serialize( const T&,
         BOOST_DEDUCED_TYPENAME boost::disable_if<
-            BOOST_DEDUCED_TYPENAME protect::is_serializable< T > >::type* = 0 )
+            BOOST_DEDUCED_TYPENAME boost::is_output_streamable< T > >::type* = 0 )
     {
         return "?";
     }
-}
 }
 
     template< typename T >
     std::string format( const T& t )
     {
-        return detail::protect::serialize( t );
+        return detail::serialize( t );
     }
 
     inline std::string format( const char* s )

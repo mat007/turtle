@@ -57,9 +57,9 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( custom_type_convertible_to_base_type_yields_its_value_when_serialized )
+BOOST_AUTO_TEST_CASE( custom_type_convertible_to_base_type_yields_an_interrogation_mark_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "12", mock::format( convertible_to_int() ) );
+    BOOST_CHECK_EQUAL( "?", mock::format( convertible_to_int() ) );
 }
 
 namespace
@@ -77,9 +77,9 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( custom_type_convertible_to_another_type_serializable_in_standard_stream_yields_its_value_when_serialized )
+BOOST_AUTO_TEST_CASE( custom_type_convertible_to_another_type_serializable_in_standard_stream_yields_an_interrogation_mark_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "serializable", mock::format( convertible_to_serializable() ) );
+    BOOST_CHECK_EQUAL( "?", mock::format( convertible_to_serializable() ) );
 }
 
 BOOST_AUTO_TEST_CASE( booleans_are_serialized_as_booleans )
