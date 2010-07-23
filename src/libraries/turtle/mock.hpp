@@ -9,6 +9,7 @@
 #ifndef MOCK_MOCK_HPP_INCLUDED
 #define MOCK_MOCK_HPP_INCLUDED
 
+#include "config.hpp"
 #include "error.hpp"
 #include "object.hpp"
 #include "function.hpp"

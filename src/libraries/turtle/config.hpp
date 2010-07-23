@@ -9,17 +9,24 @@
 #ifndef MOCK_CONFIG_HPP_INCLUDED
 #define MOCK_CONFIG_HPP_INCLUDED
 
-#include <boost/preprocessor/comparison/less_equal.hpp>
-#include <boost/preprocessor/debug/assert.hpp>
 #include <boost/preprocessor/inc.hpp>
-#include <boost/function.hpp>
 
 #ifndef MOCK_MAX_ARGS
 #  define MOCK_MAX_ARGS 10
 #endif
 #define MOCK_NUM_ARGS BOOST_PP_INC(MOCK_MAX_ARGS)
 
-BOOST_PP_ASSERT( BOOST_PP_LESS_EQUAL(MOCK_MAX_ARGS, BOOST_FUNCTION_MAX_ARGS) )
+#ifndef PHOENIX_LIMIT
+#   define PHOENIX_LIMIT MOCK_MAX_ARGS
+#elif (PHOENIX_LIMIT < MOCK_MAX_ARGS)
+#   error "PHOENIX_LIMIT is set too low"
+#endif
+
+#ifndef BOOST_FUNCTION_MAX_ARGS
+#   define BOOST_FUNCTION_MAX_ARGS MOCK_MAX_ARGS
+#elif (BOOST_FUNCTION_MAX_ARGS < MOCK_MAX_ARGS)
+#   error "BOOST_FUNCTION_MAX_ARGS is set too low"
+#endif
 
 #ifdef BOOST_TEST_DECL
 #   define MOCK_USE_BOOST_TEST

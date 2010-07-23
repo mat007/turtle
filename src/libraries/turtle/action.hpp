@@ -10,6 +10,9 @@
 #define MOCK_ACTION_HPP_INCLUDED
 
 #include "config.hpp"
+#include <boost/spirit/home/phoenix/bind/bind_function.hpp>
+#include <boost/spirit/home/phoenix/statement/sequence.hpp>
+#include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 #include <memory>
@@ -41,7 +44,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::bind( &throw_exception< Exception >, e );
+            f_ = boost::phoenix::bind( &throw_exception< Exception >, e );
         }
 
         const functor_type& functor() const
@@ -52,15 +55,17 @@ namespace detail
     private:
         void set( Result r )
         {
-            f_ = boost::bind( &return_value, r );
+            f_ = (boost::phoenix::bind( &nothing ), boost::bind( &identity, r ));
         }
         template< typename Y >
         void set( const boost::reference_wrapper< Y >& r )
         {
-            f_ = boost::bind( &return_value, r );
+            f_ = boost::phoenix::val( r );
         }
 
-        static Result return_value( Result r )
+        static void nothing()
+        {}
+        static Result identity( Result r )
         {
             return r;
         }
@@ -83,12 +88,12 @@ namespace detail
     public:
         void returns( Result* r )
         {
-            f_ = boost::bind( &return_value, r );
+            f_ = boost::phoenix::val( r );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            f_ = boost::bind( &return_value, r );
+            f_ = boost::phoenix::val( r );
         }
 
         void calls( const functor_type& f )
@@ -101,7 +106,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::bind( &throw_exception< Exception >, e );
+            f_ = boost::phoenix::bind( &throw_exception< Exception >, e );
         }
 
         const functor_type& functor() const
@@ -110,11 +115,6 @@ namespace detail
         }
 
     private:
-        static Result* return_value( Result* r )
-        {
-            return r;
-        }
-
         template< typename Exception >
         static Result* throw_exception( const Exception& e )
         {
@@ -132,7 +132,7 @@ namespace detail
 
     public:
         action()
-            : f_( boost::bind( &nothing ) )
+            : f_( boost::phoenix::bind( &nothing ) )
         {}
 
         void calls( const functor_type& f )
@@ -145,7 +145,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::bind( &throw_exception< Exception >, e );
+            f_ = boost::phoenix::bind( &throw_exception< Exception >, e );
         }
 
         const functor_type& functor() const
@@ -179,7 +179,7 @@ namespace detail
         {}
         action( const action& rhs )
             : r_( const_cast< action& >( rhs ).r_.release() )
-            , f_( r_.get() ? boost::bind( &return_value, boost::ref( r_ ) ) : rhs.f_ )
+            , f_( r_.get() ? boost::phoenix::val( boost::ref( r_ ) ) : rhs.f_ )
         {}
 
         template< typename Value >
@@ -198,7 +198,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::bind( &throw_exception< Exception >, e );
+            f_ = boost::phoenix::bind( &throw_exception< Exception >, e );
             r_.reset();
         }
 
@@ -212,24 +212,19 @@ namespace detail
         void set( std::auto_ptr< Y > r )
         {
             r_ = r;
-            f_ = boost::bind( &return_value, boost::ref( r_ ) );
+            f_ = boost::phoenix::val( boost::ref( r_ ) );
         }
         template< typename Y >
         void set( const boost::reference_wrapper< Y >& r )
         {
-            f_ = boost::bind( &return_value, r );
+            f_ = boost::phoenix::val( r );
             r_.reset();
         }
         template< typename Y >
         void set( Y* r )
         {
             r_.reset( r );
-            f_ = boost::bind( &return_value, boost::ref( r_ ) );
-        }
-
-        static std::auto_ptr< Result > return_value( std::auto_ptr< Result > r )
-        {
-            return r;
+            f_ = boost::phoenix::val( boost::ref( r_ ) );
         }
 
         template< typename Exception >
