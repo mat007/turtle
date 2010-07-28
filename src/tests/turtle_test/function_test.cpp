@@ -15,6 +15,7 @@
 
 #define MOCK_ERROR_POLICY mock_error
 #include <turtle/mock.hpp>
+#include <boost/bind.hpp>
 
 #define CHECK_CALLS( calls ) \
     BOOST_CHECK_EQUAL( calls, expected_call_count ); \

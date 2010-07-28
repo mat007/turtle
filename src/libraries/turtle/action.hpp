@@ -11,9 +11,8 @@
 
 #include "config.hpp"
 #include <boost/spirit/home/phoenix/bind/bind_function.hpp>
-#include <boost/spirit/home/phoenix/statement/sequence.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
-#include <boost/bind.hpp>
 #include <boost/ref.hpp>
 #include <memory>
 
@@ -26,12 +25,22 @@ namespace detail
     {
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
+        typedef BOOST_DEDUCED_TYPENAME
+            boost::remove_reference<
+                BOOST_DEDUCED_TYPENAME boost::remove_const< Result >::type
+            >::type result_type;
 
     public:
         template< typename Value >
         void returns( Value v )
         {
-            set( v );
+            r_.reset( new result_type( v ) );
+            f_ = boost::phoenix::val( boost::ref( *r_ ) );
+        }
+        template< typename Y >
+        void returns( const boost::reference_wrapper< Y >& r )
+        {
+            f_ = boost::phoenix::val( r );
         }
 
         void calls( const functor_type& f )
@@ -53,22 +62,6 @@ namespace detail
         }
 
     private:
-        void set( Result r )
-        {
-            f_ = (boost::phoenix::bind( &nothing ), boost::bind( &identity, r ));
-        }
-        template< typename Y >
-        void set( const boost::reference_wrapper< Y >& r )
-        {
-            f_ = boost::phoenix::val( r );
-        }
-
-        static void nothing()
-        {}
-        static Result identity( Result r )
-        {
-            return r;
-        }
 
         template< typename Exception >
         static Result throw_exception( const Exception& e )
@@ -76,6 +69,7 @@ namespace detail
             throw e;
         }
 
+        boost::shared_ptr< result_type > r_;
         functor_type f_;
     };
 

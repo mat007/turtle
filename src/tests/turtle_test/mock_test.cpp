@@ -9,6 +9,7 @@
 #define MOCK_USE_BOOST_TEST
 #include <turtle/mock.hpp>
 #include <boost/mpl/assert.hpp>
+#include <boost/bind.hpp>
 
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
