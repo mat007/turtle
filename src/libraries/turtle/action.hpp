@@ -10,7 +10,6 @@
 #define MOCK_ACTION_HPP_INCLUDED
 
 #include "config.hpp"
-#include <boost/spirit/home/phoenix/bind/bind_function.hpp>
 #include <boost/spirit/home/phoenix/statement/throw.hpp>
 #include <boost/spirit/home/phoenix/operator/self.hpp>
 #include <boost/spirit/home/phoenix/core/nothing.hpp>
