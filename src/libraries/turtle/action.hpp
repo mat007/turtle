@@ -11,6 +11,9 @@
 
 #include "config.hpp"
 #include <boost/spirit/home/phoenix/bind/bind_function.hpp>
+#include <boost/spirit/home/phoenix/statement/throw.hpp>
+#include <boost/spirit/home/phoenix/operator/self.hpp>
+#include <boost/spirit/home/phoenix/core/nothing.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/ref.hpp>
@@ -40,7 +43,7 @@ namespace detail
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            f_ = boost::phoenix::val( r );
+            f_ = *boost::phoenix::val( r.get_pointer() );
         }
 
         void calls( const functor_type& f )
@@ -53,7 +56,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::phoenix::bind( &throw_exception< Exception >, e );
+            f_ = boost::phoenix::throw_( e );
         }
 
         const functor_type& functor() const
@@ -62,13 +65,6 @@ namespace detail
         }
 
     private:
-
-        template< typename Exception >
-        static Result throw_exception( const Exception& e )
-        {
-            throw e;
-        }
-
         boost::shared_ptr< result_type > r_;
         functor_type f_;
     };
@@ -100,7 +96,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::phoenix::bind( &throw_exception< Exception >, e );
+            f_ = boost::phoenix::throw_( e );
         }
 
         const functor_type& functor() const
@@ -109,12 +105,6 @@ namespace detail
         }
 
     private:
-        template< typename Exception >
-        static Result* throw_exception( const Exception& e )
-        {
-            throw e;
-        }
-
         functor_type f_;
     };
 
@@ -126,7 +116,7 @@ namespace detail
 
     public:
         action()
-            : f_( boost::phoenix::bind( &nothing ) )
+            : f_( boost::phoenix::nothing )
         {}
 
         void calls( const functor_type& f )
@@ -139,7 +129,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::phoenix::bind( &throw_exception< Exception >, e );
+            f_ = boost::phoenix::throw_( e );
         }
 
         const functor_type& functor() const
@@ -148,15 +138,6 @@ namespace detail
         }
 
     private:
-        static void nothing()
-        {}
-
-        template< typename Exception >
-        static void throw_exception( const Exception& e )
-        {
-            throw e;
-        }
-
         functor_type f_;
     };
 
@@ -192,7 +173,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::phoenix::bind( &throw_exception< Exception >, e );
+            f_ = boost::phoenix::throw_( e );
             r_.reset();
         }
 
@@ -219,12 +200,6 @@ namespace detail
         {
             r_.reset( r );
             f_ = boost::phoenix::val( boost::ref( r_ ) );
-        }
-
-        template< typename Exception >
-        static std::auto_ptr< Result > throw_exception( const Exception& e )
-        {
-            throw e;
         }
 
         mutable std::auto_ptr< Result > r_;

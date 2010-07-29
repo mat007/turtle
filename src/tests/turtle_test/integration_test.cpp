@@ -16,6 +16,7 @@
 #include <turtle/mock.hpp>
 
 #include <boost/noncopyable.hpp>
+#include <boost/optional.hpp>
 #include <boost/ref.hpp>
 
 namespace
@@ -292,4 +293,20 @@ BOOST_AUTO_TEST_CASE( failed_sequence_in_mocked_destructor_does_not_throw )
         MOCK_EXPECT( m, my_method ).once().in( s );
         m.my_method();
     }
+}
+
+namespace
+{
+    MOCK_CLASS( boost_optional )
+    {
+        MOCK_METHOD_EXT( method, 0, boost::optional< my_observer& >(), method )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( boost_optional_on_base_class_reference_as_return_type )
+{
+    boost_optional b;
+    my_mock_observer o;
+    MOCK_EXPECT( b, method ).once().returns( boost::ref( o ) );
+    b.method();
 }
