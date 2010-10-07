@@ -63,7 +63,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_3D.lib"
 				OutputFile="$(OutDir)/$(ProjectName)-vc80-mt-gd.exe"
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
@@ -144,7 +143,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_3.lib"
 				OutputFile="$(OutDir)/$(ProjectName)-vc80-mt.exe"
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
