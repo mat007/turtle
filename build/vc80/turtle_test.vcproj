@@ -243,10 +243,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\tmp.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\tests\turtle_test\type_name_test.cpp"
 				>
 			</File>
