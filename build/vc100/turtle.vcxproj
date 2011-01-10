@@ -148,7 +148,7 @@
     <ClInclude Include="..\..\src\libraries\turtle\format.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\function.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\functional.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\hippomocks.h" />
+    <ClInclude Include="..\..\src\libraries\turtle\has_operator.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\invocation.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\is_functor.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\mock.hpp" />

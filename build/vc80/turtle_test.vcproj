@@ -207,6 +207,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\tests\turtle_test\has_operator_test.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tests\turtle_test\integration_test.cpp"
 				>
 			</File>

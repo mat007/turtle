@@ -193,6 +193,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\has_operator.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\invocation.hpp"
 				>
 			</File>

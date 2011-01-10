@@ -11,6 +11,7 @@
 
 #include "placeholder.hpp"
 #include "is_functor.hpp"
+#include "has_operator.hpp"
 #include "constraints.hpp"
 #include "format.hpp"
 #include <boost/function.hpp>
@@ -67,9 +68,12 @@ namespace detail
         template< typename Functor >
         explicit check( const Functor& f,
             BOOST_DEDUCED_TYPENAME boost::enable_if<
-                BOOST_DEDUCED_TYPENAME detail::is_functor< Functor >
+                BOOST_DEDUCED_TYPENAME boost::mpl::or_<
+                    BOOST_DEDUCED_TYPENAME detail::is_functor< Functor >,
+                    BOOST_DEDUCED_TYPENAME detail::has_operator< Functor, Actual > // $$$$ MAT : add a has_const_operator too ?
+                >
             >::type* = 0 )
-            : desc_( "?" )
+            : desc_( mock::format( f ) )
         {
             BOOST_CONCEPT_ASSERT(( FunctorCompatible< Functor, Actual > ));
             f_ = f;
@@ -79,7 +83,10 @@ namespace detail
         template< typename Expected >
         explicit check( const Expected& expected,
             BOOST_DEDUCED_TYPENAME boost::disable_if<
-                BOOST_DEDUCED_TYPENAME detail::is_functor< Expected >
+                BOOST_DEDUCED_TYPENAME boost::mpl::or_<
+                    BOOST_DEDUCED_TYPENAME detail::is_functor< Expected >,
+                    BOOST_DEDUCED_TYPENAME detail::has_operator< Expected, Actual >
+                >
             >::type* = 0 )
             : desc_( mock::format( expected ) )
         {

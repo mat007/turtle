@@ -310,3 +310,52 @@ BOOST_AUTO_TEST_CASE( boost_optional_on_base_class_reference_as_return_type )
     MOCK_EXPECT( b, method ).once().returns( boost::ref( o ) );
     b.method();
 }
+
+namespace
+{
+    template< typename Expected >
+    struct near_constraint
+    {
+        near_constraint( Expected expected, Expected threshold )
+          : expected_( expected )
+          , threshold_( threshold )
+        {}
+
+        template< typename Actual >
+        bool operator()( Actual actual ) const
+        {
+            return std::abs( actual - expected_ ) < threshold_;
+        }
+
+        friend std::ostream& operator<<( std::ostream& os, const near_constraint& c )
+        {
+            return os << "std::abs( _ - " << c.expected_ << " ) < " << c.threshold_;
+        }
+
+        //template< typename Actual >
+        //void explain( std::ostream& os, Actual actual ) const
+        //{
+        //    os << std::abs( actual - expected_ ) << " >= " << threshold_;
+        //}
+
+        Expected expected_;
+        Expected threshold_;
+    };
+    template< typename Expected >
+    near_constraint< Expected > near( Expected expected, Expected threshold )
+    {
+        return near_constraint< Expected >( expected, threshold );
+    }
+
+    MOCK_CLASS( custom_constraint_mock )
+    {
+        MOCK_METHOD_EXT( method, 1, void( float ), method )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( writing_custom_constraint )
+{
+    custom_constraint_mock m;
+    MOCK_EXPECT( m, method ).with( near( 3.f, 0.01f ) );
+    m.method( 3.f );
+}

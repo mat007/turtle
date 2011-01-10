@@ -40,6 +40,9 @@
     <ClCompile Include="..\..\src\tests\turtle_test\type_name_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\tests\turtle_test\has_operator_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\tests\turtle_test\mock_error.hpp">

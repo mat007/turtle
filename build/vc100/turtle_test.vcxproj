@@ -199,6 +199,7 @@
     <ClCompile Include="..\..\src\tests\turtle_test\error_test.cpp" />
     <ClCompile Include="..\..\src\tests\turtle_test\format_test.cpp" />
     <ClCompile Include="..\..\src\tests\turtle_test\function_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\has_operator_test.cpp" />
     <ClCompile Include="..\..\src\tests\turtle_test\integration_test.cpp" />
     <ClCompile Include="..\..\src\tests\turtle_test\invocation_test.cpp" />
     <ClCompile Include="..\..\src\tests\turtle_test\is_functor_test.cpp" />

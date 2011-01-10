@@ -37,9 +37,6 @@
     <ClInclude Include="..\..\src\libraries\turtle\functional.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libraries\turtle\hippomocks.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\libraries\turtle\invocation.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -71,6 +68,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libraries\turtle\verifiable.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\libraries\turtle\has_operator.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
