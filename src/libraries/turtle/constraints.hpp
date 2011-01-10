@@ -177,6 +177,12 @@ namespace detail
     {
         return detail::assign< T >( t );
     }
+
+    template< typename T >
+    constraint< T > call( T t )
+    {
+        return t;
+    }
 }
 
 #endif // #ifndef MOCK_CONSTRAINTS_HPP_INCLUDED
