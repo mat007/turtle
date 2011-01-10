@@ -169,6 +169,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\constraint.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\constraints.hpp"
 				>
 			</File>
@@ -186,14 +190,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\function.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libraries\turtle\functional.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libraries\turtle\has_operator.hpp"
 				>
 			</File>
 			<File
@@ -218,10 +214,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\operators.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libraries\turtle\placeholder.hpp"
 				>
 			</File>
 			<File

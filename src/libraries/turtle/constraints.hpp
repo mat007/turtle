@@ -9,103 +9,173 @@
 #ifndef MOCK_CONSTRAINTS_HPP_INCLUDED
 #define MOCK_CONSTRAINTS_HPP_INCLUDED
 
-#include "functional.hpp"
-#include "operators.hpp"
+#include "constraint.hpp"
+#include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/preprocessor/stringize.hpp>
 
 namespace mock
 {
+#define MOCK_CONSTRAINT(N,Expr) \
+    namespace detail \
+    { \
+        struct N \
+        { \
+            template< typename Actual > \
+            bool operator()( const Actual& actual ) const \
+            { \
+                (void)actual; \
+                return Expr; \
+            } \
+            friend std::ostream& operator<<( std::ostream& os, const N& ) \
+            { \
+                return os << BOOST_STRINGIZE( N ); \
+            } \
+        }; \
+    } \
+    template<> \
+    struct constraint< detail::N > \
+    { \
+        constraint() \
+        {} \
+        detail::N f_; \
+    }; \
+    const constraint< detail::N > N;
+
+    MOCK_CONSTRAINT( any, true )
+    MOCK_CONSTRAINT( negate, ! actual )
+    MOCK_CONSTRAINT( evaluate, actual() )
+
+#undef MOCK_CONSTRAINT
+
+#define MOCK_CONSTRAINT(N,Expr) \
+    namespace detail \
+    { \
+        template< typename Expected > \
+        struct N \
+        { \
+            explicit N( const Expected& expected ) \
+                : expected_( expected ) \
+            {} \
+            template< typename Actual > \
+            bool operator()( const Actual& actual ) const \
+            { \
+                return Expr; \
+            } \
+            friend std::ostream& operator<<( std::ostream& os, const N& n ) \
+            { \
+                return os << BOOST_STRINGIZE( N ) << "( " << mock::format( n.expected_ ) << " )"; \
+            } \
+            Expected expected_; \
+        }; \
+    } \
+    template< typename T > \
+    constraint< detail::N< T > > N( T t ) \
+    { \
+        return detail::N< T >( t ); \
+    }
+
+    MOCK_CONSTRAINT( equal, actual == expected_ )
+    MOCK_CONSTRAINT( less, actual < expected_ )
+    MOCK_CONSTRAINT( greater, actual > expected_ )
+    MOCK_CONSTRAINT( less_equal, actual <= expected_ )
+    MOCK_CONSTRAINT( greater_equal, actual >= expected_ )
+    MOCK_CONSTRAINT( contain, boost::algorithm::contains( actual, expected_ ) )
+
 namespace detail
 {
-    template<>
-    struct placeholder< any >
+    template< typename Expected >
+    struct same
     {
-        placeholder()
-            : desc_( "any" )
+        explicit same( const Expected& expected )
+            : expected_( &expected )
         {}
-        any f_;
-        std::string desc_;
+        template< typename Actual >
+        bool operator()( const Actual& actual ) const
+        {
+            return &actual == expected_;
+        }
+        friend std::ostream& operator<<( std::ostream& os, const same& s )
+        {
+            return os << "same( " << mock::format( *s.expected_ ) << " )";
+        }
+        const Expected* expected_;
     };
-    template<>
-    struct placeholder< negate >
+
+    template< typename Expected >
+    struct assign
     {
-        placeholder()
-            : desc_( "negate" )
+        explicit assign( const Expected& expected )
+            : expected_( expected )
         {}
-        negate f_;
-        std::string desc_;
+        template< typename Actual >
+        bool operator()( Actual& actual,
+            BOOST_DEDUCED_TYPENAME boost::disable_if<
+                boost::is_convertible< Expected*, Actual >, Actual >::type* = 0 ) const
+        {
+            actual = expected_;
+            return true;
+        }
+        template< typename Actual >
+        bool operator()( Actual* actual,
+            BOOST_DEDUCED_TYPENAME boost::enable_if<
+                boost::is_convertible< Expected, Actual >, Actual >::type* = 0 ) const
+        {
+            *actual = expected_;
+            return true;
+        }
+        friend std::ostream& operator<<( std::ostream& os, const assign& a )
+        {
+            return os << "assign( " << mock::format( a.expected_ ) << " )";
+        }
+        Expected expected_;
     };
-    template<>
-    struct placeholder< evaluate >
+
+    template< typename Expected >
+    struct retrieve
     {
-        placeholder()
-            : desc_( "evaluate" )
+        explicit retrieve( Expected& expected )
+            : expected_( &expected )
         {}
-        evaluate f_;
-        std::string desc_;
+        template< typename Actual >
+        bool operator()( const Actual& actual,
+            BOOST_DEDUCED_TYPENAME boost::disable_if<
+                boost::is_convertible< const Actual*, Expected >, Actual >::type* = 0 ) const
+        {
+            *expected_ = actual;
+            return true;
+        }
+        template< typename Actual >
+        bool operator()( Actual& actual,
+            BOOST_DEDUCED_TYPENAME boost::enable_if<
+                boost::is_convertible< Actual*, Expected >, Actual >::type* = 0 ) const
+        {
+            *expected_ = &actual;
+            return true;
+        }
+        friend std::ostream& operator<<( std::ostream& os, const retrieve& r )
+        {
+            return os << "retrieve( " << mock::format( *r.expected_ ) << " )";
+        }
+        Expected* expected_;
     };
 }
-    const detail::placeholder< detail::any > any;
-    const detail::placeholder< detail::negate > negate;
-    const detail::placeholder< detail::evaluate > evaluate;
 
     template< typename T >
-    detail::placeholder< detail::equal< T > > equal( T t )
+    constraint< detail::same< T > > same( T& t )
     {
-        return constraint( detail::equal< T >( t ), "equal", t );
+        return detail::same< T >( t );
     }
-
     template< typename T >
-    detail::placeholder< detail::same< T > > same( T& t )
+    constraint< detail::retrieve< T > > retrieve( T& t )
     {
-        return constraint( detail::same< T >( t ), "same", &t );
+        return detail::retrieve< T >( t );
     }
-
     template< typename T >
-    detail::placeholder< detail::less< T > > less( T t )
+    constraint< detail::assign< T > > assign( T t )
     {
-        return constraint( detail::less< T >( t ), "less", t );
-    }
-
-    template< typename T >
-    detail::placeholder< detail::greater< T > > greater( T t )
-    {
-        return constraint( detail::greater< T >( t ), "greater", t );
-    }
-
-    template< typename T >
-    detail::placeholder<
-        detail::or_< detail::less< T >, detail::equal< T > > >
-    less_equal( T t )
-    {
-        return constraint( (less( t ) || equal( t )).f_,
-            "less_equal", t );
-    }
-
-    template< typename T >
-    detail::placeholder<
-        detail::or_< detail::greater< T >, detail::equal< T > > >
-    greater_equal( T t )
-    {
-        return constraint( (greater( t ) || equal( t )).f_,
-            "greater_equal", t );
-    }
-
-    template< typename T >
-    detail::placeholder< detail::assign< T > > assign( T t )
-    {
-        return constraint( detail::assign< T >( t ), "assign", t );
-    }
-
-    template< typename T >
-    detail::placeholder< detail::retrieve< T > > retrieve( T& t )
-    {
-        return constraint( detail::retrieve< T >( t ), "retrieve", t );
-    }
-
-    template< typename T >
-    detail::placeholder< detail::contains< T > > contain( T t )
-    {
-        return constraint( detail::contains< T >( t ), "contain", t );
+        return detail::assign< T >( t );
     }
 }
 

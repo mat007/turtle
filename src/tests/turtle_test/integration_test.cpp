@@ -342,7 +342,7 @@ namespace
         Expected threshold_;
     };
     template< typename Expected >
-    near_constraint< Expected > near( Expected expected, Expected threshold )
+    mock::constraint< near_constraint< Expected > > near( Expected expected, Expected threshold )
     {
         return near_constraint< Expected >( expected, threshold );
     }

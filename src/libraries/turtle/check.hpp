@@ -9,10 +9,9 @@
 #ifndef MOCK_CHECK_HPP_INCLUDED
 #define MOCK_CHECK_HPP_INCLUDED
 
-#include "placeholder.hpp"
 #include "is_functor.hpp"
-#include "has_operator.hpp"
 #include "constraints.hpp"
+#include "operators.hpp"
 #include "format.hpp"
 #include <boost/function.hpp>
 #include <boost/utility/enable_if.hpp>
@@ -68,10 +67,7 @@ namespace detail
         template< typename Functor >
         explicit check( const Functor& f,
             BOOST_DEDUCED_TYPENAME boost::enable_if<
-                BOOST_DEDUCED_TYPENAME boost::mpl::or_<
-                    BOOST_DEDUCED_TYPENAME detail::is_functor< Functor >,
-                    BOOST_DEDUCED_TYPENAME detail::has_operator< Functor, Actual > // $$$$ MAT : add a has_const_operator too ?
-                >
+                    BOOST_DEDUCED_TYPENAME detail::is_functor< Functor >
             >::type* = 0 )
             : desc_( mock::format( f ) )
         {
@@ -83,10 +79,7 @@ namespace detail
         template< typename Expected >
         explicit check( const Expected& expected,
             BOOST_DEDUCED_TYPENAME boost::disable_if<
-                BOOST_DEDUCED_TYPENAME boost::mpl::or_<
-                    BOOST_DEDUCED_TYPENAME detail::is_functor< Expected >,
-                    BOOST_DEDUCED_TYPENAME detail::has_operator< Expected, Actual >
-                >
+                    BOOST_DEDUCED_TYPENAME detail::is_functor< Expected >
             >::type* = 0 )
             : desc_( mock::format( expected ) )
         {
@@ -96,8 +89,8 @@ namespace detail
                 std::invalid_argument( "invalid constraint" );
         }
         template< typename Functor >
-        explicit check( const placeholder< Functor >& ph )
-            : desc_( ph.desc_ )
+        explicit check( const constraint< Functor >& ph )
+            : desc_( mock::format( ph.f_ ) )
         {
             BOOST_CONCEPT_ASSERT(( FunctorCompatible< Functor, Actual > ));
             f_ = ph.f_;

@@ -337,13 +337,6 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_failing_custom_constrain
     }
 }
 
-BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in_custom_constraint_calls_unexpected_call_error, error_fixture )
-{
-    mock::function< void( int ) > f;
-    f.expect().with( mock::constraint( &custom_constraint, "custom constraint" ) );
-    CHECK_ERROR( f( 42 ), unexpected_call, 0 );
-}
-
 /*
 BOOST_FIXTURE_TEST_CASE( literal_zero_can_be_used_in_place_of_null_pointers_in_constraints, error_fixture )
 {
@@ -712,24 +705,6 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
         f.expect().once().with( &custom_constraint );
         const std::string expected = "my function\n"
                                      ". once().with( ? )";
-        BOOST_CHECK_EQUAL( expected, to_string( f ) );
-        f.reset();
-    }
-    {
-        mock::function< void( int ) > f;
-        f.tag( "my function" );
-        f.expect().once().with( mock::constraint( &custom_constraint, "custom constraint" ) );
-        const std::string expected = "my function\n"
-                                     ". once().with( custom constraint )";
-        BOOST_CHECK_EQUAL( expected, to_string( f ) );
-        f.reset();
-    }
-    {
-        mock::function< void( int ) > f;
-        f.tag( "my function" );
-        f.expect().once().with( mock::constraint( &custom_constraint, true ) );
-        const std::string expected = "my function\n"
-                                     ". once().with( true )";
         BOOST_CHECK_EQUAL( expected, to_string( f ) );
         f.reset();
     }
