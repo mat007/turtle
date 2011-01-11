@@ -9,8 +9,6 @@
 #ifndef MOCK_PLACEHOLDER_HPP_INCLUDED
 #define MOCK_PLACEHOLDER_HPP_INCLUDED
 
-#include "format.hpp"
-
 namespace mock
 {
     template< typename Constraint >
