@@ -346,16 +346,14 @@ namespace
     {
         return near_constraint< Expected >( expected, threshold );
     }
-
-    MOCK_CLASS( custom_constraint_mock )
-    {
-        MOCK_METHOD_EXT( method, 1, void( float ), method )
-    };
 }
 
 BOOST_AUTO_TEST_CASE( writing_custom_constraint )
 {
-    custom_constraint_mock m;
-    MOCK_EXPECT( m, method ).with( near( 3.f, 0.01f ) );
-    m.method( 3.f );
+    MOCK_FUNCTOR( void( float ) ) f;
+    MOCK_EXPECT( f, _ ).with( near( 3.f, 0.01f ) );
+    f( 3.f );
+    const std::string expected = "f\n"
+                                 ". unlimited().with( std::abs( _ - 3 ) < 0.01 )";
+    BOOST_CHECK_EQUAL( expected, mock::format( f ) );
 }
