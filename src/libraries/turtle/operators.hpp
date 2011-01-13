@@ -28,9 +28,9 @@ namespace detail
         {
             return f1_( actual ) && f2_( actual );
         }
-        friend std::ostream& operator<<( std::ostream& os, const and_& a )
+        friend std::ostream& operator<<( std::ostream& s, const and_& a )
         {
-            return os << "( " << a.f1_ << " && " << a.f2_ << " )";
+            return s << "( " << a.f1_ << " && " << a.f2_ << " )";
         }
     private:
         Functor1 f1_;
@@ -50,9 +50,9 @@ namespace detail
         {
             return f1_( actual ) || f2_( actual );
         }
-        friend std::ostream& operator<<( std::ostream& os, const or_& o )
+        friend std::ostream& operator<<( std::ostream& s, const or_& o )
         {
-            return os << "( " << o.f1_ << " || " << o.f2_ << " )";
+            return s << "( " << o.f1_ << " || " << o.f2_ << " )";
         }
     private:
         Functor1 f1_;
@@ -71,9 +71,9 @@ namespace detail
         {
             return ! f_( actual );
         }
-        friend std::ostream& operator<<( std::ostream& os, const not_& n )
+        friend std::ostream& operator<<( std::ostream& s, const not_& n )
         {
-            return os << "! " << n.f_;
+            return s << "! " << n.f_;
         }
     private:
         Functor f_;

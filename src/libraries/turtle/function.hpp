@@ -243,8 +243,8 @@ namespace mock
             {
                 return s << e.context();
             }
-        private:
 
+        private:
             template< typename T >
             result_type invoke() const
             {

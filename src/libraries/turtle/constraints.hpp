@@ -29,9 +29,9 @@ namespace mock
                 (void)actual; \
                 return Expr; \
             } \
-            friend std::ostream& operator<<( std::ostream& os, const N& ) \
+            friend std::ostream& operator<<( std::ostream& s, const N& ) \
             { \
-                return os << BOOST_STRINGIZE( N ); \
+                return s << BOOST_STRINGIZE( N ); \
             } \
         }; \
     } \
@@ -64,9 +64,9 @@ namespace mock
             { \
                 return Expr; \
             } \
-            friend std::ostream& operator<<( std::ostream& os, const N& n ) \
+            friend std::ostream& operator<<( std::ostream& s, const N& n ) \
             { \
-                return os << BOOST_STRINGIZE( N ) << "( " << mock::format( n.expected_ ) << " )"; \
+                return s << BOOST_STRINGIZE( N ) << "( " << mock::format( n.expected_ ) << " )"; \
             } \
             Expected expected_; \
         }; \
@@ -126,9 +126,9 @@ namespace detail
             *actual = expected_;
             return true;
         }
-        friend std::ostream& operator<<( std::ostream& os, const assign& a )
+        friend std::ostream& operator<<( std::ostream& s, const assign& a )
         {
-            return os << "assign( " << mock::format( a.expected_ ) << " )";
+            return s << "assign( " << mock::format( a.expected_ ) << " )";
         }
         Expected expected_;
     };
@@ -155,9 +155,9 @@ namespace detail
             *expected_ = &actual;
             return true;
         }
-        friend std::ostream& operator<<( std::ostream& os, const retrieve& r )
+        friend std::ostream& operator<<( std::ostream& s, const retrieve& r )
         {
-            return os << "retrieve( " << mock::format( *r.expected_ ) << " )";
+            return s << "retrieve( " << mock::format( *r.expected_ ) << " )";
         }
         Expected* expected_;
     };

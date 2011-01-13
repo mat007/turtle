@@ -327,15 +327,15 @@ namespace
             return std::abs( actual - expected_ ) < threshold_;
         }
 
-        friend std::ostream& operator<<( std::ostream& os, const near_constraint& c )
+        friend std::ostream& operator<<( std::ostream& s, const near_constraint& c )
         {
-            return os << "std::abs( _ - " << c.expected_ << " ) < " << c.threshold_;
+            return s << "std::abs( _ - " << c.expected_ << " ) < " << c.threshold_;
         }
 
         //template< typename Actual >
-        //void explain( std::ostream& os, Actual actual ) const
+        //void explain( std::ostream& s, Actual actual ) const
         //{
-        //    os << std::abs( actual - expected_ ) << " >= " << threshold_;
+        //    s << std::abs( actual - expected_ ) << " >= " << threshold_;
         //}
 
         Expected expected_;
