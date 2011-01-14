@@ -12,14 +12,18 @@
 #include <boost/preprocessor/inc.hpp>
 
 #ifndef MOCK_MAX_ARGS
-#  define MOCK_MAX_ARGS 10
+#  define MOCK_MAX_ARGS 9
 #endif
 #define MOCK_NUM_ARGS BOOST_PP_INC(MOCK_MAX_ARGS)
 
-#ifndef PHOENIX_LIMIT
-#   define PHOENIX_LIMIT MOCK_MAX_ARGS
-#elif (PHOENIX_LIMIT < MOCK_MAX_ARGS)
-#   error "PHOENIX_LIMIT is set too low"
+#if defined(MOCK_USE_BOOST_PHOENIX) || (MOCK_MAX_ARGS > 9)
+#   ifndef PHOENIX_LIMIT
+#       define PHOENIX_LIMIT MOCK_MAX_ARGS
+#   elif (PHOENIX_LIMIT < MOCK_MAX_ARGS)
+#       error "PHOENIX_LIMIT is set too low"
+#   endif
+#else
+#   define MOCK_USE_BOOST_BIND
 #endif
 
 #ifndef BOOST_FUNCTION_MAX_ARGS

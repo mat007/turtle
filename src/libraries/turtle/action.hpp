@@ -9,14 +9,12 @@
 #ifndef MOCK_ACTION_HPP_INCLUDED
 #define MOCK_ACTION_HPP_INCLUDED
 
-#include "config.hpp"
-#include <boost/spirit/home/phoenix/statement/throw.hpp>
-#include <boost/spirit/home/phoenix/operator/self.hpp>
-#include <boost/spirit/home/phoenix/core/nothing.hpp>
+#include "lambda.hpp"
+#include <boost/type_traits/remove_reference.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/ref.hpp>
-#include <memory>
 
 namespace mock
 {
@@ -32,17 +30,20 @@ namespace detail
                 BOOST_DEDUCED_TYPENAME boost::remove_const< Result >::type
             >::type result_type;
 
+        typedef BOOST_DEDUCED_TYPENAME
+            lambda< Signature > lambda;
+
     public:
         template< typename Value >
         void returns( Value v )
         {
             r_.reset( new result_type( v ) );
-            f_ = boost::phoenix::val( boost::ref( *r_ ) );
+            f_ = lambda::make_val( boost::ref( *r_ ) );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            f_ = *boost::phoenix::val( r.get_pointer() );
+            f_ = lambda::make_val( r );
         }
 
         void calls( const functor_type& f )
@@ -55,7 +56,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::phoenix::throw_( e );
+            f_ = lambda::make_throw( e );
         }
 
         const functor_type& functor() const
@@ -74,15 +75,18 @@ namespace detail
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
 
+        typedef BOOST_DEDUCED_TYPENAME
+            lambda< Signature > lambda;
+
     public:
         void returns( Result* r )
         {
-            f_ = boost::phoenix::val( r );
+            f_ = lambda::make_val( r );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            f_ = boost::phoenix::val( r );
+            f_ = lambda::make_val( r );
         }
 
         void calls( const functor_type& f )
@@ -95,7 +99,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::phoenix::throw_( e );
+            f_ = lambda::make_throw( e );
         }
 
         const functor_type& functor() const
@@ -113,9 +117,12 @@ namespace detail
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
 
+        typedef BOOST_DEDUCED_TYPENAME
+            lambda< Signature > lambda;
+
     public:
         action()
-            : f_( boost::phoenix::nothing )
+            : f_( lambda::make_nothing() )
         {}
 
         void calls( const functor_type& f )
@@ -128,7 +135,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::phoenix::throw_( e );
+            f_ = lambda::make_throw( e );
         }
 
         const functor_type& functor() const
@@ -146,6 +153,9 @@ namespace detail
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
 
+        typedef BOOST_DEDUCED_TYPENAME
+            lambda< Signature > lambda;
+
     public:
         action()
             : r_()
@@ -153,7 +163,7 @@ namespace detail
         {}
         action( const action& rhs )
             : r_( const_cast< action& >( rhs ).r_.release() )
-            , f_( r_.get() ? boost::phoenix::val( boost::ref( r_ ) ) : rhs.f_ )
+            , f_( r_.get() ? lambda::make_val( boost::ref( r_ ) ) : rhs.f_ )
         {}
 
         template< typename Value >
@@ -172,7 +182,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = boost::phoenix::throw_( e );
+            f_ = lambda::make_throw( e );
             r_.reset();
         }
 
@@ -186,19 +196,19 @@ namespace detail
         void set( std::auto_ptr< Y > r )
         {
             r_ = r;
-            f_ = boost::phoenix::val( boost::ref( r_ ) );
+            f_ = lambda::make_val( boost::ref( r_ ) );
         }
         template< typename Y >
         void set( const boost::reference_wrapper< Y >& r )
         {
-            f_ = boost::phoenix::val( r );
+            f_ = lambda::make_val( r );
             r_.reset();
         }
         template< typename Y >
         void set( Y* r )
         {
             r_.reset( r );
-            f_ = boost::phoenix::val( boost::ref( r_ ) );
+            f_ = lambda::make_val( boost::ref( r_ ) );
         }
 
         mutable std::auto_ptr< Result > r_;

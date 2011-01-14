@@ -201,6 +201,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\lambda.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\mock.hpp"
 				>
 			</File>

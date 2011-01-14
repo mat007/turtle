@@ -24,7 +24,8 @@ namespace
     struct my_custom_mock
     {
         MOCK_METHOD_EXT( my_method, 0, void(), my_method )
-        MOCK_METHOD_EXT( my_method_with_max_number_of_args, MOCK_MAX_ARGS, void( int, int, int, int, int, int, int, int, int, int ), my_method_with_max_number_of_args )
+        BOOST_STATIC_ASSERT( MOCK_MAX_ARGS == 9 );
+        MOCK_METHOD_EXT( my_method_with_max_number_of_args, MOCK_MAX_ARGS, void( int, int, int, int, int, int, int, int, int ), my_method_with_max_number_of_args )
     };
 }
 
