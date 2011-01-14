@@ -13,7 +13,6 @@
 #include "format.hpp"
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
 namespace mock
@@ -82,7 +81,6 @@ namespace mock
     MOCK_CONSTRAINT( greater, actual > expected_ )
     MOCK_CONSTRAINT( less_equal, actual <= expected_ )
     MOCK_CONSTRAINT( greater_equal, actual >= expected_ )
-    MOCK_CONSTRAINT( contain, boost::algorithm::contains( actual, expected_ ) )
 
 namespace detail
 {
@@ -161,6 +159,23 @@ namespace detail
         }
         Expected* expected_;
     };
+
+    template< typename Expected >
+    struct contain
+    {
+        explicit contain( const Expected& expected )
+            : expected_( expected )
+        {}
+        bool operator()( const std::string& actual ) const
+        {
+            return actual.find( expected_ ) != std::string::npos;
+        }
+        friend std::ostream& operator<<( std::ostream& s, const contain& n )
+        {
+            return s << "contain ( " << mock::format( n.expected_ ) << " )";
+        }
+        Expected expected_;
+    };
 }
 
     template< typename T >
@@ -177,6 +192,11 @@ namespace detail
     constraint< detail::assign< T > > assign( T t )
     {
         return detail::assign< T >( t );
+    }
+    template< typename T >
+    constraint< detail::contain< T > > contain( T t )
+    {
+        return detail::contain< T >( t );
     }
 
     template< typename T >

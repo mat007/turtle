@@ -178,8 +178,18 @@ BOOST_AUTO_TEST_CASE( evaluate )
     BOOST_CHECK( ! mock::evaluate.f_( &return_false ) );
 }
 
-BOOST_AUTO_TEST_CASE( contain )
+BOOST_AUTO_TEST_CASE( contain_with_const_char_ptr )
 {
     BOOST_CHECK( mock::contain( "string" ).f_( "this is a string" ) );
+    BOOST_CHECK( mock::contain( "string" ).f_( std::string( "this is a string" ) ) );
     BOOST_CHECK( ! mock::contain( "not found" ).f_( "this is a string" ) );
+    BOOST_CHECK( ! mock::contain( "not found" ).f_( std::string( "this is a string" ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( contain_with_strings )
+{
+    BOOST_CHECK( mock::contain( std::string( "string" ) ).f_( "this is a string" ) );
+    BOOST_CHECK( mock::contain( std::string( "string" ) ).f_( std::string( "this is a string" ) ) );
+    BOOST_CHECK( ! mock::contain( std::string( "not found" ) ).f_( "this is a string" ) );
+    BOOST_CHECK( ! mock::contain( std::string( "not found" ) ).f_( std::string( "this is a string" ) ) );
 }
