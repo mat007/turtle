@@ -25,7 +25,6 @@ namespace mock
             template< typename Actual > \
             bool operator()( const Actual& actual ) const \
             { \
-                (void)actual; \
                 return Expr; \
             } \
             friend std::ostream& operator<<( std::ostream& s, const N& ) \
@@ -43,7 +42,7 @@ namespace mock
     }; \
     const constraint< detail::N > N;
 
-    MOCK_CONSTRAINT( any, true )
+    MOCK_CONSTRAINT( any, true && &actual )
     MOCK_CONSTRAINT( negate, ! actual )
     MOCK_CONSTRAINT( evaluate, actual() )
 

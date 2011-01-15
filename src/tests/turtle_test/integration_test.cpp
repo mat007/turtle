@@ -127,6 +127,22 @@ BOOST_AUTO_TEST_CASE( mock_object_method_const_disambiguation )
     BOOST_CHECK_THROW( const_mock.my_method(), std::exception );
 }
 
+namespace
+{
+    struct my_declared_but_undefined_type;
+
+    MOCK_CLASS( my_declared_but_undefined_mock )
+    {
+        MOCK_METHOD_EXT( m, 1, void( my_declared_but_undefined_type& ), m )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mock_object_method_with_declared_but_not_defined_parameter_is_valid )
+{
+    my_declared_but_undefined_mock mock;
+    MOCK_EXPECT( mock, m );
+}
+
 BOOST_AUTO_TEST_CASE( mock_functor_in_function_is_supported )
 {
     boost::function< int( float, const std::string& ) > func;
