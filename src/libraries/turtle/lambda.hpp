@@ -25,7 +25,7 @@ namespace detail
 {
 
 #ifdef MOCK_USE_BOOST_BIND
-    template< typename Signature >
+    template< typename Result, typename Signature >
     struct lambda
     {
         typedef BOOST_DEDUCED_TYPENAME
@@ -62,7 +62,7 @@ namespace detail
             return *t;
         }
         template< typename T >
-        static void do_throw( T t )
+        static Result do_throw( T t )
         {
             throw t;
         }
@@ -73,7 +73,7 @@ namespace detail
 
 #else
 
-    template< typename Signature >
+    template< typename Result, typename Signature >
     struct lambda
     {
         typedef BOOST_DEDUCED_TYPENAME

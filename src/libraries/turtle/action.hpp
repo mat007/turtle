@@ -30,17 +30,19 @@ namespace detail
                 BOOST_DEDUCED_TYPENAME boost::remove_const< Result >::type
             >::type result_type;
 
+        typedef lambda< Result, Signature > lambda;
+
     public:
         template< typename Value >
         void returns( Value v )
         {
             r_.reset( new result_type( v ) );
-            f_ = lambda< Signature >::make_val( boost::ref( *r_ ) );
+            f_ = lambda::make_val( boost::ref( *r_ ) );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            f_ = lambda< Signature >::make_val( r );
+            f_ = lambda::make_val( r );
         }
 
         void calls( const functor_type& f )
@@ -53,7 +55,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = lambda< Signature >::make_throw( e );
+            f_ = lambda::make_throw( e );
         }
 
         const functor_type& functor() const
@@ -72,15 +74,17 @@ namespace detail
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
 
+        typedef lambda< Result*, Signature > lambda;
+
     public:
         void returns( Result* r )
         {
-            f_ = lambda< Signature >::make_val( r );
+            f_ = lambda::make_val( r );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            f_ = lambda< Signature >::make_val( r );
+            f_ = lambda::make_val( r );
         }
 
         void calls( const functor_type& f )
@@ -93,7 +97,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = lambda< Signature >::make_throw( e );
+            f_ = lambda::make_throw( e );
         }
 
         const functor_type& functor() const
@@ -111,9 +115,11 @@ namespace detail
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
 
+        typedef lambda< void, Signature > lambda;
+
     public:
         action()
-            : f_( lambda< Signature >::make_nothing() )
+            : f_( lambda::make_nothing() )
         {}
 
         void calls( const functor_type& f )
@@ -126,7 +132,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = lambda< Signature >::make_throw( e );
+            f_ = lambda::make_throw( e );
         }
 
         const functor_type& functor() const
@@ -144,6 +150,8 @@ namespace detail
         typedef BOOST_DEDUCED_TYPENAME
             boost::function< Signature > functor_type;
 
+        typedef lambda< std::auto_ptr< Result >, Signature > lambda;
+
     public:
         action()
             : r_()
@@ -151,7 +159,7 @@ namespace detail
         {}
         action( const action& rhs )
             : r_( const_cast< action& >( rhs ).r_.release() )
-            , f_( r_.get() ? lambda< Signature >::make_val( boost::ref( r_ ) ) : rhs.f_ )
+            , f_( r_.get() ? lambda::make_val( boost::ref( r_ ) ) : rhs.f_ )
         {}
 
         template< typename Value >
@@ -170,7 +178,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = lambda< Signature >::make_throw( e );
+            f_ = lambda::make_throw( e );
             r_.reset();
         }
 
@@ -184,19 +192,19 @@ namespace detail
         void set( std::auto_ptr< Y > r )
         {
             r_ = r;
-            f_ = lambda< Signature >::make_val( boost::ref( r_ ) );
+            f_ = lambda::make_val( boost::ref( r_ ) );
         }
         template< typename Y >
         void set( const boost::reference_wrapper< Y >& r )
         {
-            f_ = lambda< Signature >::make_val( r );
+            f_ = lambda::make_val( r );
             r_.reset();
         }
         template< typename Y >
         void set( Y* r )
         {
             r_.reset( r );
-            f_ = lambda< Signature >::make_val( boost::ref( r_ ) );
+            f_ = lambda::make_val( boost::ref( r_ ) );
         }
 
         mutable std::auto_ptr< Result > r_;

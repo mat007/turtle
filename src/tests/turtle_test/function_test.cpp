@@ -557,7 +557,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_with
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_throws_the_set_exception, error_fixture )
 {
-    mock::function< void() > f;
+    mock::function< int() > f;
     f.expect().throws( std::runtime_error( "some exception" ) );
     try
     {
