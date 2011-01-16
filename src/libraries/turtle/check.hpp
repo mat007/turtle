@@ -15,7 +15,6 @@
 #include "format.hpp"
 #include <boost/function.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <boost/concept/assert.hpp>
 #include <boost/concept_check.hpp>
 #include <stdexcept>
 #include <ostream>
