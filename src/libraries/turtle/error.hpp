@@ -16,8 +16,9 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <boost/test/execution_monitor.hpp>
 #include <boost/exception/enable_current_exception.hpp>
-#endif // MOCK_USE_BOOST_TEST
+#else
 #include <iostream>
+#endif
 
 namespace mock
 {
@@ -45,7 +46,7 @@ namespace mock
                 << boost::unit_test::log::begin( file, (std::size_t)line )
                 << boost::unit_test::log_all_errors
                 << boost::unit_test::lazy_ostream::instance()
-                << "mock error: " << message << ": " << context
+                << message << ": " << context
                 << boost::unit_test::log::end();
         }
 
@@ -79,7 +80,7 @@ namespace mock
             const std::string& file = "unknown location", int line = 0 )
         {
             std::cerr << file << '(' << line << "): "
-                << "mock error: " << message << ": " << context << std::endl;
+                << message << ": " << context << std::endl;
         }
 
         static void expected_call( const std::string& /*context*/,

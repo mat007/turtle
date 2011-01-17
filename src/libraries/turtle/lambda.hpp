@@ -11,11 +11,11 @@
 
 #include "config.hpp"
 #ifdef MOCK_USE_BOOST_BIND
-#   include <boost/bind.hpp>
+#include <boost/bind.hpp>
 #else
-#   include <boost/spirit/home/phoenix/statement/throw.hpp>
-#   include <boost/spirit/home/phoenix/operator/self.hpp>
-#   include <boost/spirit/home/phoenix/core/nothing.hpp>
+#include <boost/spirit/home/phoenix/statement/throw.hpp>
+#include <boost/spirit/home/phoenix/operator/self.hpp>
+#include <boost/spirit/home/phoenix/core/nothing.hpp>
 #endif
 #include <boost/function.hpp>
 
