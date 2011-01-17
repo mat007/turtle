@@ -14,6 +14,7 @@
 #include <boost/bind.hpp>
 #else
 #include <boost/spirit/home/phoenix/bind.hpp>
+#include <boost/spirit/home/phoenix/core/argument.hpp>
 #endif
 #include <boost/function.hpp>
 
@@ -25,6 +26,7 @@ namespace detail
     using boost::bind;
 #else
     using boost::phoenix::bind;
+    using boost::phoenix::arg_names::_1;
 #endif
 
     template< typename Result, typename Signature >
