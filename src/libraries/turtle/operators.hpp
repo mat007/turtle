@@ -98,9 +98,9 @@ namespace detail
 
     template< typename Functor >
     const constraint< detail::not_< Functor > >
-        operator!( const constraint< Functor >& c )
+        operator!( const constraint< Functor >& ph )
     {
-        return detail::not_< Functor >( c.f_ );
+        return detail::not_< Functor >( ph.f_ );
     }
 }
 
