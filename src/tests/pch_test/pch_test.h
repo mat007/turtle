@@ -6,49 +6,46 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-// all : Zm97
-
-//#include <boost/algorithm/string/predicate.hpp>
-
-//#include <boost/bind.hpp>
-//#include <boost/concept_check.hpp>
-//#include <boost/detail/container_fwd.hpp>
-//#include <boost/exception/detail/is_output_streamable.hpp>
-//#include <boost/exception/enable_current_exception.hpp>
-//#include <boost/function.hpp>
-//#include <boost/function_types/function_arity.hpp>
-//#include <boost/function_types/function_type.hpp>
-//#include <boost/function_types/is_callable_builtin.hpp>
-//#include <boost/function_types/parameter_types.hpp>
-//#include <boost/function_types/result_type.hpp>
-//#include <boost/mpl/at.hpp>
-//#include <boost/mpl/back_inserter.hpp>
-//#include <boost/mpl/copy.hpp>
-//#include <boost/mpl/equal_to.hpp>
-//#include <boost/mpl/erase.hpp>
-//#include <boost/mpl/or.hpp>
-//#include <boost/mpl/size_t.hpp>
-//#include <boost/mpl/vector.hpp>
-//#include <boost/noncopyable.hpp>
-//#include <boost/preprocessor/inc.hpp>
-//#include <boost/preprocessor/repetition/enum_binary_params.hpp>
-//#include <boost/preprocessor/repetition/enum_params.hpp>
-//#include <boost/preprocessor/repetition/repeat_from_to.hpp>
-//#include <boost/preprocessor/stringize.hpp>
-//#include <boost/ref.hpp>
-//#include <boost/shared_ptr.hpp>
+//#include <boost/spirit/home/phoenix/statement/throw.hpp>
+//#include <boost/spirit/home/phoenix/operator/self.hpp>
+//#include <boost/spirit/home/phoenix/core/nothing.hpp>
 //#include <boost/spirit/home/phoenix/bind.hpp>
-//#include <boost/spirit/home/phoenix/core/argument.hpp>
-//#include <boost/test/execution_monitor.hpp>
-//#include <boost/test/framework.hpp>
+//#include <boost/function.hpp>
+//#include <boost/concept_check.hpp>
+//#include <boost/bind.hpp>
 //#include <boost/test/test_tools.hpp>
 //#include <boost/test/unit_test_suite.hpp>
-//#include <boost/test/utils/trivial_singleton.hpp>
+//#include <boost/test/execution_monitor.hpp>
 //#include <boost/type_traits.hpp>
-//#include <boost/type_traits/detail/yes_no_type.hpp>
-//#include <boost/type_traits/integral_constant.hpp>
-//#include <boost/type_traits/is_convertible.hpp>
-//#include <boost/type_traits/remove_const.hpp>
-//#include <boost/type_traits/remove_reference.hpp>
-//#include <boost/typeof/typeof.hpp>
-//#include <boost/utility/enable_if.hpp>
+//#include <boost/function_types/function_type.hpp>
+//#include <boost/lambda/lambda.hpp>
+//#include <boost/lambda/bind.hpp>
+
+#include <turtle/mock.hpp>
+//#include <boost/test/auto_unit_test.hpp>
+
+//  release vc80
+//
+//    xeumeuleu/xml.h 24
+
+//    boost/shared_ptr.hpp                                            5
+//    boost/bind.hpp                                                  6
+//    boost/type_traits.hpp                                          19
+//    boost/function_types/function_type.hpp                         19
+//    boost/function.hpp                                             23
+//    boost/function.hpp + boost/bind.hpp                            25
+//    boost/lambda/lambda.hpp                                        25
+//    boost/lambda/bind.hpp                                          22
+//    boost/function_types/function_type.hpp + boost/type_traits.hpp 36
+//    boost/spirit/home/phoenix/core.hpp                             46
+//
+//    boost/test/auto_unit_test.hpp                   27
+//    turtle/mock.hpp                                 89
+//    boost/test/auto_unit_test.hpp + turtle/mock.hpp 93
+//
+//    all boost includes from turtle  89
+
+//  getting rid of :
+//    boost/bind                            3
+//    function_type                        13
+//    boost/phoenix                        31
