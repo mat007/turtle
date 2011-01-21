@@ -20,6 +20,7 @@
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_type.hpp>
 #include <boost/function_types/result_type.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <boost/mpl/equal_to.hpp>
 #include <boost/mpl/size_t.hpp>
 #include <boost/mpl/vector.hpp>

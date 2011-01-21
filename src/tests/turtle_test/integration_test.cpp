@@ -18,6 +18,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/optional.hpp>
 #include <boost/ref.hpp>
+#include <cmath>
 
 namespace
 {
@@ -346,7 +347,7 @@ namespace
 
         friend std::ostream& operator<<( std::ostream& s, const near_constraint& c )
         {
-            return s << "std::abs( _ - " << c.expected_ << " ) < " << c.threshold_;
+            return s << "near( " << c.expected_ << ", " << c.threshold_ << " )";
         }
 
         //template< typename Actual >
@@ -371,6 +372,8 @@ BOOST_AUTO_TEST_CASE( writing_custom_constraint )
     MOCK_EXPECT( f, _ ).with( near( 3.f, 0.01f ) );
     f( 3.f );
     const std::string expected = "f\n"
-                                 ". unlimited().with( std::abs( _ - 3 ) < 0.01 )";
-    BOOST_CHECK_EQUAL( expected, mock::format( f ) );
+                                 ". unlimited().with( near( 3, 0.01 ) )";
+    std::stringstream s;
+    s << f;
+    BOOST_CHECK_EQUAL( expected, s.str() );
 }
