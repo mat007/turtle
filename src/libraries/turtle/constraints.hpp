@@ -81,6 +81,8 @@ namespace mock
     MOCK_CONSTRAINT( less_equal, actual <= expected_ )
     MOCK_CONSTRAINT( greater_equal, actual >= expected_ )
 
+#undef MOCK_CONSTRAINT
+
 namespace detail
 {
     template< typename Expected >
