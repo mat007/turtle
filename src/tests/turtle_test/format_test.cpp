@@ -22,16 +22,24 @@
 namespace
 {
     struct non_serializable_type {};
+
+    template< typename T >
+    std::string to_string( T t )
+    {
+        std::stringstream s;
+        s << mock::format( t );
+        return s.str();
+    }
 }
 
 BOOST_AUTO_TEST_CASE( type_not_serializable_in_standard_stream_yields_an_interrogation_mark_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "?", mock::format( non_serializable_type() ) );
+    BOOST_CHECK_EQUAL( "?", to_string( non_serializable_type() ) );
 }
 
 BOOST_AUTO_TEST_CASE( base_type_serializable_in_standard_stream_yields_its_value_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "42", mock::format( 42 ) );
+    BOOST_CHECK_EQUAL( "42", to_string( 42 ) );
 }
 
 namespace
@@ -46,7 +54,7 @@ namespace
 
 BOOST_AUTO_TEST_CASE( custom_type_serializable_in_standard_stream_yields_its_value_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "serializable_type", mock::format( serializable_type() ) );
+    BOOST_CHECK_EQUAL( "serializable_type", to_string( serializable_type() ) );
 }
 
 namespace
@@ -59,7 +67,7 @@ namespace
 
 BOOST_AUTO_TEST_CASE( custom_type_convertible_to_base_type_yields_an_interrogation_mark_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "?", mock::format( convertible_to_int() ) );
+    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_int() ) );
 }
 
 namespace
@@ -79,24 +87,24 @@ namespace
 
 BOOST_AUTO_TEST_CASE( custom_type_convertible_to_another_type_serializable_in_standard_stream_yields_an_interrogation_mark_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "?", mock::format( convertible_to_serializable() ) );
+    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_serializable() ) );
 }
 
 BOOST_AUTO_TEST_CASE( booleans_are_serialized_as_booleans )
 {
-    BOOST_CHECK_EQUAL( "true", mock::format( true ) );
-    BOOST_CHECK_EQUAL( "false", mock::format( false ) );
+    BOOST_CHECK_EQUAL( "true", to_string( true ) );
+    BOOST_CHECK_EQUAL( "false", to_string( false ) );
 }
 
 BOOST_AUTO_TEST_CASE( strings_are_serialized_with_double_quotes )
 {
-    BOOST_CHECK_EQUAL( "\"string\"", mock::format( "string" ) );
-    BOOST_CHECK_EQUAL( "\"string\"", mock::format( std::string( "string" ) ) );
+    BOOST_CHECK_EQUAL( "\"string\"", to_string( "string" ) );
+    BOOST_CHECK_EQUAL( "\"string\"", to_string( std::string( "string" ) ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_pairs_are_serialized )
 {
-    BOOST_CHECK_EQUAL( "(3,42)", mock::format( std::make_pair( 3, 42.f ) ) );
+    BOOST_CHECK_EQUAL( "(3,42)", to_string( std::make_pair( 3, 42.f ) ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_deques_are_serialized )
@@ -104,7 +112,7 @@ BOOST_AUTO_TEST_CASE( std_deques_are_serialized )
     std::deque< int > d;
     d.push_back( 12 );
     d.push_back( 42 );
-    BOOST_CHECK_EQUAL( "(12,42)", mock::format( d ) );
+    BOOST_CHECK_EQUAL( "(12,42)", to_string( d ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_lists_are_serialized )
@@ -112,7 +120,7 @@ BOOST_AUTO_TEST_CASE( std_lists_are_serialized )
     std::list< int > l;
     l.push_back( 12 );
     l.push_back( 42 );
-    BOOST_CHECK_EQUAL( "(12,42)", mock::format( l ) );
+    BOOST_CHECK_EQUAL( "(12,42)", to_string( l ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_vectors_are_serialized )
@@ -120,7 +128,7 @@ BOOST_AUTO_TEST_CASE( std_vectors_are_serialized )
     std::vector< int > v;
     v.push_back( 12 );
     v.push_back( 42 );
-    BOOST_CHECK_EQUAL( "(12,42)", mock::format( v ) );
+    BOOST_CHECK_EQUAL( "(12,42)", to_string( v ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_maps_are_serialized )
@@ -128,7 +136,7 @@ BOOST_AUTO_TEST_CASE( std_maps_are_serialized )
     std::map< int, std::string > m;
     m[ 12 ] = "12";
     m[ 42 ] = "42";
-    BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", mock::format( m ) );
+    BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( m ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_multimaps_are_serialized )
@@ -136,7 +144,7 @@ BOOST_AUTO_TEST_CASE( std_multimaps_are_serialized )
     std::multimap< int, std::string > m;
     m.insert( std::make_pair( 12, "12" ));
     m.insert( std::make_pair( 42, "42" ));
-    BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", mock::format( m ) );
+    BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( m ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_sets_are_serialized )
@@ -144,7 +152,7 @@ BOOST_AUTO_TEST_CASE( std_sets_are_serialized )
     std::set< int > s;
     s.insert( 12 );
     s.insert( 42 );
-    BOOST_CHECK_EQUAL( "(12,42)", mock::format( s ) );
+    BOOST_CHECK_EQUAL( "(12,42)", to_string( s ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_multisets_are_serialized )
@@ -152,15 +160,15 @@ BOOST_AUTO_TEST_CASE( std_multisets_are_serialized )
     std::multiset< int > s;
     s.insert( 12 );
     s.insert( 42 );
-    BOOST_CHECK_EQUAL( "(12,42)", mock::format( s ) );
+    BOOST_CHECK_EQUAL( "(12,42)", to_string( s ) );
 }
 
 BOOST_AUTO_TEST_CASE( boost_assign_list_of_are_serialized )
 {
-    BOOST_CHECK_EQUAL( "(12,42)", mock::format( boost::assign::list_of( 12 )( 42 ) ) );
+    BOOST_CHECK_EQUAL( "(12,42)", to_string( boost::assign::list_of( 12 )( 42 ) ) );
 }
 
 BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized )
 {
-    BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", mock::format( boost::assign::map_list_of( 12, "12" )( 42, "42" ) ) );
+    BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( boost::assign::map_list_of( 12, "12" )( 42, "42" ) ) );
 }
