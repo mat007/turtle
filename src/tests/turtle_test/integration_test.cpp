@@ -321,7 +321,7 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( boost_optional_on_base_class_reference_as_return_type )
+BOOST_AUTO_TEST_CASE( boost_optional_on_base_class_reference_as_return_type_is_supported )
 {
     boost_optional b;
     my_mock_observer o;

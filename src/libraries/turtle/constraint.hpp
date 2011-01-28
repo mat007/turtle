@@ -6,8 +6,8 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef MOCK_PLACEHOLDER_HPP_INCLUDED
-#define MOCK_PLACEHOLDER_HPP_INCLUDED
+#ifndef MOCK_CONSTRAINT_HPP_INCLUDED
+#define MOCK_CONSTRAINT_HPP_INCLUDED
 
 namespace mock
 {
@@ -21,4 +21,4 @@ namespace mock
     };
 }
 
-#endif // #ifndef MOCK_PLACEHOLDER_HPP_INCLUDED
+#endif // #ifndef MOCK_CONSTRAINT_HPP_INCLUDED

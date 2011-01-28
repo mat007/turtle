@@ -29,7 +29,7 @@ namespace mock
             } \
             friend std::ostream& operator<<( std::ostream& s, const N& ) \
             { \
-                return s << BOOST_STRINGIZE( N ); \
+                return s << BOOST_STRINGIZE(N); \
             } \
         }; \
     } \
@@ -42,9 +42,9 @@ namespace mock
     }; \
     const constraint< detail::N > N;
 
-    MOCK_CONSTRAINT( any, true && &actual )
-    MOCK_CONSTRAINT( negate, ! actual )
-    MOCK_CONSTRAINT( evaluate, actual() )
+    MOCK_CONSTRAINT(any, true && &actual)
+    MOCK_CONSTRAINT(negate, ! actual)
+    MOCK_CONSTRAINT(evaluate, actual())
 
 #undef MOCK_CONSTRAINT
 
@@ -64,7 +64,7 @@ namespace mock
             } \
             friend std::ostream& operator<<( std::ostream& s, const N& n ) \
             { \
-                return s << BOOST_STRINGIZE( N ) << "( " << mock::format( n.expected_ ) << " )"; \
+                return s << BOOST_STRINGIZE(N) << "( " << mock::format( n.expected_ ) << " )"; \
             } \
             Expected expected_; \
         }; \
@@ -75,11 +75,11 @@ namespace mock
         return detail::N< T >( t ); \
     }
 
-    MOCK_CONSTRAINT( equal, actual == expected_ )
-    MOCK_CONSTRAINT( less, actual < expected_ )
-    MOCK_CONSTRAINT( greater, actual > expected_ )
-    MOCK_CONSTRAINT( less_equal, actual <= expected_ )
-    MOCK_CONSTRAINT( greater_equal, actual >= expected_ )
+    MOCK_CONSTRAINT(equal, actual == expected_)
+    MOCK_CONSTRAINT(less, actual < expected_)
+    MOCK_CONSTRAINT(greater, actual > expected_)
+    MOCK_CONSTRAINT(less_equal, actual <= expected_)
+    MOCK_CONSTRAINT(greater_equal, actual >= expected_)
 
 #undef MOCK_CONSTRAINT
 
