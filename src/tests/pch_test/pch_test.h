@@ -16,7 +16,12 @@
 //#include <boost/test/test_tools.hpp>
 //#include <boost/test/unit_test_suite.hpp>
 //#include <boost/test/execution_monitor.hpp>
-//#include <boost/type_traits.hpp>
+//#include <boost/type_traits/remove_reference.hpp>
+//#include <boost/type_traits/remove_const.hpp>
+//#include <boost/type_traits/integral_constant.hpp>
+//#include <boost/type_traits/is_convertible.hpp>
+//#include <boost/type_traits/detail/yes_no_type.hpp>
+//#include <boost/type_traits/is_base_of.hpp>
 //#include <boost/function_types/function_type.hpp>
 //#include <boost/lambda/lambda.hpp>
 //#include <boost/lambda/bind.hpp>
