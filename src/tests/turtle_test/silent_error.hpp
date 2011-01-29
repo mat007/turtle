@@ -10,7 +10,6 @@
 #define MOCK_TEST_SILENT_ERROR_HPP_INCLUDED
 
 #include <string>
-#include <sstream>
 #include <stdexcept>
 
 namespace mock
@@ -22,21 +21,27 @@ namespace mock
         {
             throw std::runtime_error( "abort" );
         }
-        static void expected_call( const std::string& /*context*/,
+        template< typename Context >
+        static void expected_call( const Context& /*context*/,
             const std::string& /*file*/, int /*line*/ )
         {}
-        static void unexpected_call( const std::string& /*context*/ )
+        template< typename Context >
+        static void unexpected_call( const Context& /*context*/ )
         {}
-        static void missing_action( const std::string& /*context*/,
+        template< typename Context >
+        static void missing_action( const Context& /*context*/,
             const std::string& /*file*/, int /*line*/ )
         {}
-        static void sequence_failed( const std::string& /*context*/,
+        template< typename Context >
+        static void sequence_failed( const Context& /*context*/,
             const std::string& /*file*/, int /*line*/ )
         {}
-        static void verification_failed( const std::string& /*context*/,
+        template< typename Context >
+        static void verification_failed( const Context& /*context*/,
             const std::string& /*file*/, int /*line*/ )
         {}
-        static void untriggered_expectation( const std::string& /*context*/,
+        template< typename Context >
+        static void untriggered_expectation( const Context& /*context*/,
             const std::string& /*file*/, int /*line*/ )
         {}
     };

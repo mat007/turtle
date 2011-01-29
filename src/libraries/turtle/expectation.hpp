@@ -172,14 +172,13 @@ namespace detail
             BOOST_DEDUCED_TYPENAME \
                 boost::function_types::parameter_types< Signature >, \
             n \
-        >::type arg##n##_type; \
-    typedef detail::check< arg##n##_type > constraint##n##_type;
-#define MOCK_EXPECTATION_CONSTRUCTOR(z, n, d) BOOST_PP_COMMA_IF(n) c##n##_( mock::any )
-#define MOCK_EXPECTATION_WITH(z, n, d) c##n##_ = constraint##n##_type( c##n );
-#define MOCK_EXPECTATION_MEMBER(z, n, d) constraint##n##_type c##n##_;
+        >::type arg##n##_type;
+#define MOCK_EXPECTATION_CONSTRUCTOR(z, n, d) BOOST_PP_COMMA_IF(n) c##n##_( new detail::check< arg##n##_type, constraint< detail::any > >( mock::any ) )
+#define MOCK_EXPECTATION_WITH(z, n, d) c##n##_.reset( new detail::check< arg##n##_type, Constraint##n >( c##n ) );
+#define MOCK_EXPECTATION_MEMBER(z, n, d) boost::shared_ptr< detail::check_base< arg##n##_type > > c##n##_;
 #define MOCK_EXPECTATION_ARGS(z, n, d) BOOST_PP_COMMA_IF(n) arg##n##_type a##n
-#define MOCK_EXPECTATION_IS_VALID(z, n, d) && c##n##_( a##n )
-#define MOCK_EXPECTATION_SERIALIZE(z, n, d) BOOST_PP_IF(n, << ", " <<,) m.c##n##_
+#define MOCK_EXPECTATION_IS_VALID(z, n, d) && (*c##n##_)( a##n )
+#define MOCK_EXPECTATION_SERIALIZE(z, n, d) BOOST_PP_IF(n, << ", " <<,) *m.c##n##_
 #define MOCK_EXPECTATION(z, n, d) \
     template< typename Signature > \
     class expectation< Signature, n > \
@@ -193,7 +192,7 @@ namespace detail
             : BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_CONSTRUCTOR, BOOST_PP_EMPTY) \
         {} \
         template< BOOST_PP_ENUM_PARAMS(n, typename Constraint) > \
-        expectation& with( BOOST_PP_ENUM_BINARY_PARAMS(n, const Constraint, & c) ) \
+        expectation& with( BOOST_PP_ENUM_BINARY_PARAMS(n, Constraint, c) ) \
         { \
             BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_WITH, BOOST_PP_EMPTY) \
             return *this; \

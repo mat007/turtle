@@ -8,10 +8,9 @@
 
 #include <turtle/format.hpp>
 #include <boost/assign.hpp>
-#include <ostream>
+#include <vector>
 #include <deque>
 #include <list>
-#include <vector>
 #include <map>
 #include <set>
 

@@ -331,6 +331,41 @@ BOOST_AUTO_TEST_CASE( boost_optional_on_base_class_reference_as_return_type_is_s
 
 namespace
 {
+    bool serialized = false;
+
+    struct custom_argument
+    {
+        friend std::ostream& operator<<( std::ostream& s, const custom_argument& )
+        {
+            serialized = true;
+            return s;
+        }
+    };
+    struct custom_constraint
+    {
+        template< typename Actual >
+        friend bool operator==( Actual, const custom_constraint& )
+        {
+            return true;
+        }
+        friend std::ostream& operator<<( std::ostream& s, const custom_constraint& )
+        {
+            serialized = true;
+            return s;
+        }
+    };
+}
+
+BOOST_AUTO_TEST_CASE( constraints_and_arguments_are_serialized_lazily )
+{
+    MOCK_FUNCTOR( void( custom_argument ) ) f;
+    MOCK_EXPECT( f, _ ).with( custom_constraint() );
+    f( custom_argument() );
+    BOOST_CHECK( ! serialized );
+}
+
+namespace
+{
     template< typename Expected >
     struct near_constraint
     {
