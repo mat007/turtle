@@ -17,6 +17,10 @@
     </build-test>
   </target>
 
+  <target name="analyser" description="run errors analyser">
+    <build-test name="errors" depends="boost"/>
+  </target>
+
   <target name="bench" description="build compilation benchmark">
     <build-app name="turtle_bench" mode="all">
       <includepath path="${applications.dir}/turtle_bench"/>
