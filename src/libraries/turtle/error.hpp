@@ -37,27 +37,27 @@ namespace mock
             throw boost::enable_current_exception( exception() );
         }
 
-        template< typename Context >
         static void fail(
-            const std::string& message, const Context& context,
+            const std::string& message, const std::string& context,
             const std::string& file = "unknown location", int line = 0 )
         {
             boost::unit_test::framework::assertion_result( false );
             boost::unit_test::unit_test_log
                 << boost::unit_test::log::begin( file, (std::size_t)line )
                 << boost::unit_test::log_all_errors
+                << boost::unit_test::lazy_ostream::instance()
                 << message << ": " << context
                 << boost::unit_test::log::end();
         }
 
-        template< typename Context >
-        static void expected_call( const Context& context,
+        static void expected_call( const std::string& context,
             const std::string& file, int line )
         {
             boost::unit_test::framework::assertion_result( true );
             boost::unit_test::unit_test_log
                 << boost::unit_test::log::begin( file, (std::size_t)line )
                 << boost::unit_test::log_successful_tests
+                << boost::unit_test::lazy_ostream::instance()
                 << "mock expectation fulfilled: " << context
                 << boost::unit_test::log::end();
         }
@@ -75,47 +75,40 @@ namespace mock
             throw exception();
         }
 
-        template< typename Context >
         static void fail(
-            const std::string& message, const Context& context,
+            const std::string& message, const std::string& context,
             const std::string& file = "unknown location", int line = 0 )
         {
             std::cerr << file << '(' << line << "): "
                 << message << ": " << context << std::endl;
         }
 
-        template< typename Context >
-        static void expected_call( const Context& /*context*/,
+        static void expected_call( const std::string& /*context*/,
             const std::string& /*file*/, int /*line*/ )
         {}
 
 #endif // MOCK_USE_BOOST_TEST
 
-        template< typename Context >
-        static void missing_action( const Context& context,
+        static void missing_action( const std::string& context,
             const std::string& file, int line )
         {
             fail( "missing action", context, file, line );
         }
-        template< typename Context >
-        static void unexpected_call( const Context& context )
+        static void unexpected_call( const std::string& context )
         {
             fail( "unexpected call", context );
         }
-        template< typename Context >
-        static void sequence_failed( const Context& context,
+        static void sequence_failed( const std::string& context,
             const std::string& /*file*/, int /*line*/ )
         {
             fail( "sequence failed", context );
         }
-        template< typename Context >
-        static void verification_failed( const Context& context,
+        static void verification_failed( const std::string& context,
             const std::string& file, int line )
         {
             fail( "verification failed", context, file, line );
         }
-        template< typename Context >
-        static void untriggered_expectation( const Context& context,
+        static void untriggered_expectation( const std::string& context,
             const std::string& file, int line )
         {
             fail( "untriggered expectation", context, file, line );

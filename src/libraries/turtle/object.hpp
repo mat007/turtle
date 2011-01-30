@@ -12,6 +12,7 @@
 #include "node.hpp"
 #include "root.hpp"
 #include <boost/shared_ptr.hpp>
+#include <ostream>
 #include <string>
 
 namespace mock

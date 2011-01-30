@@ -10,63 +10,60 @@
 #define MOCK_OPERATORS_HPP_INCLUDED
 
 #include "constraint.hpp"
-#include "format.hpp"
 
 namespace mock
 {
 namespace detail
 {
-    template< typename Constraint1, typename Constraint2 >
+    template< typename Functor1, typename Functor2 >
     class and_
     {
     public:
-        and_( const Constraint1& c1, const Constraint2& c2 )
-            : c1_( c1 )
-            , c2_( c2 )
+        and_( const Functor1& f1, const Functor2& f2 )
+            : f1_( f1 )
+            , f2_( f2 )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return c1_( actual ) && c2_( actual );
+            return f1_( actual ) && f2_( actual );
         }
         friend std::ostream& operator<<( std::ostream& s, const and_& a )
         {
-            return s << "( " << mock::format( a.c1_ )
-                << " && " << mock::format( a.c2_ ) << " )";
+            return s << "( " << a.f1_ << " && " << a.f2_ << " )";
         }
     private:
-        Constraint1 c1_;
-        Constraint2 c2_;
+        Functor1 f1_;
+        Functor2 f2_;
     };
 
-    template< typename Constraint1, typename Constraint2 >
+    template< typename Functor1, typename Functor2 >
     class or_
     {
     public:
-        or_( const Constraint1& c1, const Constraint2& c2 )
-            : c1_( c1 )
-            , c2_( c2 )
+        or_( const Functor1& f1, const Functor2& f2 )
+            : f1_( f1 )
+            , f2_( f2 )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return c1_( actual ) || c2_( actual );
+            return f1_( actual ) || f2_( actual );
         }
         friend std::ostream& operator<<( std::ostream& s, const or_& o )
         {
-            return s << "( " << mock::format( o.c1_ )
-                << " || " << mock::format( o.c2_ )<< " )";
+            return s << "( " << o.f1_ << " || " << o.f2_ << " )";
         }
     private:
-        Constraint1 c1_;
-        Constraint2 c2_;
+        Functor1 f1_;
+        Functor2 f2_;
     };
 
-    template< typename Constraint >
+    template< typename Functor >
     class not_
     {
     public:
-        explicit not_( const Constraint& f )
+        explicit not_( const Functor& f )
             : f_( f )
         {}
         template< typename Actual >
@@ -76,34 +73,34 @@ namespace detail
         }
         friend std::ostream& operator<<( std::ostream& s, const not_& n )
         {
-            return s << "! " << mock::format( n.f_ );
+            return s << "! " << n.f_;
         }
     private:
-        Constraint f_;
+        Functor f_;
     };
 }
 
-    template< typename Constraint1, typename Constraint2 >
-    const constraint< detail::or_< Constraint1, Constraint2 > >
-        operator||( const constraint< Constraint1 >& lhs,
-                    const constraint< Constraint2 >& rhs )
+    template< typename Functor1, typename Functor2 >
+    const constraint< detail::or_< Functor1, Functor2 > >
+        operator||( const constraint< Functor1 >& lhs,
+                    const constraint< Functor2 >& rhs )
     {
-        return detail::or_< Constraint1, Constraint2 >( lhs.f_, rhs.f_ );
+        return detail::or_< Functor1, Functor2 >( lhs.f_, rhs.f_ );
     }
 
-    template< typename Constraint1, typename Constraint2 >
-    const constraint< detail::and_< Constraint1, Constraint2 > >
-        operator&&( const constraint< Constraint1 >& lhs,
-                    const constraint< Constraint2 >& rhs )
+    template< typename Functor1, typename Functor2 >
+    const constraint< detail::and_< Functor1, Functor2 > >
+        operator&&( const constraint< Functor1 >& lhs,
+                    const constraint< Functor2 >& rhs )
     {
-        return detail::and_< Constraint1, Constraint2 >( lhs.f_, rhs.f_ );
+        return detail::and_< Functor1, Functor2 >( lhs.f_, rhs.f_ );
     }
 
-    template< typename Constraint >
-    const constraint< detail::not_< Constraint > >
-        operator!( const constraint< Constraint >& c )
+    template< typename Functor >
+    const constraint< detail::not_< Functor > >
+        operator!( const constraint< Functor >& c )
     {
-        return detail::not_< Constraint >( c.f_ );
+        return detail::not_< Functor >( c.f_ );
     }
 }
 
