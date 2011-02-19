@@ -9,6 +9,7 @@
 #ifndef MOCK_IS_FUNCTOR_HPP_INCLUDED
 #define MOCK_IS_FUNCTOR_HPP_INCLUDED
 
+#include "yes_no_type.hpp"
 #include <boost/function_types/is_callable_builtin.hpp>
 #include <boost/type_traits/integral_constant.hpp>
 #include <boost/type_traits/detail/yes_no_type.hpp>
@@ -18,9 +19,6 @@ namespace mock
 {
 namespace detail
 {
-    typedef boost::type_traits::yes_type yes_type;
-    typedef boost::type_traits::no_type no_type;
-
 #define MOCK_IS_FUNCTION_HELPER(N, M) \
     template< typename T > yes_type& N##_helper( BOOST_DEDUCED_TYPENAME T::M* ); \
     template< typename T > no_type& N##_helper( ... ); \

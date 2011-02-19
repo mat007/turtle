@@ -150,7 +150,9 @@
     <ClInclude Include="..\..\src\libraries\turtle\functional.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\has_operator.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\invocation.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\is_formattable.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\is_functor.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\is_serializable.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\mock.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\node.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\object.hpp" />

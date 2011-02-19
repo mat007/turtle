@@ -10,12 +10,12 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #ifdef _MSC_VER
-#   pragma warning( push, 0 )
+#pragma warning( push, 0 )
 #endif
 #include <boost/lambda/lambda.hpp>
 #include <boost/spirit/home/phoenix.hpp>
 #ifdef _MSC_VER
-#   pragma warning( pop )
+#pragma warning( pop )
 #endif
 
 #include <boost/test/auto_unit_test.hpp>
@@ -24,12 +24,13 @@
 
 namespace
 {
-    BOOST_STATIC_ASSERT( sizeof( mock::detail::yes_type ) != sizeof( mock::detail::no_type ) );
+    struct declared_but_not_defined;
+    BOOST_MPL_ASSERT_NOT(( mock::detail::is_functor< declared_but_not_defined > ));
 
     template< typename T >
     void check( T )
     {
-        BOOST_STATIC_ASSERT(( mock::detail::is_functor< T >::type::value ));
+        BOOST_MPL_ASSERT(( mock::detail::is_functor< T > ));
     }
 
     void f0 () {}

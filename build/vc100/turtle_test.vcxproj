@@ -18,6 +18,26 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\tests\turtle_test\constraints_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\error_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\format_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\function_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\integration_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\invocation_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\is_formattable_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\is_functor_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\is_serializable_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\max_args_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\mock_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\object_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\sequence_test.cpp" />
+    <ClCompile Include="..\..\src\tests\turtle_test\type_name_test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\tests\turtle_test\mock_error.hpp" />
+    <ClInclude Include="..\..\src\tests\turtle_test\silent_error.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{74810A2A-33D8-47D6-9A50-71261F1683F5}</ProjectGuid>
     <RootNamespace>turtle_test</RootNamespace>
@@ -194,24 +214,6 @@
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\src\tests\turtle_test\constraints_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\error_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\format_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\function_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\has_operator_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\integration_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\invocation_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\is_functor_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\mock_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\object_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\sequence_test.cpp" />
-    <ClCompile Include="..\..\src\tests\turtle_test\type_name_test.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\src\tests\turtle_test\mock_error.hpp" />
-    <ClInclude Include="..\..\src\tests\turtle_test\silent_error.hpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

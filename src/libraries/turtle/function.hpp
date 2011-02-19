@@ -21,6 +21,8 @@
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/preprocessor/comparison/equal.hpp>
+#include <boost/test/utils/lazy_ostream.hpp>
 #include <boost/shared_ptr.hpp>
 #include <ostream>
 #include <list>
@@ -132,11 +134,43 @@ namespace mock
                     {
                         if( ! it->verify() )
                             ErrorPolicy::untriggered_expectation(
-                                context(), it->file(), it->line() );
+                                boost::unit_test::lazy_ostream::instance()
+                                    << lazy_context( this )
+                                    << lazy_expectations( this ),
+                                it->file(), it->line() );
                         else if( ! it->invoked() )
                             ErrorPolicy::expected_call(
-                                context(), it->file(), it->line() );
+                                boost::unit_test::lazy_ostream::instance()
+                                    << lazy_context( this )
+                                    << lazy_expectations( this ),
+                                it->file(), it->line() );
                     }
+            }
+
+            virtual bool verify() const
+            {
+                for( expectations_cit it = expectations_.begin();
+                    it != expectations_.end(); ++it )
+                    if( !it->verify() )
+                    {
+                        valid_ = false;
+                        ErrorPolicy::verification_failed(
+                            boost::unit_test::lazy_ostream::instance()
+                                    << lazy_context( this )
+                                    << lazy_expectations( this ),
+                            it->file(), it->line() );
+                    }
+                return valid_;
+            }
+
+            virtual void reset()
+            {
+                valid_ = true;
+                expectations_.clear();
+            }
+            virtual void untie()
+            {
+                parent_ = 0;
             }
 
             void tag( const std::string& name )
@@ -155,28 +189,6 @@ namespace mock
                 parent_ = &parent;
             }
 
-            virtual bool verify() const
-            {
-                for( expectations_cit it = expectations_.begin();
-                    it != expectations_.end(); ++it )
-                    if( !it->verify() )
-                    {
-                        valid_ = false;
-                        ErrorPolicy::verification_failed( context(),
-                            it->file(), it->line() );
-                    }
-                return valid_;
-            }
-            virtual void reset()
-            {
-                valid_ = true;
-                expectations_.clear();
-            }
-            virtual void untie()
-            {
-                parent_ = 0;
-            }
-
             expectation_type& expect( const std::string& file, int line )
             {
                 expectation_type& e = expect();
@@ -192,26 +204,14 @@ namespace mock
                 return expectations_.back();
             }
 
-            struct no_throw_abort
-            {
-                static void abort() {}
-            };
-            void test() const
-            {
-                invoke< no_throw_abort >();
-            }
-
-            result_type operator()() const
-            {
-                return invoke< ErrorPolicy >();
-            }
-
-#define MOCK_EXPECTATION_FORMAT(z, n, d) \
-    BOOST_PP_IF(n, + ", " +,) mock::format( p##n )
-#define MOCK_EXPECTATION_CONTEXT(n) \
-    context( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_FORMAT, BOOST_PP_EMPTY) )
-#define MOCK_EXPECTATION_OPERATOR(z, n, d) \
-    MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
+#define MOCK_EXPECTATION_FORMAT(z, n, N) \
+    << " " << mock::format( p##n ) << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), " ", ",")
+#define MOCK_EXPECTATION_CALL_CONTEXT(n) \
+    boost::unit_test::lazy_ostream::instance() \
+        << lazy_context( this ) \
+        << "(" BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_FORMAT, BOOST_PP_DEC(n)) << ")" \
+        << lazy_expectations( this )
+#define MOCK_EXPECTATION_INVOKE(z, n, A) \
     { \
         for( expectations_cit it = expectations_.begin(); it != expectations_.end(); ++it ) \
             if( it->is_valid( BOOST_PP_ENUM_PARAMS(n, p) ) ) \
@@ -219,96 +219,77 @@ namespace mock
                 if( ! it->invoke() ) \
                 { \
                     valid_ = false; \
-                    ErrorPolicy::sequence_failed( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
-                    return ErrorPolicy::abort(); \
+                    ErrorPolicy::sequence_failed( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                    return A; \
                 } \
                 if( ! it->functor() ) \
                 { \
-                    ErrorPolicy::missing_action( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
-                    return ErrorPolicy::abort(); \
+                    ErrorPolicy::missing_action( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                    return A; \
                 } \
-                ErrorPolicy::expected_call( MOCK_EXPECTATION_CONTEXT(n), it->file(), it->line() ); \
+                ErrorPolicy::expected_call( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
                 return it->functor()( BOOST_PP_ENUM_PARAMS(n, p) ); \
             } \
         valid_ = false; \
-        ErrorPolicy::unexpected_call( MOCK_EXPECTATION_CONTEXT(n) ); \
-        return ErrorPolicy::abort(); \
+        ErrorPolicy::unexpected_call( MOCK_EXPECTATION_CALL_CONTEXT(n) ); \
+        return A; \
     }
-    BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
-#undef MOCK_EXPECTATION_CONTEXT
+#define MOCK_EXPECTATION_OPERATOR(z, n, P) \
+    MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
+    MOCK_EXPECTATION_INVOKE(z, n, P)
+
+            BOOST_PP_REPEAT_FROM_TO(0, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, ErrorPolicy::abort())
+
+            void test() const
+            MOCK_EXPECTATION_INVOKE(, 0,)
+
 #undef MOCK_EXPECTATION_FORMAT
 #undef MOCK_EXPECTATION_OPERATOR
+#undef MOCK_EXPECTATION_INVOKE
+#undef MOCK_EXPECTATION_CALL_CONTEXT
 
             friend std::ostream& operator<<( std::ostream& s, const function_impl& e )
             {
-                return s << e.context();
+                return s << lazy_context( &e ) << lazy_expectations( &e );
             }
 
-        private:
-            template< typename T >
-            result_type invoke() const
+            struct lazy_context
             {
-                for( expectations_cit it = expectations_.begin();
-                    it != expectations_.end(); ++it )
-                    if( it->is_valid() )
-                    {
-                        if( ! it->invoke() )
-                        {
-                            valid_ = false;
-                            ErrorPolicy::sequence_failed( context( "" ),
-                                it->file(), it->line() );
-                            return T::abort();
-                        }
-                        if( ! it->functor() )
-                        {
-                            ErrorPolicy::missing_action( context( "" ),
-                                it->file(), it->line() );
-                            return T::abort();
-                        }
-                        ErrorPolicy::expected_call( context( "" ),
-                                it->file(), it->line() );
-                        return it->functor()();
-                    }
-                valid_ = false;
-                ErrorPolicy::unexpected_call( context( "" ) );
-                return T::abort();
-            }
+                lazy_context( const function_impl* impl )
+                    : impl_( impl )
+                {}
+                friend std::ostream& operator<<( std::ostream& s, const lazy_context& e )
+                {
+                    if( e.impl_->parent_ )
+                        s << e.impl_->parent_->tag();
+                    return s << e.impl_->name_;
+                }
+                const function_impl* impl_;
+            };
 
-        private:
+            struct lazy_expectations
+            {
+                lazy_expectations( const function_impl* impl )
+                    : impl_( impl )
+                {}
+                friend std::ostream& operator<<( std::ostream& s, const lazy_expectations& e )
+                {
+                    for( expectations_cit it = e.impl_->expectations_.begin();
+                        it != e.impl_->expectations_.end(); ++it )
+                        s << std::endl << *it;
+                    return s;
+                }
+                const function_impl* impl_;
+            };
+
             typedef std::list< expectation_type > expectations_type;
             typedef BOOST_DEDUCED_TYPENAME
                 expectations_type::const_iterator expectations_cit;
 
-            std::string context() const
-            {
-                std::stringstream s;
-                serialize( s, "" );
-                return s.str();
-            }
-            std::string context( const std::string& parameters ) const
-            {
-                std::stringstream s;
-                if( parameters.empty() )
-                    serialize( s, "()" );
-                else
-                    serialize( s, "( " + parameters + " )" );
-                return s.str();
-            }
-            void serialize( std::ostream& s,
-                const std::string& parameters ) const
-            {
-                if( parent_ )
-                    s << parent_->tag();
-                s << name_ << parameters;
-                for( expectations_cit it = expectations_.begin();
-                    it != expectations_.end(); ++it )
-                    s << std::endl << *it;
-            }
-
+            expectations_type expectations_;
             std::string name_;
             node* parent_;
             mutable bool valid_;
-            expectations_type expectations_;
         };
 
     private:

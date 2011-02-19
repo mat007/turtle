@@ -69,8 +69,7 @@ namespace detail
             throw t;
         }
         static void do_nothing()
-        {
-        }
+        {}
     };
 }
 }

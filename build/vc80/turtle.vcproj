@@ -197,7 +197,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\is_comparable.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libraries\turtle\is_formattable.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\is_functor.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libraries\turtle\is_serializable.hpp"
 				>
 			</File>
 			<File
@@ -229,11 +241,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\sink.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\type_name.hpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\verifiable.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libraries\turtle\yes_no_type.hpp"
 				>
 			</File>
 		</Filter>

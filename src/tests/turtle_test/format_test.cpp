@@ -8,10 +8,9 @@
 
 #include <turtle/format.hpp>
 #include <boost/assign.hpp>
-#include <ostream>
+#include <vector>
 #include <deque>
 #include <list>
-#include <vector>
 #include <map>
 #include <set>
 
@@ -21,8 +20,6 @@
 
 namespace
 {
-    struct non_serializable_type {};
-
     template< typename T >
     std::string to_string( T t )
     {
@@ -32,65 +29,92 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( type_not_serializable_in_standard_stream_yields_an_interrogation_mark_when_serialized )
-{
-    BOOST_CHECK_EQUAL( "?", to_string( non_serializable_type() ) );
-}
-
-BOOST_AUTO_TEST_CASE( base_type_serializable_in_standard_stream_yields_its_value_when_serialized )
-{
-    BOOST_CHECK_EQUAL( "42", to_string( 42 ) );
-}
-
 namespace
 {
-    struct serializable_type {};
-
-    std::ostream& operator<<( std::ostream& s, const serializable_type& )
-    {
-        return s << "serializable_type";
-    }
+    struct non_serializable
+    {};
 }
 
-BOOST_AUTO_TEST_CASE( custom_type_serializable_in_standard_stream_yields_its_value_when_serialized )
+BOOST_AUTO_TEST_CASE( non_serializable_type_yields_an_interrogation_mark_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "serializable_type", to_string( serializable_type() ) );
-}
-
-namespace
-{
-    struct convertible_to_int
-    {
-        operator int() const { return 12; }
-    };
-}
-
-BOOST_AUTO_TEST_CASE( custom_type_convertible_to_base_type_yields_an_interrogation_mark_when_serialized )
-{
-    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_int() ) );
+    BOOST_CHECK_EQUAL( "?", to_string( non_serializable() ) );
 }
 
 namespace
 {
     struct serializable
+    {};
+
+    std::ostream& operator<<( std::ostream& s, const serializable& )
     {
-        friend std::ostream& operator<<( std::ostream& s, const serializable& )
-        {
-            return s << "serializable";
-        }
-    };
-    struct convertible_to_serializable
-    {
-        operator serializable() const { return serializable(); }
-    };
+        return s << "serializable";
+    }
 }
 
-BOOST_AUTO_TEST_CASE( custom_type_convertible_to_another_type_serializable_in_standard_stream_yields_an_interrogation_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( serializable_type_yields_its_value_when_serialized )
 {
-    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_serializable() ) );
+    BOOST_CHECK_EQUAL( "serializable", to_string( serializable() ) );
 }
 
-BOOST_AUTO_TEST_CASE( booleans_are_serialized_as_booleans )
+namespace
+{
+    struct formattable {};
+
+    std::ostream& operator<<( std::ostream& s, const formattable& )
+    {
+        BOOST_FAIL( "should not be called" );
+        return s;
+    }
+}
+
+BOOST_AUTO_TEST_CASE( format_overrides_standard_stream_serialization_even_if_defined_after_being_used )
+{
+    BOOST_CHECK_EQUAL( "formattable", to_string( formattable() ) );
+}
+
+namespace
+{
+    void format( std::ostream& s, const formattable& )
+    {
+        s << "formattable";
+    }
+}
+
+namespace
+{
+    struct formatterable {};
+
+    std::ostream& operator<<( std::ostream& s, const formatterable& )
+    {
+        BOOST_FAIL( "should not be called" );
+        return s;
+    }
+
+    void format( std::ostream&, const formatterable& )
+    {
+        BOOST_FAIL( "should not be called" );
+    }
+}
+
+BOOST_AUTO_TEST_CASE( formatter_overrides_standard_stream_serialization_and_format_even_if_defined_after_being_used )
+{
+    BOOST_CHECK_EQUAL( "formatterable", to_string( formatterable() ) );
+}
+
+namespace
+{
+    std::ostream& operator<<( std::ostream& s, const mock::formatter< formatterable >& )
+    {
+        return s << "formatterable";
+    }
+}
+
+BOOST_AUTO_TEST_CASE( base_type_yields_its_value_when_serialized )
+{
+    BOOST_CHECK_EQUAL( "42", to_string( 42 ) );
+}
+
+BOOST_AUTO_TEST_CASE( booleans_are_serialized_as_bool_alpha )
 {
     BOOST_CHECK_EQUAL( "true", to_string( true ) );
     BOOST_CHECK_EQUAL( "false", to_string( false ) );
