@@ -11,6 +11,7 @@
 
 #include "yes_no_type.hpp"
 #include "sink.hpp"
+#include <boost/mpl/bool.hpp>
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -21,13 +22,13 @@ namespace mock
 {
 namespace detail
 {
-namespace protect
+namespace serializable
 {
     template< typename S >
     yes_type operator<<( S&, sink );
 
     template< typename S, typename T >
-    struct is_serializable
+    struct impl
     {
         static S* s;
         static T* t;
@@ -37,6 +38,9 @@ namespace protect
         enum { value = sizeof( yes_type(), (*s << *t), yes_type() ) == sizeof( yes_type ) };
     };
 }
+    template< typename S, typename T >
+    struct is_serializable : boost::mpl::bool_< serializable::impl< S, T >::value >
+    {};
 }
 }
 

@@ -12,14 +12,14 @@
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
 
-BOOST_STATIC_ASSERT(( ! mock::detail::is_formattable< std::ostream, int >::value ));
+BOOST_MPL_ASSERT_NOT(( mock::detail::is_formattable< std::ostream, int > ));
 
 namespace
 {
     struct non_formattable {};
 }
 
-BOOST_STATIC_ASSERT(( ! mock::detail::is_formattable< std::ostream, non_formattable >::value ));
+BOOST_MPL_ASSERT_NOT(( mock::detail::is_formattable< std::ostream, non_formattable > ));
 
 namespace
 {
@@ -28,19 +28,7 @@ namespace
     void format( std::ostream&, const formattable& );
 }
 
-BOOST_STATIC_ASSERT(( mock::detail::is_formattable< std::ostream, formattable >::value ));
-
-namespace nm
-{
-    struct formattable {};
-}
-
-namespace mock
-{
-    void format( std::ostream&, nm::formattable );
-}
-
-BOOST_STATIC_ASSERT(( mock::detail::is_formattable< std::ostream, nm::formattable >::value ));
+BOOST_MPL_ASSERT(( mock::detail::is_formattable< std::ostream, formattable > ));
 
 namespace
 {
@@ -48,7 +36,7 @@ namespace
     {};
 }
 
-BOOST_STATIC_ASSERT(( mock::detail::is_formattable< std::ostream, derived_from_formattable >::value ));
+BOOST_MPL_ASSERT(( mock::detail::is_formattable< std::ostream, derived_from_formattable > ));
 
 namespace
 {
@@ -58,4 +46,4 @@ namespace
     };
 }
 
-BOOST_STATIC_ASSERT(( mock::detail::is_formattable< std::ostream, convertible_to_formattable >::value ));
+BOOST_MPL_ASSERT(( mock::detail::is_formattable< std::ostream, convertible_to_formattable > ));

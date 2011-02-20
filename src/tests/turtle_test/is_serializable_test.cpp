@@ -13,15 +13,15 @@
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
 
-BOOST_STATIC_ASSERT(( mock::detail::protect::is_serializable< std::ostream, int >::value ));
-BOOST_STATIC_ASSERT(( mock::detail::protect::is_serializable< std::ostream, std::string >::value ));
+BOOST_MPL_ASSERT(( mock::detail::is_serializable< std::ostream, int > ));
+BOOST_MPL_ASSERT(( mock::detail::is_serializable< std::ostream, std::string > ));
 
 namespace
 {
     struct declared_but_not_defined;
 }
 
-BOOST_STATIC_ASSERT(( ! mock::detail::protect::is_serializable< std::ostream, declared_but_not_defined >::value ));
+BOOST_MPL_ASSERT_NOT(( mock::detail::is_serializable< std::ostream, declared_but_not_defined > ));
 
 namespace
 {
@@ -29,7 +29,7 @@ namespace
     {};
 }
 
-BOOST_STATIC_ASSERT(( ! mock::detail::protect::is_serializable< std::ostream, non_serializable >::value ));
+BOOST_MPL_ASSERT_NOT(( mock::detail::is_serializable< std::ostream, non_serializable > ));
 
 namespace
 {
@@ -39,7 +39,7 @@ namespace
     std::ostream& operator<<( std::ostream& s, const serializable& );
 }
 
-BOOST_STATIC_ASSERT(( mock::detail::protect::is_serializable< std::ostream, serializable >::value ));
+BOOST_MPL_ASSERT(( mock::detail::is_serializable< std::ostream, serializable > ));
 
 namespace
 {
@@ -50,7 +50,7 @@ namespace
     std::ostream& operator<<( std::ostream& s, const template_serializable< T >& );
 }
 
-BOOST_STATIC_ASSERT(( mock::detail::protect::is_serializable< std::ostream, template_serializable< int > >::value ));
+BOOST_MPL_ASSERT(( mock::detail::is_serializable< std::ostream, template_serializable< int > > ));
 
 namespace
 {
@@ -60,7 +60,7 @@ namespace
     };
 }
 
-BOOST_STATIC_ASSERT(( mock::detail::protect::is_serializable< std::ostream, convertible_to_base >::value ));
+BOOST_MPL_ASSERT(( mock::detail::is_serializable< std::ostream, convertible_to_base > ));
 
 namespace
 {
@@ -70,7 +70,7 @@ namespace
     };
 }
 
-BOOST_STATIC_ASSERT(( ! mock::detail::protect::is_serializable< std::ostream, convertible_to_string >::value ));
+BOOST_MPL_ASSERT_NOT(( mock::detail::is_serializable< std::ostream, convertible_to_string > ));
 
 namespace
 {
@@ -80,7 +80,7 @@ namespace
     };
 }
 
-BOOST_STATIC_ASSERT(( mock::detail::protect::is_serializable< std::ostream, convertible_to_serializable >::value ));
+BOOST_MPL_ASSERT(( mock::detail::is_serializable< std::ostream, convertible_to_serializable > ));
 
 namespace
 {
@@ -88,4 +88,4 @@ namespace
     {};
 }
 
-BOOST_STATIC_ASSERT(( mock::detail::protect::is_serializable< std::ostream, derived_from_serializable >::value ));
+BOOST_MPL_ASSERT(( mock::detail::is_serializable< std::ostream, derived_from_serializable > ));

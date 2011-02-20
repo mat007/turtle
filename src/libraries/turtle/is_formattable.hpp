@@ -11,6 +11,7 @@
 
 #include "yes_no_type.hpp"
 #include "sink.hpp"
+#include <boost/mpl/bool.hpp>
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -19,13 +20,15 @@
 
 namespace mock
 {
+namespace detail
+{
+namespace formattable
+{
     template< typename S >
     detail::yes_type format( S&, detail::sink );
 
-namespace detail
-{
     template< typename S, typename T >
-    struct is_formattable
+    struct impl
     {
         static S* s;
         static T* t;
@@ -34,6 +37,11 @@ namespace detail
         // solution would be to add a format function for T as well.
         enum { value = sizeof( yes_type(), format( *s, *t ), yes_type() ) == sizeof( yes_type ) };
     };
+}
+    template< typename S, typename T >
+    struct is_formattable
+        : boost::mpl::bool_< formattable::impl< S, T >::value >
+    {};
 }
 }
 
