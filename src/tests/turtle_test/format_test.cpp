@@ -196,3 +196,22 @@ BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized )
 {
     BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( boost::assign::map_list_of( 12, "12" )( 42, "42" ) ) );
 }
+
+namespace
+{
+    struct false_positive_container
+    {
+        typedef int const_iterator;
+    };
+    BOOST_MPL_ASSERT(( mock::detail::is_container< false_positive_container > ));
+
+    std::ostream& operator<<( std::ostream& s, const mock::formatter< false_positive_container >& )
+    {
+        return s << "false_positive_container";
+    }
+}
+
+BOOST_AUTO_TEST_CASE( false_positive_container_serialization_can_still_be_overriden )
+{
+    BOOST_CHECK_EQUAL( "false_positive_container", to_string( false_positive_container() ) );
+}
