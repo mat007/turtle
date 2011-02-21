@@ -60,7 +60,7 @@ namespace
     };
 }
 
-BOOST_MPL_ASSERT(( mock::detail::is_serializable< std::ostream, convertible_to_base > ));
+BOOST_MPL_ASSERT_NOT(( mock::detail::is_serializable< std::ostream, convertible_to_base > ));
 
 namespace
 {
@@ -80,7 +80,7 @@ namespace
     };
 }
 
-BOOST_MPL_ASSERT(( mock::detail::is_serializable< std::ostream, convertible_to_serializable > ));
+BOOST_MPL_ASSERT_NOT(( mock::detail::is_serializable< std::ostream, convertible_to_serializable > ));
 
 namespace
 {
@@ -88,4 +88,4 @@ namespace
     {};
 }
 
-BOOST_MPL_ASSERT(( mock::detail::is_serializable< std::ostream, derived_from_serializable > ));
+BOOST_MPL_ASSERT_NOT(( mock::detail::is_serializable< std::ostream, derived_from_serializable > ));
