@@ -335,7 +335,7 @@ namespace
 
     struct custom_argument
     {
-        friend std::ostream& operator<<( std::ostream& s, const custom_argument& )
+        friend std::ostream& operator<<( std::ostream& s, custom_argument )
         {
             serialized = true;
             return s;
@@ -344,11 +344,11 @@ namespace
     struct custom_constraint
     {
         template< typename Actual >
-        bool operator()( Actual ) const
+        friend bool operator==( Actual, custom_constraint )
         {
             return true;
         }
-        friend std::ostream& operator<<( std::ostream& s, const custom_constraint& )
+        friend std::ostream& operator<<( std::ostream& s, custom_constraint )
         {
             serialized = true;
             return s;

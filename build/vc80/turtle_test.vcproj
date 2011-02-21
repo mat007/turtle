@@ -215,10 +215,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\is_comparable_test.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\tests\turtle_test\is_formattable_test.cpp"
 				>
 			</File>

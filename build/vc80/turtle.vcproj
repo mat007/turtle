@@ -197,10 +197,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libraries\turtle\is_comparable.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\libraries\turtle\is_formattable.hpp"
 				>
 			</File>

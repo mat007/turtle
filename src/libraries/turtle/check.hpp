@@ -10,7 +10,6 @@
 #define MOCK_CHECK_HPP_INCLUDED
 
 #include "is_functor.hpp"
-#include "is_comparable.hpp"
 #include "constraints.hpp"
 #include "operators.hpp"
 #include "format.hpp"
@@ -122,12 +121,7 @@ namespace detail
     template< typename Actual, typename Functor >
     class check< Actual, Functor,
         BOOST_DEDUCED_TYPENAME boost::enable_if<
-            boost::mpl::or_<
-                detail::is_functor< Functor >,
-                boost::mpl::not_<
-                    detail::is_comparable< Actual, Functor >
-                >
-            >
+            detail::is_functor< Functor >
         >::type
     > : public check_base< Actual >
     {
