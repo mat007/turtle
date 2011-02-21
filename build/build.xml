@@ -18,7 +18,30 @@
   </target>
 
   <target name="analyser" description="run errors analyser">
-    <build-test name="errors" depends="boost"/>
+    <quiet>
+      <delete file="${reports.dir}/errors-${platform}.log"/>
+      <touch file="${reports.dir}/errors-${platform}.log"/>
+    </quiet>
+    <for param="file">
+      <fileset dir="${tests.dir}/errors_test" includes="*.cpp"/>
+      <sequential>
+        <ant target="-analyser">
+          <property name="analyser-file" value="@{file}"/>
+        </ant>
+      </sequential>
+    </for>
+  </target>
+
+  <target name="-analyser">
+    <record name="${reports.dir}/errors-${platform}.log" action="start" append="true"/>
+    <trycatch>
+      <try>
+        <build-test name="errors" excludes="**" depends="boost">
+          <fileset file="${analyser-file}"/>
+        </build-test>
+      </try>
+    </trycatch>
+    <record name="${reports.dir}/errors-${platform}.log" action="stop"/>
   </target>
 
   <target name="bench" description="build compilation benchmark">

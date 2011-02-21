@@ -10,13 +10,13 @@
 
 namespace
 {
-    MOCK_CLASS( cl )
+    MOCK_CLASS( mocked )
     {
-        MOCK_METHOD_EXT( m, 0, int(), m ) // add another test with void() and another with std::string()
+        MOCK_METHOD_EXT( method, 0, int(), method ) // add another test with void() and another with std::string()
     };
     void test_case()
     {
-        cl c;
-        MOCK_EXPECT( c, m ).returns( "42" );
+        mocked m;
+        MOCK_EXPECT( m, method ).returns( "42" );
     }
 }
