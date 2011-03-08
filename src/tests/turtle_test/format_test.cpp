@@ -82,30 +82,30 @@ namespace
 
 namespace
 {
-    struct formatterable {};
+    struct protected_formattable {};
 
-    std::ostream& operator<<( std::ostream& s, const formatterable& )
+    std::ostream& operator<<( std::ostream& s, const protected_formattable& )
     {
         BOOST_FAIL( "should not be called" );
         return s;
     }
 
-    void format( std::ostream&, const formatterable& )
+    void format( std::ostream&, const protected_formattable& )
     {
         BOOST_FAIL( "should not be called" );
     }
 }
 
-BOOST_AUTO_TEST_CASE( formatter_overrides_standard_stream_serialization_and_format_even_if_defined_after_being_used )
+BOOST_AUTO_TEST_CASE( protected_format_overrides_standard_stream_serialization_and_format_even_if_defined_after_being_used )
 {
-    BOOST_CHECK_EQUAL( "formatterable", to_string( formatterable() ) );
+    BOOST_CHECK_EQUAL( "protected_formattable", to_string( protected_formattable() ) );
 }
 
 namespace
 {
-    std::ostream& operator<<( std::ostream& s, const mock::formatter< formatterable >& )
+    void format( std::ostream& s, mock::protect< protected_formattable > )
     {
-        return s << "formatterable";
+        s << "protected_formattable";
     }
 }
 
@@ -205,9 +205,9 @@ namespace
     };
     BOOST_MPL_ASSERT(( mock::detail::is_container< false_positive_container > ));
 
-    std::ostream& operator<<( std::ostream& s, const mock::formatter< false_positive_container >& )
+    void format( std::ostream& s, mock::protect< false_positive_container > )
     {
-        return s << "false_positive_container";
+        s << "false_positive_container";
     }
 }
 
