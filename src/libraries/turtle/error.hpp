@@ -19,6 +19,7 @@
 #else
 #include <iostream>
 #endif
+#include <string>
 
 namespace mock
 {
