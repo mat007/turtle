@@ -6,7 +6,7 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <turtle/format.hpp>
+#include <turtle/log.hpp>
 #include <boost/assign.hpp>
 #include <vector>
 #include <deque>
@@ -24,7 +24,7 @@ namespace
     std::string to_string( T t )
     {
         std::stringstream s;
-        s << mock::format( t );
+        s << ::mock::format( t );
         return s.str();
     }
 }
@@ -33,6 +33,15 @@ namespace
 {
     struct non_serializable
     {};
+
+    void log( std::ostream&, const non_serializable& )
+    {
+        BOOST_FAIL( "should not be called" );
+    }
+    void log( std::ostream&, mock::protect< non_serializable > )
+    {
+        BOOST_FAIL( "should not be called" );
+    }
 }
 
 BOOST_AUTO_TEST_CASE( non_serializable_type_yields_an_interrogation_mark_when_serialized )
@@ -58,54 +67,57 @@ BOOST_AUTO_TEST_CASE( serializable_type_yields_its_value_when_serialized )
 
 namespace
 {
-    struct formattable {};
+    struct loggable {};
 
-    std::ostream& operator<<( std::ostream& s, const formattable& )
+    std::ostream& operator<<( std::ostream& s, const loggable& )
     {
         BOOST_FAIL( "should not be called" );
         return s;
     }
 }
 
-BOOST_AUTO_TEST_CASE( format_overrides_standard_stream_serialization_even_if_defined_after_being_used )
+BOOST_AUTO_TEST_CASE( mock_log_overrides_standard_stream_serialization_even_if_defined_after_being_used )
 {
-    BOOST_CHECK_EQUAL( "formattable", to_string( formattable() ) );
+    BOOST_CHECK_EQUAL( "loggable", to_string( loggable() ) );
 }
 
-namespace
+namespace mock
 {
-    void format( std::ostream& s, const formattable& )
+    void log( std::ostream& s, const loggable& )
     {
-        s << "formattable";
+        s << "loggable";
     }
 }
 
 namespace
 {
-    struct protected_formattable {};
+    struct protected_loggable {};
 
-    std::ostream& operator<<( std::ostream& s, const protected_formattable& )
+    std::ostream& operator<<( std::ostream& s, const protected_loggable& )
     {
         BOOST_FAIL( "should not be called" );
         return s;
     }
+}
 
-    void format( std::ostream&, const protected_formattable& )
+namespace mock
+{
+    void log( std::ostream&, const protected_loggable& )
     {
         BOOST_FAIL( "should not be called" );
     }
 }
 
-BOOST_AUTO_TEST_CASE( protected_format_overrides_standard_stream_serialization_and_format_even_if_defined_after_being_used )
+BOOST_AUTO_TEST_CASE( protected_mock_log_overrides_standard_stream_serialization_and_mock_log_even_if_defined_after_being_used )
 {
-    BOOST_CHECK_EQUAL( "protected_formattable", to_string( protected_formattable() ) );
+    BOOST_CHECK_EQUAL( "protected_loggable", to_string( protected_loggable() ) );
 }
 
-namespace
+namespace mock
 {
-    void format( std::ostream& s, mock::protect< protected_formattable > )
+    void log( std::ostream& s, mock::protect< protected_loggable > )
     {
-        s << "protected_formattable";
+        s << "protected_loggable";
     }
 }
 
@@ -199,19 +211,92 @@ BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized )
 
 namespace
 {
+    void callable_builtin()
+    {}
+}
+
+BOOST_AUTO_TEST_CASE( callable_builtin_cannot_be_serialized )
+{
+    BOOST_CHECK_EQUAL( "?", to_string( &callable_builtin ) );
+    BOOST_CHECK_EQUAL( "?", to_string( callable_builtin ) );
+}
+
+namespace
+{
     struct false_positive_container
     {
         typedef int const_iterator;
     };
     BOOST_MPL_ASSERT(( mock::detail::is_container< false_positive_container > ));
+}
 
-    void format( std::ostream& s, mock::protect< false_positive_container > )
+namespace mock
+{
+    void log( std::ostream& s, false_positive_container )
     {
         s << "false_positive_container";
     }
 }
 
-BOOST_AUTO_TEST_CASE( false_positive_container_serialization_can_still_be_overriden )
+BOOST_AUTO_TEST_CASE( false_positive_container_serialization_can_be_overriden )
 {
     BOOST_CHECK_EQUAL( "false_positive_container", to_string( false_positive_container() ) );
+}
+
+namespace
+{
+    template< typename T >
+    struct template_type
+    {};
+}
+
+namespace mock
+{
+    template< typename T >
+    void log( std::ostream& s, template_type< T > )
+    {
+        s << "template_type";
+    }
+}
+
+BOOST_AUTO_TEST_CASE( template_type_serialization_can_be_overriden )
+{
+    BOOST_CHECK_EQUAL( "template_type", to_string( template_type< int >() ) );
+}
+
+namespace mock
+{
+    void log( std::ostream& s, const std::vector< float >& )
+    {
+        s << "vector< float >";
+    }
+}
+
+BOOST_AUTO_TEST_CASE( vector_of_floats_serialization_can_be_overriden )
+{
+    BOOST_CHECK_EQUAL( "vector< float >", to_string( std::vector< float >() ) );
+}
+
+namespace
+{
+    struct convertible_to_many
+    {
+        operator bool() const;
+        operator std::string() const;
+        operator const char*() const;
+
+        operator std::pair< int, int >() const;
+        template< typename T1, typename T2 > operator std::pair< T1, T2 >() const;
+
+        typedef void (*pf)();
+        operator pf() const;
+
+        operator std::set< int >() const;
+        template< typename T > operator std::set< T >() const;
+    };
+}
+
+BOOST_AUTO_TEST_CASE( build_in_log_customizations_do_not_yield_ambiguous_errors )
+{
+    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_many() ) );
 }

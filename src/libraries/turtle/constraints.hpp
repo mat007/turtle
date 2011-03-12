@@ -10,7 +10,7 @@
 #define MOCK_CONSTRAINTS_HPP_INCLUDED
 
 #include "constraint.hpp"
-#include "format.hpp"
+#include "log.hpp"
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/preprocessor/stringize.hpp>
@@ -64,7 +64,7 @@ namespace mock
             } \
             friend std::ostream& operator<<( std::ostream& s, const N& n ) \
             { \
-                return s << BOOST_STRINGIZE(N) << "( " << mock::format( n.expected_ ) << " )"; \
+                return s << BOOST_STRINGIZE(N) << "( " << ::mock::format( n.expected_ ) << " )"; \
             } \
             Expected expected_; \
         }; \
@@ -98,7 +98,7 @@ namespace detail
         }
         friend std::ostream& operator<<( std::ostream& os, const same& s )
         {
-            return os << "same( " << mock::format( *s.expected_ ) << " )";
+            return os << "same( " << ::mock::format( *s.expected_ ) << " )";
         }
         const Expected* expected_;
     };
@@ -127,7 +127,7 @@ namespace detail
         }
         friend std::ostream& operator<<( std::ostream& s, const assign& a )
         {
-            return s << "assign( " << mock::format( a.expected_ ) << " )";
+            return s << "assign( " << ::mock::format( a.expected_ ) << " )";
         }
         Expected expected_;
     };
@@ -156,7 +156,7 @@ namespace detail
         }
         friend std::ostream& operator<<( std::ostream& s, const retrieve& r )
         {
-            return s << "retrieve( " << mock::format( *r.expected_ ) << " )";
+            return s << "retrieve( " << ::mock::format( *r.expected_ ) << " )";
         }
         Expected* expected_;
     };
@@ -173,7 +173,7 @@ namespace detail
         }
         friend std::ostream& operator<<( std::ostream& s, const contain& n )
         {
-            return s << "contain ( " << mock::format( n.expected_ ) << " )";
+            return s << "contain ( " << ::mock::format( n.expected_ ) << " )";
         }
         Expected expected_;
     };

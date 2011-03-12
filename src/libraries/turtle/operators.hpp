@@ -10,7 +10,7 @@
 #define MOCK_OPERATORS_HPP_INCLUDED
 
 #include "constraint.hpp"
-#include "format.hpp"
+#include "log.hpp"
 
 namespace mock
 {
@@ -31,8 +31,8 @@ namespace detail
         }
         friend std::ostream& operator<<( std::ostream& s, const and_& a )
         {
-            return s << "( " << mock::format( a.c1_ )
-                << " && " << mock::format( a.c2_ ) << " )";
+            return s << "( " << ::mock::format( a.c1_ )
+                << " && " << ::mock::format( a.c2_ ) << " )";
         }
     private:
         Constraint1 c1_;
@@ -54,8 +54,8 @@ namespace detail
         }
         friend std::ostream& operator<<( std::ostream& s, const or_& o )
         {
-            return s << "( " << mock::format( o.c1_ )
-                << " || " << mock::format( o.c2_ )<< " )";
+            return s << "( " << ::mock::format( o.c1_ )
+                << " || " << ::mock::format( o.c2_ )<< " )";
         }
     private:
         Constraint1 c1_;
@@ -76,7 +76,7 @@ namespace detail
         }
         friend std::ostream& operator<<( std::ostream& s, const not_& n )
         {
-            return s << "! " << mock::format( n.f_ );
+            return s << "! " << ::mock::format( n.f_ );
         }
     private:
         Constraint f_;

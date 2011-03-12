@@ -12,7 +12,7 @@
 #include "is_functor.hpp"
 #include "constraints.hpp"
 #include "operators.hpp"
-#include "format.hpp"
+#include "log.hpp"
 #include <boost/utility/enable_if.hpp>
 #include <boost/concept_check.hpp>
 
@@ -66,11 +66,11 @@ namespace detail
 
         friend std::ostream& operator<<( std::ostream& s, const check_base& c )
         {
-            c.format( s );
+            c.log( s );
             return s;
         }
     private:
-        virtual void format( std::ostream& ) const = 0;
+        virtual void log( std::ostream& ) const = 0;
     };
 
     template< typename Actual, typename Expected, typename Enable = void >
@@ -87,9 +87,9 @@ namespace detail
         {
             return actual == expected_;
         }
-        virtual void format( std::ostream& s ) const
+        virtual void log( std::ostream& s ) const
         {
-            s << mock::format( expected_ );
+            s << ::mock::format( expected_ );
         }
     private:
         Expected expected_;
@@ -110,9 +110,9 @@ namespace detail
         {
             return c_( actual );
         }
-        virtual void format( std::ostream& s ) const
+        virtual void log( std::ostream& s ) const
         {
-            s << mock::format( c_ );
+            s << ::mock::format( c_ );
         }
     private:
         Constraint c_;
@@ -136,9 +136,9 @@ namespace detail
         {
             return f_( actual );
         }
-        virtual void format( std::ostream& s ) const
+        virtual void log( std::ostream& s ) const
         {
-            s << mock::format( f_ );
+            s << ::mock::format( f_ );
         }
     private:
         Functor f_;
