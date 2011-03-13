@@ -13,7 +13,7 @@
 #include "error.hpp"
 #include "expectation.hpp"
 #include "root.hpp"
-#include "log.hpp"
+#include "format.hpp"
 #include "args.hpp"
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/function_arity.hpp>
@@ -205,7 +205,7 @@ namespace mock
             }
 
 #define MOCK_EXPECTATION_FORMAT(z, n, N) \
-    << " " << ::mock::format( p##n ) << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), " ", ",")
+    << " " << mock::format( p##n ) << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), " ", ",")
 #define MOCK_EXPECTATION_CALL_CONTEXT(n) \
     boost::unit_test::lazy_ostream::instance() \
         << lazy_context( this ) \

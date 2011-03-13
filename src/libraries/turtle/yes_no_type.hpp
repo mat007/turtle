@@ -23,7 +23,7 @@ namespace detail
     BOOST_STATIC_ASSERT( sizeof( yes_type ) != sizeof( no_type ) );
 
     template< typename T > void operator,( yes_type, const T& );
-    no_type operator,( yes_type, no_type );
+    no_type operator,( yes_type, yes_type );
     no_type operator,( no_type, yes_type );
 }
 }

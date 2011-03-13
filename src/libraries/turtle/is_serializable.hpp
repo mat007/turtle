@@ -24,7 +24,7 @@ namespace detail
 namespace serializable
 {
     template< typename S, typename T >
-    no_type operator<<( S&, const T& );
+    yes_type operator<<( S&, const T& );
 
     template< typename S, typename T >
     struct impl
