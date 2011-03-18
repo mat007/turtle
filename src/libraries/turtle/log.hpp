@@ -157,7 +157,7 @@ namespace detail
     };
 }
 
-    stream& operator<<( stream& s, const detail::data& d )
+    inline stream& operator<<( stream& s, const detail::data& d )
     {
         d.h_->serialize( *s.s_ );
         return s;
