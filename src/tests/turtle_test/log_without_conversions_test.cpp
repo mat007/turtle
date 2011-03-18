@@ -466,3 +466,49 @@ BOOST_AUTO_TEST_CASE( type_can_use_format_when_streamed_without_conversions )
 {
     BOOST_CHECK_EQUAL( "\"string\"", to_string( streamed_using_format() ) );
 }
+
+namespace mock
+{
+namespace detail
+{
+    template< typename T >
+    struct template_serializable
+    {};
+    template< typename T >
+    std::ostream& operator<<( std::ostream& s, const template_serializable< T >& )
+    {
+        return s << "mock::detail::template_serializable";
+    }
+}
+}
+
+BOOST_AUTO_TEST_CASE( mock_detail_template_type_serializable_yields_its_value_when_serialized_without_conversions )
+{
+    BOOST_CHECK_EQUAL( "mock::detail::template_serializable", to_string( mock::detail::template_serializable< int >() ) );
+}
+
+namespace mock
+{
+namespace detail
+{
+    template< typename T >
+    struct template_streamable
+    {};
+    template< typename T >
+    std::ostream& operator<<( std::ostream& s, const template_streamable< T >& )
+    {
+        BOOST_FAIL( "should not have been called" );
+        return s;
+    }
+    template< typename T >
+    mock::stream& operator<<( mock::stream& s, const template_streamable< T >& )
+    {
+        return s << "mock::detail::template_streamable";
+    }
+}
+}
+
+BOOST_AUTO_TEST_CASE( mock_detail_template_template_streamable_yields_its_value_when_serialized_without_conversions )
+{
+    BOOST_CHECK_EQUAL( "mock::detail::template_streamable", to_string( mock::detail::template_streamable< int >() ) );
+}

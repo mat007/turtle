@@ -143,13 +143,13 @@ namespace detail
         const T* t_;
     };
 
-    struct any
+    struct data
     {
         template< typename T >
-        any( const T& t )
+        data( const T& t )
             : h_( new holder_imp< T >( t ) )
         {}
-        ~any()
+        ~data()
         {
             delete h_;
         }
@@ -157,7 +157,7 @@ namespace detail
     };
 }
 
-    stream& operator<<( stream& s, const detail::any& d )
+    stream& operator<<( stream& s, const detail::data& d )
     {
         d.h_->serialize( *s.s_ );
         return s;
@@ -165,7 +165,7 @@ namespace detail
 
 #else // MOCK_LOG_CONVERSIONS
 
-namespace detail
+namespace detail4
 {
     template< typename S, typename T >
     S& operator<<( S &s, const T& )
@@ -177,7 +177,7 @@ namespace detail
     template< typename T >
     void serialize( std::ostream& s, const T& t )
     {
-        using namespace detail;
+        using namespace detail4;
         s << t;
     }
 
