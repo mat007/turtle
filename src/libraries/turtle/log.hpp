@@ -116,7 +116,7 @@ namespace detail
         {}
     };
 
-    std::ostream& operator<<( std::ostream& s, const detail::sink& )
+    inline std::ostream& operator<<( std::ostream& s, const detail::sink& )
     {
         return s << "?";
     }
