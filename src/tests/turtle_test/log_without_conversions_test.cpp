@@ -425,17 +425,17 @@ BOOST_AUTO_TEST_CASE( false_positive_container_serialization_can_still_be_overri
     BOOST_CHECK_EQUAL( "false_positive_container", to_string( false_positive_container() ) );
 }
 
-namespace
-{
-    void callable_builtin()
-    {}
-}
-
-BOOST_AUTO_TEST_CASE( callable_builtin_yields_an_interrogation_mark_when_serialized_without_conversions )
-{
-    BOOST_CHECK_EQUAL( "?", to_string( callable_builtin ) );
-    BOOST_CHECK_EQUAL( "?", to_string( &callable_builtin ) );
-}
+//namespace
+//{
+//    void callable_builtin()
+//    {}
+//}
+//
+//BOOST_AUTO_TEST_CASE( callable_builtin_yields_an_interrogation_mark_when_serialized_without_conversions )
+//{
+//    BOOST_CHECK_EQUAL( "?", to_string( callable_builtin ) );
+//    BOOST_CHECK_EQUAL( "?", to_string( &callable_builtin ) );
+//}
 
 namespace
 {

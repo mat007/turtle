@@ -232,14 +232,14 @@ namespace detail2
         return s << ')';
     }
 
-    template< typename T >
-    BOOST_DEDUCED_TYPENAME boost::enable_if<
-            boost::function_types::is_callable_builtin< T >, stream&
-    >::type
-    operator<<( stream& s, const T* )
-    {
-         return s << '?';
-    }
+    //template< typename T >
+    //BOOST_DEDUCED_TYPENAME boost::enable_if<
+    //        boost::function_types::is_callable_builtin< T >, stream&
+    //>::type
+    //operator<<( stream& s, const T& )
+    //{
+    //     return s << '?';
+    //}
 }
 
 #endif // #ifndef MOCK_LOG_HPP_INCLUDED
