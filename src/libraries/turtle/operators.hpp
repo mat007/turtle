@@ -10,7 +10,7 @@
 #define MOCK_OPERATORS_HPP_INCLUDED
 
 #include "constraint.hpp"
-#include "format.hpp"
+#include "log.hpp"
 
 namespace mock
 {

@@ -12,7 +12,7 @@
 #include "is_functor.hpp"
 #include "constraints.hpp"
 #include "operators.hpp"
-#include "format.hpp"
+#include "log.hpp"
 #include <boost/utility/enable_if.hpp>
 #include <boost/concept_check.hpp>
 

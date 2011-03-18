@@ -199,10 +199,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\format_test.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\tests\turtle_test\function_test.cpp"
 				>
 			</File>
@@ -215,7 +211,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\is_formattable_test.cpp"
+				RelativePath="..\..\src\tests\turtle_test\is_container_test.cpp"
 				>
 			</File>
 			<File
@@ -223,7 +219,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\is_serializable_test.cpp"
+				RelativePath="..\..\src\tests\turtle_test\log_with_conversions_test.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\turtle_test\log_without_conversions_test.cpp"
 				>
 			</File>
 			<File

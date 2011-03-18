@@ -185,10 +185,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libraries\turtle\format.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\libraries\turtle\function.hpp"
 				>
 			</File>
@@ -197,7 +193,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libraries\turtle\is_formattable.hpp"
+				RelativePath="..\..\src\libraries\turtle\is_container.hpp"
 				>
 			</File>
 			<File
@@ -205,11 +201,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libraries\turtle\is_serializable.hpp"
+				RelativePath="..\..\src\libraries\turtle\lambda.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libraries\turtle\lambda.hpp"
+				RelativePath="..\..\src\libraries\turtle\log.hpp"
 				>
 			</File>
 			<File
@@ -234,10 +230,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\sequence.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libraries\turtle\sink.hpp"
 				>
 			</File>
 			<File

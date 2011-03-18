@@ -10,7 +10,7 @@
 #define MOCK_CONSTRAINTS_HPP_INCLUDED
 
 #include "constraint.hpp"
-#include "format.hpp"
+#include "log.hpp"
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/preprocessor/stringize.hpp>
