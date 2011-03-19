@@ -111,8 +111,7 @@ namespace detail5
     struct sink
     {
         template< typename T >
-        sink( const T&, BOOST_DEDUCED_TYPENAME boost::disable_if<
-                boost::is_fundamental< T > >::type* = 0 )
+        sink( const T& )
         {}
     };
 
