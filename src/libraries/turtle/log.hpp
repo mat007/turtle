@@ -106,7 +106,7 @@ namespace detail3
 
 #ifdef MOCK_LOG_CONVERSIONS
 
-namespace detail
+namespace detail5
 {
     struct sink
     {
@@ -116,7 +116,7 @@ namespace detail
         {}
     };
 
-    inline std::ostream& operator<<( std::ostream& s, const detail::sink& )
+    inline std::ostream& operator<<( std::ostream& s, const sink& )
     {
         return s << "?";
     }
@@ -157,7 +157,7 @@ namespace detail
     };
 }
 
-    inline stream& operator<<( stream& s, const detail::data& d )
+    inline stream& operator<<( stream& s, const detail5::data& d )
     {
         d.h_->serialize( *s.s_ );
         return s;
