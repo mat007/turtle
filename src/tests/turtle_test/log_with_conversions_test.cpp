@@ -418,8 +418,8 @@ namespace
 
 BOOST_AUTO_TEST_CASE( callable_builtin_yields_an_interrogation_mark_when_serialized_with_conversions )
 {
-    BOOST_CHECK_EQUAL( "?", to_string_2( callable_builtin ) );
-    BOOST_CHECK_EQUAL( "?", to_string_2( &callable_builtin ) );
+    BOOST_CHECK_EQUAL( "?", to_string( callable_builtin ) );
+    BOOST_CHECK_EQUAL( "?", to_string( &callable_builtin ) );
 }
 
 namespace
