@@ -193,10 +193,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libraries\turtle\is_container.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\libraries\turtle\is_functor.hpp"
 				>
 			</File>

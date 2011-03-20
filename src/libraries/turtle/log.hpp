@@ -9,12 +9,19 @@
 #ifndef MOCK_LOG_HPP_INCLUDED
 #define MOCK_LOG_HPP_INCLUDED
 
-#include "is_container.hpp"
 #include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_fundamental.hpp>
+#include <boost/detail/container_fwd.hpp>
 #include <boost/function_types/is_callable_builtin.hpp>
-#include <iostream>
+#include <ostream>
 #include <string>
+
+namespace boost
+{
+namespace assign_detail
+{
+    template< typename T > class generic_list;
+}
+}
 
 namespace mock
 {
@@ -26,87 +33,9 @@ namespace mock
         std::ostream* s_;
     };
 
-namespace detail3
-{
-    template< typename T >
-    struct serializer
-    {
-        explicit serializer( const T& t )
-            : t_( &t )
-        {}
-        void serialize( stream& s ) const
-        {
-            // if it fails here because ambiguous stuff
-            // -> add operator<< to mock::stream for T
-            s << *t_;
-        }
-        const T* t_;
-    };
-    template<>
-    struct serializer< bool >
-    {
-        explicit serializer( bool b )
-            : b_( b )
-        {}
-        void serialize( stream& s ) const
-        {
-            *s.s_ << std::boolalpha << b_;
-        }
-        bool b_;
-    };
-    template<>
-    struct serializer< const char* >
-    {
-        explicit serializer( const char* s )
-            : s_( s )
-        {}
-        void serialize( stream& s ) const
-        {
-            *s.s_ << '"' << s_ << '"';
-        }
-        const char* s_;
-    };
-    template<>
-    struct serializer< std::string >
-    {
-        explicit serializer( const std::string& s )
-            : s_( &s )
-        {}
-        void serialize( stream& s ) const
-        {
-            *s.s_ << '"' << *s_ << '"';
-        }
-        const std::string* s_;
-    };
-
-    template< typename T >
-    stream& operator<<( stream& s, const serializer< T >& ser )
-    {
-        ser.serialize( s );
-        return s;
-    }
-
-    template< typename T >
-    std::ostream& operator<<( std::ostream& s, const serializer< T >& ser )
-    {
-        stream ss( s );
-        ser.serialize( ss );
-        return s;
-    }
-}
-    template< typename T >
-    detail3::serializer< T > format( const T& t )
-    {
-        return detail3::serializer< T >( t );
-    }
-    inline detail3::serializer< const char* > format( const char* s )
-    {
-        return detail3::serializer< const char* >( s );
-    }
-
 #ifdef MOCK_LOG_CONVERSIONS
 
-namespace detail5
+namespace detail3
 {
     struct sink
     {
@@ -156,7 +85,7 @@ namespace detail5
     };
 }
 
-    inline stream& operator<<( stream& s, const detail5::data& d )
+    inline stream& operator<<( stream& s, const detail3::data& d )
     {
         d.h_->serialize( *s.s_ );
         return s;
@@ -164,7 +93,7 @@ namespace detail5
 
 #else // MOCK_LOG_CONVERSIONS
 
-namespace detail4
+namespace detail3
 {
     template< typename S, typename T >
     S& operator<<( S &s, const T& )
@@ -174,34 +103,75 @@ namespace detail4
 }
 
     template< typename T >
-    void serialize( std::ostream& s, const T& t )
-    {
-        using namespace detail4;
-        s << t;
-    }
-
-namespace detail2
-{
-    template< typename S, typename T >
-    S& operator<<( S& s, const T& t )
-    {
-        serialize( s, t );
-        return s;
-    }
-}
-
-    template< typename T >
     BOOST_DEDUCED_TYPENAME boost::disable_if<
-            detail::is_container< T >, stream&
+        boost::function_types::is_callable_builtin< T >, stream&
     >::type
     operator<<( stream& s, const T& t )
     {
-        using namespace detail2;
+        using namespace detail3;
         *s.s_ << t;
         return s;
     }
 
 #endif // MOCK_LOG_CONVERSIONS
+
+namespace detail2
+{
+    template< typename T >
+    void serialize( stream& s, const T& t )
+    {
+        // if it fails here because ambiguous stuff
+        // -> add operator<< to mock::stream for T
+        s << t;
+    }
+    inline void serialize( stream& s, bool b )
+    {
+        s << (b ? "true" : "false");
+    }
+    template< typename C, typename T, typename A >
+    void serialize( stream& s, const std::basic_string< C, T, A >& str )
+    {
+        s << '"' << str << '"';
+    }
+    inline void serialize( stream& s, const char* str )
+    {
+        s << '"' << str << '"';
+    }
+
+    template< typename T >
+    struct formatter
+    {
+        explicit formatter( const T& t )
+            : t_( &t )
+        {}
+        void serialize( stream& s ) const
+        {
+            detail2::serialize( s, *t_ );
+        }
+        const T* t_;
+    };
+
+    template< typename T >
+    stream& operator<<( stream& s, const formatter< T >& ser )
+    {
+        ser.serialize( s );
+        return s;
+    }
+
+    template< typename T >
+    std::ostream& operator<<( std::ostream& s, const formatter< T >& ser )
+    {
+        stream ss( s );
+        ser.serialize( ss );
+        return s;
+    }
+}
+
+    template< typename T >
+    detail2::formatter< T > format( const T& t )
+    {
+        return detail2::formatter< T >( t );
+    }
 
     template< typename T1, typename T2 >
     stream& operator<<( stream& s, const std::pair< T1, T2 >& p )
@@ -210,35 +180,76 @@ namespace detail2
             << ',' << mock::format( p.second ) << ')';
     }
 
-    template< typename Container >
-    BOOST_DEDUCED_TYPENAME boost::enable_if<
-            detail::is_container< Container >, stream&
-    >::type
-    operator<<( stream& s, const Container& c )
+namespace detail
+{
+    template< typename T >
+    void serialize( stream& s, const T& begin, const T& end )
     {
         s << '(';
-        // if an error is generated by the line below it means Container is
-        // being mismatched for a container because it has a typedef
-        // const_iterator : the easiest solution would be to add a format
-        // function for Container as well.
-        for( BOOST_DEDUCED_TYPENAME Container::const_iterator it = c.begin();
-            it != c.end(); ++it )
-        {
-            if( it != c.begin() )
-                s << ',';
-            s << mock::format( *it );
-        }
-        return s << ')';
+        for( T it = begin; it != end; ++it )
+            s << (it == begin ? "" : ",") << mock::format( *it );
+        s << ')';
+    }
+}
+
+    template< typename T, typename A >
+    stream& operator<<( stream& s, const std::deque< T, A >& t )
+    {
+        detail::serialize( s, t.begin(), t.end() );
+        return s;
+    }
+    template< typename T, typename A >
+    stream& operator<<( stream& s, const std::list< T, A >& t )
+    {
+        detail::serialize( s, t.begin(), t.end() );
+        return s;
+    }
+    template< typename T, typename A >
+    stream& operator<<( stream& s, const std::vector< T, A >& t )
+    {
+        detail::serialize( s, t.begin(), t.end() );
+        return s;
+    }
+    template< typename K, typename T, typename C, typename A >
+    stream& operator<<( stream& s, const std::map< K, T, C, A >& t )
+    {
+        detail::serialize( s, t.begin(), t.end() );
+        return s;
+    }
+    template< typename K, typename T, typename C, typename A >
+    stream& operator<<( stream& s, const std::multimap< K, T, C, A >& t )
+    {
+        detail::serialize( s, t.begin(), t.end() );
+        return s;
+    }
+    template< typename T, typename C, typename A >
+    stream& operator<<( stream& s, const std::set< T, C, A >& t )
+    {
+        detail::serialize( s, t.begin(), t.end() );
+        return s;
+    }
+    template< typename T, typename C, typename A >
+    stream& operator<<( stream& s, const std::multiset< T, C, A >& t )
+    {
+        detail::serialize( s, t.begin(), t.end() );
+        return s;
+    }
+    template< typename T >
+    stream& operator<<( stream& s,
+        const boost::assign_detail::generic_list< T >& t )
+    {
+        detail::serialize( s, t.begin(), t.end() );
+        return s;
     }
 
-    //template< typename T >
-    //BOOST_DEDUCED_TYPENAME boost::enable_if<
-    //        boost::function_types::is_callable_builtin< T >, stream&
-    //>::type
-    //operator<<( stream& s, const T& )
-    //{
-    //     return s << '?';
-    //}
+    template< typename T >
+    BOOST_DEDUCED_TYPENAME boost::enable_if<
+        boost::function_types::is_callable_builtin< T >, stream&
+    >::type
+    operator<<( stream& s, const T& )
+    {
+         return s << '?';
+    }
 }
 
 #endif // #ifndef MOCK_LOG_HPP_INCLUDED

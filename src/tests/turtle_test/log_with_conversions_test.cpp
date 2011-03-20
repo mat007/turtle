@@ -412,34 +412,15 @@ BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized_with_conversions )
 
 namespace
 {
-    struct false_positive_container
-    {
-        typedef int const_iterator;
-    };
-    BOOST_MPL_ASSERT(( mock::detail::is_container< false_positive_container > ));
-
-    mock::stream& operator<<( mock::stream& s, false_positive_container )
-    {
-        return s << "false_positive_container";
-    }
+    void callable_builtin()
+    {}
 }
 
-BOOST_AUTO_TEST_CASE( false_positive_container_serialization_can_still_be_overriden_with_conversions )
+BOOST_AUTO_TEST_CASE( callable_builtin_yields_an_interrogation_mark_when_serialized_with_conversions )
 {
-    BOOST_CHECK_EQUAL( "false_positive_container", to_string( false_positive_container() ) );
+    BOOST_CHECK_EQUAL( "?", to_string_2( callable_builtin ) );
+    BOOST_CHECK_EQUAL( "?", to_string_2( &callable_builtin ) );
 }
-
-//namespace
-//{
-//    void callable_builtin()
-//    {}
-//}
-//
-//BOOST_AUTO_TEST_CASE( callable_builtin_yields_an_interrogation_mark_when_serialized_with_conversions )
-//{
-//    BOOST_CHECK_EQUAL( "?", to_string( callable_builtin ) );
-//    BOOST_CHECK_EQUAL( "?", to_string( &callable_builtin ) );
-//}
 
 namespace
 {
@@ -469,6 +450,21 @@ namespace
 BOOST_AUTO_TEST_CASE( type_can_use_format_when_streamed_with_conversions )
 {
     BOOST_CHECK_EQUAL( "\"string\"", to_string( streamed_using_format() ) );
+}
+
+namespace
+{
+    struct std_string_streamed
+    {};
+    mock::stream& operator<<( mock::stream& s, const std_string_streamed& )
+    {
+        return s << std::string( "string" );
+    }
+}
+
+BOOST_AUTO_TEST_CASE( std_string_streamed_is_not_a_container_with_conversions )
+{
+    BOOST_CHECK_EQUAL( "string", to_string( std_string_streamed() ) );
 }
 
 namespace mock
