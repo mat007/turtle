@@ -33,7 +33,7 @@ namespace mock
         std::ostream* s_;
     };
 
-#ifdef MOCK_LOG_CONVERSIONS
+#ifdef MOCK_LOGGING_USE_CONVERSIONS
 
 namespace detail3
 {
@@ -91,7 +91,7 @@ namespace detail3
         return s;
     }
 
-#else // MOCK_LOG_CONVERSIONS
+#else // MOCK_LOGGING_USE_CONVERSIONS
 
 namespace detail3
 {
@@ -113,7 +113,7 @@ namespace detail3
         return s;
     }
 
-#endif // MOCK_LOG_CONVERSIONS
+#endif // MOCK_LOGGING_USE_CONVERSIONS
 
 namespace detail2
 {

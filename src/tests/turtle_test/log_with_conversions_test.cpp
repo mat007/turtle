@@ -6,7 +6,7 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#define MOCK_LOG_CONVERSIONS
+#define MOCK_LOGGING_USE_CONVERSIONS
 #include <turtle/log.hpp>
 #include <boost/assign.hpp>
 #include <vector>
