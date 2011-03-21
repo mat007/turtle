@@ -112,7 +112,8 @@ namespace detail
         template< typename Actual >
         bool operator()( Actual& actual,
             BOOST_DEDUCED_TYPENAME boost::disable_if<
-                boost::is_convertible< Expected*, Actual >, Actual >::type* = 0 ) const
+                boost::is_convertible< Expected*, Actual >
+            >::type* = 0 ) const
         {
             actual = expected_;
             return true;
@@ -120,7 +121,8 @@ namespace detail
         template< typename Actual >
         bool operator()( Actual* actual,
             BOOST_DEDUCED_TYPENAME boost::enable_if<
-                boost::is_convertible< Expected, Actual >, Actual >::type* = 0 ) const
+                boost::is_convertible< Expected, Actual >
+            >::type* = 0 ) const
         {
             *actual = expected_;
             return true;
@@ -141,7 +143,8 @@ namespace detail
         template< typename Actual >
         bool operator()( const Actual& actual,
             BOOST_DEDUCED_TYPENAME boost::disable_if<
-                boost::is_convertible< const Actual*, Expected >, Actual >::type* = 0 ) const
+                boost::is_convertible< const Actual*, Expected >
+            >::type* = 0 ) const
         {
             *expected_ = actual;
             return true;
@@ -149,7 +152,8 @@ namespace detail
         template< typename Actual >
         bool operator()( Actual& actual,
             BOOST_DEDUCED_TYPENAME boost::enable_if<
-                boost::is_convertible< Actual*, Expected >, Actual >::type* = 0 ) const
+                boost::is_convertible< Actual*, Expected >
+            >::type* = 0 ) const
         {
             *expected_ = &actual;
             return true;

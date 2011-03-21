@@ -244,7 +244,8 @@ namespace detail
 
     template< typename T >
     BOOST_DEDUCED_TYPENAME boost::enable_if<
-        boost::function_types::is_callable_builtin< T >, stream&
+        boost::function_types::is_callable_builtin< T >,
+        stream&
     >::type
     operator<<( stream& s, const T& )
     {

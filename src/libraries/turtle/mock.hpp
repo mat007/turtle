@@ -98,7 +98,7 @@ namespace detail
     void set_parent( E& e, const std::string& prefix,
         const std::string& name, const T&,
         BOOST_DEDUCED_TYPENAME boost::disable_if<
-            BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >::type
+            BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >
         >::type* = 0 )
     {
         e.tag( prefix + name );
@@ -158,7 +158,7 @@ namespace detail
 #define MOCK_CALL(z, n, d) \
     template< typename E > \
     BOOST_DEDUCED_TYPENAME boost::enable_if< \
-        BOOST_DEDUCED_TYPENAME has_arity< E, n >::type, \
+        BOOST_DEDUCED_TYPENAME has_arity< E, n >, \
         BOOST_DEDUCED_TYPENAME E::result_type \
     >::type \
         call( E e BOOST_PP_COMMA_IF(n) MOCK_ARGS(n, BOOST_DEDUCED_TYPENAME E::signature_type, BOOST_DEDUCED_TYPENAME ) ) \
@@ -256,7 +256,7 @@ namespace detail
 #define MOCK_CALL(z, n, d) \
     template< typename E > \
     BOOST_DEDUCED_TYPENAME boost::disable_if< \
-        BOOST_DEDUCED_TYPENAME has_arity< E, n >::type, \
+        BOOST_DEDUCED_TYPENAME has_arity< E, n >, \
         BOOST_DEDUCED_TYPENAME E::result_type \
     >::type \
         call( E BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM(n, MOCK_CALL_INVALID_TYPE, BOOST_PP_EMPTY) ) \
