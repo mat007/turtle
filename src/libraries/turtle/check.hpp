@@ -66,11 +66,11 @@ namespace detail
 
         friend std::ostream& operator<<( std::ostream& s, const check_base& c )
         {
-            c.format( s );
+            c.serialize( s );
             return s;
         }
     private:
-        virtual void format( std::ostream& ) const = 0;
+        virtual void serialize( std::ostream& ) const = 0;
     };
 
     template< typename Actual, typename Expected, typename Enable = void >
@@ -87,7 +87,7 @@ namespace detail
         {
             return actual == expected_;
         }
-        virtual void format( std::ostream& s ) const
+        virtual void serialize( std::ostream& s ) const
         {
             s << mock::format( expected_ );
         }
@@ -110,7 +110,7 @@ namespace detail
         {
             return c_( actual );
         }
-        virtual void format( std::ostream& s ) const
+        virtual void serialize( std::ostream& s ) const
         {
             s << mock::format( c_ );
         }
@@ -136,7 +136,7 @@ namespace detail
         {
             return f_( actual );
         }
-        virtual void format( std::ostream& s ) const
+        virtual void serialize( std::ostream& s ) const
         {
             s << mock::format( f_ );
         }

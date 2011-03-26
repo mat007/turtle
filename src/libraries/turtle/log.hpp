@@ -146,7 +146,7 @@ namespace detail2
         {}
         void serialize( stream& s ) const
         {
-            detail2::serialize( s, *t_ );
+            mock::detail2::serialize( s, *t_ );
         }
         const T* t_;
     };
@@ -195,50 +195,50 @@ namespace detail
     template< typename T, typename A >
     stream& operator<<( stream& s, const std::deque< T, A >& t )
     {
-        detail::serialize( s, t.begin(), t.end() );
+        mock::detail::serialize( s, t.begin(), t.end() );
         return s;
     }
     template< typename T, typename A >
     stream& operator<<( stream& s, const std::list< T, A >& t )
     {
-        detail::serialize( s, t.begin(), t.end() );
+        mock::detail::serialize( s, t.begin(), t.end() );
         return s;
     }
     template< typename T, typename A >
     stream& operator<<( stream& s, const std::vector< T, A >& t )
     {
-        detail::serialize( s, t.begin(), t.end() );
+        mock::detail::serialize( s, t.begin(), t.end() );
         return s;
     }
     template< typename K, typename T, typename C, typename A >
     stream& operator<<( stream& s, const std::map< K, T, C, A >& t )
     {
-        detail::serialize( s, t.begin(), t.end() );
+        mock::detail::serialize( s, t.begin(), t.end() );
         return s;
     }
     template< typename K, typename T, typename C, typename A >
     stream& operator<<( stream& s, const std::multimap< K, T, C, A >& t )
     {
-        detail::serialize( s, t.begin(), t.end() );
+        mock::detail::serialize( s, t.begin(), t.end() );
         return s;
     }
     template< typename T, typename C, typename A >
     stream& operator<<( stream& s, const std::set< T, C, A >& t )
     {
-        detail::serialize( s, t.begin(), t.end() );
+        mock::detail::serialize( s, t.begin(), t.end() );
         return s;
     }
     template< typename T, typename C, typename A >
     stream& operator<<( stream& s, const std::multiset< T, C, A >& t )
     {
-        detail::serialize( s, t.begin(), t.end() );
+        mock::detail::serialize( s, t.begin(), t.end() );
         return s;
     }
     template< typename T >
     stream& operator<<( stream& s,
         const boost::assign_detail::generic_list< T >& t )
     {
-        detail::serialize( s, t.begin(), t.end() );
+        mock::detail::serialize( s, t.begin(), t.end() );
         return s;
     }
 

@@ -36,21 +36,21 @@ namespace detail
         template< typename T >
         static functor_type make_val( T t )
         {
-            return detail::bind( &do_identity< T >, t );
+            return mock::detail::bind( &do_identity< T >, t );
         }
         template< typename T >
         static functor_type make_val( boost::reference_wrapper< T > t )
         {
-            return detail::bind( &do_ref_identity< T >, t.get_pointer() );
+            return mock::detail::bind( &do_ref_identity< T >, t.get_pointer() );
         }
         template< typename T >
         static functor_type make_throw( T t )
         {
-            return detail::bind( &do_throw< T >, t );
+            return mock::detail::bind( &do_throw< T >, t );
         }
         static functor_type make_nothing()
         {
-            return detail::bind( &do_nothing );
+            return mock::detail::bind( &do_nothing );
         }
 
         template< typename T >
