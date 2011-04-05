@@ -11,6 +11,7 @@
 
 #include "constraint.hpp"
 #include "log.hpp"
+#include <boost/ref.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/preprocessor/stringize.hpp>
@@ -75,11 +76,11 @@ namespace mock
         return detail::N< T >( t ); \
     }
 
-    MOCK_CONSTRAINT(equal, actual == expected_)
-    MOCK_CONSTRAINT(less, actual < expected_)
-    MOCK_CONSTRAINT(greater, actual > expected_)
-    MOCK_CONSTRAINT(less_equal, actual <= expected_)
-    MOCK_CONSTRAINT(greater_equal, actual >= expected_)
+    MOCK_CONSTRAINT(equal, actual == boost::unwrap_ref( expected_ ))
+    MOCK_CONSTRAINT(less, actual < boost::unwrap_ref( expected_ ))
+    MOCK_CONSTRAINT(greater, actual > boost::unwrap_ref( expected_ ))
+    MOCK_CONSTRAINT(less_equal, actual <= boost::unwrap_ref( expected_ ))
+    MOCK_CONSTRAINT(greater_equal, actual >= boost::unwrap_ref( expected_ ))
 
 #undef MOCK_CONSTRAINT
 
@@ -115,7 +116,7 @@ namespace detail
                 boost::is_convertible< Expected*, Actual >
             >::type* = 0 ) const
         {
-            actual = expected_;
+            actual = boost::unwrap_ref( expected_ );
             return true;
         }
         template< typename Actual >
@@ -124,7 +125,7 @@ namespace detail
                 boost::is_convertible< Expected, Actual >
             >::type* = 0 ) const
         {
-            *actual = expected_;
+            *actual = boost::unwrap_ref( expected_ );
             return true;
         }
         friend std::ostream& operator<<( std::ostream& s, const assign& a )
@@ -173,7 +174,7 @@ namespace detail
         {}
         bool operator()( const std::string& actual ) const
         {
-            return actual.find( expected_ ) != std::string::npos;
+            return actual.find( boost::unwrap_ref( expected_ ) ) != std::string::npos;
         }
         friend std::ostream& operator<<( std::ostream& s, const contain& n )
         {

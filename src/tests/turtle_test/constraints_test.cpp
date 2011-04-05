@@ -44,6 +44,22 @@ BOOST_AUTO_TEST_CASE( constraints_can_be_combined_using_the_and_operator )
     mock::less( 0 ) && mock::greater( 0 );
 }
 
+BOOST_AUTO_TEST_CASE( equal )
+{
+    BOOST_CHECK( mock::equal( std::string( "string" ) ).f_( "string" ) );
+    BOOST_CHECK( ! mock::equal( std::string( "string" ) ).f_( "not string" ) );
+    {
+        std::string s;
+        mock::constraint<
+            mock::detail::equal<
+                boost::reference_wrapper< const std::string >
+            >
+        > c = mock::equal( boost::cref( s ) );
+        s = "string";
+        BOOST_CHECK( c.f_( "string" ) );
+    }
+}
+
 BOOST_AUTO_TEST_CASE( same )
 {
     int i = 0;
@@ -70,6 +86,30 @@ BOOST_AUTO_TEST_CASE( assign )
         const int j = 1;
         BOOST_CHECK( mock::assign( &j ).f_( i ) );
         BOOST_CHECK_EQUAL( i, &j );
+    }
+    {
+        int i = 0;
+        int j = 0;
+        mock::constraint<
+            mock::detail::assign<
+                boost::reference_wrapper< const int >
+            >
+        > c = mock::assign( boost::cref( j ) );
+        j = 3;
+        BOOST_CHECK( c.f_( i ) );
+        BOOST_CHECK_EQUAL( 3, i );
+    }
+    {
+        int i = 0;
+        int j = 0;
+        mock::constraint<
+            mock::detail::assign<
+                boost::reference_wrapper< const int >
+            >
+        > c = mock::assign( boost::cref( j ) );
+        j = 3;
+        BOOST_CHECK( c.f_( &i ) );
+        BOOST_CHECK_EQUAL( 3, i );
     }
 }
 
@@ -184,6 +224,20 @@ BOOST_AUTO_TEST_CASE( contain_with_const_char_ptr )
     BOOST_CHECK( mock::contain( "string" ).f_( std::string( "this is a string" ) ) );
     BOOST_CHECK( ! mock::contain( "not found" ).f_( "this is a string" ) );
     BOOST_CHECK( ! mock::contain( "not found" ).f_( std::string( "this is a string" ) ) );
+    {
+        char* s;
+        mock::constraint<
+            mock::detail::contain<
+                boost::reference_wrapper< char* const >
+            >
+        > c = mock::contain( boost::cref( s ) );
+        s = "string";
+        BOOST_CHECK( c.f_( "this is a string" ) );
+        BOOST_CHECK( c.f_( std::string( "this is a string" ) ) );
+        s = "not found";
+        BOOST_CHECK( ! c.f_( "this is a string" ) );
+        BOOST_CHECK( ! c.f_( std::string( "this is a string" ) ) );
+    }
 }
 
 BOOST_AUTO_TEST_CASE( contain_with_strings )
@@ -192,4 +246,18 @@ BOOST_AUTO_TEST_CASE( contain_with_strings )
     BOOST_CHECK( mock::contain( std::string( "string" ) ).f_( std::string( "this is a string" ) ) );
     BOOST_CHECK( ! mock::contain( std::string( "not found" ) ).f_( "this is a string" ) );
     BOOST_CHECK( ! mock::contain( std::string( "not found" ) ).f_( std::string( "this is a string" ) ) );
+    {
+        std::string s;
+        mock::constraint<
+            mock::detail::contain<
+                boost::reference_wrapper< const std::string >
+            >
+        > c = mock::contain( boost::cref( s ) );
+        s = "string";
+        BOOST_CHECK( c.f_( "this is a string" ) );
+        BOOST_CHECK( c.f_( std::string( "this is a string" ) ) );
+        s = "not found";
+        BOOST_CHECK( ! c.f_( "this is a string" ) );
+        BOOST_CHECK( ! c.f_( std::string( "this is a string" ) ) );
+    }
 }

@@ -21,6 +21,7 @@ namespace assign_detail
 {
     template< typename T > class generic_list;
 }
+    template< typename T > class reference_wrapper;
 }
 
 namespace mock
@@ -240,6 +241,12 @@ namespace detail
     {
         mock::detail::serialize( s, t.begin(), t.end() );
         return s;
+    }
+    template< typename T >
+    stream& operator<<( stream& s,
+        const boost::reference_wrapper< T >& t )
+    {
+        return s << mock::format( t.get() );
     }
 
     template< typename T >
