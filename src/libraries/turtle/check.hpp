@@ -15,6 +15,7 @@
 #include "log.hpp"
 #include <boost/utility/enable_if.hpp>
 #include <boost/concept_check.hpp>
+#include <boost/ref.hpp>
 
 namespace mock
 {
@@ -52,7 +53,8 @@ namespace detail
         }
     private:
         EqualityComparable( int ) {}
-        Expected expected_argument_type;
+        BOOST_DEDUCED_TYPENAME
+            boost::unwrap_reference< Expected >::type expected_argument_type;
         Actual actual_argument_type;
     };
 
@@ -85,7 +87,7 @@ namespace detail
     private:
         virtual bool operator()( Actual actual ) const
         {
-            return actual == expected_;
+            return actual == boost::unwrap_ref( expected_ );
         }
         virtual void serialize( std::ostream& s ) const
         {

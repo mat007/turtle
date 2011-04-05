@@ -63,16 +63,22 @@ namespace
 BOOST_AUTO_TEST_CASE( basic_mock_object_usage )
 {
     my_mock m;
-    MOCK_EXPECT( m, my_method ).once().returns( 0 );
-    BOOST_CHECK_EQUAL( 0, m.my_method( 13 ) );
+    {
+        MOCK_EXPECT( m, my_method ).once().returns( 0 );
+        BOOST_CHECK_EQUAL( 0, m.my_method( 13 ) );
+    }
     mock::verify();
     mock::reset();
-    MOCK_EXPECT( m, my_method ).once().with( 42 ).returns( 7 );
-    BOOST_CHECK_EQUAL( 7, m.my_method( 42 ) );
+    {
+        MOCK_EXPECT( m, my_method ).once().with( 42 ).returns( 7 );
+        BOOST_CHECK_EQUAL( 7, m.my_method( 42 ) );
+    }
     mock::verify();
     mock::reset();
-    MOCK_EXPECT( m, my_method ).once().returns( 51 );
-    BOOST_CHECK_EQUAL( 51, m.my_method( 27 ) );
+    {
+        MOCK_EXPECT( m, my_method ).once().returns( 51 );
+        BOOST_CHECK_EQUAL( 51, m.my_method( 27 ) );
+    }
 }
 
 namespace
@@ -377,12 +383,14 @@ namespace
         template< typename Actual >
         bool operator()( Actual actual ) const
         {
-            return std::abs( actual - expected_ ) < threshold_;
+            return std::abs( actual - boost::unwrap_ref( expected_ ) )
+                < boost::unwrap_ref( threshold_ );
         }
 
         friend std::ostream& operator<<( std::ostream& s, const near_constraint& c )
         {
-            return s << "near( " << c.expected_ << ", " << c.threshold_ << " )";
+            return s << "near( " << mock::format( c.expected_ )
+                << ", " << mock::format( c.threshold_ ) << " )";
         }
 
         //template< typename Actual >
@@ -401,7 +409,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( writing_custom_constraint )
+BOOST_AUTO_TEST_CASE( using_custom_constraint )
 {
     MOCK_FUNCTOR( void( float ) ) f;
     MOCK_EXPECT( f, _ ).with( near( 3.f, 0.01f ) );
@@ -411,4 +419,13 @@ BOOST_AUTO_TEST_CASE( writing_custom_constraint )
     std::stringstream s;
     s << f;
     BOOST_CHECK_EQUAL( expected, s.str() );
+}
+
+BOOST_AUTO_TEST_CASE( boost_reference_wrapper_is_supported_in_value_constraint )
+{
+    MOCK_FUNCTOR( void( const std::string& ) ) f;
+    std::string s;
+    MOCK_EXPECT( f, _ ).once().with( boost::cref( s ) );
+    s = "string";
+    f( "string" );
 }
