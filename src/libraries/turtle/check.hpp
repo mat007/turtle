@@ -53,8 +53,7 @@ namespace detail
         }
     private:
         EqualityComparable( int ) {}
-        BOOST_DEDUCED_TYPENAME
-            boost::unwrap_reference< Expected >::type expected_argument_type;
+        Expected expected_argument_type;
         Actual actual_argument_type;
     };
 
@@ -82,7 +81,10 @@ namespace detail
         explicit check( Expected expected )
             : expected_( expected )
         {
-            BOOST_CONCEPT_ASSERT(( EqualityComparable< Expected, Actual > ));
+            BOOST_CONCEPT_ASSERT(( EqualityComparable<
+                BOOST_DEDUCED_TYPENAME
+                    boost::unwrap_reference< Expected >::type,
+                Actual > ));
         }
     private:
         virtual bool operator()( Actual actual ) const
