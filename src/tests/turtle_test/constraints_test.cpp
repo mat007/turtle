@@ -62,11 +62,25 @@ BOOST_AUTO_TEST_CASE( equal )
 
 BOOST_AUTO_TEST_CASE( same )
 {
-    int i = 0;
-    int j = 0;
-    BOOST_CHECK_EQUAL( i, j );
-    BOOST_CHECK( ! mock::same( i ).f_( j ) );
-    BOOST_CHECK( mock::same( i ).f_( i ) );
+    {
+        int i = 0;
+        int j = 0;
+        BOOST_CHECK_EQUAL( i, j );
+        BOOST_CHECK( ! mock::same( i ).f_( j ) );
+        BOOST_CHECK( mock::same( i ).f_( i ) );
+    }
+    {
+        int i = 0;
+        int j = 0;
+        BOOST_CHECK_EQUAL( i, j );
+        mock::constraint<
+            mock::detail::same<
+                const boost::reference_wrapper< const int >
+            >
+        > c = mock::same( boost::cref( i ) );
+        BOOST_CHECK( ! c.f_( j ) );
+        BOOST_CHECK( c.f_( i ) );
+    }
 }
 
 BOOST_AUTO_TEST_CASE( assign )
@@ -85,31 +99,50 @@ BOOST_AUTO_TEST_CASE( assign )
         const int* i = 0;
         const int j = 1;
         BOOST_CHECK( mock::assign( &j ).f_( i ) );
-        BOOST_CHECK_EQUAL( i, &j );
+        BOOST_CHECK_EQUAL( &j, i );
     }
     {
         int i = 0;
-        int j = 0;
+        int j = 1;
         mock::constraint<
             mock::detail::assign<
                 boost::reference_wrapper< const int >
             >
         > c = mock::assign( boost::cref( j ) );
+        BOOST_CHECK( c.f_( i ) );
+        BOOST_CHECK_EQUAL( 1, i );
         j = 3;
         BOOST_CHECK( c.f_( i ) );
         BOOST_CHECK_EQUAL( 3, i );
     }
     {
         int i = 0;
-        int j = 0;
+        int j = 1;
         mock::constraint<
             mock::detail::assign<
                 boost::reference_wrapper< const int >
             >
         > c = mock::assign( boost::cref( j ) );
+        BOOST_CHECK( c.f_( &i ) );
+        BOOST_CHECK_EQUAL( 1, i );
         j = 3;
         BOOST_CHECK( c.f_( &i ) );
         BOOST_CHECK_EQUAL( 3, i );
+    }
+    {
+        const int* i = 0;
+        int k = 1;
+        int* j = &k;
+        mock::constraint<
+            mock::detail::assign<
+                boost::reference_wrapper< int* const >
+            >
+        > c = mock::assign( boost::cref( j ) );
+        BOOST_CHECK( c.f_( i ) );
+        BOOST_CHECK_EQUAL( j, i );
+        j = 0;
+        BOOST_CHECK( c.f_( i ) );
+        BOOST_CHECK_EQUAL( j, i );
     }
 }
 
@@ -161,6 +194,18 @@ BOOST_AUTO_TEST_CASE( retrieve )
         const int** i = 0;
         const int* j = 0;
         BOOST_CHECK( mock::retrieve( i ).f_( j ) );
+        BOOST_CHECK_EQUAL( i, &j );
+    }
+    {
+        int i = 0;
+        const int j = 1;
+        BOOST_CHECK( mock::retrieve( boost::ref( i ) ).f_( j ) );
+        BOOST_CHECK_EQUAL( i, j );
+    }
+    {
+        const int* i = 0;
+        const int j = 1;
+        BOOST_CHECK( mock::retrieve( boost::ref( i ) ).f_( j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
 }

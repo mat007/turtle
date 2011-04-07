@@ -90,7 +90,7 @@ namespace detail
     struct same
     {
         explicit same( const Expected& expected )
-            : expected_( &expected )
+            : expected_( &boost::unwrap_ref( expected ) )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
@@ -101,7 +101,8 @@ namespace detail
         {
             return os << "same( " << mock::format( *s.expected_ ) << " )";
         }
-        const Expected* expected_;
+        const BOOST_DEDUCED_TYPENAME
+            boost::unwrap_reference< Expected >::type* expected_;
     };
 
     template< typename Expected >
@@ -111,10 +112,7 @@ namespace detail
             : expected_( expected )
         {}
         template< typename Actual >
-        bool operator()( Actual& actual,
-            BOOST_DEDUCED_TYPENAME boost::disable_if<
-                boost::is_convertible< Expected*, Actual >
-            >::type* = 0 ) const
+        bool operator()( Actual& actual ) const
         {
             actual = boost::unwrap_ref( expected_ );
             return true;
@@ -122,7 +120,11 @@ namespace detail
         template< typename Actual >
         bool operator()( Actual* actual,
             BOOST_DEDUCED_TYPENAME boost::enable_if<
-                boost::is_convertible< Expected, Actual >
+                boost::is_convertible<
+                    BOOST_DEDUCED_TYPENAME
+                        boost::unwrap_reference< Expected >::type,
+                    Actual
+                >
             >::type* = 0 ) const
         {
             *actual = boost::unwrap_ref( expected_ );
@@ -139,12 +141,16 @@ namespace detail
     struct retrieve
     {
         explicit retrieve( Expected& expected )
-            : expected_( &expected )
+            : expected_( &boost::unwrap_ref( expected ) )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual,
             BOOST_DEDUCED_TYPENAME boost::disable_if<
-                boost::is_convertible< const Actual*, Expected >
+                boost::is_convertible<
+                    const Actual*,
+                    BOOST_DEDUCED_TYPENAME
+                        boost::unwrap_reference< Expected >::type
+                >
             >::type* = 0 ) const
         {
             *expected_ = actual;
@@ -153,7 +159,10 @@ namespace detail
         template< typename Actual >
         bool operator()( Actual& actual,
             BOOST_DEDUCED_TYPENAME boost::enable_if<
-                boost::is_convertible< Actual*, Expected >
+                boost::is_convertible< Actual*,
+                    BOOST_DEDUCED_TYPENAME
+                        boost::unwrap_reference< Expected >::type
+                >
             >::type* = 0 ) const
         {
             *expected_ = &actual;
@@ -163,7 +172,8 @@ namespace detail
         {
             return s << "retrieve( " << mock::format( *r.expected_ ) << " )";
         }
-        Expected* expected_;
+        BOOST_DEDUCED_TYPENAME
+            boost::unwrap_reference< Expected >::type* expected_;
     };
 
     template< typename Expected >
