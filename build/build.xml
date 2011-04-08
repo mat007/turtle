@@ -17,7 +17,7 @@
     </build-test>
   </target>
 
-  <target name="analyser" description="run errors analyser">
+  <target name="analyse" description="run errors analyser">
     <quiet>
       <delete file="${reports.dir}/errors-${platform}.log"/>
       <touch file="${reports.dir}/errors-${platform}.log"/>
@@ -26,19 +26,20 @@
       <fileset dir="${tests.dir}/errors_test" includes="*.cpp"/>
       <sequential>
         <record name="${reports.dir}/errors-${platform}.log" action="start" append="true"/>
-        <ant target="-analyser">
-          <property name="analyser-file" value="@{file}"/>
+        <ant target="-analyse">
+          <property name="file" value="@{file}"/>
         </ant>
         <record name="${reports.dir}/errors-${platform}.log" action="stop"/>
       </sequential>
     </for>
   </target>
 
-  <target name="-analyser">
+  <target name="-analyse">
     <trycatch>
       <try>
+        <echo>${file}</echo>
         <build-test name="errors" excludes="**" depends="boost">
-          <fileset file="${analyser-file}"/>
+          <fileset file="${file}"/>
         </build-test>
       </try>
     </trycatch>
