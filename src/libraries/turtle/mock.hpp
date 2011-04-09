@@ -191,8 +191,6 @@ namespace detail
     mutable mock::function< S > exp##t;
 #define MOCK_SIGNATURE(M) \
     mock::detail::signature< BOOST_TYPEOF(&base_type::M) >::type
-#define MOCK_SIGNATURE_TPL(M) \
-    BOOST_DEDUCED_TYPENAME mock::detail::signature< BOOST_TYPEOF_TPL(&base_type::M) >::type
 
 #define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
@@ -224,8 +222,6 @@ namespace detail
 #define MOCK_NON_CONST_METHOD_EXT_TPL(M, n, S, t) \
     MOCK_METHOD_STUB(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
     MOCK_METHOD_EXPECTATION(S, t)
-#define MOCK_METHOD_TPL(M, n) \
-    MOCK_METHOD_EXT_TPL(M, n, MOCK_SIGNATURE_TPL(M), M)
 
 #define MOCK_DESTRUCTOR(T, t) \
     ~T() { MOCK_ANONYMOUS_MOCKER_EXT(this, ~T, t).test(); } \
@@ -290,7 +286,5 @@ namespace detail
     MOCK_METHOD_STUB_ALT(M, S, t,, BOOST_DEDUCED_TYPENAME) \
     MOCK_METHOD_STUB_ALT(M, S, t, const, BOOST_DEDUCED_TYPENAME) \
     MOCK_METHOD_EXPECTATION(S, t)
-#define MOCK_METHOD_TPL_ALT(M) \
-    MOCK_METHOD_EXT_TPL_ALT(M, MOCK_SIGNATURE_TPL(M), M)
 
 #endif // #ifndef MOCK_MOCK_HPP_INCLUDED
