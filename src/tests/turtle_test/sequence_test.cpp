@@ -12,7 +12,7 @@
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
 
-#define MOCK_ERROR_POLICY mock::silent_error
+#define MOCK_ERROR_POLICY silent_error
 #include <turtle/mock.hpp>
 
 BOOST_AUTO_TEST_CASE( registering_to_a_sequence_and_calling_out_of_order_throws )
