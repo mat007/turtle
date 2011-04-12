@@ -15,6 +15,7 @@
 #include "log.hpp"
 #include <boost/utility/enable_if.hpp>
 #include <boost/concept_check.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/ref.hpp>
 
 namespace mock
