@@ -12,7 +12,6 @@
   </target>
 
   <target name="test" description="run unit tests">
-    <build-lib name="turtle" depends="boost" mode="release"/>
     <build-test name="turtle" depends="boost" mode="all">
       <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
     </build-test>
@@ -46,6 +45,10 @@
     </trycatch>
   </target>
 
+  <target name="reports" description="generate code analysis reports">
+    <headers name="turtle"/>
+  </target>
+
   <target name="bench" description="build compilation benchmark">
     <build-app name="turtle_bench" mode="all">
       <includepath path="${applications.dir}/turtle_bench"/>
@@ -73,6 +76,6 @@
     </tar>
   </target>
 
-  <target name="all" depends="configure,test,export,package" description="configure, build and run tests, export and package distribution"/>
+  <target name="all" depends="configure,test,reports,export,package" description="configure, build and run tests, export and package distribution"/>
 
 </project>
