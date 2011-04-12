@@ -38,9 +38,10 @@
     <trycatch>
       <try>
         <echo>${file}</echo>
-        <build-test name="errors" excludes="**" depends="boost">
+        <compile name="errors" input="${tests.dir}/errors_test" outdir="${out.dir}/errors_test" excludes="**">
+          <includepath path="${libraries.dir}"/>
           <fileset file="${file}"/>
-        </build-test>
+        </compile>
       </try>
     </trycatch>
   </target>
