@@ -429,3 +429,9 @@ BOOST_AUTO_TEST_CASE( boost_reference_wrapper_is_supported_in_value_constraint )
     s = "string";
     f( "string" );
 }
+
+BOOST_AUTO_TEST_CASE( mock_object_defined_within_test_case )
+{
+    MOCK_CLASS( mock_within_test_case )
+    {};
+}
