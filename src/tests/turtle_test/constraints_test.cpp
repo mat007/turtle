@@ -25,6 +25,7 @@ BOOST_AUTO_TEST_CASE( all_comparison_constraints_can_be_instanciated )
 BOOST_AUTO_TEST_CASE( constraints_can_be_negated_using_the_not_operator )
 {
     ! mock::any;
+    ! mock::affirm;
     ! mock::negate;
     ! mock::evaluate;
     ! mock::equal( 0 );
@@ -229,6 +230,14 @@ BOOST_AUTO_TEST_CASE( retrieve_uses_assignment_operator )
     B b;
     const A a = A();
     mock::retrieve( b ).f_( a );
+}
+
+BOOST_AUTO_TEST_CASE( affirm )
+{
+    int* i = 0;
+    int j;
+    BOOST_CHECK( ! mock::affirm.f_( i ) );
+    BOOST_CHECK( mock::affirm.f_( &j ) );
 }
 
 BOOST_AUTO_TEST_CASE( negate )

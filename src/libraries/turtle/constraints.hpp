@@ -44,6 +44,7 @@ namespace mock
     const constraint< detail::N > N;
 
     MOCK_CONSTRAINT(any, true && &actual)
+    MOCK_CONSTRAINT(affirm, !! actual)
     MOCK_CONSTRAINT(negate, ! actual)
     MOCK_CONSTRAINT(evaluate, actual())
 
