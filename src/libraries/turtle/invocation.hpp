@@ -22,24 +22,13 @@ namespace detail
     {
     public:
         invocation() {}
-
         virtual ~invocation() {}
 
-        // Trigger invocation
-        // returns false if the invocation has failed
         virtual bool invoke() = 0;
-
-        // Test whether the invocation has been invoked or not
-        // returns true if the invocation has been invoked
-        virtual bool invoked() const = 0;
-
-        // Test whether the invocation is exhausted or not
-        // returns false if the invocation is exhausted
-        virtual bool is_valid() const = 0;
-
-        // Verify invocation
-        // returns false if the verification fails
         virtual bool verify() const = 0;
+
+        virtual bool invoked() const = 0;
+        virtual bool exhausted() const = 0;
 
         friend inline std::ostream& operator<<( std::ostream& s, const invocation& i )
         {
@@ -75,9 +64,9 @@ namespace detail
             return count_ > 0;
         }
 
-        virtual bool is_valid() const
+        virtual bool exhausted() const
         {
-            return count_ < max_;
+            return count_ >= max_;
         }
 
         virtual bool verify() const

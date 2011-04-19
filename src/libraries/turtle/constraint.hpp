@@ -19,8 +19,6 @@ namespace mock
         {}
         Constraint f_;
     };
-    template< typename T, typename Constraint >
-    bool operator==( const T&, const constraint< Constraint >& );
 }
 
 #endif // #ifndef MOCK_CONSTRAINT_HPP_INCLUDED

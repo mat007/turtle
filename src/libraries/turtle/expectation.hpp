@@ -36,13 +36,6 @@ namespace detail
             , file_( "unknown location" )
             , line_( 0 )
         {}
-        virtual ~expectation_base()
-        {
-            for( sequences_cit it = sequences_.begin();
-                it != sequences_.end(); ++it )
-                (*it)->remove( this );
-        }
-
         void set_location( const std::string& file, int line )
         {
             file_ = file;
@@ -82,7 +75,12 @@ namespace detail
         }
 
     protected:
-        boost::shared_ptr< detail::invocation > i_;
+        ~expectation_base()
+        {
+            for( sequences_cit it = sequences_.begin();
+                it != sequences_.end(); ++it )
+                (*it)->remove( this );
+        }
 
         void expect( detail::invocation* i )
         {
@@ -94,6 +92,8 @@ namespace detail
             s->add( this );
             sequences_.push_back( s );
         }
+
+        boost::shared_ptr< detail::invocation > i_;
 
     private:
         typedef std::vector< boost::shared_ptr< detail::sequence_impl > > sequences_type;
@@ -155,14 +155,14 @@ namespace detail
     public:
         bool is_valid() const
         {
-            return i_->is_valid();
+            return ! i_->exhausted();
         }
 
         MOCK_EXPECTATION_METHODS
 
         friend std::ostream& operator<<( std::ostream& s, const expectation& m )
         {
-            return s << (m.i_->is_valid() ? '.' : 'v') << ' ' << *m.i_;
+            return s << (m.i_->exhausted() ? 'v' : '.') << ' ' << *m.i_;
         }
     };
 
@@ -199,13 +199,13 @@ namespace detail
         } \
         bool is_valid( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_ARGS, BOOST_PP_EMPTY) ) const \
         { \
-            return i_->is_valid() \
+            return ! i_->exhausted() \
                 BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_IS_VALID, BOOST_PP_EMPTY); \
         } \
         MOCK_EXPECTATION_METHODS \
         friend std::ostream& operator<<( std::ostream& s, const expectation& m ) \
         { \
-            return s << (m.i_->is_valid() ? '.' : 'v') << ' ' << *m.i_ << ".with( " \
+            return s << (m.i_->exhausted() ? 'v' : '.') << ' ' << *m.i_ << ".with( " \
                 << \
                 BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_SERIALIZE, BOOST_PP_EMPTY) \
                 << " )"; \
