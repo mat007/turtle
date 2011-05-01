@@ -8,6 +8,8 @@
 
 #include <turtle/log.hpp>
 #include <boost/assign.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 #include <boost/lexical_cast.hpp>
 #include <vector>
 #include <deque>
@@ -353,6 +355,24 @@ BOOST_AUTO_TEST_CASE( template_mock_streamable_yields_its_value_when_serialized_
 BOOST_AUTO_TEST_CASE( std_pairs_are_serialized_without_conversions )
 {
     BOOST_CHECK_EQUAL( "(3,42)", to_string( std::make_pair( 3, 42.f ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( std_auto_ptr_are_serialized_without_conversions )
+{
+    BOOST_CHECK_NE( "?", to_string( std::auto_ptr< int >() ) );
+    BOOST_CHECK_NE( "?", to_string( std::auto_ptr< int >( new int( 42 ) ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( boost_shared_ptr_are_serialized_without_conversions )
+{
+    BOOST_CHECK_NE( "?", to_string( boost::shared_ptr< int >() ) );
+    BOOST_CHECK_NE( "?", to_string( boost::shared_ptr< int >( new int( 42 ) ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( boost_weak_ptr_are_serialized_without_conversions )
+{
+    BOOST_CHECK_NE( "?", to_string( boost::weak_ptr< int >( boost::shared_ptr< int >() ) ) );
+    BOOST_CHECK_NE( "?", to_string( boost::weak_ptr< int >( boost::shared_ptr< int >( new int( 42 ) ) ) ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_deques_are_serialized_without_conversions )

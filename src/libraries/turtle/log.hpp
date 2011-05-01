@@ -14,9 +14,13 @@
 #include <boost/function_types/is_callable_builtin.hpp>
 #include <ostream>
 #include <string>
+#include <memory>
 
 namespace boost
 {
+    template< typename T > class shared_ptr;
+    template< typename T > class weak_ptr;
+
 namespace assign_detail
 {
     template< typename T > class generic_list;
@@ -173,6 +177,11 @@ namespace detail2
         return detail2::formatter< T >( t );
     }
 
+    template< typename T >
+    stream& operator<<( stream& s, const std::auto_ptr< T >& t )
+    {
+        return s << mock::format( t.get() );
+    }
     template< typename T1, typename T2 >
     stream& operator<<( stream& s, const std::pair< T1, T2 >& p )
     {
@@ -246,6 +255,16 @@ namespace detail
         const boost::reference_wrapper< T >& t )
     {
         return s << mock::format( t.get() );
+    }
+    template< typename T >
+    stream& operator<<( stream& s, boost::shared_ptr< T > t )
+    {
+        return s << mock::format( t.get() );
+    }
+    template< typename T >
+    stream& operator<<( stream& s, boost::weak_ptr< T > t )
+    {
+        return s << mock::format( t.lock() );
     }
 
     template< typename T >
