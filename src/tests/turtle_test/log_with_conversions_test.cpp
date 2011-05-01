@@ -9,6 +9,7 @@
 #define MOCK_USE_CONVERSIONS
 #include <turtle/log.hpp>
 #include <boost/assign.hpp>
+#include <boost/lexical_cast.hpp>
 #include <vector>
 #include <deque>
 #include <list>
@@ -27,6 +28,20 @@ namespace
         std::stringstream s;
         s << mock::format( t );
         return s.str();
+    }
+}
+
+BOOST_AUTO_TEST_CASE( pointer_yields_its_value_when_serialized_with_conversions )
+{
+    {
+        int i = 0;
+        BOOST_CHECK_NE( "?", to_string( &i ) );
+        BOOST_CHECK_EQUAL( boost::lexical_cast< std::string >( &i ), to_string( &i ) );
+    }
+    {
+        const int i = 0;
+        BOOST_CHECK_NE( "?", to_string( &i ) );
+        BOOST_CHECK_EQUAL( boost::lexical_cast< std::string >( &i ), to_string( &i ) );
     }
 }
 

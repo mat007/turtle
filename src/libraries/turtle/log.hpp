@@ -105,11 +105,7 @@ namespace detail3
 }
 
     template< typename T >
-    BOOST_DEDUCED_TYPENAME boost::disable_if<
-        boost::function_types::is_callable_builtin< T >,
-        stream&
-    >::type
-    operator<<( stream& s, const T& t )
+    stream& operator<<( stream& s, const T& t )
     {
         using namespace detail3;
         *s.s_ << t;
@@ -257,9 +253,19 @@ namespace detail
         boost::function_types::is_callable_builtin< T >,
         stream&
     >::type
-    operator<<( stream& s, const T& )
+    operator<<( stream& s, T* )
     {
-         return s << '?';
+        return s << '?';
+    }
+    template< typename T >
+    BOOST_DEDUCED_TYPENAME boost::disable_if<
+        boost::function_types::is_callable_builtin< T >,
+        stream&
+    >::type
+    operator<<( stream& s, T* t )
+    {
+        *s.s_ << t;
+        return s;
     }
 }
 
