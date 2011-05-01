@@ -47,7 +47,7 @@ namespace detail3
 
     inline std::ostream& operator<<( std::ostream& s, const sink& )
     {
-        return s << "?";
+        return s << '?';
     }
 
     struct holder
@@ -100,7 +100,7 @@ namespace detail3
     template< typename S, typename T >
     S& operator<<( S &s, const T& )
     {
-        return s << "?";
+        return s << '?';
     }
 }
 
