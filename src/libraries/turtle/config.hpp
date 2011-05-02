@@ -20,7 +20,7 @@
 #   ifndef PHOENIX_LIMIT
 #       define PHOENIX_LIMIT MOCK_MAX_ARGS
 #   elif (PHOENIX_LIMIT < MOCK_MAX_ARGS)
-#       error "PHOENIX_LIMIT is set too low"
+#       error PHOENIX_LIMIT must be set to MOCK_MAX_ARGS or higher
 #   endif
 #else
 #   define MOCK_USE_BOOST_BIND
@@ -29,7 +29,7 @@
 #ifndef BOOST_FUNCTION_MAX_ARGS
 #   define BOOST_FUNCTION_MAX_ARGS MOCK_MAX_ARGS
 #elif (BOOST_FUNCTION_MAX_ARGS < MOCK_MAX_ARGS)
-#   error "BOOST_FUNCTION_MAX_ARGS is set too low"
+#   error BOOST_FUNCTION_MAX_ARGS must be set to MOCK_MAX_ARGS or higher
 #endif
 
 #ifdef BOOST_TEST_DECL
