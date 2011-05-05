@@ -15,6 +15,12 @@
     <build-test name="turtle" depends="boost" mode="all">
       <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
     </build-test>
+    <build-test name="turtle_max_args" input="turtle_test" depends="boost" mode="all">
+      <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
+      <defineset>
+        <define name="MOCK_MAX_ARGS" value="20"/>
+      </defineset>
+    </build-test>
   </target>
 
   <target name="analyse" description="run errors analyser">

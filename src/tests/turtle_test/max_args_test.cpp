@@ -9,7 +9,6 @@
 
 #include "silent_error.hpp"
 
-#define MOCK_MAX_ARGS 20
 #define MOCK_ERROR_POLICY silent_error
 #include <turtle/mock.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
