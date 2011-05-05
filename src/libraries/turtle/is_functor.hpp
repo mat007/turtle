@@ -45,4 +45,4 @@ namespace detail
 }
 }
 
-#endif // #ifndef MOCK_IS_FUNCTOR_HPP_INCLUDED
+#endif // MOCK_IS_FUNCTOR_HPP_INCLUDED

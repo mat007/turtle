@@ -21,4 +21,4 @@ namespace mock
     };
 }
 
-#endif // #ifndef MOCK_CONSTRAINT_HPP_INCLUDED
+#endif // MOCK_CONSTRAINT_HPP_INCLUDED

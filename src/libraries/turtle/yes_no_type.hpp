@@ -28,4 +28,4 @@ namespace detail
 }
 }
 
-#endif // #ifndef MOCK_YES_NO_TYPE_HPP_INCLUDED
+#endif // MOCK_YES_NO_TYPE_HPP_INCLUDED

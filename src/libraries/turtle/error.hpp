@@ -18,7 +18,7 @@
 #include <boost/exception/enable_current_exception.hpp>
 #else
 #include <iostream>
-#endif
+#endif // MOCK_USE_BOOST_TEST
 #include <string>
 
 namespace mock
@@ -124,4 +124,4 @@ namespace mock
     };
 }
 
-#endif // #ifndef MOCK_ERROR_HPP_INCLUDED
+#endif // MOCK_ERROR_HPP_INCLUDED

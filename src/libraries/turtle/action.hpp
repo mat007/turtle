@@ -214,4 +214,4 @@ namespace detail
 }
 }
 
-#endif // #ifndef MOCK_ACTION_HPP_INCLUDED
+#endif // MOCK_ACTION_HPP_INCLUDED

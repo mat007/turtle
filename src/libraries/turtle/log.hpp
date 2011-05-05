@@ -288,4 +288,4 @@ namespace detail
     }
 }
 
-#endif // #ifndef MOCK_LOG_HPP_INCLUDED
+#endif // MOCK_LOG_HPP_INCLUDED

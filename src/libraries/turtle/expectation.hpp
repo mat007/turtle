@@ -228,4 +228,4 @@ namespace detail
 }
 }
 
-#endif // #ifndef MOCK_EXPECTATION_HPP_INCLUDED
+#endif // MOCK_EXPECTATION_HPP_INCLUDED

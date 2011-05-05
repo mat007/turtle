@@ -287,4 +287,4 @@ namespace detail
     MOCK_METHOD_STUB_ALT(M, S, t, const, BOOST_DEDUCED_TYPENAME) \
     MOCK_METHOD_EXPECTATION(S, t)
 
-#endif // #ifndef MOCK_MOCK_HPP_INCLUDED
+#endif // MOCK_MOCK_HPP_INCLUDED

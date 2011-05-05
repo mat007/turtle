@@ -65,4 +65,4 @@ namespace detail
     tpn boost::function_types::result_type< S >::type M( \
         MOCK_ARGS(n, S, tpn) ) c
 
-#endif // #ifndef MOCK_ARGS_HPP_INCLUDED
+#endif // MOCK_ARGS_HPP_INCLUDED

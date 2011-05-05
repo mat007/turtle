@@ -126,4 +126,4 @@ namespace mock
     };
 }
 
-#endif // #ifndef MOCK_TEST_MOCK_ERROR_HPP_INCLUDED
+#endif // MOCK_TEST_MOCK_ERROR_HPP_INCLUDED

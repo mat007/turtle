@@ -223,4 +223,4 @@ namespace detail
     }
 }
 
-#endif // #ifndef MOCK_CONSTRAINTS_HPP_INCLUDED
+#endif // MOCK_CONSTRAINTS_HPP_INCLUDED

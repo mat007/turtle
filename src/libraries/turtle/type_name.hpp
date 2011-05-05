@@ -58,4 +58,4 @@ namespace detail
 }
 }
 
-#endif // #ifndef MOCK_TYPE_NAME_HPP_INCLUDED
+#endif // MOCK_TYPE_NAME_HPP_INCLUDED

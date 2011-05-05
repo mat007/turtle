@@ -35,4 +35,4 @@ namespace mock
     }
 }
 
-#endif // #ifndef MOCK_ROOT_HPP_INCLUDED
+#endif // MOCK_ROOT_HPP_INCLUDED

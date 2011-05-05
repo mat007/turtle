@@ -74,4 +74,4 @@ namespace detail
 }
 }
 
-#endif // #ifndef MOCK_LAMBDA_HPP_INCLUDED
+#endif // MOCK_LAMBDA_HPP_INCLUDED

@@ -64,4 +64,4 @@ namespace detail
     };
 }
 
-#endif // #ifndef MOCK_SEQUENCE_HPP_INCLUDED
+#endif // MOCK_SEQUENCE_HPP_INCLUDED

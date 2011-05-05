@@ -44,4 +44,4 @@
 #   endif
 #endif
 
-#endif // #ifndef MOCK_CONFIG_HPP_INCLUDED
+#endif // MOCK_CONFIG_HPP_INCLUDED

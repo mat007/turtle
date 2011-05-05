@@ -27,4 +27,4 @@ namespace mock
     };
 }
 
-#endif // #ifndef MOCK_VERIFIABLE_HPP_INCLUDED
+#endif // MOCK_VERIFIABLE_HPP_INCLUDED

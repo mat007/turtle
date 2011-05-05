@@ -171,4 +171,4 @@ namespace detail
 }
 }
 
-#endif // #ifndef MOCK_INVOCATION_HPP_INCLUDED
+#endif // MOCK_INVOCATION_HPP_INCLUDED

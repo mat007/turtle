@@ -107,4 +107,4 @@ namespace detail
     }
 }
 
-#endif // #ifndef MOCK_OPERATORS_HPP_INCLUDED
+#endif // MOCK_OPERATORS_HPP_INCLUDED
