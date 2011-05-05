@@ -6,7 +6,6 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#define MOCK_USE_CONVERSIONS
 #include <turtle/log.hpp>
 #include <boost/assign.hpp>
 #include <boost/shared_ptr.hpp>
@@ -33,7 +32,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( pointer_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( pointer_yields_its_value_when_serialized )
 {
     {
         int i = 0;
@@ -47,18 +46,18 @@ BOOST_AUTO_TEST_CASE( pointer_yields_its_value_when_serialized_with_conversions 
     }
 }
 
-BOOST_AUTO_TEST_CASE( base_type_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( base_type_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "42", to_string( 42 ) );
 }
 
-BOOST_AUTO_TEST_CASE( booleans_are_serialized_as_bool_alpha_with_conversions )
+BOOST_AUTO_TEST_CASE( booleans_are_serialized_as_bool_alpha )
 {
     BOOST_CHECK_EQUAL( "true", to_string( true ) );
     BOOST_CHECK_EQUAL( "false", to_string( false ) );
 }
 
-BOOST_AUTO_TEST_CASE( strings_are_serialized_with_double_quotes_with_conversions )
+BOOST_AUTO_TEST_CASE( strings_are_serialized_with_double_quotes )
 {
     BOOST_CHECK_EQUAL( "\"string\"", to_string( "string" ) );
     BOOST_CHECK_EQUAL( "\"string\"", to_string( std::string( "string" ) ) );
@@ -70,7 +69,7 @@ namespace
     {};
 }
 
-BOOST_AUTO_TEST_CASE( non_serializable_type_yields_an_interrogation_mark_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( non_serializable_type_yields_an_interrogation_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( non_serializable() ) );
 }
@@ -85,7 +84,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( serializable_type_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( serializable_type_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "serializable", to_string( serializable() ) );
 }
@@ -105,7 +104,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( streamable_type_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( streamable_type_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "streamable", to_string( streamable() ) );
 }
@@ -128,7 +127,7 @@ namespace mock
     }
 }
 
-BOOST_AUTO_TEST_CASE( mock_streamable_type_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( mock_streamable_type_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "mock_streamable", to_string( mock_streamable() ) );
 }
@@ -139,9 +138,13 @@ namespace
     {};
 }
 
-BOOST_AUTO_TEST_CASE( type_derived_from_serializable_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( type_derived_from_serializable_yields_an_interrogation_mark_when_serialized )
 {
+#ifdef MOCK_USE_CONVERSIONS
     BOOST_CHECK_EQUAL( "serializable", to_string( derived_from_serializable() ) );
+#else
+    BOOST_CHECK_EQUAL( "?", to_string( derived_from_serializable() ) );
+#endif
 }
 
 namespace
@@ -150,90 +153,95 @@ namespace
     {};
 }
 
-BOOST_AUTO_TEST_CASE( type_derived_from_streamable_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( type_derived_from_streamable_yields_an_interrogation_mark_when_serialized )
 {
+#ifdef MOCK_USE_CONVERSIONS
     BOOST_CHECK_EQUAL( "streamable", to_string( derived_from_streamable() ) );
+#else
+    BOOST_CHECK_EQUAL( "?", to_string( derived_from_streamable() ) );
+#endif
 }
 
-//namespace
-//{
-//    struct convertible_to_base
-//    {
-//        operator int() const
-//        {
-//            return 3;
-//        }
-//    };
-//}
-//
-//BOOST_AUTO_TEST_CASE( type_convertible_to_base_yields_its_value_when_serialized_with_conversions )
-//{
-//    BOOST_CHECK_EQUAL( "3", to_string( convertible_to_base() ) );
-//}
+#ifndef MOCK_USE_CONVERSIONS // all this does not compile with conversions activated, which is precisely the purpose of having this compilation flag
 
-//namespace
-//{
-//    struct convertible_to_serializable
-//    {
-//        operator serializable() const;
-//    };
-//}
-//
-//BOOST_AUTO_TEST_CASE( type_convertible_to_serializable_yields_its_value_when_serialized_with_conversions )
-//{
-//    BOOST_CHECK_EQUAL( "serializable", to_string( convertible_to_serializable() ) );
-//}
+namespace
+{
+    struct convertible_to_base
+    {
+        operator int() const;
+    };
+}
 
-//namespace
-//{
-//    struct convertible_to_streamable
-//    {
-//        operator streamable() const;
-//    };
-//}
-//
-//BOOST_AUTO_TEST_CASE( type_convertible_to_streamable_yields_its_value_when_serialized_with_conversions )
-//{
-//    BOOST_CHECK_EQUAL( "streamable", to_string( convertible_to_streamable() ) );
-//}
+BOOST_AUTO_TEST_CASE( type_convertible_to_base_yields_an_interrogation_mark_when_serialized )
+{
+    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_base() ) );
+}
 
-//namespace
-//{
-//    struct ambiguous_convertible
-//    {
-//        operator float() const;
-//        operator int() const;
-//        operator serializable() const;
-//        operator streamable() const;
-//        template< typename T > operator T() const;
-//    };
-//}
-//
-//BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_yields_an_interrogation_mark_when_serialized_with_conversions )
-//{
-//    BOOST_CHECK_EQUAL( "?", to_string( ambiguous_convertible() ) );
-//}
+namespace
+{
+    struct convertible_to_serializable
+    {
+        operator serializable() const;
+    };
+}
 
-//namespace
-//{
-//    struct ambiguous_convertible_serializable
-//    {
-//        operator float() const;
-//        operator int() const;
-//        operator serializable() const;
-//        operator streamable() const;
-//        template< typename T > operator T() const;
-//    };
-//    std::ostream& operator<<( std::ostream& s, const ambiguous_convertible_serializable& )
-//    {
-//        return s << "ambiguous_convertible_serializable";
-//    }
-//}
-//
-//BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_serializable_yields_its_value_when_serialized_with_conversions )
-//{
-//    BOOST_CHECK_EQUAL( "ambiguous_convertible_serializable", to_string( ambiguous_convertible_serializable() ) );
-//}
+BOOST_AUTO_TEST_CASE( type_convertible_to_serializable_yields_an_interrogation_mark_when_serialized )
+{
+    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_serializable() ) );
+}
+
+namespace
+{
+    struct convertible_to_streamable
+    {
+        operator streamable() const;
+    };
+}
+
+BOOST_AUTO_TEST_CASE( type_convertible_to_streamable_yields_an_interrogation_mark_when_serialized )
+{
+    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_streamable() ) );
+}
+
+namespace
+{
+    struct ambiguous_convertible
+    {
+        operator float() const;
+        operator int() const;
+        operator serializable() const;
+        operator streamable() const;
+        template< typename T > operator T() const;
+    };
+}
+
+BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_yields_an_interrogation_mark_when_serialized )
+{
+    BOOST_CHECK_EQUAL( "?", to_string( ambiguous_convertible() ) );
+}
+
+namespace
+{
+    struct ambiguous_convertible_serializable
+    {
+        operator float() const;
+        operator int() const;
+        operator serializable() const;
+        operator streamable() const;
+        template< typename T > operator T() const;
+    };
+    std::ostream& operator<<( std::ostream& s, const ambiguous_convertible_serializable& )
+    {
+        return s << "ambiguous_convertible_serializable";
+    }
+}
+
+BOOST_AUTO_TEST_CASE( type_convertible_serializable_yields_its_value_when_serialized )
+{
+    BOOST_CHECK_EQUAL( "ambiguous_convertible_serializable", to_string( ambiguous_convertible_serializable() ) );
+}
+
+#endif // MOCK_USE_CONVERSIONS
 
 namespace
 {
@@ -256,7 +264,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_streamable_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_streamable_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "ambiguous_convertible_streamable", to_string( ambiguous_convertible_streamable() ) );
 }
@@ -285,7 +293,7 @@ namespace mock
     }
 }
 
-BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_mock_streamable_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_mock_streamable_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "ambiguous_convertible_mock_streamable", to_string( ambiguous_convertible_mock_streamable() ) );
 }
@@ -302,7 +310,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( template_type_serializable_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( template_type_serializable_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "template_serializable", to_string( template_serializable< int >() ) );
 }
@@ -325,7 +333,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( template_streamable_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( template_template_streamable_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "template_streamable", to_string( template_streamable< int >() ) );
 }
@@ -351,35 +359,35 @@ namespace mock
     }
 }
 
-BOOST_AUTO_TEST_CASE( template_mock_streamable_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( template_mock_streamable_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "template_mock_streamable", to_string( template_mock_streamable< int >() ) );
 }
 
-BOOST_AUTO_TEST_CASE( std_pairs_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( std_pairs_are_serialized )
 {
     BOOST_CHECK_EQUAL( "(3,42)", to_string( std::make_pair( 3, 42.f ) ) );
 }
 
-BOOST_AUTO_TEST_CASE( std_auto_ptr_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( std_auto_ptr_are_serialized )
 {
     BOOST_CHECK_NE( "?", to_string( std::auto_ptr< int >() ) );
     BOOST_CHECK_NE( "?", to_string( std::auto_ptr< int >( new int( 42 ) ) ) );
 }
 
-BOOST_AUTO_TEST_CASE( boost_shared_ptr_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( boost_shared_ptr_are_serialized )
 {
     BOOST_CHECK_NE( "?", to_string( boost::shared_ptr< int >() ) );
     BOOST_CHECK_NE( "?", to_string( boost::shared_ptr< int >( new int( 42 ) ) ) );
 }
 
-BOOST_AUTO_TEST_CASE( boost_weak_ptr_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( boost_weak_ptr_are_serialized )
 {
     BOOST_CHECK_NE( "?", to_string( boost::weak_ptr< int >( boost::shared_ptr< int >() ) ) );
     BOOST_CHECK_NE( "?", to_string( boost::weak_ptr< int >( boost::shared_ptr< int >( new int( 42 ) ) ) ) );
 }
 
-BOOST_AUTO_TEST_CASE( std_deques_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( std_deques_are_serialized )
 {
     std::deque< int > d;
     d.push_back( 12 );
@@ -387,7 +395,7 @@ BOOST_AUTO_TEST_CASE( std_deques_are_serialized_with_conversions )
     BOOST_CHECK_EQUAL( "(12,42)", to_string( d ) );
 }
 
-BOOST_AUTO_TEST_CASE( std_lists_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( std_lists_are_serialized )
 {
     std::list< int > l;
     l.push_back( 12 );
@@ -395,7 +403,7 @@ BOOST_AUTO_TEST_CASE( std_lists_are_serialized_with_conversions )
     BOOST_CHECK_EQUAL( "(12,42)", to_string( l ) );
 }
 
-BOOST_AUTO_TEST_CASE( std_vectors_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( std_vectors_are_serialized )
 {
     std::vector< int > v;
     v.push_back( 12 );
@@ -403,7 +411,7 @@ BOOST_AUTO_TEST_CASE( std_vectors_are_serialized_with_conversions )
     BOOST_CHECK_EQUAL( "(12,42)", to_string( v ) );
 }
 
-BOOST_AUTO_TEST_CASE( std_maps_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( std_maps_are_serialized )
 {
     std::map< int, std::string > m;
     m[ 12 ] = "12";
@@ -411,7 +419,7 @@ BOOST_AUTO_TEST_CASE( std_maps_are_serialized_with_conversions )
     BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( m ) );
 }
 
-BOOST_AUTO_TEST_CASE( std_multimaps_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( std_multimaps_are_serialized )
 {
     std::multimap< int, std::string > m;
     m.insert( std::make_pair( 12, "12" ));
@@ -419,7 +427,7 @@ BOOST_AUTO_TEST_CASE( std_multimaps_are_serialized_with_conversions )
     BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( m ) );
 }
 
-BOOST_AUTO_TEST_CASE( std_sets_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( std_sets_are_serialized )
 {
     std::set< int > s;
     s.insert( 12 );
@@ -427,7 +435,7 @@ BOOST_AUTO_TEST_CASE( std_sets_are_serialized_with_conversions )
     BOOST_CHECK_EQUAL( "(12,42)", to_string( s ) );
 }
 
-BOOST_AUTO_TEST_CASE( std_multisets_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( std_multisets_are_serialized )
 {
     std::multiset< int > s;
     s.insert( 12 );
@@ -435,17 +443,17 @@ BOOST_AUTO_TEST_CASE( std_multisets_are_serialized_with_conversions )
     BOOST_CHECK_EQUAL( "(12,42)", to_string( s ) );
 }
 
-BOOST_AUTO_TEST_CASE( boost_assign_list_of_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( boost_assign_list_of_are_serialized )
 {
     BOOST_CHECK_EQUAL( "(12,42)", to_string( boost::assign::list_of( 12 )( 42 ) ) );
 }
 
-BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized )
 {
     BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( boost::assign::map_list_of( 12, "12" )( 42, "42" ) ) );
 }
 
-BOOST_AUTO_TEST_CASE( boost_reference_wrappers_are_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( boost_reference_wrappers_are_serialized )
 {
     BOOST_CHECK_EQUAL( "3", to_string( boost::cref( 3 ) ) );
     BOOST_CHECK_EQUAL( "\"string\"", to_string( boost::cref( "string" ) ) );
@@ -457,7 +465,7 @@ namespace
     {}
 }
 
-BOOST_AUTO_TEST_CASE( callable_builtin_yields_an_interrogation_mark_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( callable_builtin_yields_an_interrogation_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( callable_builtin ) );
     BOOST_CHECK_EQUAL( "?", to_string( &callable_builtin ) );
@@ -473,7 +481,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( type_can_use_format_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( type_can_use_format_when_serialized )
 {
     BOOST_CHECK_EQUAL( "\"string\"", to_string( serialized_using_format() ) );
 }
@@ -488,7 +496,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( type_can_use_format_when_streamed_with_conversions )
+BOOST_AUTO_TEST_CASE( type_can_use_format_when_streamed )
 {
     BOOST_CHECK_EQUAL( "\"string\"", to_string( streamed_using_format() ) );
 }
@@ -503,7 +511,7 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( std_string_streamed_is_not_a_container_with_conversions )
+BOOST_AUTO_TEST_CASE( std_string_streamed_is_not_a_container )
 {
     BOOST_CHECK_EQUAL( "string", to_string( std_string_streamed() ) );
 }
@@ -523,7 +531,7 @@ namespace detail
 }
 }
 
-BOOST_AUTO_TEST_CASE( mock_detail_template_type_serializable_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( mock_detail_template_type_serializable_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "mock::detail::template_serializable", to_string( mock::detail::template_serializable< int >() ) );
 }
@@ -549,7 +557,7 @@ namespace detail
 }
 }
 
-BOOST_AUTO_TEST_CASE( mock_detail_template_template_streamable_yields_its_value_when_serialized_with_conversions )
+BOOST_AUTO_TEST_CASE( mock_detail_template_template_streamable_yields_its_value_when_serialized )
 {
     BOOST_CHECK_EQUAL( "mock::detail::template_streamable", to_string( mock::detail::template_streamable< int >() ) );
 }

@@ -21,6 +21,10 @@
         <define name="MOCK_MAX_ARGS" value="20"/>
       </defineset>
     </build-test>
+    <build-test name="turtle_use_conversions" input="turtle_test" depends="boost" mode="all">
+      <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
+      <defineset define="MOCK_USE_CONVERSIONS"/>
+    </build-test>
   </target>
 
   <target name="analyse" description="run errors analyser">
