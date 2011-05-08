@@ -161,6 +161,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\boost_test_error.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\check.hpp"
 				>
 			</File>
@@ -174,6 +178,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\constraints.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libraries\turtle\default_error.hpp"
 				>
 			</File>
 			<File

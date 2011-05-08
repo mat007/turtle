@@ -32,16 +32,4 @@
 #   error BOOST_FUNCTION_MAX_ARGS must be set to MOCK_MAX_ARGS or higher
 #endif
 
-#ifdef BOOST_TEST_DECL
-#   define MOCK_USE_BOOST_TEST
-#endif
-
-#ifndef MOCK_ERROR_POLICY
-#   ifdef MOCK_USE_BOOST_TEST
-#       define MOCK_ERROR_POLICY boost_test_error_policy
-#   else
-#       define MOCK_ERROR_POLICY basic_error_policy
-#   endif
-#endif
-
 #endif // MOCK_CONFIG_HPP_INCLUDED

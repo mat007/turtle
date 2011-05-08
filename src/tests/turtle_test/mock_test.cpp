@@ -6,7 +6,6 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#define MOCK_USE_BOOST_TEST
 #include <turtle/mock.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/bind.hpp>

@@ -6,13 +6,13 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include "silent_error.hpp"
+#include "mock_error.hpp"
 
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
 
-#define MOCK_ERROR_POLICY silent_error
+#define MOCK_ERROR_POLICY mock_error
 #include <turtle/mock.hpp>
 
 #include <boost/noncopyable.hpp>

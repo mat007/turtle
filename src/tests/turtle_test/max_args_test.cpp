@@ -7,9 +7,9 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include "silent_error.hpp"
+#include "mock_error.hpp"
 
-#define MOCK_ERROR_POLICY silent_error
+#define MOCK_ERROR_POLICY mock_error
 #include <turtle/mock.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 

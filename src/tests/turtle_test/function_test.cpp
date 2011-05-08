@@ -22,7 +22,7 @@
     expected_call_count = 0;
 #define CHECK_ERROR( expr, error, calls, context ) \
     BOOST_CHECK( verify() ); \
-    expr; \
+    try { expr; } catch( ... ) {} \
     BOOST_CHECK_EQUAL( 1, error##_count ); \
     CHECK_CALLS( calls ); \
     BOOST_CHECK_EQUAL( context, last_context ); \

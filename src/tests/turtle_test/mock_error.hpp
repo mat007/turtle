@@ -31,8 +31,7 @@ namespace mock
     {
         static Result abort()
         {
-            static BOOST_DEDUCED_TYPENAME boost::remove_reference< Result >::type r;
-            return r;
+            throw std::runtime_error( "aborted" );
         }
 
         template< typename Context >
@@ -43,57 +42,10 @@ namespace mock
             ++missing_action_count;
         }
         template< typename Context >
-        static void expected_call( const Context& context,
+        static void expected_call( const Context& /*context*/,
             const std::string& /*file*/, int /*line*/ )
         {
-            last_context = boost::lexical_cast< std::string >( context );
-            ++expected_call_count;
-        }
-        template< typename Context >
-        static void unexpected_call( const Context& context )
-        {
-            last_context = boost::lexical_cast< std::string >( context );
-            ++unexpected_call_count;
-        }
-        template< typename Context >
-        static void sequence_failed( const Context& context,
-            const std::string& /*file*/, int /*line*/ )
-        {
-            last_context = boost::lexical_cast< std::string >( context );
-            ++sequence_failed_count;
-        }
-        template< typename Context >
-        static void verification_failed( const Context& context,
-            const std::string& /*file*/, int /*line*/ )
-        {
-            last_context = boost::lexical_cast< std::string >( context );
-            ++verification_failed_count;
-        }
-        template< typename Context >
-        static void untriggered_expectation( const Context& context,
-            const std::string& /*file*/, int /*line*/ )
-        {
-            last_context = boost::lexical_cast< std::string >( context );
-            ++untriggered_expectation_count;
-        }
-    };
-    template<>
-    struct mock_error< void >
-    {
-        static void abort()
-        {}
-        template< typename Context >
-        static void missing_action( const Context& context,
-            const std::string& /*file*/, int /*line*/ )
-        {
-            last_context = boost::lexical_cast< std::string >( context );
-            ++missing_action_count;
-        }
-        template< typename Context >
-        static void expected_call( const Context& context,
-            const std::string& /*file*/, int /*line*/ )
-        {
-            last_context = boost::lexical_cast< std::string >( context );
+            last_context.clear();
             ++expected_call_count;
         }
         template< typename Context >
