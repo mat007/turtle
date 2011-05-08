@@ -11,6 +11,7 @@
 
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/lexical_cast.hpp>
+#include <stdexcept>
 #include <string>
 
 namespace
