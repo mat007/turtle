@@ -14,7 +14,7 @@
 #include "function.hpp"
 #include "type_name.hpp"
 #include "args.hpp"
-#include <boost/preprocessor/repetition/repeat_from_to.hpp>
+#include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_type.hpp>
@@ -164,7 +164,7 @@ namespace detail
     { \
         return e( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
-    BOOST_PP_REPEAT_FROM_TO(0, MOCK_NUM_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
+    BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
 #undef MOCK_CALL
 }
 }
@@ -256,7 +256,7 @@ namespace detail
     >::type \
         call( E BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM(n, MOCK_CALL_INVALID_TYPE, BOOST_PP_EMPTY) ) \
     {}
-    BOOST_PP_REPEAT_FROM_TO(0, MOCK_NUM_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
+    BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
 #undef MOCK_CALL
 #undef MOCK_CALL_INVALID_TYPE
 }
@@ -272,7 +272,7 @@ namespace detail
         BOOST_PP_ARRAY_ELEM(4, d))
 
 #define MOCK_METHOD_STUB_ALT(M, S, t, c, tpn) \
-    BOOST_PP_REPEAT_FROM_TO(0, MOCK_NUM_ARGS, MOCK_METHOD_STUB_PROXY, (5,(M, S, t, c, tpn)))
+    BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_METHOD_STUB_PROXY, (5,(M, S, t, c, tpn)))
 
 #define MOCK_METHOD_EXT_ALT(M, S, t) \
     MOCK_METHOD_STUB_ALT(M, S, t,,) \

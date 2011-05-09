@@ -209,7 +209,7 @@ namespace mock
 #define MOCK_EXPECTATION_CALL_CONTEXT(n) \
     boost::unit_test::lazy_ostream::instance() \
         << lazy_context( this ) \
-        << "(" BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_FORMAT, BOOST_PP_DEC(n)) << ")" \
+        << "(" BOOST_PP_REPEAT(n, MOCK_EXPECTATION_FORMAT, BOOST_PP_DEC(n)) << ")" \
         << lazy_expectations( this )
 #define MOCK_EXPECTATION_INVOKE(z, n, A) \
     { \
@@ -238,7 +238,7 @@ namespace mock
     MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
     MOCK_EXPECTATION_INVOKE(z, n, P)
 
-            BOOST_PP_REPEAT_FROM_TO(0, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, ErrorPolicy::abort())
+            BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, ErrorPolicy::abort())
 
             void test() const
             MOCK_EXPECTATION_INVOKE(, 0,)

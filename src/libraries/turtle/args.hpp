@@ -59,7 +59,7 @@ namespace detail
         BOOST_PP_ARRAY_ELEM(2, d) )
 
 #define MOCK_ARGS(n, S, tpn) \
-    BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_ARG_PROXY, (3, (n, S, tpn)))
+    BOOST_PP_REPEAT(n, MOCK_ARG_PROXY, (3, (n, S, tpn)))
 
 #define MOCK_DECL(M, n, S, c, tpn) \
     tpn boost::function_types::result_type< S >::type M( \

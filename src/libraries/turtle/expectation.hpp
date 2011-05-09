@@ -186,32 +186,32 @@ namespace detail
         , public action< BOOST_DEDUCED_TYPENAME \
             boost::function_types::result_type< Signature >::type, Signature > \
     { \
-        BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_TYPEDEF, BOOST_PP_EMPTY) \
+        BOOST_PP_REPEAT(n, MOCK_EXPECTATION_TYPEDEF, BOOST_PP_EMPTY) \
     public: \
         expectation() \
-            : BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_CONSTRUCTOR, BOOST_PP_EMPTY) \
+            : BOOST_PP_REPEAT(n, MOCK_EXPECTATION_CONSTRUCTOR, BOOST_PP_EMPTY) \
         {} \
         template< BOOST_PP_ENUM_PARAMS(n, typename Constraint) > \
         expectation& with( BOOST_PP_ENUM_BINARY_PARAMS(n, Constraint, c) ) \
         { \
-            BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_WITH, BOOST_PP_EMPTY) \
+            BOOST_PP_REPEAT(n, MOCK_EXPECTATION_WITH, BOOST_PP_EMPTY) \
             return *this; \
         } \
-        bool is_valid( BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_ARGS, BOOST_PP_EMPTY) ) const \
+        bool is_valid( BOOST_PP_REPEAT(n, MOCK_EXPECTATION_ARGS, BOOST_PP_EMPTY) ) const \
         { \
             return ! i_->exhausted() \
-                BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_IS_VALID, BOOST_PP_EMPTY); \
+                BOOST_PP_REPEAT(n, MOCK_EXPECTATION_IS_VALID, BOOST_PP_EMPTY); \
         } \
         MOCK_EXPECTATION_METHODS \
         friend std::ostream& operator<<( std::ostream& s, const expectation& m ) \
         { \
             return s << (m.i_->exhausted() ? 'v' : '.') << ' ' << *m.i_ << ".with( " \
                 << \
-                BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_SERIALIZE, BOOST_PP_EMPTY) \
+                BOOST_PP_REPEAT(n, MOCK_EXPECTATION_SERIALIZE, BOOST_PP_EMPTY) \
                 << " )"; \
         } \
     private: \
-        BOOST_PP_REPEAT_FROM_TO(0, n, MOCK_EXPECTATION_MEMBER, BOOST_PP_EMPTY) \
+        BOOST_PP_REPEAT(n, MOCK_EXPECTATION_MEMBER, BOOST_PP_EMPTY) \
     };
     BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION, BOOST_PP_EMPTY)
 
