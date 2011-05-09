@@ -186,10 +186,6 @@
 				RelativePath="..\..\src\applications\turtle_bench\turtle_bench.cpp"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\applications\turtle_bench\turtle_bench.hpp"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>
