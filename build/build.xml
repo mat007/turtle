@@ -65,10 +65,10 @@
     <quiet>
       <delete file="${reports.dir}/benchmark-${platform}.log"/>
       <touch file="${reports.dir}/benchmark-${platform}.log"/>
-      <delete dir="${out.dir}/turtle_bench"/>
+      <delete dir="${out.dir}/bench_test"/>
     </quiet>
     <for param="file">
-      <fileset dir="${applications.dir}/turtle_bench" includes="*.cpp"/>
+      <fileset dir="${tests.dir}/bench_test" includes="*.cpp"/>
       <sequential>
         <record name="${reports.dir}/benchmark-${platform}.log" action="start" append="true"/>
         <ant target="-bench">
@@ -83,7 +83,7 @@
     <echo>${file}</echo>
     <stopwatch name="bench"/>
     <quiet>
-      <compile name="bench" input="${applications.dir}/turtle_bench" outdir="${out.dir}/turtle_bench" excludes="**">
+      <compile name="bench" input="${tests.dir}/bench_test" outdir="${out.dir}/bench_test" excludes="**">
         <includepath path="${libraries.dir}"/>
         <fileset file="${file}"/>
       </compile>
