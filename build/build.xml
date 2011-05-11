@@ -21,7 +21,7 @@
     <build-turtle-test name="turtle"/>
     <build-turtle-test name="turtle_max_args">
       <defineset>
-        <define name="MOCK_MAX_ARGS" value="20"/>
+        <define name="MOCK_MAX_ARGS" value="30"/>
       </defineset>
     </build-turtle-test>
     <build-turtle-test name="turtle_use_conversions">

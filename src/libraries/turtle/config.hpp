@@ -25,6 +25,12 @@
 #   error BOOST_FUNCTION_MAX_ARGS must be set to MOCK_MAX_ARGS or higher
 #endif
 
+#ifndef BOOST_FT_MAX_ARITY
+#   define BOOST_FT_MAX_ARITY BOOST_PP_INC(MOCK_MAX_ARGS)
+#elif BOOST_PP_LESS_EQUAL(BOOST_FT_MAX_ARITY, MOCK_MAX_ARGS)
+#   error BOOST_FT_MAX_ARITY must be set to MOCK_MAX_ARGS + 1 or higher
+#endif
+
 #ifdef MOCK_USE_BOOST_PHOENIX
 #   ifndef PHOENIX_LIMIT
 #       define PHOENIX_LIMIT MOCK_MAX_ARGS
