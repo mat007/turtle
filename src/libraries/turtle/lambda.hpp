@@ -10,10 +10,10 @@
 #define MOCK_LAMBDA_HPP_INCLUDED
 
 #include "config.hpp"
-#ifdef MOCK_USE_BOOST_BIND
-#include <boost/bind.hpp>
-#else
+#ifdef MOCK_USE_BOOST_PHOENIX
 #include <boost/spirit/home/phoenix/bind.hpp>
+#else
+#include <boost/bind.hpp>
 #endif
 #include <boost/function.hpp>
 
@@ -21,10 +21,10 @@ namespace mock
 {
 namespace detail
 {
-#ifdef MOCK_USE_BOOST_BIND
-    using boost::bind;
-#else
+#ifdef MOCK_USE_BOOST_PHOENIX
     using boost::phoenix::bind;
+#else
+    using boost::bind;
 #endif
 
     template< typename Result, typename Signature >
