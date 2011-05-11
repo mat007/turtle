@@ -11,7 +11,7 @@
 
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_arity.hpp>
-#include <boost/preprocessor/inc.hpp>
+#include <boost/preprocessor/arithmetic/inc.hpp>
 #include <boost/mpl/at.hpp>
 
 namespace mock
