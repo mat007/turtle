@@ -20,12 +20,11 @@
 #include <boost/function_types/function_type.hpp>
 #include <boost/function_types/result_type.hpp>
 #include <boost/type_traits/is_base_of.hpp>
+#include <boost/mpl/joint_view.hpp>
+#include <boost/mpl/single_view.hpp>
+#include <boost/mpl/pop_front.hpp>
 #include <boost/mpl/equal_to.hpp>
 #include <boost/mpl/size_t.hpp>
-#include <boost/mpl/vector.hpp>
-#include <boost/mpl/erase.hpp>
-#include <boost/mpl/copy.hpp>
-#include <boost/mpl/back_inserter.hpp>
 #define BOOST_TYPEOF_SILENT
 #include <boost/typeof/typeof.hpp>
 #include <boost/shared_ptr.hpp>
@@ -63,27 +62,20 @@ namespace detail
     }
 
     template< typename M >
-    struct signature
-    {
-        typedef BOOST_DEDUCED_TYPENAME
-            boost::function_types::result_type< M >::type result;
-        typedef BOOST_DEDUCED_TYPENAME
-            boost::function_types::parameter_types< M >::type parameters;
-        typedef BOOST_DEDUCED_TYPENAME
-            boost::function_types::function_type<
-                BOOST_DEDUCED_TYPENAME boost::mpl::push_front<
-                    BOOST_DEDUCED_TYPENAME boost::mpl::pop_front<
-                        BOOST_DEDUCED_TYPENAME boost::mpl::copy<
-                            parameters,
-                            boost::mpl::back_inserter<
-                                boost::mpl::vector<>
-                            >
-                        >::type
-                    >::type,
-                    result
+    struct signature :
+        boost::function_types::function_type<
+            boost::mpl::joint_view<
+                boost::mpl::single_view<
+                    BOOST_DEDUCED_TYPENAME
+                        boost::function_types::result_type< M >::type
+                >,
+                BOOST_DEDUCED_TYPENAME boost::mpl::pop_front<
+                    BOOST_DEDUCED_TYPENAME
+                        boost::function_types::parameter_types< M >
                 >::type
-            >::type type;
-    };
+            >
+        >
+    {};
 
     template< typename E >
     void set_parent( E& e, const std::string& prefix,

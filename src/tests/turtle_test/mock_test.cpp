@@ -16,38 +16,22 @@
 
 namespace
 {
-    void f1();
-    int f2( float );
-
-    BOOST_MPL_ASSERT(( boost::is_same< mock::function< void() >,
-                                       mock::function< BOOST_TYPEOF( f1 ) > > ));
-    BOOST_MPL_ASSERT(( boost::is_same< mock::function< int( float ) >,
-                                       mock::function< BOOST_TYPEOF( f2 ) > > ));
-
-    struct example
+    struct s
     {
-        void method1();
-        float method2( int );
+        void m1();
+        float m2( int );
     };
 
-    BOOST_STATIC_ASSERT(
-        (boost::is_same<
-            mock::function< void() >,
-            mock::function<
-                mock::detail::signature<
-                    BOOST_TYPEOF( &example::method1 )
-                >::type
-            >
-         >::value) );
-    BOOST_STATIC_ASSERT(
-        (boost::is_same<
-            mock::function< float( int ) >,
-            mock::function<
-                mock::detail::signature<
-                    BOOST_TYPEOF( &example::method2 )
-                >::type
-            >
-         >::value) );
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            void(),
+            mock::detail::signature< BOOST_TYPEOF( &s::m1 ) >::type
+        > ));
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            float( int ),
+            mock::detail::signature< BOOST_TYPEOF( &s::m2 ) >::type
+         > ));
 }
 
 BOOST_AUTO_TEST_CASE( ptr_uniformizes_reference_and_pointer )
