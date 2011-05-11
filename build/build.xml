@@ -61,14 +61,38 @@
     </trycatch>
   </target>
 
-  <target name="reports" description="generate code analysis reports">
-    <headers name="turtle"/>
+  <target name="bench" description="run compilation benchmark">
+    <quiet>
+      <delete file="${reports.dir}/benchmark-${platform}.log"/>
+      <touch file="${reports.dir}/benchmark-${platform}.log"/>
+      <delete dir="${out.dir}/turtle_bench"/>
+    </quiet>
+    <for param="file">
+      <fileset dir="${applications.dir}/turtle_bench" includes="*.cpp"/>
+      <sequential>
+        <record name="${reports.dir}/benchmark-${platform}.log" action="start" append="true"/>
+        <ant target="-bench">
+          <property name="file" value="@{file}"/>
+        </ant>
+        <record name="${reports.dir}/benchmark-${platform}.log" action="stop"/>
+      </sequential>
+    </for>
   </target>
 
-  <target name="bench" description="build compilation benchmark">
-    <build-app name="turtle_bench" mode="all">
-      <includepath path="${applications.dir}/turtle_bench"/>
-    </build-app>
+  <target name="-bench">
+    <echo>${file}</echo>
+    <stopwatch name="bench"/>
+    <quiet>
+      <compile name="bench" input="${applications.dir}/turtle_bench" outdir="${out.dir}/turtle_bench" excludes="**">
+        <includepath path="${libraries.dir}"/>
+        <fileset file="${file}"/>
+      </compile>
+    </quiet>
+    <stopwatch name="bench" action="total"/>
+  </target>
+
+  <target name="reports" description="generate code analysis reports">
+    <headers name="turtle"/>
   </target>
 
   <target name="export" description="export distribution">

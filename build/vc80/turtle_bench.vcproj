@@ -183,7 +183,39 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx;h;hpp;hxx;hm;inl;inc;xsd"
 			>
 			<File
-				RelativePath="..\..\src\applications\turtle_bench\turtle_bench.cpp"
+				RelativePath="..\..\src\applications\turtle_bench\turtle_bench_0_class.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\applications\turtle_bench\turtle_bench_0_class_10_max_args.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\applications\turtle_bench\turtle_bench_0_class_20_max_args.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\applications\turtle_bench\turtle_bench_0_class_30_max_args.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\applications\turtle_bench\turtle_bench_30_classes_30_methods_30_args_30_max_args.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\applications\turtle_bench\turtle_bench_30_classes_30_methods_9_args.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\applications\turtle_bench\turtle_bench_30_classes_30_methods_9_args_10_max_args.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\applications\turtle_bench\turtle_bench_30_classes_30_methods_9_args_20_max_args.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\applications\turtle_bench\turtle_bench_30_classes_30_methods_9_args_30_max_args.cpp"
 				>
 			</File>
 		</Filter>
