@@ -27,7 +27,6 @@
 #include <boost/mpl/size_t.hpp>
 #define BOOST_TYPEOF_SILENT
 #include <boost/typeof/typeof.hpp>
-#include <boost/shared_ptr.hpp>
 #include <stdexcept>
 
 namespace mock
@@ -35,26 +34,33 @@ namespace mock
 namespace detail
 {
     template< typename T >
-    T& ref( T& t )
+    T& deref( T& t )
     {
         return t;
     }
     template< typename T >
-    T& ref( T* t )
+    T& deref( T* t )
     {
         if( ! t )
             throw std::invalid_argument( "derefencing null pointer" );
         return *t;
     }
     template< typename T >
-    T& ref( std::auto_ptr< T >& t )
+    T& deref( std::auto_ptr< T >& t )
     {
         if( ! t.get() )
             throw std::invalid_argument( "derefencing null pointer" );
         return *t;
     }
     template< typename T >
-    T& ref( boost::shared_ptr< T >& t )
+    T& deref( const std::auto_ptr< T >& t )
+    {
+        if( ! t.get() )
+            throw std::invalid_argument( "derefencing null pointer" );
+        return *t;
+    }
+    template< typename T >
+    T& deref( boost::shared_ptr< T > t )
     {
         if( ! t.get() )
             throw std::invalid_argument( "derefencing null pointer" );
@@ -97,43 +103,21 @@ namespace detail
 
     template< typename E >
     E& configure( BOOST_DEDUCED_TYPENAME E::function_tag,
-        const std::string& parent, const std::string& /*op*/,
-        const std::string& /*name*/, E& e )
+        const std::string& parent, const std::string& /*name*/, E& e )
     {
         if( parent != "?" || e.tag() == "?" )
             e.tag( parent );
         return e;
     }
     template< typename E, typename T >
-    E& configure( E& e, const std::string& parent, const std::string& op,
+    E& configure( E& e, const std::string& parent,
         const std::string& name, const T& t )
     {
         if( parent != "?" || e.tag() == "?" )
             mock::detail::set_parent( e,
-                parent + op + mock::detail::type_name( typeid( T ) ) + "::",
+                parent + " " + mock::detail::type_name( typeid( T ) ) + "::",
                 name, t );
         return e;
-    }
-
-    template< typename T >
-    std::string op( T& )
-    {
-        return ".";
-    }
-    template< typename T >
-    std::string op( T* )
-    {
-        return "->";
-    }
-    template< typename T >
-    std::string op( std::auto_ptr< T >& )
-    {
-        return "->";
-    }
-    template< typename T >
-    std::string op( boost::shared_ptr< T >& )
-    {
-        return "->";
     }
 
     template< typename T >
@@ -169,14 +153,12 @@ namespace detail
     mock::function< S >
 
 #define MOCK_MOCKER(o, t) \
-    mock::detail::configure( mock::detail::ref( o ).exp##t, \
-        BOOST_PP_STRINGIZE(o), mock::detail::op( o ), \
-        BOOST_PP_STRINGIZE(t), mock::detail::ref( o ) )
-#define MOCK_ANONYMOUS_MOCKER_EXT(o, M, t) \
-    mock::detail::configure( mock::detail::ref( o ).exp##t, \
-        "?", ".", BOOST_PP_STRINGIZE(M), mock::detail::ref( o ) )
-#define MOCK_ANONYMOUS_MOCKER(o, t) \
-    MOCK_ANONYMOUS_MOCKER_EXT( o, t, t )
+    mock::detail::configure( mock::detail::deref( o ).exp##t, \
+        BOOST_PP_STRINGIZE(o), BOOST_PP_STRINGIZE(t), \
+        mock::detail::deref( o ) )
+#define MOCK_ANONYMOUS_MOCKER(o, M, t) \
+    mock::detail::configure( mock::detail::deref( o ).exp##t, \
+        "?", BOOST_PP_STRINGIZE(M), mock::detail::deref( o ) )
 
 #define MOCK_METHOD_EXPECTATION(S, t) \
     mutable mock::function< S > exp##t;
@@ -186,7 +168,7 @@ namespace detail
 #define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
     { \
-        return mock::detail::call( MOCK_ANONYMOUS_MOCKER(this, t) \
+        return mock::detail::call( MOCK_ANONYMOUS_MOCKER(this, t, t) \
             BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 
@@ -215,18 +197,18 @@ namespace detail
     MOCK_METHOD_EXPECTATION(S, t)
 
 #define MOCK_DESTRUCTOR(T, t) \
-    ~T() { MOCK_ANONYMOUS_MOCKER_EXT(this, ~T, t).test(); } \
+    ~T() { MOCK_ANONYMOUS_MOCKER(this, ~T, t).test(); } \
     MOCK_METHOD_EXPECTATION(void(), t)
 
 #define MOCK_CONST_CONVERSION_OPERATOR(T, t) \
-    operator T() const { return MOCK_ANONYMOUS_MOCKER_EXT(this, operator T, t)(); } \
+    operator T() const { return MOCK_ANONYMOUS_MOCKER(this, operator T, t)(); } \
     MOCK_METHOD_EXPECTATION(T(), t)
 #define MOCK_NON_CONST_CONVERSION_OPERATOR(T, t) \
-    operator T() { return MOCK_ANONYMOUS_MOCKER_EXT(this, operator T, t)(); } \
+    operator T() { return MOCK_ANONYMOUS_MOCKER(this, operator T, t)(); } \
     MOCK_METHOD_EXPECTATION(T(), t)
 #define MOCK_CONVERSION_OPERATOR(T, t) \
-    operator T() const { return MOCK_ANONYMOUS_MOCKER_EXT(this, operator T, t)(); } \
-    operator T() { return MOCK_ANONYMOUS_MOCKER_EXT(this, operator T, t)(); } \
+    operator T() const { return MOCK_ANONYMOUS_MOCKER(this, operator T, t)(); } \
+    operator T() { return MOCK_ANONYMOUS_MOCKER(this, operator T, t)(); } \
     MOCK_METHOD_EXPECTATION(T(), t)
 
 #define MOCK_EXPECT(o,t) MOCK_MOCKER(o,t).expect( __FILE__, __LINE__ )
