@@ -116,6 +116,6 @@
     </tar>
   </target>
 
-  <target name="all" depends="configure,test,reports,export,package" description="configure, build and run tests, export and package distribution"/>
+  <target name="all" depends="configure,test,bench,reports,export,package" description="configure, build and run tests and benchmark, export and package distribution"/>
 
 </project>
