@@ -23,8 +23,6 @@
 #include <boost/mpl/joint_view.hpp>
 #include <boost/mpl/single_view.hpp>
 #include <boost/mpl/pop_front.hpp>
-#include <boost/mpl/equal_to.hpp>
-#include <boost/mpl/size_t.hpp>
 #define BOOST_TYPEOF_SILENT
 #include <boost/typeof/typeof.hpp>
 #include <stdexcept>
@@ -125,23 +123,6 @@ namespace detail
     {
         typedef T base_type;
     };
-
-    template< typename E, int N >
-    struct has_arity : boost::mpl::equal_to< BOOST_DEDUCED_TYPENAME E::arity, boost::mpl::size_t< N > >
-    {};
-
-#define MOCK_CALL(z, n, d) \
-    template< typename E > \
-    BOOST_DEDUCED_TYPENAME boost::enable_if< \
-        BOOST_DEDUCED_TYPENAME has_arity< E, n >::type, \
-        BOOST_DEDUCED_TYPENAME E::result_type \
-    >::type \
-        call( E e BOOST_PP_COMMA_IF(n) MOCK_ARGS(n, BOOST_DEDUCED_TYPENAME E::signature_type, BOOST_DEDUCED_TYPENAME ) ) \
-    { \
-        return e( BOOST_PP_ENUM_PARAMS(n, p) ); \
-    }
-    BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
-#undef MOCK_CALL
 }
 }
 
@@ -168,8 +149,8 @@ namespace detail
 #define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
     { \
-        return mock::detail::call( MOCK_ANONYMOUS_MOCKER(this, t, t) \
-            BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM_PARAMS(n, p) ); \
+        return MOCK_ANONYMOUS_MOCKER(this, t, t)( \
+            BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 
 #define MOCK_METHOD_EXT(M, n, S, t) \
@@ -214,50 +195,5 @@ namespace detail
 #define MOCK_EXPECT(o,t) MOCK_MOCKER(o,t).expect( __FILE__, __LINE__ )
 #define MOCK_RESET(o,t) MOCK_MOCKER(o,t).reset()
 #define MOCK_VERIFY(o,t) MOCK_MOCKER(o,t).verify()
-
-// alternate experimental macros below, way too slow to compile to be really usable
-
-namespace mock
-{
-namespace detail
-{
-#define MOCK_CALL_INVALID_TYPE(z, n, d) invalid_type
-#define MOCK_CALL(z, n, d) \
-    template< typename E > \
-    BOOST_DEDUCED_TYPENAME boost::disable_if< \
-        BOOST_DEDUCED_TYPENAME has_arity< E, n >::type, \
-        BOOST_DEDUCED_TYPENAME E::result_type \
-    >::type \
-        call( E BOOST_PP_COMMA_IF(n) BOOST_PP_ENUM(n, MOCK_CALL_INVALID_TYPE, BOOST_PP_EMPTY) ) \
-    {}
-    BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_CALL, BOOST_PP_EMPTY)
-#undef MOCK_CALL
-#undef MOCK_CALL_INVALID_TYPE
-}
-}
-
-#define MOCK_METHOD_STUB_PROXY(z, n, d) \
-    MOCK_METHOD_STUB( \
-        BOOST_PP_ARRAY_ELEM(0, d), \
-        n, \
-        BOOST_PP_ARRAY_ELEM(1, d), \
-        BOOST_PP_ARRAY_ELEM(2, d), \
-        BOOST_PP_ARRAY_ELEM(3, d), \
-        BOOST_PP_ARRAY_ELEM(4, d))
-
-#define MOCK_METHOD_STUB_ALT(M, S, t, c, tpn) \
-    BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_METHOD_STUB_PROXY, (5,(M, S, t, c, tpn)))
-
-#define MOCK_METHOD_EXT_ALT(M, S, t) \
-    MOCK_METHOD_STUB_ALT(M, S, t,,) \
-    MOCK_METHOD_STUB_ALT(M, S, t, const,) \
-    MOCK_METHOD_EXPECTATION(S, t)
-#define MOCK_METHOD_ALT(M) \
-    MOCK_METHOD_EXT_ALT(M, MOCK_SIGNATURE(M), M)
-
-#define MOCK_METHOD_EXT_TPL_ALT(M, S, t) \
-    MOCK_METHOD_STUB_ALT(M, S, t,, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_STUB_ALT(M, S, t, const, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_EXPECTATION(S, t)
 
 #endif // MOCK_MOCK_HPP_INCLUDED

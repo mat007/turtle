@@ -38,9 +38,6 @@ namespace mock
     public:
         typedef BOOST_DEDUCED_TYPENAME
             boost::function_types::result_type< Signature >::type result_type;
-        typedef Signature signature_type;
-        typedef BOOST_DEDUCED_TYPENAME
-            boost::function_types::function_arity< Signature > arity;
 
         template< typename Args >
         struct sig
@@ -49,6 +46,8 @@ namespace mock
         };
 
     private:
+        typedef BOOST_DEDUCED_TYPENAME
+            boost::function_types::function_arity< Signature > arity;
         typedef BOOST_DEDUCED_TYPENAME
             detail::expectation< Signature, arity::value > expectation_type;
 
