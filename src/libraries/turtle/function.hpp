@@ -106,7 +106,7 @@ namespace mock
         { \
             return (*impl_)( BOOST_PP_ENUM_PARAMS(n, p) ); \
         }
-        BOOST_PP_REPEAT_FROM_TO(1, MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
+        BOOST_PP_REPEAT_FROM_TO(1, BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
 #undef MOCK_EXPECTATION_OPERATOR
 
         friend std::ostream& operator<<( std::ostream& s, const function& e )
@@ -237,7 +237,7 @@ namespace mock
     MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
     MOCK_EXPECTATION_INVOKE(z, n, P)
 
-            BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_EXPECTATION_OPERATOR, ErrorPolicy::abort())
+            BOOST_PP_REPEAT(BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_EXPECTATION_OPERATOR, ErrorPolicy::abort())
 
             void test() const
             MOCK_EXPECTATION_INVOKE(, 0,)
