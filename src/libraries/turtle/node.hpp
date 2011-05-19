@@ -35,13 +35,13 @@ namespace mock
             return name_;
         }
 
-        void add( verifiable& e )
+        void add( verifiable& v )
         {
-            v_.push_back( &e );
+            v_.push_back( &v );
         }
-        void remove( verifiable& e )
+        void remove( verifiable& v )
         {
-            v_.erase( std::remove( v_.begin(), v_.end(), &e ), v_.end() );
+            v_.erase( std::remove( v_.begin(), v_.end(), &v ), v_.end() );
         }
 
         virtual bool verify() const

@@ -59,13 +59,13 @@ namespace mock
             {
                 if( ! parent_ )
                 {
-                    root.add( *this );
-                    parent_ = &root;
+                    mock::detail::root.add( *this );
+                    parent_ = &mock::detail::root;
                 }
                 t.set_parent( *this );
             }
 
-        protected:
+        private:
             virtual void untie()
             {
                 parent_ = 0;

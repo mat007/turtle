@@ -197,7 +197,7 @@ namespace mock
             expectation_type& expect()
             {
                 if( ! parent_ )
-                    set_parent( root );
+                    set_parent( mock::detail::root );
                 expectations_.push_back( expectation_type() );
                 valid_ = true;
                 return expectations_.back();

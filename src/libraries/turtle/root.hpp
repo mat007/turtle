@@ -15,23 +15,26 @@
 
 namespace mock
 {
+namespace detail
+{
     class root_t : public boost::unit_test::singleton< root_t >, public node
     {
-    protected:
+    private:
         virtual void untie()
         {}
     private:
         BOOST_TEST_SINGLETON_CONS( root_t );
     };
     BOOST_TEST_SINGLETON_INST( root )
+}
 
     inline bool verify()
     {
-        return root.verify();
+        return mock::detail::root.verify();
     }
     inline void reset()
     {
-        root.reset();
+        mock::detail::root.reset();
     }
 }
 
