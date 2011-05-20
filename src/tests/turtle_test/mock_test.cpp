@@ -7,12 +7,10 @@
 //
 
 #include <turtle/mock.hpp>
-#include <boost/mpl/assert.hpp>
-#include <boost/bind.hpp>
-
 #include <boost/test/auto_unit_test.hpp>
-#define BOOST_LIB_NAME boost_unit_test_framework
-#include <boost/config/auto_link.hpp>
+#include <boost/mpl/assert.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/bind.hpp>
 
 namespace
 {

@@ -7,8 +7,7 @@
 //
 
 #include <turtle/is_functor.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <boost/test/auto_unit_test.hpp>
 #ifdef _MSC_VER
 #pragma warning( push, 0 )
 #endif
@@ -17,10 +16,8 @@
 #ifdef _MSC_VER
 #pragma warning( pop )
 #endif
-
-#include <boost/test/auto_unit_test.hpp>
-#define BOOST_LIB_NAME boost_unit_test_framework
-#include <boost/config/auto_link.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 
 namespace
 {

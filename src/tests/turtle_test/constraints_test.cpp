@@ -8,10 +8,7 @@
 
 #include <turtle/constraints.hpp>
 #include <turtle/operators.hpp>
-
 #include <boost/test/auto_unit_test.hpp>
-#define BOOST_LIB_NAME boost_unit_test_framework
-#include <boost/config/auto_link.hpp>
 
 BOOST_AUTO_TEST_CASE( all_comparison_constraints_can_be_instanciated )
 {

@@ -6,15 +6,13 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include "mock_error.hpp"
-
 #define BOOST_AUTO_TEST_MAIN
+#include "mock_error.hpp"
+#include <turtle/function.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
-
-#define MOCK_ERROR_POLICY mock_error
-#include <turtle/mock.hpp>
+#include <boost/function.hpp>
 #include <boost/bind.hpp>
 
 #define CHECK_CALLS( calls ) \

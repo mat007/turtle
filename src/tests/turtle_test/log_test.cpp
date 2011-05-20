@@ -7,6 +7,7 @@
 //
 
 #include <turtle/log.hpp>
+#include <boost/test/auto_unit_test.hpp>
 #include <boost/assign.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
@@ -16,10 +17,6 @@
 #include <list>
 #include <map>
 #include <set>
-
-#include <boost/test/auto_unit_test.hpp>
-#define BOOST_LIB_NAME boost_unit_test_framework
-#include <boost/config/auto_link.hpp>
 
 namespace
 {

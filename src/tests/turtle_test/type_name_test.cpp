@@ -7,10 +7,7 @@
 //
 
 #include <turtle/type_name.hpp>
-
 #include <boost/test/auto_unit_test.hpp>
-#define BOOST_LIB_NAME boost_unit_test_framework
-#include <boost/config/auto_link.hpp>
 
 struct my_type_from_default_namespace {};
 

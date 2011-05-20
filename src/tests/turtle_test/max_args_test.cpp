@@ -1,4 +1,3 @@
-
 //
 //  Copyright Mathieu Champlon 2008
 //
@@ -8,14 +7,9 @@
 //
 
 #include "mock_error.hpp"
-
-#define MOCK_ERROR_POLICY mock_error
 #include <turtle/mock.hpp>
-#include <boost/preprocessor/repetition/enum.hpp>
-
 #include <boost/test/auto_unit_test.hpp>
-#define BOOST_LIB_NAME boost_unit_test_framework
-#include <boost/config/auto_link.hpp>
+#include <boost/preprocessor/repetition/enum.hpp>
 
 #define IDENTITY(z, n, d) d
 

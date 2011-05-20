@@ -9,7 +9,7 @@
 #ifndef MOCK_TEST_MOCK_ERROR_HPP_INCLUDED
 #define MOCK_TEST_MOCK_ERROR_HPP_INCLUDED
 
-#include <boost/type_traits/remove_reference.hpp>
+#define MOCK_ERROR_POLICY mock_error
 #include <boost/lexical_cast.hpp>
 #include <stdexcept>
 #include <string>

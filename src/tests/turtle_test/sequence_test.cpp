@@ -7,13 +7,9 @@
 //
 
 #include "mock_error.hpp"
-
+#include <turtle/sequence.hpp>
+#include <turtle/function.hpp>
 #include <boost/test/auto_unit_test.hpp>
-#define BOOST_LIB_NAME boost_unit_test_framework
-#include <boost/config/auto_link.hpp>
-
-#define MOCK_ERROR_POLICY mock_error
-#include <turtle/mock.hpp>
 
 BOOST_AUTO_TEST_CASE( registering_to_a_sequence_and_calling_out_of_order_throws )
 {

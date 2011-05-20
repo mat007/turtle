@@ -7,14 +7,8 @@
 //
 
 #include "mock_error.hpp"
-
-#include <boost/test/auto_unit_test.hpp>
-#define BOOST_LIB_NAME boost_unit_test_framework
-#include <boost/config/auto_link.hpp>
-
-#define MOCK_ERROR_POLICY mock_error
 #include <turtle/mock.hpp>
-
+#include <boost/test/auto_unit_test.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/optional.hpp>
 #include <boost/ref.hpp>
