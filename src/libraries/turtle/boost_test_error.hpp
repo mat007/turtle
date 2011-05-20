@@ -92,7 +92,7 @@ namespace mock
     {
         ~cleanup()
         {
-            //mock::verify(); // $$$$ MAT : because of a bug in Boost.Test this will crash anything needs to be logged
+            //mock::verify(); // $$$$ MAT : because of a bug in Boost.Test this will crash if anything needs to be logged
             mock::reset();
         }
     };
