@@ -629,11 +629,10 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
 {
     {
         mock::function< void( int ) > f;
-        f.tag( "my function" );
         f.expect().once().with( 1 );
         f.expect().once().with( 2 );
         BOOST_CHECK_NO_THROW( f( 2 ) );
-        const std::string expected = "my function\n"
+        const std::string expected = "?\n"
                                      ". once().with( 1 )\n"
                                      "v once().with( 2 )";
         BOOST_CHECK_EQUAL( expected, to_string( f ) );
@@ -642,9 +641,8 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
     }
     {
         mock::function< void( int ) > f;
-        f.tag( "my function" );
         f.expect().never().with( 1 );
-        const std::string expected = "my function\n"
+        const std::string expected = "?\n"
                                      "v never().with( 1 )";
         BOOST_CHECK_EQUAL( expected, to_string( f ) );
         f.reset();
@@ -672,36 +670,32 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, err
     }
     {
         mock::function< void( int ) > f;
-        f.tag( "my function" );
         f.expect().once();
-        const std::string expected = "my function\n"
+        const std::string expected = "?\n"
                                      ". once().with( any )";
         BOOST_CHECK_EQUAL( expected, to_string( f ) );
         f.reset();
     }
     {
         mock::function< void( int ) > f;
-        f.tag( "my function" );
         f.expect().once().with( mock::any );
-        const std::string expected = "my function\n"
+        const std::string expected = "?\n"
                                      ". once().with( any )";
         BOOST_CHECK_EQUAL( expected, to_string( f ) );
         f.reset();
     }
     {
         mock::function< void( int ) > f;
-        f.tag( "my function" );
         f.expect().once();
-        const std::string expected = "my function\n"
+        const std::string expected = "?\n"
                                      ". once().with( any )";
         BOOST_CHECK_EQUAL( expected, to_string( f ) );
         f.reset();
     }
     {
         mock::function< void( int ) > f;
-        f.tag( "my function" );
         f.expect().once().with( &custom_constraint );
-        const std::string expected = "my function\n"
+        const std::string expected = "?\n"
                                      ". once().with( ? )";
         BOOST_CHECK_EQUAL( expected, to_string( f ) );
         f.reset();

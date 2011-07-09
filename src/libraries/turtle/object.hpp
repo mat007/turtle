@@ -9,8 +9,12 @@
 #ifndef MOCK_OBJECT_HPP_INCLUDED
 #define MOCK_OBJECT_HPP_INCLUDED
 
-#include "node.hpp"
 #include "root.hpp"
+#include "context.hpp"
+#include "parent.hpp"
+#include "child.hpp"
+#include <boost/type_traits/is_base_of.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <boost/shared_ptr.hpp>
 #include <string>
 
@@ -23,60 +27,101 @@ namespace mock
             : impl_( new object_impl() )
         {}
 
-        template< typename T >
-        void set_child( T& t ) const
-        {
-            impl_->set_child( t );
-        }
-        void tag( const std::string& name ) const
-        {
-            impl_->tag( name );
-        }
-
-        bool verify() const
+        bool verify() const // $$$$ MAT : to be deprecated
         {
             return impl_->verify();
         }
-        void reset()
+        void reset() // $$$$ MAT : to be deprecated
         {
             impl_->reset();
         }
 
     private:
-        class object_impl : public node
+        class object_impl : public detail::context, private verifiable
         {
         public:
-            object_impl()
-                : parent_( 0 )
-            {}
-            virtual ~object_impl()
+            virtual void add( const void* /*p*/, verifiable& v,
+                const std::string& instance, const std::string& type,
+                const std::string& name )
             {
-                if( parent_ )
-                    parent_->remove( *this );
-            }
-            template< typename T >
-            void set_child( T& t )
-            {
-                if( ! parent_ )
-                {
+                if( children_.empty() )
                     mock::detail::root.add( *this );
-                    parent_ = &mock::detail::root;
-                }
-                t.set_parent( *this );
+                children_[ &v ].update( parent_, instance, type, name );
             }
-
-        private:
-            virtual void untie()
+            virtual void add( verifiable& v )
             {
-                parent_ = 0;
+                group_.add( v );
+            }
+            virtual void remove( verifiable& v )
+            {
+                group_.remove( v );
+                children_.erase( &v );
+                if( children_.empty() )
+                    mock::detail::root.remove( *this );
+            }
+
+            virtual void serialize( std::ostream& s,
+                const verifiable& v ) const
+            {
+                children_cit it = children_.find( &v );
+                if( it != children_.end() )
+                    s << it->second;
+                else
+                    s << "?";
+            }
+
+            virtual bool verify() const
+            {
+                return group_.verify();
+            }
+            virtual void reset()
+            {
+                group_.reset();
             }
 
         private:
-            node* parent_;
+            typedef std::map< const verifiable*, detail::child > children_t;
+            typedef children_t::const_iterator children_cit;
+
+            detail::group group_;
+            detail::parent parent_;
+            children_t children_;
         };
 
+    public:
         boost::shared_ptr< object_impl > impl_;
     };
+
+namespace detail
+{
+    template< typename E >
+    E& configure(  const object& o, E& e, const std::string& instance,
+        const std::string& type, const std::string& name )
+    {
+        e.configure( *o.impl_, o.impl_.get(), instance, type, name );
+        return e;
+    }
+
+    template< typename E, typename T >
+    E& configure( const T& t, E& e, const std::string& instance,
+        const std::string& type, const std::string& name,
+        BOOST_DEDUCED_TYPENAME boost::disable_if<
+            BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >
+        >::type* = 0 )
+    {
+        e.configure( mock::detail::root, &t, instance, type, name );
+        return e;
+    }
+}
+
+    inline bool verify( const object& o )
+    {
+        return o.impl_->verify();
+    }
+    inline void reset( object& o )
+    {
+        o.impl_->reset();
+    }
 }
 
 #endif // MOCK_OBJECT_HPP_INCLUDED

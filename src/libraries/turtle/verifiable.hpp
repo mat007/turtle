@@ -22,8 +22,6 @@ namespace mock
         virtual bool verify() const = 0;
 
         virtual void reset() = 0;
-
-        virtual void untie() = 0;
     };
 }
 

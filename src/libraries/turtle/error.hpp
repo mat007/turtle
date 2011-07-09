@@ -12,7 +12,7 @@
 #include "config.hpp"
 
 #ifndef MOCK_ERROR_POLICY
-#   if defined(BOOST_TEST_DECL) || defined(MOCK_USE_BOOST_TEST)
+#   ifdef MOCK_USE_BOOST_TEST
 #       define MOCK_ERROR_POLICY boost_test_error_policy
 #       include "boost_test_error.hpp"
 #   else

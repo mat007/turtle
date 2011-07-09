@@ -17,24 +17,9 @@
 
 namespace mock
 {
-    class node : protected verifiable
+    class node
     {
     public:
-        virtual ~node()
-        {
-            std::for_each( v_.begin(), v_.end(),
-                std::mem_fun( &verifiable::untie ) );
-        }
-
-        void tag( const std::string& name )
-        {
-            name_ = name;
-        }
-        const std::string& tag() const
-        {
-            return name_;
-        }
-
         void add( verifiable& v )
         {
             v_.push_back( &v );

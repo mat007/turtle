@@ -9,7 +9,6 @@
 #ifndef MOCK_BOOST_TEST_ERROR_POLICY_HPP_INCLUDED
 #define MOCK_BOOST_TEST_ERROR_POLICY_HPP_INCLUDED
 
-#include "root.hpp"
 #include <boost/test/framework.hpp>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
@@ -87,16 +86,6 @@ namespace mock
             fail( "untriggered expectation", context, file, line );
         }
     };
-
-    struct cleanup
-    {
-        ~cleanup()
-        {
-            //mock::verify(); // $$$$ MAT : because of a bug in Boost.Test this will crash if anything needs to be logged
-            mock::reset();
-        }
-    };
-    BOOST_GLOBAL_FIXTURE( cleanup );
 }
 
 #endif // MOCK_BOOST_TEST_ERROR_POLICY_HPP_INCLUDED

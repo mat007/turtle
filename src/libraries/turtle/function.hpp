@@ -11,8 +11,9 @@
 
 #include "config.hpp"
 #include "error.hpp"
+#include "context.hpp"
 #include "expectation.hpp"
-#include "root.hpp"
+#include "verifiable.hpp"
 #include "log.hpp"
 #include "args.hpp"
 #include <boost/function_types/result_type.hpp>
@@ -29,10 +30,7 @@
 
 namespace mock
 {
-    template< typename Signature,
-              typename ErrorPolicy = MOCK_ERROR_POLICY<
-                  BOOST_DEDUCED_TYPENAME
-                      boost::function_types::result_type< Signature >::type > >
+    template< typename Signature >
     class function
     {
     public:
@@ -52,26 +50,9 @@ namespace mock
             detail::expectation< Signature, arity::value > expectation_type;
 
     public:
-        struct function_tag
-        {};
-        function_tag exp_;
-
         function()
             : impl_( new function_impl() )
         {}
-
-        void tag( const std::string& name )
-        {
-            impl_->tag( name );
-        }
-        const std::string& tag() const
-        {
-            return impl_->tag();
-        }
-        void set_parent( node& parent )
-        {
-            impl_->set_parent( parent );
-        }
 
         bool verify() const
         {
@@ -114,36 +95,57 @@ namespace mock
             return s << *e.impl_;
         }
 
-    private:
-        class function_impl : private verifiable
+        function& _( detail::context& c, const std::string& instance )
         {
+            if( ! impl_->context_ )
+                c.add( *impl_ );
+            c.add( impl_.get(), *impl_, instance, "", "" );
+            impl_->context_ = &c;
+            return *this;
+        }
+
+        void configure( detail::context& c, const void* p,
+            const std::string& instance, const std::string& type,
+            const std::string& name ) const
+        {
+            if( ! impl_->context_ )
+                c.add( *impl_ );
+            c.add( p, *impl_, instance, type, name );
+            impl_->context_ = &c;
+        }
+
+    private:
+        class function_impl : public verifiable
+        {
+        private:
+            typedef MOCK_ERROR_POLICY< result_type > error_type;
+
         public:
             function_impl()
-                : name_( "?" )
-                , parent_( 0 )
+                : context_( 0 )
                 , valid_( true )
             {}
             virtual ~function_impl()
             {
-                if( parent_ )
-                    parent_->remove( *this );
                 if( valid_ && ! std::uncaught_exception() )
                     for( expectations_cit it = expectations_.begin();
                         it != expectations_.end(); ++it )
                     {
                         if( ! it->verify() )
-                            ErrorPolicy::untriggered_expectation(
+                            error_type::untriggered_expectation(
                                 boost::unit_test::lazy_ostream::instance()
                                     << lazy_context( this )
                                     << lazy_expectations( this ),
                                 it->file(), it->line() );
                         else if( ! it->invoked() )
-                            ErrorPolicy::expected_call(
+                            error_type::expected_call(
                                 boost::unit_test::lazy_ostream::instance()
                                     << lazy_context( this )
                                     << lazy_expectations( this ),
                                 it->file(), it->line() );
                     }
+                if( context_ )
+                    context_->remove( *this );
             }
 
             virtual bool verify() const
@@ -153,7 +155,7 @@ namespace mock
                     if( !it->verify() )
                     {
                         valid_ = false;
-                        ErrorPolicy::verification_failed(
+                        error_type::verification_failed(
                             boost::unit_test::lazy_ostream::instance()
                                     << lazy_context( this )
                                     << lazy_expectations( this ),
@@ -167,26 +169,6 @@ namespace mock
                 valid_ = true;
                 expectations_.clear();
             }
-            virtual void untie()
-            {
-                parent_ = 0;
-            }
-
-            void tag( const std::string& name )
-            {
-                name_ = name;
-            }
-            const std::string& tag() const
-            {
-                return name_;
-            }
-            void set_parent( node& parent )
-            {
-                if( parent_ )
-                    parent_->remove( *this );
-                parent.add( *this );
-                parent_ = &parent;
-            }
 
             expectation_type& expect( const std::string& file, int line )
             {
@@ -196,8 +178,6 @@ namespace mock
             }
             expectation_type& expect()
             {
-                if( ! parent_ )
-                    set_parent( mock::detail::root );
                 expectations_.push_back( expectation_type() );
                 valid_ = true;
                 return expectations_.back();
@@ -218,26 +198,26 @@ namespace mock
                 if( ! it->invoke() ) \
                 { \
                     valid_ = false; \
-                    ErrorPolicy::sequence_failed( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                    error_type::sequence_failed( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
                     return A; \
                 } \
                 if( ! it->functor() ) \
                 { \
-                    ErrorPolicy::missing_action( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                    error_type::missing_action( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
                     return A; \
                 } \
-                ErrorPolicy::expected_call( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                error_type::expected_call( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
                 return it->functor()( BOOST_PP_ENUM_PARAMS(n, p) ); \
             } \
         valid_ = false; \
-        ErrorPolicy::unexpected_call( MOCK_EXPECTATION_CALL_CONTEXT(n) ); \
+        error_type::unexpected_call( MOCK_EXPECTATION_CALL_CONTEXT(n) ); \
         return A; \
     }
 #define MOCK_EXPECTATION_OPERATOR(z, n, P) \
     MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
     MOCK_EXPECTATION_INVOKE(z, n, P)
 
-            BOOST_PP_REPEAT(BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_EXPECTATION_OPERATOR, ErrorPolicy::abort())
+            BOOST_PP_REPEAT(BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_EXPECTATION_OPERATOR, error_type::abort())
 
             void test() const
             MOCK_EXPECTATION_INVOKE(, 0,)
@@ -259,11 +239,13 @@ namespace mock
                 {}
                 friend std::ostream& operator<<( std::ostream& s, const lazy_context& e )
                 {
-                    if( e.impl_->parent_ )
-                        s << e.impl_->parent_->tag();
-                    return s << e.impl_->name_;
+                    if( e.impl_->context_ )
+                        e.impl_->context_->serialize( s, *e.impl_ );
+                    else
+                        s << "?";
+                    return s;
                 }
-                const function_impl* impl_;
+                const function_impl* impl_; // $$$$ MAT : use detail::context directly
             };
 
             struct lazy_expectations
@@ -286,12 +268,10 @@ namespace mock
                 expectations_type::const_iterator expectations_cit;
 
             expectations_type expectations_;
-            std::string name_;
-            node* parent_;
+            detail::context* context_;
             mutable bool valid_;
         };
 
-    private:
         boost::shared_ptr< function_impl > impl_;
     };
 }

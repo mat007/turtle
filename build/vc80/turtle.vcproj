@@ -169,6 +169,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\libraries\turtle\child.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libraries\turtle\cleanup.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\libraries\turtle\config.hpp"
 				>
 			</File>
@@ -178,6 +186,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\constraints.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libraries\turtle\context.hpp"
 				>
 			</File>
 			<File
@@ -194,6 +206,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\function.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libraries\turtle\group.hpp"
 				>
 			</File>
 			<File
@@ -217,15 +233,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libraries\turtle\node.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\libraries\turtle\object.hpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\libraries\turtle\operators.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libraries\turtle\parent.hpp"
 				>
 			</File>
 			<File

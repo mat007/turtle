@@ -10,6 +10,7 @@
 #define MOCK_MOCK_HPP_INCLUDED
 
 #include "config.hpp"
+#include "cleanup.hpp"
 #include "object.hpp"
 #include "function.hpp"
 #include "type_name.hpp"
@@ -19,7 +20,6 @@
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_type.hpp>
 #include <boost/function_types/result_type.hpp>
-#include <boost/type_traits/is_base_of.hpp>
 #include <boost/mpl/joint_view.hpp>
 #include <boost/mpl/single_view.hpp>
 #include <boost/mpl/pop_front.hpp>
@@ -81,43 +81,6 @@ namespace detail
         >
     {};
 
-    template< typename E >
-    void set_parent( E& e, const std::string& prefix,
-        const std::string& name, const object& o )
-    {
-        o.set_child( e );
-        o.tag( prefix );
-        e.tag( name );
-    }
-    template< typename E, typename T >
-    void set_parent( E& e, const std::string& prefix,
-        const std::string& name, const T&,
-        BOOST_DEDUCED_TYPENAME boost::disable_if<
-            BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >
-        >::type* = 0 )
-    {
-        e.tag( prefix + name );
-    }
-
-    template< typename E >
-    E& configure( BOOST_DEDUCED_TYPENAME E::function_tag,
-        const std::string& parent, const std::string& /*name*/, E& e )
-    {
-        if( parent != "?" || e.tag() == "?" )
-            e.tag( parent );
-        return e;
-    }
-    template< typename E, typename T >
-    E& configure( E& e, const std::string& parent,
-        const std::string& name, const T& t )
-    {
-        if( parent != "?" || e.tag() == "?" )
-            mock::detail::set_parent( e,
-                parent + " " + mock::detail::type_name( typeid( T ) ) + "::",
-                name, t );
-        return e;
-    }
-
     template< typename T >
     struct base
     {
@@ -134,22 +97,29 @@ namespace detail
     mock::function< S >
 
 #define MOCK_MOCKER(o, t) \
-    mock::detail::configure( mock::detail::deref( o ).exp##t, \
-        BOOST_PP_STRINGIZE(o), BOOST_PP_STRINGIZE(t), \
-        mock::detail::deref( o ) )
-#define MOCK_ANONYMOUS_MOCKER(o, M, t) \
-    mock::detail::configure( mock::detail::deref( o ).exp##t, \
-        "?", BOOST_PP_STRINGIZE(M), mock::detail::deref( o ) )
+    mock::detail::deref( o ).t( mock::detail::root, \
+        BOOST_PP_STRINGIZE(o) )
+#define MOCK_ANONYMOUS_MOCKER(o, t) \
+    mock::detail::deref( o ).t( mock::detail::root, "?" )
 
 #define MOCK_METHOD_EXPECTATION(S, t) \
-    mutable mock::function< S > exp##t;
+    mutable mock::function< S > t##expectation; \
+    mock::function< S >& t( const mock::detail::context&, \
+        const std::string& instance ) const \
+    { \
+        mock::detail::configure( *this, t##expectation, instance, \
+            mock::detail::type_name( typeid( *this ) ), \
+            BOOST_PP_STRINGIZE(t) ); \
+        return t##expectation; \
+    }
+
 #define MOCK_SIGNATURE(M) \
-    mock::detail::signature< BOOST_TYPEOF(&base_type::M) >::type
+    mock::detail::signature< BOOST_TYPEOF(&base_type::M) >::type // $$$$ MAT inline mock::detail::signature
 
 #define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
     { \
-        return MOCK_ANONYMOUS_MOCKER(this, t, t)( \
+        return MOCK_ANONYMOUS_MOCKER(this, t)( \
             BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 
@@ -178,18 +148,18 @@ namespace detail
     MOCK_METHOD_EXPECTATION(S, t)
 
 #define MOCK_DESTRUCTOR(T, t) \
-    ~T() { MOCK_ANONYMOUS_MOCKER(this, ~T, t).test(); } \
+    ~T() { MOCK_ANONYMOUS_MOCKER(this, t).test(); } \
     MOCK_METHOD_EXPECTATION(void(), t)
 
 #define MOCK_CONST_CONVERSION_OPERATOR(T, t) \
-    operator T() const { return MOCK_ANONYMOUS_MOCKER(this, operator T, t)(); } \
+    operator T() const { return MOCK_ANONYMOUS_MOCKER(this, t)(); } \
     MOCK_METHOD_EXPECTATION(T(), t)
 #define MOCK_NON_CONST_CONVERSION_OPERATOR(T, t) \
-    operator T() { return MOCK_ANONYMOUS_MOCKER(this, operator T, t)(); } \
+    operator T() { return MOCK_ANONYMOUS_MOCKER(this, t)(); } \
     MOCK_METHOD_EXPECTATION(T(), t)
 #define MOCK_CONVERSION_OPERATOR(T, t) \
-    operator T() const { return MOCK_ANONYMOUS_MOCKER(this, operator T, t)(); } \
-    operator T() { return MOCK_ANONYMOUS_MOCKER(this, operator T, t)(); } \
+    operator T() const { return MOCK_ANONYMOUS_MOCKER(this, t)(); } \
+    operator T() { return MOCK_ANONYMOUS_MOCKER(this, t)(); } \
     MOCK_METHOD_EXPECTATION(T(), t)
 
 #define MOCK_EXPECT(o,t) MOCK_MOCKER(o,t).expect( __FILE__, __LINE__ )
