@@ -95,7 +95,7 @@ namespace mock
             return s << *e.impl_;
         }
 
-        function& _( detail::context& c, const std::string& instance )
+        function& _configure( detail::context& c, const std::string& instance )
         {
             if( ! impl_->context_ )
                 c.add( *impl_ );

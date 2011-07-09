@@ -97,14 +97,14 @@ namespace detail
     mock::function< S >
 
 #define MOCK_MOCKER(o, t) \
-    mock::detail::deref( o ).t( mock::detail::root, \
+    mock::detail::deref( o ).t##configure( mock::detail::root, \
         BOOST_PP_STRINGIZE(o) )
 #define MOCK_ANONYMOUS_MOCKER(o, t) \
-    mock::detail::deref( o ).t( mock::detail::root, "?" )
+    mock::detail::deref( o ).t##configure( mock::detail::root, "?" )
 
 #define MOCK_METHOD_EXPECTATION(S, t) \
     mutable mock::function< S > t##expectation; \
-    mock::function< S >& t( const mock::detail::context&, \
+    mock::function< S >& t##configure( const mock::detail::context&, \
         const std::string& instance ) const \
     { \
         mock::detail::configure( *this, t##expectation, instance, \

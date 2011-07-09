@@ -421,3 +421,20 @@ BOOST_AUTO_TEST_CASE( boost_reference_wrapper_is_supported_in_value_constraint )
     s = "string";
     f( "string" );
 }
+
+namespace
+{
+    template< typename T >
+    void nothing( T )
+    {}
+
+    struct member_pointer_mock_class
+    {
+        MOCK_CONST_METHOD_EXT( my_method, 0, void(), my_method )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( member_pointer_on_mock_method_is_valid )
+{
+    nothing( &member_pointer_mock_class::my_method );
+}
