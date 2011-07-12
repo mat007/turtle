@@ -245,7 +245,7 @@ namespace mock
                         s << "?";
                     return s;
                 }
-                const function_impl* impl_; // $$$$ MAT : use detail::context directly
+                const function_impl* impl_;
             };
 
             struct lazy_expectations

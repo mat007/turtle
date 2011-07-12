@@ -114,7 +114,7 @@ namespace detail
     }
 
 #define MOCK_SIGNATURE(M) \
-    mock::detail::signature< BOOST_TYPEOF(&base_type::M) >::type // $$$$ MAT inline mock::detail::signature
+    mock::detail::signature< BOOST_TYPEOF(&base_type::M) >::type
 
 #define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
