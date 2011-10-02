@@ -12,7 +12,6 @@
 #define MOCK_ERROR_POLICY mock_error
 #include <boost/lexical_cast.hpp>
 #include <stdexcept>
-#include <string>
 
 namespace
 {
@@ -37,14 +36,14 @@ namespace mock
 
         template< typename Context >
         static void missing_action( const Context& context,
-            const std::string& /*file*/, int /*line*/ )
+            const char* /*file*/, int /*line*/ )
         {
             last_context = boost::lexical_cast< std::string >( context );
             ++missing_action_count;
         }
         template< typename Context >
         static void expected_call( const Context& /*context*/,
-            const std::string& /*file*/, int /*line*/ )
+            const char* /*file*/, int /*line*/ )
         {
             last_context.clear();
             ++expected_call_count;
@@ -57,21 +56,21 @@ namespace mock
         }
         template< typename Context >
         static void sequence_failed( const Context& context,
-            const std::string& /*file*/, int /*line*/ )
+            const char* /*file*/, int /*line*/ )
         {
             last_context = boost::lexical_cast< std::string >( context );
             ++sequence_failed_count;
         }
         template< typename Context >
         static void verification_failed( const Context& context,
-            const std::string& /*file*/, int /*line*/ )
+            const char* /*file*/, int /*line*/ )
         {
             last_context = boost::lexical_cast< std::string >( context );
             ++verification_failed_count;
         }
         template< typename Context >
         static void untriggered_expectation( const Context& context,
-            const std::string& /*file*/, int /*line*/ )
+            const char* /*file*/, int /*line*/ )
         {
             last_context = boost::lexical_cast< std::string >( context );
             ++untriggered_expectation_count;

@@ -36,7 +36,7 @@ namespace detail
             , file_( "unknown location" )
             , line_( 0 )
         {}
-        void set_location( const std::string& file, int line )
+        void set_location( const char* file, int line )
         {
             file_ = file;
             line_ = line;
@@ -65,7 +65,7 @@ namespace detail
             return i_->invoked();
         }
 
-        const std::string& file() const
+        const char* file() const
         {
             return file_;
         }
@@ -100,7 +100,7 @@ namespace detail
         typedef sequences_type::const_iterator sequences_cit;
 
         sequences_type sequences_;
-        std::string file_;
+        const char* file_;
         int line_;
     };
 

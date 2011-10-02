@@ -16,7 +16,6 @@
 #include "function.hpp"
 #include <boost/test/utils/trivial_singleton.hpp>
 #include <ostream>
-#include <string>
 #include <map>
 
 namespace mock
@@ -28,8 +27,9 @@ namespace detail
     {
     public:
         virtual void add( const void* p, verifiable& v,
-            const std::string& instance, const std::string& type,
-            const std::string& name )
+            boost::unit_test::const_string instance,
+            const boost::optional< type_name >& type,
+            boost::unit_test::const_string name )
         {
             children_it it = children_.lower_bound( &v );
             if( it == children_.end() ||
@@ -94,8 +94,9 @@ namespace detail
                 if( --it_->second.second == 0 )
                     parents_->erase( it_ );
             }
-            void update( const std::string& instance, const std::string& type,
-                const std::string& name )
+            void update( boost::unit_test::const_string instance,
+                const boost::optional< type_name >& type,
+                boost::unit_test::const_string name )
             {
                 child_.update( it_->second.first, instance, type, name );
             }

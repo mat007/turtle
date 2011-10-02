@@ -9,9 +9,11 @@
 #ifndef MOCK_CONTEXT_HPP_INCLUDED
 #define MOCK_CONTEXT_HPP_INCLUDED
 
+#include "type_name.hpp"
 #include <boost/noncopyable.hpp>
+#include <boost/optional.hpp>
+#include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <ostream>
-#include <string>
 
 namespace mock
 {
@@ -25,8 +27,10 @@ namespace detail
         context() {}
         virtual ~context() {}
 
-        virtual void add( const void* p, verifiable& v, const std::string& instance,
-            const std::string& type, const std::string& name ) = 0;
+        virtual void add( const void* p, verifiable& v,
+            boost::unit_test::const_string instance,
+            const boost::optional< type_name >& type,
+            boost::unit_test::const_string name ) = 0;
         virtual void add( verifiable& v ) = 0;
         virtual void remove( verifiable& v ) = 0;
 

@@ -9,8 +9,10 @@
 #ifndef MOCK_PARENT_HPP_INCLUDED
 #define MOCK_PARENT_HPP_INCLUDED
 
+#include "type_name.hpp"
+#include <boost/optional.hpp>
+#include <boost/test/utils/basic_cstring/io.hpp>
 #include <ostream>
-#include <string>
 
 namespace mock
 {
@@ -21,20 +23,21 @@ namespace detail
     public:
         parent()
         {}
-        parent( const std::string& instance, const std::string& type )
+        parent( boost::unit_test::const_string instance,
+            const boost::optional< type_name >& type )
             : instance_( instance )
             , type_( type )
         {}
         friend std::ostream& operator<<( std::ostream& s, const parent& p )
         {
             s << p.instance_;
-            if( ! p.type_.empty() )
-                s << " " + p.type_ + "::";
+            if( p.type_ )
+                s << " " << *p.type_ << "::";
             return s;
         }
     private:
-        std::string instance_;
-        std::string type_;
+        boost::unit_test::const_string instance_;
+        boost::optional< type_name > type_;
     };
 }
 }

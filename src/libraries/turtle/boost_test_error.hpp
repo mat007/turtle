@@ -14,7 +14,6 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <boost/test/execution_monitor.hpp>
 #include <boost/exception/enable_current_exception.hpp>
-#include <string>
 
 namespace mock
 {
@@ -33,8 +32,8 @@ namespace mock
 
         template< typename Context >
         static void fail(
-            const std::string& message, const Context& context,
-            const std::string& file = "unknown location", int line = 0 )
+            const char* message, const Context& context,
+            const char* file = "unknown location", int line = 0 )
         {
             boost::unit_test::framework::assertion_result( false );
             boost::unit_test::unit_test_log
@@ -46,7 +45,7 @@ namespace mock
 
         template< typename Context >
         static void expected_call( const Context& context,
-            const std::string& file, int line )
+            const char* file, int line )
         {
             boost::unit_test::framework::assertion_result( true );
             boost::unit_test::unit_test_log
@@ -58,7 +57,7 @@ namespace mock
 
         template< typename Context >
         static void missing_action( const Context& context,
-            const std::string& file, int line )
+            const char* file, int line )
         {
             fail( "missing action", context, file, line );
         }
@@ -69,19 +68,19 @@ namespace mock
         }
         template< typename Context >
         static void sequence_failed( const Context& context,
-            const std::string& /*file*/, int /*line*/ )
+            const char* file, int line )
         {
-            fail( "sequence failed", context );
+            fail( "sequence failed", context, file, line );
         }
         template< typename Context >
         static void verification_failed( const Context& context,
-            const std::string& file, int line )
+            const char* file, int line )
         {
             fail( "verification failed", context, file, line );
         }
         template< typename Context >
         static void untriggered_expectation( const Context& context,
-            const std::string& file, int line )
+            const char* file, int line )
         {
             fail( "untriggered expectation", context, file, line );
         }

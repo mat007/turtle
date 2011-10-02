@@ -13,8 +13,8 @@
 #include "cleanup.hpp"
 #include "object.hpp"
 #include "function.hpp"
-#include "type_name.hpp"
 #include "args.hpp"
+#include "type_name.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/function_types/parameter_types.hpp>
@@ -105,7 +105,7 @@ namespace detail
 #define MOCK_METHOD_EXPECTATION(S, t) \
     mutable mock::function< S > t##expectation; \
     mock::function< S >& t##configure( const mock::detail::context&, \
-        const std::string& instance ) const \
+        boost::unit_test::const_string instance ) const \
     { \
         mock::detail::configure( *this, t##expectation, instance, \
             mock::detail::type_name( typeid( *this ) ), \

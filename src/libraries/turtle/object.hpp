@@ -13,10 +13,10 @@
 #include "context.hpp"
 #include "parent.hpp"
 #include "child.hpp"
+#include "type_name.hpp"
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/shared_ptr.hpp>
-#include <string>
 
 namespace mock
 {
@@ -41,8 +41,9 @@ namespace mock
         {
         public:
             virtual void add( const void* /*p*/, verifiable& v,
-                const std::string& instance, const std::string& type,
-                const std::string& name )
+                boost::unit_test::const_string instance,
+                const boost::optional< detail::type_name >& type,
+                boost::unit_test::const_string name )
             {
                 if( children_.empty() )
                     mock::detail::root.add( *this );
@@ -95,16 +96,20 @@ namespace mock
 namespace detail
 {
     template< typename E >
-    E& configure(  const object& o, E& e, const std::string& instance,
-        const std::string& type, const std::string& name )
+    E& configure(  const object& o, E& e,
+        boost::unit_test::const_string instance,
+        const boost::optional< type_name >& type,
+        boost::unit_test::const_string name )
     {
         e.configure( *o.impl_, o.impl_.get(), instance, type, name );
         return e;
     }
 
     template< typename E, typename T >
-    E& configure( const T& t, E& e, const std::string& instance,
-        const std::string& type, const std::string& name,
+    E& configure( const T& t, E& e,
+        boost::unit_test::const_string instance,
+        const boost::optional< type_name >& type,
+        boost::unit_test::const_string name,
         BOOST_DEDUCED_TYPENAME boost::disable_if<
             BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >
         >::type* = 0 )

@@ -16,6 +16,7 @@
 #include "verifiable.hpp"
 #include "log.hpp"
 #include "args.hpp"
+#include "type_name.hpp"
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/function_arity.hpp>
 #include <boost/function_types/parameter_types.hpp>
@@ -23,8 +24,10 @@
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
+#include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/test/utils/lazy_ostream.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/optional.hpp>
 #include <ostream>
 #include <list>
 
@@ -63,7 +66,7 @@ namespace mock
             impl_->reset();
         }
 
-        expectation_type& expect( const std::string& file, int line )
+        expectation_type& expect( const char* file, int line )
         {
             return impl_->expect( file, line );
         }
@@ -95,18 +98,21 @@ namespace mock
             return s << *e.impl_;
         }
 
-        function& _configure( detail::context& c, const std::string& instance )
+        function& _configure( detail::context& c,
+            boost::unit_test::const_string instance )
         {
             if( ! impl_->context_ )
                 c.add( *impl_ );
-            c.add( impl_.get(), *impl_, instance, "", "" );
+            c.add( impl_.get(), *impl_, instance,
+                boost::optional< detail::type_name >(), "" );
             impl_->context_ = &c;
             return *this;
         }
 
         void configure( detail::context& c, const void* p,
-            const std::string& instance, const std::string& type,
-            const std::string& name ) const
+            boost::unit_test::const_string instance,
+            const boost::optional< detail::type_name >& type,
+            boost::unit_test::const_string name ) const
         {
             if( ! impl_->context_ )
                 c.add( *impl_ );
@@ -170,7 +176,7 @@ namespace mock
                 expectations_.clear();
             }
 
-            expectation_type& expect( const std::string& file, int line )
+            expectation_type& expect( const char* file, int line )
             {
                 expectation_type& e = expect();
                 e.set_location( file, line );

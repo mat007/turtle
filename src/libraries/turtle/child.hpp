@@ -10,8 +10,10 @@
 #define MOCK_CHILD_HPP_INCLUDED
 
 #include "parent.hpp"
+#include "type_name.hpp"
+#include <boost/test/utils/basic_cstring/basic_cstring.hpp>
+#include <boost/optional.hpp>
 #include <ostream>
-#include <string>
 
 namespace mock
 {
@@ -23,8 +25,10 @@ namespace detail
         child()
             : parent_( 0 )
         {}
-        void update( parent& p, const std::string& instance,
-            const std::string& type, const std::string& name )
+        void update( parent& p,
+            boost::unit_test::const_string instance,
+            const boost::optional< type_name >& type,
+            boost::unit_test::const_string name )
         {
             if( instance != "?" || name_.empty() )
                 p = parent( instance, type );
@@ -39,7 +43,7 @@ namespace detail
         }
     private:
         const parent* parent_;
-        std::string name_;
+        boost::unit_test::const_string name_;
     };
 }
 }

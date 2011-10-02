@@ -9,8 +9,10 @@
 #ifndef MOCK_TYPE_NAME_HPP_INCLUDED
 #define MOCK_TYPE_NAME_HPP_INCLUDED
 
+#include <boost/test/utils/basic_cstring/io.hpp>
 #include <stdexcept>
 #include <typeinfo>
+#include <ostream>
 #ifdef __GNUC__
 #include <cxxabi.h>
 #include <cstdlib>
@@ -20,41 +22,62 @@ namespace mock
 {
 namespace detail
 {
-    inline std::string type_full_name( const std::type_info& info )
+    class type_name
     {
-        const char* name = info.name();
-#ifdef __GNUC__
-        size_t size = 0;
-        int status = 0;
-        char* result = abi::__cxa_demangle( name, NULL, &size, &status );
-        struct guard
+    public:
+        explicit type_name( const std::type_info& info )
+            : info_( &info )
+        {}
+        friend std::ostream& operator<<( std::ostream& s, const type_name& t )
         {
-            explicit guard( char* p )
-                : p_( p )
-            {}
-            ~guard()
+            t.serialize( s, *t.info_ );
+            return s;
+        }
+    private:
+        void serialize( std::ostream& s, const std::type_info& info ) const
+        {
+            const char* name = info.name();
+#ifdef __GNUC__
+            size_t size = 0;
+            int status = 0;
+            char* result = abi::__cxa_demangle( name, NULL, &size, &status );
+            struct guard
             {
-                free( p_ );
-            }
-        private:
-            char* p_;
-        } g( result );
-        if( result )
-            return result;
+                explicit guard( char* p )
+                    : p_( p )
+                {}
+                ~guard()
+                {
+                    free( p_ );
+                }
+            private:
+                char* p_;
+            } g( result );
+            if( result )
+                serialize( s, result );
+            else
 #endif
-        return name;
-    }
-    inline std::string type_name( const std::type_info& info )
-    {
-        const std::string name = type_full_name( info );
-        std::size_t p = name.rfind( "::" );
-        if( p != std::string::npos )
-            return name.substr( p + 2 );
-        p = name.rfind( " " );
-        if( p != std::string::npos )
-            return name.substr( p + 1 );
-        return name;
-    }
+                serialize( s, name );
+        }
+        void serialize( std::ostream& s, boost::unit_test::const_string name ) const
+        {
+            std::size_t p = name.rfind( "::" );
+            if( p != boost::unit_test::const_string::npos )
+            {
+                s << name.substr( p + 2 );
+                return;
+            }
+            p = name.rfind( " " );
+            if( p != boost::unit_test::const_string::npos )
+            {
+                s << name.substr( p + 1 );
+                return;
+            }
+            s << name;
+        }
+
+        const std::type_info* info_;
+    };
 }
 }
 
