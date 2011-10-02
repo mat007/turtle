@@ -13,7 +13,6 @@
 #include <boost/detail/container_fwd.hpp>
 #include <boost/function_types/is_callable_builtin.hpp>
 #include <ostream>
-#include <string>
 #include <memory>
 
 namespace boost

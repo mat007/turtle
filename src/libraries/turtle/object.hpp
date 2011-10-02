@@ -96,7 +96,7 @@ namespace mock
 namespace detail
 {
     template< typename E >
-    E& configure(  const object& o, E& e,
+    E& configure( const object& o, E& e,
         boost::unit_test::const_string instance,
         const boost::optional< type_name >& type,
         boost::unit_test::const_string name )
