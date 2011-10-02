@@ -13,6 +13,7 @@
 #include "log.hpp"
 #include <boost/ref.hpp>
 #include <boost/utility/enable_if.hpp>
+#include <boost/utility/addressof.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
@@ -91,18 +92,57 @@ namespace detail
     struct same
     {
         explicit same( const Expected& expected )
-            : expected_( &boost::unwrap_ref( expected ) )
+            : expected_( boost::addressof( boost::unwrap_ref( expected ) ) )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return &actual == expected_;
+            return boost::addressof( actual ) == expected_;
         }
         friend std::ostream& operator<<( std::ostream& os, const same& s )
         {
             return os << "same( " << mock::format( *s.expected_ ) << " )";
         }
         const BOOST_DEDUCED_TYPENAME
+            boost::unwrap_reference< Expected >::type* expected_;
+    };
+
+    template< typename Expected >
+    struct retrieve
+    {
+        explicit retrieve( Expected& expected )
+            : expected_( boost::addressof( boost::unwrap_ref( expected ) ) )
+        {}
+        template< typename Actual >
+        bool operator()( const Actual& actual,
+            BOOST_DEDUCED_TYPENAME boost::disable_if<
+                boost::is_convertible<
+                    const Actual*,
+                    BOOST_DEDUCED_TYPENAME
+                        boost::unwrap_reference< Expected >::type
+                >
+            >::type* = 0 ) const
+        {
+            *expected_ = actual;
+            return true;
+        }
+        template< typename Actual >
+        bool operator()( Actual& actual,
+            BOOST_DEDUCED_TYPENAME boost::enable_if<
+                boost::is_convertible< Actual*,
+                    BOOST_DEDUCED_TYPENAME
+                        boost::unwrap_reference< Expected >::type
+                >
+            >::type* = 0 ) const
+        {
+            *expected_ = boost::addressof( actual );
+            return true;
+        }
+        friend std::ostream& operator<<( std::ostream& s, const retrieve& r )
+        {
+            return s << "retrieve( " << mock::format( *r.expected_ ) << " )";
+        }
+        BOOST_DEDUCED_TYPENAME
             boost::unwrap_reference< Expected >::type* expected_;
     };
 
@@ -136,45 +176,6 @@ namespace detail
             return s << "assign( " << mock::format( a.expected_ ) << " )";
         }
         Expected expected_;
-    };
-
-    template< typename Expected >
-    struct retrieve
-    {
-        explicit retrieve( Expected& expected )
-            : expected_( &boost::unwrap_ref( expected ) )
-        {}
-        template< typename Actual >
-        bool operator()( const Actual& actual,
-            BOOST_DEDUCED_TYPENAME boost::disable_if<
-                boost::is_convertible<
-                    const Actual*,
-                    BOOST_DEDUCED_TYPENAME
-                        boost::unwrap_reference< Expected >::type
-                >
-            >::type* = 0 ) const
-        {
-            *expected_ = actual;
-            return true;
-        }
-        template< typename Actual >
-        bool operator()( Actual& actual,
-            BOOST_DEDUCED_TYPENAME boost::enable_if<
-                boost::is_convertible< Actual*,
-                    BOOST_DEDUCED_TYPENAME
-                        boost::unwrap_reference< Expected >::type
-                >
-            >::type* = 0 ) const
-        {
-            *expected_ = &actual;
-            return true;
-        }
-        friend std::ostream& operator<<( std::ostream& s, const retrieve& r )
-        {
-            return s << "retrieve( " << mock::format( *r.expected_ ) << " )";
-        }
-        BOOST_DEDUCED_TYPENAME
-            boost::unwrap_reference< Expected >::type* expected_;
     };
 
     template< typename Expected >

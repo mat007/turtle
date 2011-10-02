@@ -312,3 +312,21 @@ BOOST_AUTO_TEST_CASE( contain_with_strings )
         BOOST_CHECK( ! c.f_( std::string( "this is a string" ) ) );
     }
 }
+
+namespace
+{
+    struct type_with_overloaded_address_operator
+    {
+        void operator&() {}
+        void operator&() const {}
+    };
+}
+
+BOOST_AUTO_TEST_CASE( type_with_overloaded_address_operator_can_be_used_in_constraints )
+{
+    type_with_overloaded_address_operator t;
+    mock::same( t ).f_( t );
+    mock::retrieve( t ).f_( t );
+    type_with_overloaded_address_operator* pt;
+    mock::retrieve( pt ).f_( t );
+}
