@@ -25,6 +25,8 @@
 #include <boost/mpl/pop_front.hpp>
 #define BOOST_TYPEOF_SILENT
 #include <boost/typeof/typeof.hpp>
+#include <boost/utility/enable_if.hpp>
+#include <boost/type_traits.hpp>
 #include <stdexcept>
 
 namespace mock
@@ -87,6 +89,9 @@ namespace detail
         typedef T base_type;
     };
 }
+
+    template< typename T >
+    T& invalid_pointer_to_member( const T& t );
 }
 
 #define MOCK_BASE_CLASS(T, I) \
@@ -114,7 +119,7 @@ namespace detail
     }
 
 #define MOCK_SIGNATURE(M) \
-    mock::detail::signature< BOOST_TYPEOF(&base_type::M) >::type
+    mock::detail::signature< BOOST_TYPEOF( mock::invalid_pointer_to_member( &base_type::M ) ) >::type
 
 #define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
