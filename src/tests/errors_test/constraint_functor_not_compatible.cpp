@@ -12,13 +12,13 @@ namespace
 {
     MOCK_CLASS( my_class )
     {
-        MOCK_METHOD_EXT( my_method, 0, void( int ), my_method )
+        MOCK_METHOD_EXT( my_method, 1, void( int ), my_method )
     };
-    bool functor( int, int );
+    bool constraint( int, int );
 
     void test_case()
     {
         my_class c;
-        MOCK_EXPECT( c, my_method ).with( &functor );
+        MOCK_EXPECT( c, my_method ).with( &constraint );
     }
 }
