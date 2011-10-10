@@ -64,7 +64,7 @@ namespace detail
     public:
         virtual ~check_base() {}
 
-        virtual bool operator()( Actual ) const = 0;
+        virtual bool operator()( Actual ) = 0;
 
         friend std::ostream& operator<<( std::ostream& s, const check_base& c )
         {
@@ -88,7 +88,7 @@ namespace detail
                 Actual > ));
         }
     private:
-        virtual bool operator()( Actual actual ) const
+        virtual bool operator()( Actual actual )
         {
             return actual == boost::unwrap_ref( expected_ );
         }
@@ -111,7 +111,7 @@ namespace detail
             BOOST_CONCEPT_ASSERT(( FunctorCompatible< Constraint, Actual > ));
         }
     private:
-        virtual bool operator()( Actual actual ) const
+        virtual bool operator()( Actual actual )
         {
             return c_( actual );
         }
@@ -137,7 +137,7 @@ namespace detail
             BOOST_CONCEPT_ASSERT(( FunctorCompatible< Functor, Actual > ));
         }
     private:
-        virtual bool operator()( Actual actual ) const
+        virtual bool operator()( Actual actual )
         {
             return f_( actual );
         }

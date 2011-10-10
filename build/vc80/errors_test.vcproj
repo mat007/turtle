@@ -207,10 +207,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\custom_constraint_call_operator_not_const.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\tests\errors_test\mismatch_type_in_returns_int_action.cpp"
 				>
 			</File>

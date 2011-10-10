@@ -413,6 +413,25 @@ BOOST_AUTO_TEST_CASE( using_custom_constraint )
     BOOST_CHECK_EQUAL( expected, s.str() );
 }
 
+namespace
+{
+    struct custom_constraint_with_non_const_operator
+    {
+        template< typename Actual >
+        bool operator()( Actual actual )
+        {
+            return actual == 42;
+        }
+    };
+}
+
+BOOST_AUTO_TEST_CASE( custom_constraint_function_operator_does_not_need_to_be_const )
+{
+    MOCK_FUNCTOR( void( float ) ) f;
+    MOCK_EXPECT( f, _ ).with( mock::constraint< custom_constraint_with_non_const_operator >( custom_constraint_with_non_const_operator() ) );
+    f( 42 );
+}
+
 BOOST_AUTO_TEST_CASE( boost_reference_wrapper_is_supported_in_value_constraint )
 {
     MOCK_FUNCTOR( void( const std::string& ) ) f;
