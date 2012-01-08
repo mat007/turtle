@@ -174,7 +174,7 @@ namespace detail
             n \
         >::type arg##n##_type;
 #define MOCK_EXPECTATION_CONSTRUCTOR(z, n, d) BOOST_PP_COMMA_IF(n) c##n##_( new detail::check< arg##n##_type, constraint< detail::any > >( mock::any ) )
-#define MOCK_EXPECTATION_WITH(z, n, d) c##n##_.reset( new detail::check< arg##n##_type, Constraint##n >( c##n ) );
+#define MOCK_EXPECTATION_WITH(z, n, d) c##n##_.reset( new detail::check< arg##n##_type, Constraint_##n >( c##n ) );
 #define MOCK_EXPECTATION_MEMBER(z, n, d) boost::shared_ptr< detail::check_base< arg##n##_type > > c##n##_;
 #define MOCK_EXPECTATION_ARGS(z, n, d) BOOST_PP_COMMA_IF(n) arg##n##_type a##n
 #define MOCK_EXPECTATION_IS_VALID(z, n, d) && (*c##n##_)( a##n )
@@ -191,8 +191,8 @@ namespace detail
         expectation() \
             : BOOST_PP_REPEAT(n, MOCK_EXPECTATION_CONSTRUCTOR, BOOST_PP_EMPTY) \
         {} \
-        template< BOOST_PP_ENUM_PARAMS(n, typename Constraint) > \
-        expectation& with( BOOST_PP_ENUM_BINARY_PARAMS(n, Constraint, c) ) \
+        template< BOOST_PP_ENUM_PARAMS(n, typename Constraint_) > \
+        expectation& with( BOOST_PP_ENUM_BINARY_PARAMS(n, Constraint_, c) ) \
         { \
             BOOST_PP_REPEAT(n, MOCK_EXPECTATION_WITH, BOOST_PP_EMPTY) \
             return *this; \
