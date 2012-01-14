@@ -27,7 +27,6 @@
 #include <boost/typeof/typeof.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits.hpp>
-#include <stdexcept>
 
 namespace mock
 {
