@@ -32,7 +32,7 @@ namespace detail
         {
             s << p.instance_;
             if( p.type_ )
-                s << " " << *p.type_ << "::";
+                s << *p.type_ << "::";
             return s;
         }
     private:

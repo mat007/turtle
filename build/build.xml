@@ -62,6 +62,7 @@
   </target>
 
   <target name="bench" description="run compilation benchmark">
+    <mkdir dir="${reports.dir}"/>
     <quiet>
       <delete file="${reports.dir}/benchmark-${platform}.log"/>
       <touch file="${reports.dir}/benchmark-${platform}.log"/>

@@ -17,6 +17,6 @@ namespace
     void test_case()
     {
         my_class c;
-        MOCK_EXPECT( c, my_method ).with( mock::equal( "42" ) );
+        MOCK_EXPECT( c.my_method ).with( mock::equal( "42" ) );
     }
 }

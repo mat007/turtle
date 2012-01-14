@@ -19,6 +19,6 @@ namespace
     void test_case()
     {
         my_class c;
-        MOCK_EXPECT( c, my_method ).with( &constraint );
+        MOCK_EXPECT( c.my_method ).with( &constraint );
     }
 }

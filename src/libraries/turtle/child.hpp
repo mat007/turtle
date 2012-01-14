@@ -30,7 +30,7 @@ namespace detail
             const boost::optional< type_name >& type,
             boost::unit_test::const_string name )
         {
-            if( instance != "?" || name_.empty() )
+            if( instance != "?." || name_.empty() )
                 p = parent( instance, type );
             parent_ = &p;
             name_ = name;

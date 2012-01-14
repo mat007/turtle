@@ -25,7 +25,7 @@ namespace
 BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_and_without_inheriting_from_object )
 {
     my_custom_mock m;
-    MOCK_EXPECT( m, my_method ).once();
+    MOCK_EXPECT( m.my_method ).once();
     m.my_method();
 }
 
@@ -40,7 +40,7 @@ namespace
 BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros )
 {
     my_custom_mock_object m;
-    MOCK_EXPECT( m, my_method ).once();
+    MOCK_EXPECT( m.my_method ).once();
     m.my_method();
 }
 
@@ -56,19 +56,19 @@ BOOST_AUTO_TEST_CASE( basic_mock_object_usage )
 {
     my_mock m;
     {
-        MOCK_EXPECT( m, my_method ).once().returns( 0 );
+        MOCK_EXPECT( m.my_method ).once().returns( 0 );
         BOOST_CHECK_EQUAL( 0, m.my_method( 13 ) );
     }
     mock::verify();
     mock::reset();
     {
-        MOCK_EXPECT( m, my_method ).once().with( 42 ).returns( 7 );
+        MOCK_EXPECT( m.my_method ).once().with( 42 ).returns( 7 );
         BOOST_CHECK_EQUAL( 7, m.my_method( 42 ) );
     }
     mock::verify();
     mock::reset();
     {
-        MOCK_EXPECT( m, my_method ).once().returns( 51 );
+        MOCK_EXPECT( m.my_method ).once().returns( 51 );
         BOOST_CHECK_EQUAL( 51, m.my_method( 27 ) );
     }
 }
@@ -93,10 +93,10 @@ namespace
 
 BOOST_AUTO_TEST_CASE( mock_object_method_disambiguation )
 {
-    my_ambiguited_mock mock;
-    MOCK_EXPECT( mock, tag1 );
-    BOOST_CHECK_NO_THROW( mock.my_method() );
-    BOOST_CHECK_THROW( mock.my_method( 12 ), std::exception );
+    my_ambiguited_mock m;
+    MOCK_EXPECT( m.tag1 );
+    BOOST_CHECK_NO_THROW( m.my_method() );
+    BOOST_CHECK_THROW( m.my_method( 12 ), std::exception );
 }
 
 namespace
@@ -120,7 +120,7 @@ namespace
 BOOST_AUTO_TEST_CASE( mock_object_method_const_disambiguation )
 {
     my_const_ambiguited_mock mock;
-    MOCK_EXPECT( mock, tag1 );
+    MOCK_EXPECT( mock.tag1 );
     BOOST_CHECK_NO_THROW( mock.my_method() );
     const my_const_ambiguited_mock const_mock;
     BOOST_CHECK_THROW( const_mock.my_method(), std::exception );
@@ -139,15 +139,15 @@ namespace
 BOOST_AUTO_TEST_CASE( mock_object_method_with_declared_but_not_defined_parameter_is_valid )
 {
     my_declared_but_undefined_mock mock;
-    MOCK_EXPECT( mock, m );
+    MOCK_EXPECT( mock.m );
 }
 
 BOOST_AUTO_TEST_CASE( mock_functor_in_function_is_supported )
 {
     boost::function< int( float, const std::string& ) > func;
     {
-        MOCK_FUNCTOR( int( float, const std::string& ) ) f;
-        MOCK_EXPECT( f, _ ).once().with( 3, "op" ).returns( 42 );
+        MOCK_FUNCTOR( f, int( float, const std::string& ) );
+        MOCK_EXPECT( f ).once().with( 3, "op" ).returns( 42 );
         func = f;
     }
     BOOST_CHECK_EQUAL( 42, func( 3, "op" ) );
@@ -157,13 +157,13 @@ namespace
 {
     struct functor_fixture
     {
-        MOCK_FUNCTOR( int( float, const std::string& ) ) f;
+        MOCK_FUNCTOR( f, int( float, const std::string& ) );
     };
 }
 
 BOOST_FIXTURE_TEST_CASE( mock_functor_in_fixture_is_supported, functor_fixture )
 {
-    MOCK_EXPECT( f, _ ).once().with( 3, "op" ).returns( 42 );
+    MOCK_EXPECT( f ).once().with( 3, "op" ).returns( 42 );
     BOOST_CHECK_EQUAL( 42, f( 3.f, "op" ) );
 }
 
@@ -181,7 +181,7 @@ namespace
 BOOST_AUTO_TEST_CASE( mocking_a_template_class_method_is_supported )
 {
     my_template_mock< int > m;
-    MOCK_EXPECT( m, my_method_t ).with( 3, "" );
+    MOCK_EXPECT( m.my_method_t ).with( 3, "" );
     m.my_method( 3, "" );
 }
 
@@ -206,7 +206,7 @@ namespace
 BOOST_AUTO_TEST_CASE( mocking_a_template_base_class_method_is_supported )
 {
     my_template_base_class_mock< int > m;
-    MOCK_EXPECT( m, my_method ).once().with( 3 );
+    MOCK_EXPECT( m.my_method ).once().with( 3 );
     m.my_method( 3 );
 }
 
@@ -263,13 +263,13 @@ namespace
 
 BOOST_FIXTURE_TEST_CASE( basic_mock_object_collaboration_usage, fixture )
 {
-    MOCK_EXPECT( manager, get_observer ).returns( boost::ref( observer ) );
+    MOCK_EXPECT( manager.get_observer ).returns( boost::ref( observer ) );
     my_subject subject( manager );
-    MOCK_EXPECT( observer, notify ).once().with( 1 );
+    MOCK_EXPECT( observer.notify ).once().with( 1 );
     subject.increment();
-    MOCK_EXPECT( observer, notify ).once().with( 2 );
+    MOCK_EXPECT( observer.notify ).once().with( 2 );
     subject.increment();
-    MOCK_EXPECT( observer, notify ).once().with( 3 );
+    MOCK_EXPECT( observer.notify ).once().with( 3 );
     subject.increment();
 }
 
@@ -284,7 +284,7 @@ namespace
 BOOST_AUTO_TEST_CASE( mocking_a_destructor )
 {
     my_destroyed_class c;
-    MOCK_EXPECT( c, destructor ).once();
+    MOCK_EXPECT( c.destructor ).once();
 }
 
 BOOST_AUTO_TEST_CASE( failed_expectation_in_mocked_destructor_does_not_throw )
@@ -305,8 +305,8 @@ BOOST_AUTO_TEST_CASE( failed_sequence_in_mocked_destructor_does_not_throw )
     my_custom_mock m;
     {
         my_destroyed_class c;
-        MOCK_EXPECT( c, destructor ).once().in( s );
-        MOCK_EXPECT( m, my_method ).once().in( s );
+        MOCK_EXPECT( c.destructor ).once().in( s );
+        MOCK_EXPECT( m.my_method ).once().in( s );
         m.my_method();
     }
 }
@@ -323,7 +323,7 @@ BOOST_AUTO_TEST_CASE( boost_optional_on_base_class_reference_as_return_type_is_s
 {
     boost_optional b;
     my_mock_observer o;
-    MOCK_EXPECT( b, method ).once().returns( boost::ref( o ) );
+    MOCK_EXPECT( b.method ).once().returns( boost::ref( o ) );
     b.method();
 }
 
@@ -356,8 +356,8 @@ namespace
 
 BOOST_AUTO_TEST_CASE( constraints_and_arguments_are_serialized_lazily )
 {
-    MOCK_FUNCTOR( void( custom_argument ) ) f;
-    MOCK_EXPECT( f, _ ).with( custom_constraint() );
+    MOCK_FUNCTOR( f, void( custom_argument ) );
+    MOCK_EXPECT( f ).with( custom_constraint() );
     f( custom_argument() );
     BOOST_CHECK( ! serialized );
 }
@@ -385,12 +385,6 @@ namespace
                 << ", " << mock::format( c.threshold_ ) << " )";
         }
 
-        //template< typename Actual >
-        //void explain( std::ostream& s, Actual actual ) const
-        //{
-        //    s << std::abs( actual - expected_ ) << " >= " << threshold_;
-        //}
-
         Expected expected_;
         Expected threshold_;
     };
@@ -403,8 +397,8 @@ namespace
 
 BOOST_AUTO_TEST_CASE( using_custom_constraint )
 {
-    MOCK_FUNCTOR( void( float ) ) f;
-    MOCK_EXPECT( f, _ ).with( near( 3.f, 0.01f ) );
+    MOCK_FUNCTOR( f, void( float ) );
+    MOCK_EXPECT( f ).with( near( 3.f, 0.01f ) );
     f( 3.f );
     const std::string expected = "f\n"
                                  ". unlimited().with( near( 3, 0.01 ) )";
@@ -427,16 +421,16 @@ namespace
 
 BOOST_AUTO_TEST_CASE( custom_constraint_function_operator_does_not_need_to_be_const )
 {
-    MOCK_FUNCTOR( void( float ) ) f;
-    MOCK_EXPECT( f, _ ).with( mock::constraint< custom_constraint_with_non_const_operator >( custom_constraint_with_non_const_operator() ) );
+    MOCK_FUNCTOR( f, void( float ) );
+    MOCK_EXPECT( f ).with( mock::constraint< custom_constraint_with_non_const_operator >( custom_constraint_with_non_const_operator() ) );
     f( 42 );
 }
 
 BOOST_AUTO_TEST_CASE( boost_reference_wrapper_is_supported_in_value_constraint )
 {
-    MOCK_FUNCTOR( void( const std::string& ) ) f;
+    MOCK_FUNCTOR( f, void( const std::string& ) );
     std::string s;
-    MOCK_EXPECT( f, _ ).once().with( boost::cref( s ) );
+    MOCK_EXPECT( f ).once().with( boost::cref( s ) );
     s = "string";
     f( "string" );
 }
@@ -456,4 +450,31 @@ namespace
 BOOST_AUTO_TEST_CASE( member_pointer_on_mock_method_is_valid )
 {
     nothing( &member_pointer_mock_class::my_method );
+}
+
+namespace
+{
+    MOCK_FUNCTION( free_function, 1, float( int ), free_function )
+}
+
+BOOST_AUTO_TEST_CASE( a_free_function_can_be_mocked )
+{
+    MOCK_EXPECT( free_function ).once();
+    BOOST_CHECK( ! MOCK_VERIFY( free_function ) );
+}
+
+namespace
+{
+    struct some_class
+    {
+        MOCK_STATIC_FUNCTION( some_static_method, 1, float( int ), some_static_method )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( a_static_method_can_be_mocked )
+{
+    MOCK_EXPECT( some_class::some_static_method ).once();
+    BOOST_CHECK( ! MOCK_VERIFY( some_class::some_static_method ) );
+    MOCK_RESET( some_class::some_static_method );
+    BOOST_CHECK( MOCK_VERIFY( some_class::some_static_method ) );
 }

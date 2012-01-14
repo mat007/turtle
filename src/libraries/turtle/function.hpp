@@ -98,7 +98,7 @@ namespace mock
             return s << *e.impl_;
         }
 
-        function& _configure( detail::context& c,
+        function& operator()( detail::context& c,
             boost::unit_test::const_string instance )
         {
             if( ! impl_->context_ )
