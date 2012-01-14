@@ -27,15 +27,6 @@ namespace mock
             : impl_( new object_impl() )
         {}
 
-        bool verify() const // $$$$ MAT : to be deprecated
-        {
-            return impl_->verify();
-        }
-        void reset() // $$$$ MAT : to be deprecated
-        {
-            impl_->reset();
-        }
-
     protected:
         ~object()
         {}
