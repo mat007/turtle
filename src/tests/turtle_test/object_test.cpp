@@ -13,12 +13,15 @@
 
 namespace
 {
-    mock::object static_o;
+    struct object : mock::object
+    {};
+
+    object static_o;
 }
 
 BOOST_AUTO_TEST_CASE( verifying_an_empty_object_succeeds )
 {
-    mock::object o;
+    object o;
     BOOST_CHECK( mock::verify( o ) );
 }
 
@@ -30,7 +33,7 @@ namespace
         {
             mock::detail::configure( o, e, "instance", mock::detail::type_name( typeid( "type" ) ), "name" );
         }
-        mock::object o;
+        object o;
         mock::function< void() > e;
     };
 }
@@ -60,10 +63,10 @@ BOOST_FIXTURE_TEST_CASE( resetting_an_object_containing_a_failing_expectation_an
 
 BOOST_AUTO_TEST_CASE( an_object_is_assignable_by_sharing_its_state )
 {
-    mock::object o1;
+    object o1;
     mock::function< void() > e;
     {
-        mock::object o2;
+        object o2;
         mock::detail::configure( o2, e, "instance", mock::detail::type_name( typeid( "type" ) ), "name" );
         e.expect().once();
         o1 = o2;
@@ -75,8 +78,8 @@ BOOST_AUTO_TEST_CASE( an_object_is_assignable_by_sharing_its_state )
 
 BOOST_AUTO_TEST_CASE( an_object_is_copiable_by_sharing_its_state )
 {
-    std::auto_ptr< mock::object > o2( new mock::object );
-    const mock::object o1( *o2 );
+    std::auto_ptr< object > o2( new object );
+    const object o1( *o2 );
     mock::function< void() > e;
     mock::detail::configure( *o2, e, "instance", mock::detail::type_name( typeid( "type" ) ), "name" );
     e.expect().once();

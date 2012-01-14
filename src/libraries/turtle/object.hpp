@@ -36,6 +36,10 @@ namespace mock
             impl_->reset();
         }
 
+    protected:
+        ~object()
+        {}
+
     private:
         class object_impl : public detail::context, private verifiable
         {
