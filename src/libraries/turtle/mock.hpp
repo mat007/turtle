@@ -82,23 +82,23 @@ namespace detail
 #define MOCK_CLASS(T) \
     struct T : mock::object
 #define MOCK_FUNCTOR(f, S) \
-    mock::detail::functor< S > f, f##configure
+    mock::detail::functor< S > f, f##_mocker
 
 #define MOCK_MOCKER(t) \
-    t##configure( mock::detail::root, BOOST_PP_STRINGIZE(t) )
+    t##_mocker( mock::detail::root, BOOST_PP_STRINGIZE(t) )
 #define MOCK_ANONYMOUS_MOCKER(t) \
-    t##configure( mock::detail::root, "?." )
+    t##_mocker( mock::detail::root, "?." )
 
 #define MOCK_METHOD_EXPECTATION(S, t) \
-    mutable mock::function< S > t##expectation; \
-    mock::function< S >& t##configure( const mock::detail::context&, \
+    mutable mock::function< S > t##_mocker_; \
+    mock::function< S >& t##_mocker( const mock::detail::context&, \
         boost::unit_test::const_string instance ) const \
     { \
-        mock::detail::configure( *this, t##expectation, \
+        mock::detail::configure( *this, t##_mocker_, \
             instance.substr( 0, instance.rfind( BOOST_PP_STRINGIZE(t) ) ), \
             mock::detail::type_name( typeid( *this ) ), \
             BOOST_PP_STRINGIZE(t) ); \
-        return t##expectation; \
+        return t##_mocker_; \
     }
 
 #define MOCK_SIGNATURE(M) \
@@ -153,7 +153,7 @@ namespace detail
     MOCK_METHOD_EXPECTATION(T(), t)
 
 #define MOCK_FUNCTION_STUB(F, n, S, t, s) \
-    s mock::function< S >& t##configure( mock::detail::context& context, \
+    s mock::function< S >& t##_mocker( mock::detail::context& context, \
         boost::unit_test::const_string instance ) \
     { \
         static mock::function< S > f; \
