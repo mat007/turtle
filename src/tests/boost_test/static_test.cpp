@@ -39,7 +39,7 @@ namespace
 
 BOOST_AUTO_TEST_CASE( some_test )
 {
-    MOCK_EXPECT( s1, f ).once();
+    MOCK_EXPECT( s1.f ).once();
 }
 
 BOOST_AUTO_TEST_CASE( some_other_test )
