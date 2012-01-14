@@ -33,40 +33,6 @@ namespace mock
 {
 namespace detail
 {
-    template< typename T >
-    T& deref( T& t )
-    {
-        return t;
-    }
-    template< typename T >
-    T& deref( T* t )
-    {
-        if( ! t )
-            throw std::invalid_argument( "derefencing null pointer" );
-        return *t;
-    }
-    template< typename T >
-    T& deref( std::auto_ptr< T >& t )
-    {
-        if( ! t.get() )
-            throw std::invalid_argument( "derefencing null pointer" );
-        return *t;
-    }
-    template< typename T >
-    T& deref( const std::auto_ptr< T >& t )
-    {
-        if( ! t.get() )
-            throw std::invalid_argument( "derefencing null pointer" );
-        return *t;
-    }
-    template< typename T >
-    T& deref( boost::shared_ptr< T > t )
-    {
-        if( ! t.get() )
-            throw std::invalid_argument( "derefencing null pointer" );
-        return *t;
-    }
-
     template< typename M >
     struct signature :
         boost::function_types::function_type<
