@@ -280,6 +280,17 @@ namespace mock
 
         boost::shared_ptr< function_impl > impl_;
     };
+
+    template< typename Signature >
+    bool verify( const function< Signature >& f )
+    {
+        return f.verify();
+    }
+    template< typename Signature >
+    void reset( function< Signature >& f )
+    {
+        f.reset();
+    }
 }
 
 #endif // MOCK_FUNCTION_HPP_INCLUDED

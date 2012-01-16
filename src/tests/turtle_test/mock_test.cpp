@@ -253,6 +253,20 @@ BOOST_AUTO_TEST_CASE( mock_functor )
     MOCK_FUNCTOR( f2, int( const std::string& ) );
 }
 
+BOOST_AUTO_TEST_CASE( mock_functor_reset )
+{
+    MOCK_FUNCTOR( f, void() );
+    MOCK_RESET( f );
+    mock::reset( f );
+}
+
+BOOST_AUTO_TEST_CASE( mock_functor_verify )
+{
+    MOCK_FUNCTOR( f, void() );
+    MOCK_VERIFY( f );
+    mock::verify( f );
+}
+
 BOOST_AUTO_TEST_CASE( mock_functor_is_named )
 {
     MOCK_FUNCTOR( f, void() );
