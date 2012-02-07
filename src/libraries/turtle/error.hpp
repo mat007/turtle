@@ -16,7 +16,7 @@
 #       define MOCK_ERROR_POLICY boost_test_error_policy
 #       include "boost_test_error.hpp"
 #   else
-#       define MOCK_ERROR_POLICY basic_error_policy
+#       define MOCK_ERROR_POLICY default_error_policy
 #       include "default_error.hpp"
 #   endif
 #endif

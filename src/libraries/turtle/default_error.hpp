@@ -17,7 +17,7 @@ namespace mock
     {};
 
     template< typename Result >
-    struct basic_error_policy
+    struct default_error_policy
     {
         static Result abort()
         {
