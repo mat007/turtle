@@ -34,6 +34,9 @@ namespace mock
             throw std::runtime_error( "aborted" );
         }
 
+        static void checkpoint( const char* /*file*/, int /*line*/ )
+        {}
+
         template< typename Context >
         static void missing_action( const Context& context,
             const char* /*file*/, int /*line*/ )

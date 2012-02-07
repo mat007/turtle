@@ -30,6 +30,12 @@ namespace mock
             throw boost::enable_current_exception( exception() );
         }
 
+        static void checkpoint( const char* file, int line )
+        {
+            boost::unit_test::unit_test_log.set_checkpoint( file,
+                (std::size_t)line );
+        }
+
         template< typename Context >
         static void fail(
             const char* message, const Context& context,

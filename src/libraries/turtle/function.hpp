@@ -61,14 +61,25 @@ namespace mock
         {
             return impl_->verify();
         }
+        bool verify( const char* file, int line ) const
+        {
+            function_impl::error_type::checkpoint( file, line );
+            return impl_->verify();
+        }
         void reset()
         {
             impl_->reset();
         }
+        void reset( const char* file, int line )
+        {
+            function_impl::error_type::checkpoint( file, line );
+            return impl_->reset();
+        }
 
         expectation_type& expect( const char* file, int line )
         {
-            return impl_->expect( file, line );
+            function_impl::error_type::checkpoint( file, line );
+            return impl_->expect();
         }
         expectation_type& expect()
         {
@@ -123,7 +134,7 @@ namespace mock
     private:
         class function_impl : public verifiable
         {
-        private:
+        public:
             typedef MOCK_ERROR_POLICY< result_type > error_type;
 
         public:

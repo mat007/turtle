@@ -169,7 +169,7 @@ namespace detail
     MOCK_FUNCTION_STUB(F, n, S, t, static)
 
 #define MOCK_EXPECT(t) MOCK_MOCKER(t).expect( __FILE__, __LINE__ )
-#define MOCK_RESET(t) MOCK_MOCKER(t).reset()
-#define MOCK_VERIFY(t) MOCK_MOCKER(t).verify()
+#define MOCK_RESET(t) MOCK_MOCKER(t).reset( __FILE__, __LINE__ )
+#define MOCK_VERIFY(t) MOCK_MOCKER(t).verify( __FILE__, __LINE__ )
 
 #endif // MOCK_MOCK_HPP_INCLUDED

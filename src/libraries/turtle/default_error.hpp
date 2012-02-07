@@ -24,6 +24,9 @@ namespace mock
             throw exception();
         }
 
+        static void checkpoint( const char* /*file*/, int /*line*/ )
+        {}
+
         template< typename Context >
         static void fail(
             const char* message, const Context& context,
