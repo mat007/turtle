@@ -276,10 +276,10 @@ BOOST_AUTO_TEST_CASE( contain_with_const_char_ptr )
     BOOST_CHECK( ! mock::contain( "not found" ).f_( "this is a string" ) );
     BOOST_CHECK( ! mock::contain( "not found" ).f_( std::string( "this is a string" ) ) );
     {
-        char* s;
+        const char* s;
         mock::constraint<
             mock::detail::contain<
-                boost::reference_wrapper< char* const >
+                boost::reference_wrapper< const char* const >
             >
         > c = mock::contain( boost::cref( s ) );
         s = "string";
