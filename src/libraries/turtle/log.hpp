@@ -140,6 +140,10 @@ namespace detail2
     {
         s << '"' << str << '"';
     }
+    inline void serialize( stream& s, unsigned char c )
+    {
+        s << static_cast< int >( c );
+    }
 
     template< typename T >
     struct formatter

@@ -558,3 +558,8 @@ BOOST_AUTO_TEST_CASE( mock_detail_template_template_streamable_yields_its_value_
 {
     BOOST_CHECK_EQUAL( "mock::detail::template_streamable", to_string( mock::detail::template_streamable< int >() ) );
 }
+
+BOOST_AUTO_TEST_CASE( unsigned_char_is_serialized_as_int )
+{
+    BOOST_CHECK_EQUAL( boost::lexical_cast< std::string >( int( 'a' ) ), to_string( unsigned char( 'a' ) ) );
+}
