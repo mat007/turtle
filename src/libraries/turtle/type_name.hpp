@@ -59,9 +59,10 @@ namespace detail
 #endif
                 serialize( s, name );
         }
-        void serialize( std::ostream& s, boost::unit_test::const_string name ) const
+        void serialize( std::ostream& s,
+            boost::unit_test::const_string name ) const
         {
-            std::size_t p = name.rfind( "::" );
+            boost::unit_test::const_string::size_type p = name.rfind( "::" );
             if( p != boost::unit_test::const_string::npos )
             {
                 s << name.substr( p + 2 );

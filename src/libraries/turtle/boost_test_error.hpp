@@ -33,7 +33,7 @@ namespace mock
         static void checkpoint( const char* file, int line )
         {
             boost::unit_test::unit_test_log.set_checkpoint( file,
-                (std::size_t)line );
+                static_cast< std::size_t >( line ) );
         }
 
         template< typename Context >
@@ -43,7 +43,8 @@ namespace mock
         {
             boost::unit_test::framework::assertion_result( false );
             boost::unit_test::unit_test_log
-                << boost::unit_test::log::begin( file, (std::size_t)line )
+                << boost::unit_test::log::begin( file,
+                    static_cast< std::size_t >( line ) )
                 << boost::unit_test::log_all_errors
                 << message << ": " << context
                 << boost::unit_test::log::end();
@@ -55,7 +56,8 @@ namespace mock
         {
             boost::unit_test::framework::assertion_result( true );
             boost::unit_test::unit_test_log
-                << boost::unit_test::log::begin( file, (std::size_t)line )
+                << boost::unit_test::log::begin( file,
+                    static_cast< std::size_t >( line ) )
                 << boost::unit_test::log_successful_tests
                 << "mock expectation fulfilled: " << context
                 << boost::unit_test::log::end();
