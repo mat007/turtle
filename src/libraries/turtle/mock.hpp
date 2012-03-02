@@ -152,21 +152,23 @@ namespace detail
     operator T() { return MOCK_ANONYMOUS_MOCKER(t)(); } \
     MOCK_METHOD_EXPECTATION(T(), t)
 
-#define MOCK_FUNCTION_STUB(F, n, S, t, s) \
+#define MOCK_FUNCTION_STUB(F, n, S, t, s, tpn) \
     s mock::function< S >& t##_mocker( mock::detail::context& context, \
         boost::unit_test::const_string instance ) \
     { \
         static mock::function< S > f; \
         return f( context, instance ); \
     } \
-    s MOCK_DECL(F, n, S,,) \
+    s MOCK_DECL(F, n, S,,tpn) \
     { \
         return MOCK_MOCKER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 #define MOCK_FUNCTION(F, n, S, t) \
-    MOCK_FUNCTION_STUB(F, n, S, t,)
+    MOCK_FUNCTION_STUB(F, n, S, t,,)
 #define MOCK_STATIC_FUNCTION(F, n, S, t) \
-    MOCK_FUNCTION_STUB(F, n, S, t, static)
+    MOCK_FUNCTION_STUB(F, n, S, t, static,)
+#define MOCK_STATIC_FUNCTION_TPL(F, n, S, t) \
+    MOCK_FUNCTION_STUB(F, n, S, t, static, BOOST_DEDUCED_TYPENAME)
 
 #define MOCK_EXPECT(t) MOCK_MOCKER(t).expect( __FILE__, __LINE__ )
 #define MOCK_RESET(t) MOCK_MOCKER(t).reset( __FILE__, __LINE__ )

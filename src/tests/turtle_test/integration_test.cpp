@@ -478,3 +478,20 @@ BOOST_AUTO_TEST_CASE( a_static_method_can_be_mocked )
     MOCK_RESET( some_class::some_static_method );
     BOOST_CHECK( MOCK_VERIFY( some_class::some_static_method ) );
 }
+
+namespace
+{
+    template< typename T >
+    struct some_template_class
+    {
+        MOCK_STATIC_FUNCTION_TPL( some_static_method, 1, float( T ), some_static_method )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( a_static_method_in_a_template_class_can_be_mocked )
+{
+    MOCK_EXPECT( some_template_class< int >::some_static_method ).once();
+    BOOST_CHECK( ! MOCK_VERIFY( some_template_class< int >::some_static_method ) );
+    MOCK_RESET( some_template_class< int >::some_static_method );
+    BOOST_CHECK( MOCK_VERIFY( some_template_class< int >::some_static_method ) );
+}
