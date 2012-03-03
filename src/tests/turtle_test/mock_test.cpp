@@ -79,8 +79,23 @@ BOOST_AUTO_TEST_CASE( mock_conversion_operator )
 {
     mock_class_with_conversion_operator m;
     MOCK_EXPECT( m.conversion ).once().returns( 42 );
-    int i = m;
-    BOOST_CHECK_EQUAL( 42, i );
+    BOOST_CHECK_EQUAL( 42, static_cast< int >( m ) );
+}
+
+namespace
+{
+    template< typename T >
+    MOCK_CLASS( mock_template_class_with_conversion_operator )
+    {
+        MOCK_CONVERSION_OPERATOR( T, conversion )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mock_template_conversion_operator )
+{
+    mock_template_class_with_conversion_operator< int > m;
+    MOCK_EXPECT( m.conversion ).once().returns( 42 );
+    BOOST_CHECK_EQUAL( 42, static_cast< int >( m ) );
 }
 
 namespace
