@@ -49,7 +49,10 @@ namespace detail
     {};
 
     template< typename T >
-    struct base
+    struct base;
+
+    template< typename T >
+    struct base< void( T ) > : T
     {
         typedef T base_type;
     };
@@ -78,7 +81,7 @@ namespace detail
 }
 
 #define MOCK_BASE_CLASS(T, I) \
-    struct T : I, mock::object, mock::detail::base< I >
+    struct T : mock::detail::base< void( I ) >, mock::object
 #define MOCK_CLASS(T) \
     struct T : mock::object
 #define MOCK_FUNCTOR(f, S) \

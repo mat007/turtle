@@ -319,3 +319,20 @@ BOOST_AUTO_TEST_CASE( mock_static_function_is_named )
 {
     BOOST_CHECK_EQUAL( "static_function_class::mock_static_function", to_string( MOCK_MOCKER( static_function_class::mock_static_function ) ) );
 }
+
+namespace
+{
+    template< typename T1, typename T2 >
+    struct base_template_class
+    {};
+    MOCK_BASE_CLASS( mock_instanciated_template_class, (base_template_class< int, int >) )
+    {};
+    template< typename T >
+    MOCK_BASE_CLASS( mock_template_class, (base_template_class< T, T >) )
+    {};
+}
+
+BOOST_AUTO_TEST_CASE( mock_template_class_can_be_instanciated )
+{
+    mock_template_class< int > c;
+}
