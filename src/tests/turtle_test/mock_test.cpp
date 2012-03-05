@@ -30,6 +30,15 @@ namespace
             float( int ),
             mock::detail::signature< BOOST_TYPEOF( &s::m2 ) >::type
          > ));
+
+    BOOST_MPL_ASSERT(( boost::is_same< float, mock::detail::arg< void( float ), 1, 1 >::type > ));
+    BOOST_MPL_ASSERT(( boost::is_same< float, mock::detail::arg< void( float, int ), 1, 2 >::type > ));
+    BOOST_MPL_ASSERT(( boost::is_same< int, mock::detail::arg< void( float, int ), 2, 2 >::type > ));
+    BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float ), 1, 2 >::type > ));
+    BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float ), 2, 2 >::type > ));
+    BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float, int ), 1, 1 >::type > ));
+    BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float, int ), 1, 3 >::type > ));
+    BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float, int ), 2, 3 >::type > ));
 }
 
 namespace
@@ -310,12 +319,3 @@ BOOST_AUTO_TEST_CASE( mock_static_function_is_named )
 {
     BOOST_CHECK_EQUAL( "static_function_class::mock_static_function", to_string( MOCK_MOCKER( static_function_class::mock_static_function ) ) );
 }
-
-BOOST_MPL_ASSERT(( boost::is_same< float, mock::detail::arg< void( float ), 1, 1 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< float, mock::detail::arg< void( float, int ), 1, 2 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< int, mock::detail::arg< void( float, int ), 2, 2 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float ), 1, 2 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float ), 2, 2 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float, int ), 1, 1 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float, int ), 1, 3 >::type > ));
-BOOST_MPL_ASSERT(( boost::is_same< mock::detail::invalid_type, mock::detail::arg< void( float, int ), 2, 3 >::type > ));
