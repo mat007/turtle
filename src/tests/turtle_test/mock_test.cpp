@@ -311,11 +311,11 @@ namespace
 {
     MOCK_CLASS( static_function_class )
     {
-        MOCK_STATIC_FUNCTION( mock_static_function, 1, float( int ), mock_static_function )
+        MOCK_STATIC_FUNCTION( f, 1, float( int ), f )
     };
 }
 
 BOOST_AUTO_TEST_CASE( mock_static_function_is_named )
 {
-    BOOST_CHECK_EQUAL( "static_function_class::mock_static_function", to_string( MOCK_MOCKER( static_function_class::mock_static_function ) ) );
+    BOOST_CHECK_EQUAL( "static_function_class::f", to_string( MOCK_MOCKER( static_function_class::f ) ) );
 }
