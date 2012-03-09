@@ -17,10 +17,11 @@ namespace
     struct s
     {
         virtual void method( int ) {}
+        virtual s& operator=( int ) { return *this; }
     };
     bool check( int )
     {
-        return false;
+        return true;
     }
 }
 
@@ -29,6 +30,7 @@ BOOST_AUTO_TEST_CASE( hmm )
     MockRepository mocks;
     s* m = mocks.Mock< s >();
     mocks.ExpectCall( m, s::method ).Match( check );
+    mocks.ExpectCallOverload( m, (s&(s::*)(int))&s::operator= );
     m->method( 7 );
 }
 
