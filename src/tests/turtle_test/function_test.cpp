@@ -215,6 +215,16 @@ BOOST_FIXTURE_TEST_CASE( verifying_a_once_expectation_before_the_call_fails, err
     }
 }
 
+BOOST_FIXTURE_TEST_CASE( verifying_a_once_expectation_after_a_verify_and_one_call_succeeds, error_fixture )
+{
+    mock::function< void() > f;
+    f.expect().once();
+    CHECK_ERROR( BOOST_CHECK( ! f.verify() ), verification_failed, 0, "?\n. once()" );
+    f();
+    BOOST_CHECK( f.verify() );
+    CHECK_CALLS( 1 );
+}
+
 // reset
 
 BOOST_FIXTURE_TEST_CASE( triggering_a_reset_function_calls_unexpected_call_error, error_fixture )

@@ -209,12 +209,12 @@ namespace mock
         << lazy_expectations( this )
 #define MOCK_EXPECTATION_INVOKE(z, n, A) \
     { \
+        valid_ = false; \
         for( expectations_cit it = expectations_.begin(); it != expectations_.end(); ++it ) \
             if( it->is_valid( BOOST_PP_ENUM_PARAMS(n, p) ) ) \
             { \
                 if( ! it->invoke() ) \
                 { \
-                    valid_ = false; \
                     error_type::sequence_failed( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
                     return A; \
                 } \
@@ -223,10 +223,10 @@ namespace mock
                     error_type::missing_action( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
                     return A; \
                 } \
+                valid_ = true; \
                 error_type::expected_call( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
                 return it->functor()( BOOST_PP_ENUM_PARAMS(n, p) ); \
             } \
-        valid_ = false; \
         error_type::unexpected_call( MOCK_EXPECTATION_CALL_CONTEXT(n) ); \
         return A; \
     }
