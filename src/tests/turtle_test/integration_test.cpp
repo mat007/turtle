@@ -467,7 +467,7 @@ namespace
 {
     struct some_class
     {
-        MOCK_STATIC_FUNCTION( some_static_method, 1, float( int ), some_static_method )
+        MOCK_STATIC_METHOD( some_static_method, 1, float( int ), some_static_method )
     };
 }
 
@@ -484,7 +484,7 @@ namespace
     template< typename T >
     struct some_template_class
     {
-        MOCK_STATIC_FUNCTION_TPL( some_static_method, 1, float( T ), some_static_method )
+        MOCK_STATIC_METHOD_TPL( some_static_method, 1, float( T ), some_static_method )
     };
 }
 

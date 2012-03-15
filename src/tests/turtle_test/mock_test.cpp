@@ -311,7 +311,7 @@ namespace
 {
     MOCK_CLASS( static_function_class )
     {
-        MOCK_STATIC_FUNCTION( f, 1, float( int ), f )
+        MOCK_STATIC_METHOD( f, 1, float( int ), f )
     };
 }
 

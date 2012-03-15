@@ -25,7 +25,6 @@
 #include <boost/mpl/pop_front.hpp>
 #define BOOST_TYPEOF_SILENT
 #include <boost/typeof/typeof.hpp>
-#include <boost/utility/enable_if.hpp>
 #include <boost/type_traits.hpp>
 
 namespace mock
@@ -165,9 +164,9 @@ namespace detail
     }
 #define MOCK_FUNCTION(F, n, S, t) \
     MOCK_FUNCTION_STUB(F, n, S, t,,)
-#define MOCK_STATIC_FUNCTION(F, n, S, t) \
+#define MOCK_STATIC_METHOD(F, n, S, t) \
     MOCK_FUNCTION_STUB(F, n, S, t, static,)
-#define MOCK_STATIC_FUNCTION_TPL(F, n, S, t) \
+#define MOCK_STATIC_METHOD_TPL(F, n, S, t) \
     MOCK_FUNCTION_STUB(F, n, S, t, static, BOOST_DEDUCED_TYPENAME)
 
 #define MOCK_EXPECT(t) MOCK_MOCKER(t).expect( __FILE__, __LINE__ )
