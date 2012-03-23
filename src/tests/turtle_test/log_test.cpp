@@ -12,6 +12,9 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/spirit/home/phoenix/bind.hpp>
+#include <boost/lambda/bind.hpp>
+#include <boost/bind.hpp>
 #include <vector>
 #include <deque>
 #include <list>
@@ -66,7 +69,7 @@ namespace
     {};
 }
 
-BOOST_AUTO_TEST_CASE( non_serializable_type_yields_an_interrogation_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( non_serializable_type_yields_an_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( non_serializable() ) );
 }
@@ -135,7 +138,7 @@ namespace
     {};
 }
 
-BOOST_AUTO_TEST_CASE( type_derived_from_serializable_yields_an_interrogation_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( type_derived_from_serializable_yields_an_question_mark_when_serialized )
 {
 #ifdef MOCK_USE_CONVERSIONS
     BOOST_CHECK_EQUAL( "serializable", to_string( derived_from_serializable() ) );
@@ -150,7 +153,7 @@ namespace
     {};
 }
 
-BOOST_AUTO_TEST_CASE( type_derived_from_streamable_yields_an_interrogation_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( type_derived_from_streamable_yields_an_question_mark_when_serialized )
 {
 #ifdef MOCK_USE_CONVERSIONS
     BOOST_CHECK_EQUAL( "streamable", to_string( derived_from_streamable() ) );
@@ -169,7 +172,7 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( type_convertible_to_base_yields_an_interrogation_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( type_convertible_to_base_yields_an_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( convertible_to_base() ) );
 }
@@ -182,7 +185,7 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( type_convertible_to_serializable_yields_an_interrogation_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( type_convertible_to_serializable_yields_an_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( convertible_to_serializable() ) );
 }
@@ -195,7 +198,7 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( type_convertible_to_streamable_yields_an_interrogation_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( type_convertible_to_streamable_yields_an_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( convertible_to_streamable() ) );
 }
@@ -212,7 +215,7 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_yields_an_interrogation_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_yields_an_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( ambiguous_convertible() ) );
 }
@@ -462,7 +465,7 @@ namespace
     {}
 }
 
-BOOST_AUTO_TEST_CASE( callable_builtin_yields_an_interrogation_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( callable_builtin_yields_an_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( callable_builtin ) );
     BOOST_CHECK_EQUAL( "?", to_string( &callable_builtin ) );
@@ -562,4 +565,27 @@ BOOST_AUTO_TEST_CASE( mock_detail_template_template_streamable_yields_its_value_
 BOOST_AUTO_TEST_CASE( unsigned_char_is_serialized_as_int )
 {
     BOOST_CHECK_EQUAL( boost::lexical_cast< std::string >( static_cast< int >( 'a' ) ), to_string< unsigned char >( 'a' ) );
+}
+
+namespace
+{
+    bool some_function()
+    {
+        return false;
+    }
+}
+
+BOOST_AUTO_TEST_CASE( boost_phoenix_functor_yields_question_mark_when_serialized )
+{
+    BOOST_CHECK_EQUAL( "?", to_string( boost::phoenix::bind( &some_function ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( boost_bind_functor_yields_question_mark_when_serialized )
+{
+    BOOST_CHECK_EQUAL( "?", to_string( boost::bind( &some_function ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( boost_lambda_functor_yields_question_mark_when_serialized )
+{
+    BOOST_CHECK_EQUAL( "?", to_string( boost::lambda::bind( &some_function ) ) );
 }
