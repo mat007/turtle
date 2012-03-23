@@ -104,7 +104,7 @@ namespace detail
         int line_;
     };
 
-    template< typename Signature, int >
+    template< typename Signature, int Arity >
     class expectation
     {
     };
