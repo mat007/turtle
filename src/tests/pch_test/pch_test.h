@@ -11,7 +11,6 @@
 //#include <boost/spirit/home/phoenix/core/nothing.hpp>
 //#include <boost/spirit/home/phoenix/bind.hpp>
 //#include <boost/function.hpp>
-//#include <boost/concept_check.hpp>
 //#include <boost/bind.hpp>
 //#include <boost/test/test_tools.hpp>
 //#include <boost/test/unit_test_suite.hpp>
