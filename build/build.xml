@@ -34,6 +34,7 @@
 
   <target name="analyse" description="run errors analyser">
     <quiet>
+      <mkdir dir="${reports.dir}"/>
       <delete file="${reports.dir}/errors-${platform}.log"/>
       <touch file="${reports.dir}/errors-${platform}.log"/>
     </quiet>
