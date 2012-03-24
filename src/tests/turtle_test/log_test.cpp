@@ -12,8 +12,16 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/lexical_cast.hpp>
+#ifdef _MSC_VER
+#pragma warning( push, 0 )
+#endif
+#include <boost/spirit/home/phoenix.hpp>
 #include <boost/spirit/home/phoenix/bind.hpp>
 #include <boost/lambda/bind.hpp>
+#include <boost/lambda/lambda.hpp>
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 #include <boost/bind.hpp>
 #include <vector>
 #include <deque>
@@ -578,6 +586,7 @@ namespace
 BOOST_AUTO_TEST_CASE( boost_phoenix_functor_yields_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( boost::phoenix::bind( &some_function ) ) );
+    BOOST_CHECK_EQUAL( "?", to_string( boost::phoenix::arg_names::_1 < 42 ) );
 }
 
 BOOST_AUTO_TEST_CASE( boost_bind_functor_yields_question_mark_when_serialized )
@@ -588,4 +597,5 @@ BOOST_AUTO_TEST_CASE( boost_bind_functor_yields_question_mark_when_serialized )
 BOOST_AUTO_TEST_CASE( boost_lambda_functor_yields_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( boost::lambda::bind( &some_function ) ) );
+    BOOST_CHECK_EQUAL( "?", to_string( boost::lambda::_1 < 42 ) );
 }

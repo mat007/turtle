@@ -12,6 +12,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/detail/container_fwd.hpp>
 #include <boost/function_types/is_callable_builtin.hpp>
+#include <boost/utility/addressof.hpp>
 #include <ostream>
 #include <memory>
 
@@ -20,6 +21,14 @@ namespace boost
     template< typename T > class shared_ptr;
     template< typename T > class weak_ptr;
 
+namespace phoenix
+{
+    template< typename T > struct actor;
+}
+namespace lambda
+{
+    template< typename T > struct lambda_functor;
+}
 namespace assign_detail
 {
     template< typename T > class generic_list;
@@ -64,7 +73,7 @@ namespace detail3
     struct holder_imp : holder
     {
         explicit holder_imp( const T& t )
-            : t_( &t )
+            : t_( boost::addressof( t ) )
         {}
         virtual void serialize( std::ostream& s ) const
         {
@@ -149,7 +158,7 @@ namespace detail2
     struct formatter
     {
         explicit formatter( const T& t )
-            : t_( &t )
+            : t_( boost::addressof( t ) )
         {}
         void serialize( stream& s ) const
         {
@@ -269,7 +278,16 @@ namespace detail
     {
         return s << mock::format( t.lock() );
     }
-
+    template< typename T >
+    stream& operator<<( stream& s, boost::lambda::lambda_functor< T > )
+    {
+        return s << '?';
+    }
+    template< typename T >
+    stream& operator<<( stream& s, boost::phoenix::actor< T > )
+    {
+        return s << '?';
+    }
     template< typename T >
     BOOST_DEDUCED_TYPENAME boost::enable_if<
         boost::function_types::is_callable_builtin< T >,
