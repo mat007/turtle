@@ -90,7 +90,8 @@ namespace detail
 
 #define MOCK_METHOD_EXPECTATION(S, t) \
     mutable mock::function< S > t##_mocker_; \
-    mock::function< S >& t##_mocker( const mock::detail::context&, \
+    mock::function< S >& t##_mocker( \
+        const mock::detail::context&, \
         boost::unit_test::const_string instance ) const \
     { \
         mock::detail::configure( *this, t##_mocker_, \
@@ -136,10 +137,6 @@ namespace detail
     MOCK_METHOD_STUB(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
     MOCK_METHOD_EXPECTATION(S, t)
 
-#define MOCK_DESTRUCTOR(T, t) \
-    ~T() { MOCK_ANONYMOUS_MOCKER(t).test(); } \
-    MOCK_METHOD_EXPECTATION(void(), t)
-
 #define MOCK_CONST_CONVERSION_OPERATOR(T, t) \
     operator T() const { return MOCK_ANONYMOUS_MOCKER(t)(); } \
     MOCK_METHOD_EXPECTATION(T(), t)
@@ -151,13 +148,33 @@ namespace detail
     operator T() { return MOCK_ANONYMOUS_MOCKER(t)(); } \
     MOCK_METHOD_EXPECTATION(T(), t)
 
-#define MOCK_FUNCTION_STUB(F, n, S, t, s, tpn) \
-    s mock::function< S >& t##_mocker( mock::detail::context& context, \
+#define MOCK_FUNCTION_EXPECTATION(S, t, s) \
+    s mock::function< S >& t##_mocker( \
+        mock::detail::context& context, \
         boost::unit_test::const_string instance ) \
     { \
         static mock::function< S > f; \
         return f( context, instance ); \
-    } \
+    }
+
+#define MOCK_CONSTRUCTOR_STUB(T, n, A, t, tpn) \
+    MOCK_FUNCTION_EXPECTATION(void A, t, static) \
+    T( MOCK_ARGS(n, void A, tpn) ) \
+    { \
+        MOCK_MOCKER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
+    }
+
+#define MOCK_CONSTRUCTOR(T, n, A, t) \
+    MOCK_CONSTRUCTOR_STUB(T, n, A, t,)
+#define MOCK_CONSTRUCTOR_TPL(T, n, A, t) \
+    MOCK_CONSTRUCTOR_STUB(T, n, A, t, BOOST_DEDUCED_TYPENAME)
+
+#define MOCK_DESTRUCTOR(T, t) \
+    ~T() { MOCK_ANONYMOUS_MOCKER(t).test(); } \
+    MOCK_METHOD_EXPECTATION(void(), t)
+
+#define MOCK_FUNCTION_STUB(F, n, S, t, s, tpn) \
+    MOCK_FUNCTION_EXPECTATION(S, t, s) \
     s MOCK_DECL(F, n, S,,tpn) \
     { \
         return MOCK_MOCKER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \

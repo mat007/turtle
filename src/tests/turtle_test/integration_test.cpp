@@ -277,6 +277,37 @@ BOOST_FIXTURE_TEST_CASE( basic_mock_object_collaboration_usage, fixture )
 
 namespace
 {
+    MOCK_CLASS( my_constructed_class )
+    {
+        MOCK_CONSTRUCTOR( my_constructed_class, 2, ( int, const std::string& ), constructor )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mocking_a_constructor )
+{
+    MOCK_EXPECT( my_constructed_class::constructor ).with( 42, "some text" ).once();
+    my_constructed_class( 42, "some text" );
+    BOOST_CHECK( MOCK_VERIFY( my_constructed_class::constructor ) );
+}
+
+namespace
+{
+    template< typename T >
+    MOCK_CLASS( my_constructed_template_class )
+    {
+        MOCK_CONSTRUCTOR_TPL( my_constructed_template_class, 2, ( T, const std::string& ), constructor )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mocking_a_template_class_constructor )
+{
+    MOCK_EXPECT( my_constructed_template_class< int >::constructor ).with( 42, "some text" ).once();
+    my_constructed_template_class< int >( 42, "some text" );
+    BOOST_CHECK( MOCK_VERIFY( my_constructed_template_class< int >::constructor ) );
+}
+
+namespace
+{
     MOCK_CLASS( my_destroyed_class )
     {
         MOCK_DESTRUCTOR( my_destroyed_class, destructor )
