@@ -96,13 +96,13 @@ namespace mock
             return (*impl_)();
         }
 
-#define MOCK_EXPECTATION_OPERATOR(z, n, d) \
+#define MOCK_FUNCTION_OPERATOR(z, n, d) \
         MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
         { \
             return (*impl_)( BOOST_PP_ENUM_PARAMS(n, p) ); \
         }
-        BOOST_PP_REPEAT_FROM_TO(1, BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_EXPECTATION_OPERATOR, BOOST_PP_EMPTY)
-#undef MOCK_EXPECTATION_OPERATOR
+        BOOST_PP_REPEAT_FROM_TO(1, BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_FUNCTION_OPERATOR, BOOST_PP_EMPTY)
+#undef MOCK_FUNCTION_OPERATOR
 
         friend std::ostream& operator<<( std::ostream& s, const function& e )
         {
@@ -200,14 +200,14 @@ namespace mock
                 return expectations_.back();
             }
 
-#define MOCK_EXPECTATION_FORMAT(z, n, N) \
+#define MOCK_FUNCTION_FORMAT(z, n, N) \
     << " " << mock::format( p##n ) << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), " ", ",")
-#define MOCK_EXPECTATION_CALL_CONTEXT(n) \
+#define MOCK_FUNCTION_CALL_CONTEXT(n) \
     boost::unit_test::lazy_ostream::instance() \
         << lazy_context( this ) \
-        << "(" BOOST_PP_REPEAT(n, MOCK_EXPECTATION_FORMAT, BOOST_PP_DEC(n)) << ")" \
+        << "(" BOOST_PP_REPEAT(n, MOCK_FUNCTION_FORMAT, BOOST_PP_DEC(n)) << ")" \
         << lazy_expectations( this )
-#define MOCK_EXPECTATION_INVOKE(z, n, A) \
+#define MOCK_FUNCTION_INVOKE(z, n, A) \
     { \
         valid_ = false; \
         for( expectations_cit it = expectations_.begin(); it != expectations_.end(); ++it ) \
@@ -215,34 +215,34 @@ namespace mock
             { \
                 if( ! it->invoke() ) \
                 { \
-                    error_type::sequence_failed( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                    error_type::sequence_failed( MOCK_FUNCTION_CALL_CONTEXT(n), it->file(), it->line() ); \
                     return A; \
                 } \
                 if( ! it->functor() ) \
                 { \
-                    error_type::missing_action( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                    error_type::missing_action( MOCK_FUNCTION_CALL_CONTEXT(n), it->file(), it->line() ); \
                     return A; \
                 } \
                 valid_ = true; \
-                error_type::expected_call( MOCK_EXPECTATION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                error_type::expected_call( MOCK_FUNCTION_CALL_CONTEXT(n), it->file(), it->line() ); \
                 return it->functor()( BOOST_PP_ENUM_PARAMS(n, p) ); \
             } \
-        error_type::unexpected_call( MOCK_EXPECTATION_CALL_CONTEXT(n) ); \
+        error_type::unexpected_call( MOCK_FUNCTION_CALL_CONTEXT(n) ); \
         return A; \
     }
-#define MOCK_EXPECTATION_OPERATOR(z, n, P) \
+#define MOCK_FUNCTION_OPERATOR(z, n, P) \
     MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
-    MOCK_EXPECTATION_INVOKE(z, n, P)
+    MOCK_FUNCTION_INVOKE(z, n, P)
 
-            BOOST_PP_REPEAT(BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_EXPECTATION_OPERATOR, error_type::abort())
+            BOOST_PP_REPEAT(BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_FUNCTION_OPERATOR, error_type::abort())
 
             void test() const
-            MOCK_EXPECTATION_INVOKE(, 0,)
+            MOCK_FUNCTION_INVOKE(, 0,)
 
-#undef MOCK_EXPECTATION_FORMAT
-#undef MOCK_EXPECTATION_OPERATOR
-#undef MOCK_EXPECTATION_INVOKE
-#undef MOCK_EXPECTATION_CALL_CONTEXT
+#undef MOCK_FUNCTION_FORMAT
+#undef MOCK_FUNCTION_OPERATOR
+#undef MOCK_FUNCTION_INVOKE
+#undef MOCK_FUNCTION_CALL_CONTEXT
 
             friend std::ostream& operator<<( std::ostream& s, const function_impl& e )
             {

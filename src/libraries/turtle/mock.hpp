@@ -81,24 +81,24 @@ namespace detail
 #define MOCK_CLASS(T) \
     struct T : mock::object
 #define MOCK_FUNCTOR(f, S) \
-    mock::detail::functor< S > f, f##_mocker
+    mock::detail::functor< S > f, f##_mock
 
-#define MOCK_MOCKER(t) \
-    t##_mocker( mock::detail::root, BOOST_PP_STRINGIZE(t) )
-#define MOCK_ANONYMOUS_MOCKER(t) \
-    t##_mocker( mock::detail::root, "?." )
+#define MOCK_HELPER(t) \
+    t##_mock( mock::detail::root, BOOST_PP_STRINGIZE(t) )
+#define MOCK_ANONYMOUS_HELPER(t) \
+    t##_mock( mock::detail::root, "?." )
 
-#define MOCK_METHOD_EXPECTATION(S, t) \
-    mutable mock::function< S > t##_mocker_; \
-    mock::function< S >& t##_mocker( \
+#define MOCK_METHOD_HELPER(S, t) \
+    mutable mock::function< S > t##_mock_; \
+    mock::function< S >& t##_mock( \
         const mock::detail::context&, \
         boost::unit_test::const_string instance ) const \
     { \
-        mock::detail::configure( *this, t##_mocker_, \
+        mock::detail::configure( *this, t##_mock_, \
             instance.substr( 0, instance.rfind( BOOST_PP_STRINGIZE(t) ) ), \
             mock::detail::type_name( typeid( *this ) ), \
             BOOST_PP_STRINGIZE(t) ); \
-        return t##_mocker_; \
+        return t##_mock_; \
     }
 
 #define MOCK_SIGNATURE(M) \
@@ -106,50 +106,50 @@ namespace detail
         BOOST_TYPEOF( mock::invalid_pointer_to_member( &base_type::M ) ) \
     >::type
 
-#define MOCK_METHOD_STUB(M, n, S, t, c, tpn) \
+#define MOCK_METHOD_AUX(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
     { \
-        return MOCK_ANONYMOUS_MOCKER(t)( \
+        return MOCK_ANONYMOUS_HELPER(t)( \
             BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 
 #define MOCK_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t,,) \
-    MOCK_METHOD_STUB(M, n, S, t, const,) \
-    MOCK_METHOD_EXPECTATION(S, t)
+    MOCK_METHOD_AUX(M, n, S, t,,) \
+    MOCK_METHOD_AUX(M, n, S, t, const,) \
+    MOCK_METHOD_HELPER(S, t)
 #define MOCK_CONST_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t, const,) \
-    MOCK_METHOD_EXPECTATION(S, t)
+    MOCK_METHOD_AUX(M, n, S, t, const,) \
+    MOCK_METHOD_HELPER(S, t)
 #define MOCK_NON_CONST_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t,,) \
-    MOCK_METHOD_EXPECTATION(S, t)
+    MOCK_METHOD_AUX(M, n, S, t,,) \
+    MOCK_METHOD_HELPER(S, t)
 #define MOCK_METHOD(M, n) \
     MOCK_METHOD_EXT(M, n, MOCK_SIGNATURE(M), M)
 
 #define MOCK_METHOD_EXT_TPL(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_STUB(M, n, S, t, const, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_EXPECTATION(S, t)
+    MOCK_METHOD_AUX(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
+    MOCK_METHOD_AUX(M, n, S, t, const, BOOST_DEDUCED_TYPENAME) \
+    MOCK_METHOD_HELPER(S, t)
 #define MOCK_CONST_METHOD_EXT_TPL(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t, const, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_EXPECTATION(S, t)
+    MOCK_METHOD_AUX(M, n, S, t, const, BOOST_DEDUCED_TYPENAME) \
+    MOCK_METHOD_HELPER(S, t)
 #define MOCK_NON_CONST_METHOD_EXT_TPL(M, n, S, t) \
-    MOCK_METHOD_STUB(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_EXPECTATION(S, t)
+    MOCK_METHOD_AUX(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
+    MOCK_METHOD_HELPER(S, t)
 
 #define MOCK_CONST_CONVERSION_OPERATOR(T, t) \
-    operator T() const { return MOCK_ANONYMOUS_MOCKER(t)(); } \
-    MOCK_METHOD_EXPECTATION(T(), t)
+    operator T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
+    MOCK_METHOD_HELPER(T(), t)
 #define MOCK_NON_CONST_CONVERSION_OPERATOR(T, t) \
-    operator T() { return MOCK_ANONYMOUS_MOCKER(t)(); } \
-    MOCK_METHOD_EXPECTATION(T(), t)
+    operator T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
+    MOCK_METHOD_HELPER(T(), t)
 #define MOCK_CONVERSION_OPERATOR(T, t) \
-    operator T() const { return MOCK_ANONYMOUS_MOCKER(t)(); } \
-    operator T() { return MOCK_ANONYMOUS_MOCKER(t)(); } \
-    MOCK_METHOD_EXPECTATION(T(), t)
+    operator T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
+    operator T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
+    MOCK_METHOD_HELPER(T(), t)
 
-#define MOCK_FUNCTION_EXPECTATION(S, t, s) \
-    s mock::function< S >& t##_mocker( \
+#define MOCK_FUNCTION_HELPER(S, t, s) \
+    s mock::function< S >& t##_mock( \
         mock::detail::context& context, \
         boost::unit_test::const_string instance ) \
     { \
@@ -157,37 +157,37 @@ namespace detail
         return f( context, instance ); \
     }
 
-#define MOCK_CONSTRUCTOR_STUB(T, n, A, t, tpn) \
-    MOCK_FUNCTION_EXPECTATION(void A, t, static) \
+#define MOCK_CONSTRUCTOR_AUX(T, n, A, t, tpn) \
+    MOCK_FUNCTION_HELPER(void A, t, static) \
     T( MOCK_ARGS(n, void A, tpn) ) \
     { \
-        MOCK_MOCKER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
+        MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 
 #define MOCK_CONSTRUCTOR(T, n, A, t) \
-    MOCK_CONSTRUCTOR_STUB(T, n, A, t,)
+    MOCK_CONSTRUCTOR_AUX(T, n, A, t,)
 #define MOCK_CONSTRUCTOR_TPL(T, n, A, t) \
-    MOCK_CONSTRUCTOR_STUB(T, n, A, t, BOOST_DEDUCED_TYPENAME)
+    MOCK_CONSTRUCTOR_AUX(T, n, A, t, BOOST_DEDUCED_TYPENAME)
 
 #define MOCK_DESTRUCTOR(T, t) \
-    ~T() { MOCK_ANONYMOUS_MOCKER(t).test(); } \
-    MOCK_METHOD_EXPECTATION(void(), t)
+    ~T() { MOCK_ANONYMOUS_HELPER(t).test(); } \
+    MOCK_METHOD_HELPER(void(), t)
 
-#define MOCK_FUNCTION_STUB(F, n, S, t, s, tpn) \
-    MOCK_FUNCTION_EXPECTATION(S, t, s) \
+#define MOCK_FUNCTION_AUX(F, n, S, t, s, tpn) \
+    MOCK_FUNCTION_HELPER(S, t, s) \
     s MOCK_DECL(F, n, S,,tpn) \
     { \
-        return MOCK_MOCKER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
+        return MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 #define MOCK_FUNCTION(F, n, S, t) \
-    MOCK_FUNCTION_STUB(F, n, S, t,,)
+    MOCK_FUNCTION_AUX(F, n, S, t,,)
 #define MOCK_STATIC_METHOD(F, n, S, t) \
-    MOCK_FUNCTION_STUB(F, n, S, t, static,)
+    MOCK_FUNCTION_AUX(F, n, S, t, static,)
 #define MOCK_STATIC_METHOD_TPL(F, n, S, t) \
-    MOCK_FUNCTION_STUB(F, n, S, t, static, BOOST_DEDUCED_TYPENAME)
+    MOCK_FUNCTION_AUX(F, n, S, t, static, BOOST_DEDUCED_TYPENAME)
 
-#define MOCK_EXPECT(t) MOCK_MOCKER(t).expect( __FILE__, __LINE__ )
-#define MOCK_RESET(t) MOCK_MOCKER(t).reset( __FILE__, __LINE__ )
-#define MOCK_VERIFY(t) MOCK_MOCKER(t).verify( __FILE__, __LINE__ )
+#define MOCK_EXPECT(t) MOCK_HELPER(t).expect( __FILE__, __LINE__ )
+#define MOCK_RESET(t) MOCK_HELPER(t).reset( __FILE__, __LINE__ )
+#define MOCK_VERIFY(t) MOCK_HELPER(t).verify( __FILE__, __LINE__ )
 
 #endif // MOCK_MOCK_HPP_INCLUDED

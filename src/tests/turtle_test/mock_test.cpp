@@ -187,48 +187,48 @@ namespace
 BOOST_AUTO_TEST_CASE( mock_object_is_named )
 {
     my_mock m;
-    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "?.my_mock::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method_2 ) ) );
-    BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_MOCKER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "m.my_mock::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method_2 ) ) );
-    BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_MOCKER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_mock::my_method_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_method_2 ) ) );
+    BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "m.my_mock::my_method_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_method_2 ) ) );
+    BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
 }
 
 BOOST_AUTO_TEST_CASE( mock_object_auto_pointer_is_named )
 {
     std::auto_ptr< my_mock > m( new my_mock );
-    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_MOCKER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
 }
 
 BOOST_AUTO_TEST_CASE( mock_object_const_auto_pointer_is_named )
 {
     const std::auto_ptr< my_mock > m( new my_mock );
-    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_MOCKER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
 }
 
 BOOST_AUTO_TEST_CASE( mock_object_shared_pointer_is_named )
 {
     boost::shared_ptr< my_mock > m( new my_mock );
-    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_MOCKER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
 }
 
 BOOST_AUTO_TEST_CASE( mock_object_const_shared_pointer_is_named )
 {
     const boost::shared_ptr< my_mock > m( new my_mock );
-    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_MOCKER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
+    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
 }
 
 namespace
@@ -243,12 +243,12 @@ namespace
 BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_and_without_inheriting_from_object_is_named )
 {
     my_custom_mock m;
-    BOOST_CHECK_EQUAL( "?.my_custom_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "?.my_custom_mock::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method_2 ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_MOCKER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method_2 ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_MOCKER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock::my_method_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_method_2 ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_method_2 ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
 }
 
 namespace
@@ -263,12 +263,12 @@ namespace
 BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_is_named )
 {
     my_custom_mock_object m;
-    BOOST_CHECK_EQUAL( "?.my_custom_mock_object::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "?.my_custom_mock_object::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method_2 ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_MOCKER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method_2", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method_2 ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_ANONYMOUS_MOCKER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_MOCKER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock_object::my_method", to_string( MOCK_ANONYMOUS_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock_object::my_method_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_method_2 ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_method_2 ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_ANONYMOUS_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
 }
 
 BOOST_AUTO_TEST_CASE( mock_functor )
@@ -294,7 +294,7 @@ BOOST_AUTO_TEST_CASE( mock_functor_verify )
 BOOST_AUTO_TEST_CASE( mock_functor_is_named )
 {
     MOCK_FUNCTOR( f, void() );
-    BOOST_CHECK_EQUAL( "f", to_string( MOCK_MOCKER( f ) ) );
+    BOOST_CHECK_EQUAL( "f", to_string( MOCK_HELPER( f ) ) );
 }
 
 namespace
@@ -304,7 +304,7 @@ namespace
 
 BOOST_AUTO_TEST_CASE( mock_function_is_named )
 {
-    BOOST_CHECK_EQUAL( "mock_function", to_string( MOCK_MOCKER( mock_function ) ) );
+    BOOST_CHECK_EQUAL( "mock_function", to_string( MOCK_HELPER( mock_function ) ) );
 }
 
 namespace
@@ -317,5 +317,5 @@ namespace
 
 BOOST_AUTO_TEST_CASE( mock_static_function_is_named )
 {
-    BOOST_CHECK_EQUAL( "static_function_class::f", to_string( MOCK_MOCKER( static_function_class::f ) ) );
+    BOOST_CHECK_EQUAL( "static_function_class::f", to_string( MOCK_HELPER( static_function_class::f ) ) );
 }
