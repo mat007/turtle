@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2008
+// Copyright Mathieu Champlon 2008
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 #ifndef MOCK_ACTION_HPP_INCLUDED
 #define MOCK_ACTION_HPP_INCLUDED
@@ -162,7 +163,9 @@ namespace detail
         {}
         action( const action& rhs )
             : r_( const_cast< action& >( rhs ).r_.release() )
-            , f_( r_.get() ? lambda_type::make_val( boost::ref( r_ ) ) : rhs.f_ )
+            , f_( r_.get()
+                ? lambda_type::make_val( boost::ref( r_ ) )
+                : rhs.f_ )
         {}
 
         template< typename Value >

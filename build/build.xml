@@ -95,6 +95,7 @@
 
   <target name="reports" description="generate code analysis reports">
     <headers name="turtle"/>
+    <check name="turtle"/>
   </target>
 
   <target name="export" description="export distribution">

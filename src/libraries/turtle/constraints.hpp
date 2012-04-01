@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2008
+// Copyright Mathieu Champlon 2008
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 #ifndef MOCK_CONSTRAINTS_HPP_INCLUDED
 #define MOCK_CONSTRAINTS_HPP_INCLUDED
@@ -67,7 +68,8 @@ namespace mock
             } \
             friend std::ostream& operator<<( std::ostream& s, const N& n ) \
             { \
-                return s << BOOST_STRINGIZE(N) << "( " << mock::format( n.expected_ ) << " )"; \
+                return s << BOOST_STRINGIZE(N) \
+                    << "( " << mock::format( n.expected_ ) << " )"; \
             } \
             Expected expected_; \
         }; \
@@ -186,11 +188,12 @@ namespace detail
         {}
         bool operator()( const std::string& actual ) const
         {
-            return actual.find( boost::unwrap_ref( expected_ ) ) != std::string::npos;
+            return actual.find( boost::unwrap_ref( expected_ ) )
+                != std::string::npos;
         }
         friend std::ostream& operator<<( std::ostream& s, const contain& n )
         {
-            return s << "contain ( " << mock::format( n.expected_ ) << " )";
+            return s << "contain( " << mock::format( n.expected_ ) << " )";
         }
         Expected expected_;
     };

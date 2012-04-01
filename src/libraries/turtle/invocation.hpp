@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2008
+// Copyright Mathieu Champlon 2008
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 #ifndef MOCK_INVOCATION_HPP_INCLUDED
 #define MOCK_INVOCATION_HPP_INCLUDED
@@ -30,7 +31,8 @@ namespace detail
         virtual bool invoked() const = 0;
         virtual bool exhausted() const = 0;
 
-        friend inline std::ostream& operator<<( std::ostream& s, const invocation& i )
+        friend inline std::ostream& operator<<(
+            std::ostream& s, const invocation& i )
         {
             return i.serialize( s );
         }
@@ -43,8 +45,8 @@ namespace detail
     {
     public:
         between( std::size_t min, std::size_t max )
-            : min_  ( min )
-            , max_  ( max )
+            : min_( min )
+            , max_( max )
             , count_( 0 )
         {
             if( min > max )
@@ -81,7 +83,8 @@ namespace detail
     private:
         virtual std::ostream& serialize( std::ostream& s ) const
         {
-            return s << "between( " << count_ << "/[" << min_ << ',' << max_ <<  "] )";
+            return s << "between( " << count_
+                << "/[" << min_ << ',' << max_ << "] )";
         }
     };
 
@@ -95,7 +98,7 @@ namespace detail
     private:
         virtual std::ostream& serialize( std::ostream& s ) const
         {
-            return s << "exactly( " << count_ << '/' << max_ <<  " )";
+            return s << "exactly( " << count_ << '/' << max_ << " )";
         }
     };
 
@@ -137,7 +140,7 @@ namespace detail
     private:
         virtual std::ostream& serialize( std::ostream& s ) const
         {
-            return s << "at_least( " << count_ << '/' << min_ <<  " )";
+            return s << "at_least( " << count_ << '/' << min_ << " )";
         }
     };
 
@@ -151,7 +154,7 @@ namespace detail
     private:
         virtual std::ostream& serialize( std::ostream& s ) const
         {
-            return s << "at_most( " << count_ << '/' << max_ <<  " )";
+            return s << "at_most( " << count_ << '/' << max_ << " )";
         }
     };
 

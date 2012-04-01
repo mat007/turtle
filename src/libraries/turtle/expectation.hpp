@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2008
+// Copyright Mathieu Champlon 2008
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 #ifndef MOCK_EXPECTATION_HPP_INCLUDED
 #define MOCK_EXPECTATION_HPP_INCLUDED
@@ -96,7 +97,9 @@ namespace detail
         boost::shared_ptr< detail::invocation > i_;
 
     private:
-        typedef std::vector< boost::shared_ptr< detail::sequence_impl > > sequences_type;
+        typedef std::vector<
+            boost::shared_ptr< detail::sequence_impl >
+        > sequences_type;
         typedef sequences_type::const_iterator sequences_cit;
 
         sequences_type sequences_;
@@ -160,7 +163,8 @@ namespace detail
 
         MOCK_EXPECTATION_METHODS
 
-        friend std::ostream& operator<<( std::ostream& s, const expectation& m )
+        friend std::ostream& operator<<( std::ostream& s,
+            const expectation& m )
         {
             return s << (m.i_->exhausted() ? 'v' : '.') << ' ' << *m.i_;
         }
@@ -173,23 +177,40 @@ namespace detail
                 boost::function_types::parameter_types< Signature >, \
             n \
         >::type arg##n##_type;
-#define MOCK_EXPECTATION_CONSTRUCTOR(z, n, d) BOOST_PP_COMMA_IF(n) c##n##_( new detail::check< arg##n##_type, constraint< detail::any > >( mock::any ) )
-#define MOCK_EXPECTATION_WITH(z, n, d) c##n##_.reset( new detail::check< arg##n##_type, Constraint_##n >( c##n ) );
-#define MOCK_EXPECTATION_MEMBER(z, n, d) boost::shared_ptr< detail::check_base< arg##n##_type > > c##n##_;
-#define MOCK_EXPECTATION_ARGS(z, n, d) BOOST_PP_COMMA_IF(n) arg##n##_type a##n
-#define MOCK_EXPECTATION_IS_VALID(z, n, d) && (*c##n##_)( a##n )
-#define MOCK_EXPECTATION_SERIALIZE(z, n, d) BOOST_PP_IF(n, << ", " <<,) *m.c##n##_
+#define MOCK_EXPECTATION_INITIALIZE(z, n, d) \
+    BOOST_PP_COMMA_IF(n) c##n##_( \
+        new detail::check< \
+            arg##n##_type, \
+            constraint< detail::any > \
+        >( mock::any ) )
+#define MOCK_EXPECTATION_WITH(z, n, d) \
+    c##n##_.reset( \
+        new detail::check< \
+            arg##n##_type, \
+            Constraint_##n \
+        >( c##n ) );
+#define MOCK_EXPECTATION_MEMBER(z, n, d) \
+    boost::shared_ptr< detail::check_base< arg##n##_type > > c##n##_;
+#define MOCK_EXPECTATION_ARGS(z, n, d) \
+    BOOST_PP_COMMA_IF(n) arg##n##_type a##n
+#define MOCK_EXPECTATION_IS_VALID(z, n, d) \
+    && (*c##n##_)( a##n )
+#define MOCK_EXPECTATION_SERIALIZE(z, n, d) \
+    BOOST_PP_IF(n, << ", " <<,) *m.c##n##_
 #define MOCK_EXPECTATION(z, n, d) \
     template< typename Signature > \
     class expectation< Signature, n > \
         : public expectation_base \
-        , public action< BOOST_DEDUCED_TYPENAME \
-            boost::function_types::result_type< Signature >::type, Signature > \
+        , public action< \
+            BOOST_DEDUCED_TYPENAME \
+                boost::function_types::result_type< Signature >::type, \
+            Signature \
+        > \
     { \
         BOOST_PP_REPEAT(n, MOCK_EXPECTATION_TYPEDEF, BOOST_PP_EMPTY) \
     public: \
         expectation() \
-            : BOOST_PP_REPEAT(n, MOCK_EXPECTATION_CONSTRUCTOR, BOOST_PP_EMPTY) \
+            : BOOST_PP_REPEAT(n, MOCK_EXPECTATION_INITIALIZE, BOOST_PP_EMPTY) \
         {} \
         template< BOOST_PP_ENUM_PARAMS(n, typename Constraint_) > \
         expectation& with( BOOST_PP_ENUM_BINARY_PARAMS(n, Constraint_, c) ) \
@@ -197,27 +218,36 @@ namespace detail
             BOOST_PP_REPEAT(n, MOCK_EXPECTATION_WITH, BOOST_PP_EMPTY) \
             return *this; \
         } \
-        bool is_valid( BOOST_PP_REPEAT(n, MOCK_EXPECTATION_ARGS, BOOST_PP_EMPTY) ) const \
+        bool is_valid( \
+            BOOST_PP_REPEAT(n, MOCK_EXPECTATION_ARGS, BOOST_PP_EMPTY) ) const \
         { \
             return ! i_->exhausted() \
-                BOOST_PP_REPEAT(n, MOCK_EXPECTATION_IS_VALID, BOOST_PP_EMPTY); \
+                BOOST_PP_REPEAT(n, \
+                    MOCK_EXPECTATION_IS_VALID, BOOST_PP_EMPTY); \
         } \
         MOCK_EXPECTATION_METHODS \
-        friend std::ostream& operator<<( std::ostream& s, const expectation& m ) \
+        friend std::ostream& operator<<( \
+            std::ostream& s, const expectation& m ) \
         { \
-            return s << (m.i_->exhausted() ? 'v' : '.') << ' ' << *m.i_ << ".with( " \
-                << \
-                BOOST_PP_REPEAT(n, MOCK_EXPECTATION_SERIALIZE, BOOST_PP_EMPTY) \
+            return s << (m.i_->exhausted() ? 'v' : '.') \
+                << ' ' << *m.i_ << ".with( " \
+                << BOOST_PP_REPEAT(n, \
+                    MOCK_EXPECTATION_SERIALIZE, BOOST_PP_EMPTY) \
                 << " )"; \
         } \
     private: \
         BOOST_PP_REPEAT(n, MOCK_EXPECTATION_MEMBER, BOOST_PP_EMPTY) \
     };
-    BOOST_PP_REPEAT_FROM_TO(1, BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_EXPECTATION, BOOST_PP_EMPTY)
+
+    BOOST_PP_REPEAT_FROM_TO(
+        1,
+        BOOST_PP_INC(MOCK_MAX_ARGS),
+        MOCK_EXPECTATION,
+        BOOST_PP_EMPTY)
 
 #undef MOCK_EXPECTATION_METHODS
 #undef MOCK_EXPECTATION_TYPEDEF
-#undef MOCK_EXPECTATION_CONSTRUCTOR
+#undef MOCK_EXPECTATION_INITIALIZE
 #undef MOCK_EXPECTATION_WITH
 #undef MOCK_EXPECTATION_MEMBER
 #undef MOCK_EXPECTATION_ARGS

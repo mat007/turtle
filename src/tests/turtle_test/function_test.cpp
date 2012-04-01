@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2008
+// Copyright Mathieu Champlon 2008
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 #define BOOST_AUTO_TEST_MAIN
 #include "mock_error.hpp"
@@ -349,10 +350,10 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_failing_custom_constrain
 
 //BOOST_FIXTURE_TEST_CASE( literal_zero_can_be_used_in_place_of_null_pointers_in_constraints, error_fixture )
 //{
-//    mock::function< void( int* ) > f;
-//    f.expect().with( 0 );
-//    f.reset();
-//    CHECK_CALLS( 1 );
+//   mock::function< void( int* ) > f;
+//   f.expect().with( 0 );
+//   f.reset();
+//   CHECK_CALLS( 1 );
 //}
 
 // result handling

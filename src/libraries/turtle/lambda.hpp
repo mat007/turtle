@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2011
+// Copyright Mathieu Champlon 2011
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 #ifndef MOCK_LAMBDA_HPP_INCLUDED
 #define MOCK_LAMBDA_HPP_INCLUDED
@@ -41,7 +42,8 @@ namespace detail
         template< typename T >
         static functor_type make_val( boost::reference_wrapper< T > t )
         {
-            return mock::detail::bind( &do_ref_identity< T >, t.get_pointer() );
+            return mock::detail::bind(
+                &do_ref_identity< T >, t.get_pointer() );
         }
         template< typename T >
         static functor_type make_throw( T t )

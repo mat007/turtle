@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2011
+// Copyright Mathieu Champlon 2011
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 //#include <boost/spirit/home/phoenix/statement/throw.hpp>
 //#include <boost/spirit/home/phoenix/operator/self.hpp>
@@ -28,28 +29,28 @@
 #include <turtle/mock.hpp>
 //#include <boost/test/auto_unit_test.hpp>
 
-//  release vc80
+// release vc80
 //
-//    xeumeuleu/xml.h 24
+//   xeumeuleu/xml.h 24
 
-//    boost/shared_ptr.hpp                                            5
-//    boost/bind.hpp                                                  6
-//    boost/type_traits.hpp                                          19
-//    boost/function_types/function_type.hpp                         19
-//    boost/function.hpp                                             23
-//    boost/function.hpp + boost/bind.hpp                            25
-//    boost/lambda/lambda.hpp                                        25
-//    boost/lambda/bind.hpp                                          22
-//    boost/function_types/function_type.hpp + boost/type_traits.hpp 36
-//    boost/spirit/home/phoenix/core.hpp                             46
+//   boost/shared_ptr.hpp                                            5
+//   boost/bind.hpp                                                  6
+//   boost/type_traits.hpp                                          19
+//   boost/function_types/function_type.hpp                         19
+//   boost/function.hpp                                             23
+//   boost/function.hpp + boost/bind.hpp                            25
+//   boost/lambda/lambda.hpp                                        25
+//   boost/lambda/bind.hpp                                          22
+//   boost/function_types/function_type.hpp + boost/type_traits.hpp 36
+//   boost/spirit/home/phoenix/core.hpp                             46
 //
-//    boost/test/auto_unit_test.hpp                   27
-//    turtle/mock.hpp                                 89
-//    boost/test/auto_unit_test.hpp + turtle/mock.hpp 93
+//   boost/test/auto_unit_test.hpp                   27
+//   turtle/mock.hpp                                 89
+//   boost/test/auto_unit_test.hpp + turtle/mock.hpp 93
 //
-//    all boost includes from turtle  89
+//   all boost includes from turtle  89
 
-//  getting rid of :
-//    boost/bind                            3
-//    function_type                        13
-//    boost/phoenix                        31
+// getting rid of :
+//   boost/bind                            3
+//   function_type                        13
+//   boost/phoenix                        31

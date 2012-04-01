@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2008
+// Copyright Mathieu Champlon 2008
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 #ifndef MOCK_FUNCTION_HPP_INCLUDED
 #define MOCK_FUNCTION_HPP_INCLUDED
@@ -101,7 +102,13 @@ namespace mock
         { \
             return (*impl_)( BOOST_PP_ENUM_PARAMS(n, p) ); \
         }
-        BOOST_PP_REPEAT_FROM_TO(1, BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_FUNCTION_OPERATOR, BOOST_PP_EMPTY)
+
+        BOOST_PP_REPEAT_FROM_TO(
+            1,
+            BOOST_PP_INC(MOCK_MAX_ARGS),
+            MOCK_FUNCTION_OPERATOR,
+            BOOST_PP_EMPTY)
+
 #undef MOCK_FUNCTION_OPERATOR
 
         friend std::ostream& operator<<( std::ostream& s, const function& e )
@@ -201,40 +208,49 @@ namespace mock
             }
 
 #define MOCK_FUNCTION_FORMAT(z, n, N) \
-    << " " << mock::format( p##n ) << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), " ", ",")
-#define MOCK_FUNCTION_CALL_CONTEXT(n) \
+    << " " << mock::format( p##n ) \
+    << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), " ", ",")
+#define MOCK_FUNCTION_CONTEXT(n) \
     boost::unit_test::lazy_ostream::instance() \
         << lazy_context( this ) \
-        << "(" BOOST_PP_REPEAT(n, MOCK_FUNCTION_FORMAT, BOOST_PP_DEC(n)) << ")" \
+        << "(" BOOST_PP_REPEAT(n, MOCK_FUNCTION_FORMAT, BOOST_PP_DEC(n)) \
+        << ")" \
         << lazy_expectations( this )
 #define MOCK_FUNCTION_INVOKE(z, n, A) \
     { \
         valid_ = false; \
-        for( expectations_cit it = expectations_.begin(); it != expectations_.end(); ++it ) \
+        for( expectations_cit it = expectations_.begin(); \
+            it != expectations_.end(); ++it ) \
             if( it->is_valid( BOOST_PP_ENUM_PARAMS(n, p) ) ) \
             { \
                 if( ! it->invoke() ) \
                 { \
-                    error_type::sequence_failed( MOCK_FUNCTION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                    error_type::sequence_failed( \
+                        MOCK_FUNCTION_CONTEXT(n), it->file(), it->line() ); \
                     return A; \
                 } \
                 if( ! it->functor() ) \
                 { \
-                    error_type::missing_action( MOCK_FUNCTION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                    error_type::missing_action( \
+                        MOCK_FUNCTION_CONTEXT(n), it->file(), it->line() ); \
                     return A; \
                 } \
                 valid_ = true; \
-                error_type::expected_call( MOCK_FUNCTION_CALL_CONTEXT(n), it->file(), it->line() ); \
+                error_type::expected_call( \
+                    MOCK_FUNCTION_CONTEXT(n), it->file(), it->line() ); \
                 return it->functor()( BOOST_PP_ENUM_PARAMS(n, p) ); \
             } \
-        error_type::unexpected_call( MOCK_FUNCTION_CALL_CONTEXT(n) ); \
+        error_type::unexpected_call( MOCK_FUNCTION_CONTEXT(n) ); \
         return A; \
     }
 #define MOCK_FUNCTION_OPERATOR(z, n, P) \
     MOCK_DECL(operator(), n, Signature, const, BOOST_DEDUCED_TYPENAME) \
     MOCK_FUNCTION_INVOKE(z, n, P)
 
-            BOOST_PP_REPEAT(BOOST_PP_INC(MOCK_MAX_ARGS), MOCK_FUNCTION_OPERATOR, error_type::abort())
+            BOOST_PP_REPEAT(
+                BOOST_PP_INC(MOCK_MAX_ARGS),
+                MOCK_FUNCTION_OPERATOR,
+                error_type::abort())
 
             void test() const
             MOCK_FUNCTION_INVOKE(, 0,)
@@ -242,9 +258,10 @@ namespace mock
 #undef MOCK_FUNCTION_FORMAT
 #undef MOCK_FUNCTION_OPERATOR
 #undef MOCK_FUNCTION_INVOKE
-#undef MOCK_FUNCTION_CALL_CONTEXT
+#undef MOCK_FUNCTION_CONTEXT
 
-            friend std::ostream& operator<<( std::ostream& s, const function_impl& e )
+            friend std::ostream& operator<<(
+                std::ostream& s, const function_impl& e )
             {
                 return s << lazy_context( &e ) << lazy_expectations( &e );
             }
@@ -254,7 +271,8 @@ namespace mock
                 lazy_context( const function_impl* impl )
                     : impl_( impl )
                 {}
-                friend std::ostream& operator<<( std::ostream& s, const lazy_context& e )
+                friend std::ostream& operator<<(
+                    std::ostream& s, const lazy_context& e )
                 {
                     if( e.impl_->context_ )
                         e.impl_->context_->serialize( s, *e.impl_ );
@@ -270,7 +288,8 @@ namespace mock
                 lazy_expectations( const function_impl* impl )
                     : impl_( impl )
                 {}
-                friend std::ostream& operator<<( std::ostream& s, const lazy_expectations& e )
+                friend std::ostream& operator<<(
+                    std::ostream& s, const lazy_expectations& e )
                 {
                     for( expectations_cit it = e.impl_->expectations_.begin();
                         it != e.impl_->expectations_.end(); ++it )

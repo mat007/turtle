@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2010
+// Copyright Mathieu Champlon 2010
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 #ifndef MOCK_ARGS_HPP_INCLUDED
 #define MOCK_ARGS_HPP_INCLUDED
@@ -50,7 +51,8 @@ namespace detail
 }
 
 #define MOCK_ARG(N, n, S, tpn) \
-    BOOST_PP_COMMA_IF(n) tpn mock::detail::arg< S, BOOST_PP_INC(n), N >::type p##n
+    BOOST_PP_COMMA_IF(n) tpn \
+        mock::detail::arg< S, BOOST_PP_INC(n), N >::type p##n
 #define MOCK_ARG_PROXY(z, n, d) \
     MOCK_ARG( \
         BOOST_PP_ARRAY_ELEM(0, d), \

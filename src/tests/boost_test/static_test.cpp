@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2011
+// Copyright Mathieu Champlon 2011
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 #define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
@@ -20,12 +21,12 @@ namespace
         fixture()
         {
             std::cout << __FUNCTION__ << std::endl;
-            //BOOST_FAIL( "oups" );
+            BOOST_FAIL( "oups" );
         }
         ~fixture()
         {
             std::cout << __FUNCTION__ << std::endl;
-            //BOOST_FAIL( "oups" );
+            BOOST_FAIL( "oups" );
         }
     };
     BOOST_GLOBAL_FIXTURE( fixture );

@@ -1,10 +1,11 @@
 //
-//  Copyright Mathieu Champlon 2008
+// Copyright Mathieu Champlon 2008
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
+// See http://turtle.sf.net for documentation.
 
 #ifndef MOCK_MOCK_HPP_INCLUDED
 #define MOCK_MOCK_HPP_INCLUDED
@@ -103,7 +104,9 @@ namespace detail
 
 #define MOCK_SIGNATURE(M) \
     mock::detail::signature< \
-        BOOST_TYPEOF( mock::ambiguous_method_name_use_MOCK_METHOD_EXT_instead( &base_type::M ) ) \
+        BOOST_TYPEOF( \
+            mock::ambiguous_method_name_use_MOCK_METHOD_EXT_instead( \
+                &base_type::M ) ) \
     >::type
 
 #define MOCK_METHOD_AUX(M, n, S, t, c, tpn) \
