@@ -7,19 +7,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\libraries\turtle\action.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libraries\turtle\args.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libraries\turtle\check.hpp">
+    <ClInclude Include="..\..\src\libraries\turtle\cleanup.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libraries\turtle\config.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\libraries\turtle\constraint.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\libraries\turtle\constraints.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\libraries\turtle\context.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\libraries\turtle\default_error.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libraries\turtle\error.hpp">
@@ -28,19 +31,22 @@
     <ClInclude Include="..\..\src\libraries\turtle\expectation.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libraries\turtle\format.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\libraries\turtle\function.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libraries\turtle\functional.hpp">
+    <ClInclude Include="..\..\src\libraries\turtle\group.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libraries\turtle\invocation.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libraries\turtle\is_functor.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\libraries\turtle\lambda.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\libraries\turtle\log.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libraries\turtle\mock.hpp">
@@ -55,7 +61,7 @@
     <ClInclude Include="..\..\src\libraries\turtle\operators.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libraries\turtle\placeholder.hpp">
+    <ClInclude Include="..\..\src\libraries\turtle\parent.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libraries\turtle\root.hpp">
@@ -70,13 +76,22 @@
     <ClInclude Include="..\..\src\libraries\turtle\verifiable.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libraries\turtle\has_operator.hpp">
+    <ClInclude Include="..\..\src\libraries\turtle\yes_no_type.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libraries\turtle\is_formattable.hpp">
+    <ClInclude Include="..\..\src\libraries\turtle\action.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libraries\turtle\is_serializable.hpp">
+    <ClInclude Include="..\..\src\libraries\turtle\args.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\libraries\turtle\boost_test_error.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\libraries\turtle\check.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\libraries\turtle\child.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

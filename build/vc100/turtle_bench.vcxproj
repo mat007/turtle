@@ -18,6 +18,17 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_0_class.cpp" />
+    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_0_class_10_max_args.cpp" />
+    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_0_class_20_max_args.cpp" />
+    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_0_class_30_max_args.cpp" />
+    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_30_args_30_max_args.cpp" />
+    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args.cpp" />
+    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args_10_max_args.cpp" />
+    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args_20_max_args.cpp" />
+    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args_30_max_args.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2D607783-30B9-46DE-81E2-28513B31D5D2}</ProjectGuid>
   </PropertyGroup>
@@ -175,12 +186,6 @@
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\src\applications\turtle_bench\turtle_bench.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\src\applications\turtle_bench\turtle_bench.hpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

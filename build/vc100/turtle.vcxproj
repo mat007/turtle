@@ -18,6 +18,37 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\libraries\turtle\action.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\args.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\boost_test_error.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\check.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\child.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\cleanup.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\config.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\constraint.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\constraints.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\context.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\default_error.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\error.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\expectation.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\function.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\group.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\invocation.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\is_functor.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\lambda.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\log.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\mock.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\node.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\object.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\operators.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\parent.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\root.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\sequence.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\type_name.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\verifiable.hpp" />
+    <ClInclude Include="..\..\src\libraries\turtle\yes_no_type.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{831F2DEE-1E35-4533-A3B2-12C01BA8DA1D}</ProjectGuid>
   </PropertyGroup>
@@ -137,32 +168,6 @@
       <AdditionalLibraryDirectories>$(OutDir) ; ../../lib/vc100_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\src\libraries\turtle\action.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\args.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\check.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\config.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\constraints.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\error.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\expectation.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\format.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\function.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\functional.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\has_operator.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\invocation.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\is_formattable.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\is_functor.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\is_serializable.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\mock.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\node.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\object.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\operators.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\placeholder.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\root.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\sequence.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\type_name.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\verifiable.hpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
