@@ -12,8 +12,6 @@
 
 #include "yes_no_type.hpp"
 #include <boost/function_types/is_callable_builtin.hpp>
-#include <boost/type_traits/integral_constant.hpp>
-#include <boost/type_traits/detail/yes_no_type.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/or.hpp>
 
