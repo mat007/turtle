@@ -535,23 +535,3 @@ BOOST_AUTO_TEST_CASE( a_static_method_in_a_template_class_can_be_mocked )
     BOOST_CHECK( MOCK_VERIFY( some_template_class< int >::some_static_method ) );
     MOCK_RESET( some_template_class< int >::some_static_method );
 }
-
-namespace
-{
-    struct non_comparable_type
-    {};
-}
-
-namespace mock
-{
-    bool compare( non_comparable_type, non_comparable_type )
-    {
-        return true;
-    }
-}
-
-BOOST_AUTO_TEST_CASE( compare_function_can_be_used_to_customize_validation )
-{
-    MOCK_FUNCTOR( f, void( non_comparable_type ) );
-    MOCK_EXPECT( f ).with( non_comparable_type() );
-}

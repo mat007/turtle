@@ -20,12 +20,6 @@
 
 namespace mock
 {
-    template< typename Actual, typename Expected >
-    bool compare( const Actual& actual, const Expected& expected )
-    {
-        return actual == expected;
-    }
-
 namespace detail
 {
     template< typename Actual >
@@ -55,7 +49,7 @@ namespace detail
     private:
         virtual bool operator()( Actual actual )
         {
-            return mock::compare( actual, boost::unwrap_ref( expected_ ) );
+            return actual == boost::unwrap_ref( expected_ );
         }
         virtual void serialize( std::ostream& s ) const
         {
