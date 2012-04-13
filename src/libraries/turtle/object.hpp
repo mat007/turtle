@@ -77,7 +77,10 @@ namespace mock
             }
 
         private:
-            typedef std::map< const detail::verifiable*, detail::child > children_t;
+            typedef std::map<
+                const detail::verifiable*,
+                detail::child
+            > children_t;
             typedef children_t::const_iterator children_cit;
 
             detail::group group_;
