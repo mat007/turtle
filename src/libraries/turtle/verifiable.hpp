@@ -14,6 +14,8 @@
 
 namespace mock
 {
+namespace detail
+{
     class verifiable : private boost::noncopyable
     {
     public:
@@ -24,6 +26,7 @@ namespace mock
 
         virtual void reset() = 0;
     };
+}
 }
 
 #endif // MOCK_VERIFIABLE_HPP_INCLUDED

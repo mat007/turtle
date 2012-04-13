@@ -33,10 +33,10 @@ namespace mock
         {}
 
     private:
-        class object_impl : public detail::context, private verifiable
+        class object_impl : public detail::context, private detail::verifiable
         {
         public:
-            virtual void add( const void* /*p*/, verifiable& v,
+            virtual void add( const void* /*p*/, detail::verifiable& v,
                 boost::unit_test::const_string instance,
                 const boost::optional< detail::type_name >& type,
                 boost::unit_test::const_string name )
@@ -45,11 +45,11 @@ namespace mock
                     mock::detail::root.add( *this );
                 children_[ &v ].update( parent_, instance, type, name );
             }
-            virtual void add( verifiable& v )
+            virtual void add( detail::verifiable& v )
             {
                 group_.add( v );
             }
-            virtual void remove( verifiable& v )
+            virtual void remove( detail::verifiable& v )
             {
                 group_.remove( v );
                 children_.erase( &v );
@@ -58,7 +58,7 @@ namespace mock
             }
 
             virtual void serialize( std::ostream& s,
-                const verifiable& v ) const
+                const detail::verifiable& v ) const
             {
                 children_cit it = children_.find( &v );
                 if( it != children_.end() )
@@ -77,7 +77,7 @@ namespace mock
             }
 
         private:
-            typedef std::map< const verifiable*, detail::child > children_t;
+            typedef std::map< const detail::verifiable*, detail::child > children_t;
             typedef children_t::const_iterator children_cit;
 
             detail::group group_;

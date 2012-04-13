@@ -18,10 +18,10 @@
 
 namespace mock
 {
-    class verifiable;
-
 namespace detail
 {
+    class verifiable;
+
     class context : boost::noncopyable
     {
     public:

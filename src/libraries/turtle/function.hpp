@@ -139,7 +139,7 @@ namespace mock
         }
 
     private:
-        class function_impl : public verifiable
+        class function_impl : public detail::verifiable
         {
         public:
             typedef MOCK_ERROR_POLICY< result_type > error_type;
