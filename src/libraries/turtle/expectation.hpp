@@ -15,6 +15,7 @@
 #include "action.hpp"
 #include "sequence.hpp"
 #include "check.hpp"
+#include "constraints.hpp"
 #include <boost/shared_ptr.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>

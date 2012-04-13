@@ -11,7 +11,6 @@
 #define MOCK_CHECK_HPP_INCLUDED
 
 #include "is_functor.hpp"
-#include "constraints.hpp"
 #include "operators.hpp"
 #include "log.hpp"
 #include <boost/utility/enable_if.hpp>

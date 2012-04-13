@@ -10,6 +10,7 @@
 #define BOOST_AUTO_TEST_MAIN
 #include "mock_error.hpp"
 #include <turtle/function.hpp>
+#include <turtle/constraints.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
