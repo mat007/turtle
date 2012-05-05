@@ -22,6 +22,7 @@
     <ClInclude Include="..\..\src\tests\turtle_test\mock_error.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\tests\turtle_test\args_test.cpp" />
     <ClCompile Include="..\..\src\tests\turtle_test\constraints_test.cpp" />
     <ClCompile Include="..\..\src\tests\turtle_test\error_test.cpp" />
     <ClCompile Include="..\..\src\tests\turtle_test\function_test.cpp" />

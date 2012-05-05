@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="turtle_test"
 	ProjectGUID="{74810A2A-33D8-47D6-9A50-71261F1683F5}"
 	RootNamespace="turtle_test"
@@ -95,7 +95,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="cd ../../run/vc80&#x0D;&#x0A;&quot;$(TargetDir)$(TargetName).exe&quot; --result_code=no --report_level=no --log_level=warning"
+				CommandLine="cd ../../run/vc80&#x0D;&#x0A;&quot;$(TargetDir)$(TargetName).exe&quot; --result_code=no --report_level=no --log_level=warning&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -179,7 +179,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="cd ../../run/vc80&#x0D;&#x0A;&quot;$(TargetDir)$(TargetName).exe&quot; --result_code=no --report_level=no --log_level=warning"
+				CommandLine="cd ../../run/vc80&#x0D;&#x0A;&quot;$(TargetDir)$(TargetName).exe&quot; --result_code=no --report_level=no --log_level=warning&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -190,6 +190,10 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx;h;hpp;hxx;hm;inl;inc;xsd"
 			>
+			<File
+				RelativePath="..\..\src\tests\turtle_test\args_test.cpp"
+				>
+			</File>
 			<File
 				RelativePath="..\..\src\tests\turtle_test\constraints_test.cpp"
 				>
