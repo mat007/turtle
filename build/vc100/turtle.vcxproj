@@ -39,7 +39,6 @@
     <ClInclude Include="..\..\src\libraries\turtle\lambda.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\log.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\mock.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\node.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\object.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\operators.hpp" />
     <ClInclude Include="..\..\src\libraries\turtle\parent.hpp" />
