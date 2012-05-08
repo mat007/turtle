@@ -34,7 +34,8 @@ namespace mock
         {}
 
     private:
-        class object_impl : public detail::context, public detail::verifiable, public boost::enable_shared_from_this< object_impl >
+        class object_impl : public detail::context, public detail::verifiable,
+            public boost::enable_shared_from_this< object_impl >
         {
         public:
             virtual void add( const void* /*p*/, detail::verifiable& v,

@@ -140,7 +140,8 @@ namespace mock
         }
 
     private:
-        class function_impl : public detail::verifiable, public boost::enable_shared_from_this< function_impl >
+        class function_impl : public detail::verifiable,
+            public boost::enable_shared_from_this< function_impl >
         {
         public:
             typedef MOCK_ERROR_POLICY< result_type > error_type;
