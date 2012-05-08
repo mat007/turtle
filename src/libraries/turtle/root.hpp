@@ -54,7 +54,7 @@ namespace detail
         {
             return group_.verify();
         }
-        void reset() const
+        void reset()
         {
             group_.reset();
         }

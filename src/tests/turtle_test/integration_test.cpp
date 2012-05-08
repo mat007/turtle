@@ -535,3 +535,39 @@ BOOST_AUTO_TEST_CASE( a_static_method_in_a_template_class_can_be_mocked )
     BOOST_CHECK( MOCK_VERIFY( some_template_class< int >::some_static_method ) );
     MOCK_RESET( some_template_class< int >::some_static_method );
 }
+
+namespace
+{
+    MOCK_CLASS( mock_class )
+    {
+        MOCK_METHOD_EXT( m, 0, void(), m );
+    };
+}
+
+BOOST_AUTO_TEST_CASE( resetting_referenced_mock_class_does_not_crash )
+{
+    MOCK_FUNCTOR( f, mock_class() );
+    {
+        mock_class c;
+        MOCK_EXPECT( f ).returns( c );
+        MOCK_EXPECT( c.m );
+    }
+    mock::reset();
+}
+
+namespace
+{
+    MOCK_CLASS( mock_class2 )
+    {
+        MOCK_METHOD_EXT( m, 0, mock_class2(), m );
+    };
+}
+
+BOOST_AUTO_TEST_CASE( resetting_self_referenced_mock_class_does_not_crash )
+{
+    {
+        mock_class2 c;
+        MOCK_EXPECT( c.m ).returns( c );
+    }
+    mock::reset();
+}

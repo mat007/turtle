@@ -27,6 +27,7 @@
 #include <boost/preprocessor/comparison/equal.hpp>
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/test/utils/lazy_ostream.hpp>
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/optional.hpp>
 #include <ostream>
@@ -139,7 +140,7 @@ namespace mock
         }
 
     private:
-        class function_impl : public detail::verifiable
+        class function_impl : public detail::verifiable, public boost::enable_shared_from_this< function_impl >
         {
         public:
             typedef MOCK_ERROR_POLICY< result_type > error_type;
@@ -191,6 +192,7 @@ namespace mock
             virtual void reset()
             {
                 valid_ = true;
+                boost::shared_ptr< function_impl > guard = shared_from_this();
                 expectations_.clear();
             }
 

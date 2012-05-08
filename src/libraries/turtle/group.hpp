@@ -42,10 +42,14 @@ namespace detail
                     valid = false;
             return valid;
         }
-        void reset() const
+        void reset()
         {
-            std::for_each( verifiables_.begin(), verifiables_.end(),
-                std::mem_fun( &verifiable::reset ) );
+            const verifiables_t verifiables = verifiables_;
+            for( verifiables_cit it = verifiables.begin();
+                it != verifiables.end(); ++it )
+                if( std::find( verifiables_.begin(), verifiables_.end(), *it )
+                    != verifiables_.end() )
+                    (*it)->reset();
         }
 
     private:

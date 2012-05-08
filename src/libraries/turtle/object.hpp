@@ -15,6 +15,7 @@
 #include "parent.hpp"
 #include "child.hpp"
 #include "type_name.hpp"
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/shared_ptr.hpp>
@@ -33,7 +34,7 @@ namespace mock
         {}
 
     private:
-        class object_impl : public detail::context, private detail::verifiable
+        class object_impl : public detail::context, public detail::verifiable, public boost::enable_shared_from_this< object_impl >
         {
         public:
             virtual void add( const void* /*p*/, detail::verifiable& v,
@@ -73,6 +74,7 @@ namespace mock
             }
             virtual void reset()
             {
+                boost::shared_ptr< object_impl > guard = shared_from_this();
                 group_.reset();
             }
 
