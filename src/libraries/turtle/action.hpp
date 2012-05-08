@@ -213,7 +213,7 @@ namespace detail
             f_ = lambda_type::make_val( boost::ref( r_ ) );
         }
 
-        mutable std::auto_ptr< Result > r_;
+        std::auto_ptr< Result > r_;
         functor_type f_;
     };
 
