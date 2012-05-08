@@ -272,10 +272,10 @@ namespace mock
                     : impl_( impl )
                 {}
                 friend std::ostream& operator<<(
-                    std::ostream& s, const lazy_context& e )
+                    std::ostream& s, const lazy_context& c )
                 {
-                    if( e.impl_->context_ )
-                        e.impl_->context_->serialize( s, *e.impl_ );
+                    if( c.impl_->context_ )
+                        c.impl_->context_->serialize( s, *c.impl_ );
                     else
                         s << "?";
                     return s;
