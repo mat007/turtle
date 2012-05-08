@@ -734,7 +734,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_unexpected_call_call_disables_the_automatic_
     CHECK_ERROR( f(), unexpected_call, 0, "?()" );
 }
 
-BOOST_FIXTURE_TEST_CASE( adding_a_expectation_reactivates_the_verification_upon_destruction, error_fixture )
+BOOST_FIXTURE_TEST_CASE( adding_an_expectation_reactivates_the_verification_upon_destruction, error_fixture )
 {
     std::auto_ptr< mock::function< void() > > f( new mock::function< void() > );
     CHECK_ERROR( (*f)(), unexpected_call, 0, "?()" );
