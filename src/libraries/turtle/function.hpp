@@ -193,7 +193,8 @@ namespace mock
             virtual void reset()
             {
                 valid_ = true;
-                boost::shared_ptr< function_impl > guard = shared_from_this();
+                boost::shared_ptr< function_impl > guard =
+                    this->shared_from_this();
                 expectations_.clear();
             }
 
