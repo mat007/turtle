@@ -216,7 +216,6 @@ namespace detail
         std::auto_ptr< Result > r_;
         functor_type f_;
     };
-
 }
 }
 
