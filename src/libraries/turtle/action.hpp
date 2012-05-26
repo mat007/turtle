@@ -158,8 +158,6 @@ namespace detail
 
     public:
         action()
-            : r_()
-            , f_()
         {}
         action( const action& rhs )
             : r_( const_cast< action& >( rhs ).r_.release() )
