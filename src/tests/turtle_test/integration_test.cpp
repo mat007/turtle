@@ -518,7 +518,7 @@ BOOST_AUTO_TEST_CASE( a_free_function_can_be_mocked )
 
 namespace
 {
-    struct some_class
+    struct some_class : mock::object
     {
         MOCK_STATIC_METHOD( some_static_method, 1, void( int ), some_static_method )
     };
@@ -530,6 +530,15 @@ BOOST_AUTO_TEST_CASE( a_static_method_can_be_mocked )
     BOOST_CHECK( ! MOCK_VERIFY( some_class::some_static_method ) );
     some_class::some_static_method( 42 );
     BOOST_CHECK( MOCK_VERIFY( some_class::some_static_method ) );
+    MOCK_RESET( some_class::some_static_method );
+}
+
+BOOST_AUTO_TEST_CASE( a_static_method_is_not_reset_when_resetting_an_instance_of_the_class )
+{
+    MOCK_EXPECT( some_class::some_static_method ).once();
+    some_class c;
+    mock::reset( c );
+    BOOST_CHECK( ! MOCK_VERIFY( some_class::some_static_method ) );
     MOCK_RESET( some_class::some_static_method );
 }
 
