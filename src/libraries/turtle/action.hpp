@@ -44,7 +44,7 @@ namespace detail
             f_ = lambda_type::make_val( boost::ref( *r_ ) );
         }
         template< typename Y >
-        void returns( const boost::reference_wrapper< Y >& r )
+        void returns( boost::reference_wrapper< Y > r )
         {
             f_ = lambda_type::make_val( r );
         }
@@ -86,7 +86,7 @@ namespace detail
             f_ = lambda_type::make_val( r );
         }
         template< typename Y >
-        void returns( const boost::reference_wrapper< Y >& r )
+        void returns( boost::reference_wrapper< Y > r )
         {
             f_ = lambda_type::make_val( r );
         }
@@ -201,7 +201,7 @@ namespace detail
             f_ = lambda_type::make_val( boost::ref( r_ ) );
         }
         template< typename Y >
-        void set( const boost::reference_wrapper< Y >& r )
+        void set( boost::reference_wrapper< Y > r )
         {
             f_ = lambda_type::make_val( r );
             r_.reset();

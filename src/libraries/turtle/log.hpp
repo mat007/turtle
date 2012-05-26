@@ -264,8 +264,7 @@ namespace detail
         return s;
     }
     template< typename T >
-    stream& operator<<( stream& s,
-        const boost::reference_wrapper< T >& t )
+    stream& operator<<( stream& s, boost::reference_wrapper< T > t )
     {
         return s << mock::format( t.get() );
     }
