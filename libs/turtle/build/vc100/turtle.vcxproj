@@ -19,34 +19,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\libraries\turtle\action.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\args.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\boost_test_error.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\check.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\child.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\cleanup.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\config.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\constraint.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\constraints.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\context.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\default_error.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\error.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\expectation.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\function.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\group.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\invocation.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\is_functor.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\lambda.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\log.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\mock.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\object.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\operators.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\parent.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\root.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\sequence.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\type_name.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\verifiable.hpp" />
-    <ClInclude Include="..\..\src\libraries\turtle\yes_no_type.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\action.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\args.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\boost_test_error.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\check.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\child.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\cleanup.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\config.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\constraint.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\constraints.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\context.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\default_error.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\error.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\expectation.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\function.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\group.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\invocation.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\is_functor.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\lambda.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\log.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\mock.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\object.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\operators.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\parent.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\root.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\sequence.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\type_name.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\verifiable.hpp" />
+    <ClInclude Include="..\..\..\..\turtle\yes_no_type.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{831F2DEE-1E35-4533-A3B2-12C01BA8DA1D}</ProjectGuid>

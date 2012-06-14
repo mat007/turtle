@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="bench_test"
 	ProjectGUID="{2D607783-30B9-46DE-81E2-28513B31D5D2}"
+	RootNamespace="bench_test"
 	>
 	<Platforms>
 		<Platform
@@ -37,7 +38,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../src/libraries,../../include/xerces-c/3.0.1"
+				AdditionalIncludeDirectories="../../../..; ../../include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -117,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="../../src/libraries,../../include/xerces-c/3.0.1"
+				AdditionalIncludeDirectories="../../../..; ../../include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
@@ -183,39 +184,39 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx;h;hpp;hxx;hm;inl;inc;xsd"
 			>
 			<File
-				RelativePath="..\..\src\tests\bench_test\turtle_bench_0_class.cpp"
+				RelativePath="..\..\test\bench_0_class.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\bench_test\turtle_bench_0_class_10_max_args.cpp"
+				RelativePath="..\..\test\bench_0_class_10_max_args.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\bench_test\turtle_bench_0_class_20_max_args.cpp"
+				RelativePath="..\..\test\bench_0_class_20_max_args.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\bench_test\turtle_bench_0_class_30_max_args.cpp"
+				RelativePath="..\..\test\bench_0_class_30_max_args.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_30_args_30_max_args.cpp"
+				RelativePath="..\..\test\bench_30_classes_30_methods_30_args_30_max_args.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args.cpp"
+				RelativePath="..\..\test\bench_30_classes_30_methods_9_args.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args_10_max_args.cpp"
+				RelativePath="..\..\test\bench_30_classes_30_methods_9_args_10_max_args.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args_20_max_args.cpp"
+				RelativePath="..\..\test\bench_30_classes_30_methods_9_args_20_max_args.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args_30_max_args.cpp"
+				RelativePath="..\..\test\bench_30_classes_30_methods_9_args_30_max_args.cpp"
 				>
 			</File>
 		</Filter>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="errors_test"
 	ProjectGUID="{231E907C-7B55-4128-B9EF-AB5B8042898D}"
 	RootNamespace="errors_test"
@@ -39,7 +39,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm172"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../src/libraries, ../../include"
+				AdditionalIncludeDirectories="../../../..; ../../include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -123,7 +123,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm162"
 				Optimization="2"
-				AdditionalIncludeDirectories="../../src/libraries, ../../include"
+				AdditionalIncludeDirectories="../../../..; ../../include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
@@ -191,51 +191,51 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx;h;hpp;hxx;hm;inl;inc;xsd"
 			>
 			<File
-				RelativePath="..\..\src\tests\errors_test\ambiguous_mock_method.cpp"
+				RelativePath="..\..\test\fail_ambiguous_mock_method.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\constraint_functor_not_compatible.cpp"
+				RelativePath="..\..\test\fail_constraint_functor_not_compatible.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\constraint_value_not_comparable.cpp"
+				RelativePath="..\..\test\fail_constraint_value_not_comparable.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\constraint_value_of_wrong_type_in_builtin_constraint.cpp"
+				RelativePath="..\..\test\fail_constraint_value_of_wrong_type_in_builtin_constraint.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\mismatch_type_in_returns_int_action.cpp"
+				RelativePath="..\..\test\fail_mismatch_type_in_returns_int_action.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\mismatch_type_in_returns_string_action.cpp"
+				RelativePath="..\..\test\fail_mismatch_type_in_returns_string_action.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\mismatch_type_in_returns_void_action.cpp"
+				RelativePath="..\..\test\fail_mismatch_type_in_returns_void_action.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\non_existing_base_class_method_in_mock_method.cpp"
+				RelativePath="..\..\test\fail_non_existing_base_class_method_in_mock_method.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\number_of_arguments_greater_than_max_constant.cpp"
+				RelativePath="..\..\test\fail_number_of_arguments_greater_than_max_constant.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\template_argument_without_tpl_macro.cpp"
+				RelativePath="..\..\test\fail_template_argument_without_tpl_macro.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\too_many_arguments_in_mock_method.cpp"
+				RelativePath="..\..\test\fail_too_many_arguments_in_mock_method.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\errors_test\wrong_number_of_arguments_in_with.cpp"
+				RelativePath="..\..\test\fail_wrong_number_of_arguments_in_with.cpp"
 				>
 			</File>
 		</Filter>

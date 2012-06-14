@@ -39,7 +39,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm172"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../src/libraries, ../../include"
+				AdditionalIncludeDirectories="../../../..; ../../include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -123,7 +123,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm162"
 				Optimization="2"
-				AdditionalIncludeDirectories="../../src/libraries, ../../include"
+				AdditionalIncludeDirectories="../../../..; ../../include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
@@ -191,59 +191,59 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx;h;hpp;hxx;hm;inl;inc;xsd"
 			>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\args_test.cpp"
+				RelativePath="..\..\test\mock_error.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\constraints_test.cpp"
+				RelativePath="..\..\test\test_args.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\error_test.cpp"
+				RelativePath="..\..\test\test_constraints.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\function_test.cpp"
+				RelativePath="..\..\test\test_error.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\integration_test.cpp"
+				RelativePath="..\..\test\test_function.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\invocation_test.cpp"
+				RelativePath="..\..\test\test_integration.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\is_functor_test.cpp"
+				RelativePath="..\..\test\test_invocation.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\log_test.cpp"
+				RelativePath="..\..\test\test_is_functor.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\max_args_test.cpp"
+				RelativePath="..\..\test\test_log.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\mock_error.hpp"
+				RelativePath="..\..\test\test_max_args.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\mock_test.cpp"
+				RelativePath="..\..\test\test_mock.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\object_test.cpp"
+				RelativePath="..\..\test\test_object.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\sequence_test.cpp"
+				RelativePath="..\..\test\test_sequence.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\turtle_test\type_name_test.cpp"
+				RelativePath="..\..\test\test_type_name.cpp"
 				>
 			</File>
 		</Filter>

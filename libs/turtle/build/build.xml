@@ -12,12 +12,13 @@
   </target>
 
   <presetdef name="build-turtle-test">
-    <build-test input="turtle_test" depends="boost" mode="all">
+    <build-test input="test" depends="boost" mode="all" excludes="bench_*,fail_*">
       <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
     </build-test>
   </presetdef>
 
   <target name="test" description="run unit tests">
+    <delete dir="${tests.dir}/test/bin"/>
     <build-turtle-test name="turtle"/>
     <build-turtle-test name="turtle_max_args">
       <defineset>
@@ -68,9 +69,10 @@
       <delete file="${reports.dir}/benchmark-${platform}.log"/>
       <touch file="${reports.dir}/benchmark-${platform}.log"/>
       <delete dir="${out.dir}/bench_test"/>
+      <delete dir="${tests.dir}/test/bin"/>
     </quiet>
     <for param="file">
-      <fileset dir="${tests.dir}/bench_test" includes="*.cpp"/>
+      <fileset dir="${tests.dir}/test" includes="bench_*.cpp"/>
       <sequential>
         <record name="${reports.dir}/benchmark-${platform}.log" action="start" append="true"/>
         <ant target="-bench">
@@ -85,7 +87,7 @@
     <echo>${file}</echo>
     <stopwatch name="bench"/>
     <quiet>
-      <compile name="bench" input="${tests.dir}/bench_test" outdir="${out.dir}/bench_test" excludes="**">
+      <compile name="bench" input="${tests.dir}/test" outdir="${out.dir}/bench_test" excludes="**">
         <includepath path="${libraries.dir}"/>
         <fileset file="${file}"/>
       </compile>
@@ -99,11 +101,9 @@
   </target>
 
   <target name="export" description="export distribution">
-    <deploy>
-      <module name="turtle">
-        <include name="**/*.hpp"/>
-      </module>
-    </deploy>
+    <sync todir="${dist.dir}/include">
+      <fileset dir="${libraries.dir}" includes="turtle/**.hpp"/>
+    </sync>
     <info version="svn rev ${svn.revision}" todir="${dist.dir}"/>
   </target>
 

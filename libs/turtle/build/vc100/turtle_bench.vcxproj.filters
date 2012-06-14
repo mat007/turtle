@@ -7,31 +7,31 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_0_class_30_max_args.cpp">
+    <ClCompile Include="..\..\test\bench_0_class_30_max_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args.cpp">
+    <ClCompile Include="..\..\test\bench_30_classes_30_methods_9_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args_10_max_args.cpp">
+    <ClCompile Include="..\..\test\bench_30_classes_30_methods_9_args_10_max_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args_20_max_args.cpp">
+    <ClCompile Include="..\..\test\bench_30_classes_30_methods_9_args_20_max_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_9_args_30_max_args.cpp">
+    <ClCompile Include="..\..\test\bench_30_classes_30_methods_9_args_30_max_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_30_classes_30_methods_30_args_30_max_args.cpp">
+    <ClCompile Include="..\..\test\bench_30_classes_30_methods_30_args_30_max_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_0_class.cpp">
+    <ClCompile Include="..\..\test\bench_0_class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_0_class_10_max_args.cpp">
+    <ClCompile Include="..\..\test\bench_0_class_10_max_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\bench_test\turtle_bench_0_class_20_max_args.cpp">
+    <ClCompile Include="..\..\test\bench_0_class_20_max_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

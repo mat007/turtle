@@ -7,48 +7,48 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\tests\turtle_test\mock_error.hpp">
+    <ClInclude Include="..\..\test\mock_error.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\tests\turtle_test\mock_test.cpp">
+    <ClCompile Include="..\..\test\test_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\object_test.cpp">
+    <ClCompile Include="..\..\test\test_constraints.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\sequence_test.cpp">
+    <ClCompile Include="..\..\test\test_error.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\type_name_test.cpp">
+    <ClCompile Include="..\..\test\test_function.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\constraints_test.cpp">
+    <ClCompile Include="..\..\test\test_integration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\error_test.cpp">
+    <ClCompile Include="..\..\test\test_invocation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\function_test.cpp">
+    <ClCompile Include="..\..\test\test_is_functor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\integration_test.cpp">
+    <ClCompile Include="..\..\test\test_log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\invocation_test.cpp">
+    <ClCompile Include="..\..\test\test_max_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\is_functor_test.cpp">
+    <ClCompile Include="..\..\test\test_mock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\log_test.cpp">
+    <ClCompile Include="..\..\test\test_object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\max_args_test.cpp">
+    <ClCompile Include="..\..\test\test_sequence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\turtle_test\args_test.cpp">
+    <ClCompile Include="..\..\test\test_type_name.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

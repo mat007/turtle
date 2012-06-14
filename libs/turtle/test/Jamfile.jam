@@ -1,0 +1,26 @@
+# Turtle mock library
+#
+# Copyright Mathieu Champlon 2012
+#
+# Distributed under the Boost Software License version 1.0. (See
+# accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+import testing ;
+
+run [ glob test_*.cpp ] /boost//unit_test_framework ;
+
+compile-fail fail_ambiguous_mock_method.cpp ;
+compile-fail fail_constraint_functor_not_compatible.cpp ;
+compile-fail fail_constraint_value_not_comparable.cpp ;
+compile-fail fail_constraint_value_of_wrong_type_in_builtin_constraint.cpp ;
+compile-fail fail_mismatch_type_in_returns_int_action.cpp ;
+compile-fail fail_mismatch_type_in_returns_string_action.cpp ;
+compile-fail fail_mismatch_type_in_returns_void_action.cpp ;
+compile-fail fail_non_existing_base_class_method_in_mock_method.cpp ;
+compile-fail fail_number_of_arguments_greater_than_max_constant.cpp ;
+compile-fail fail_template_argument_without_tpl_macro.cpp ;
+compile-fail fail_too_many_arguments_in_mock_method.cpp ;
+compile-fail fail_wrong_number_of_arguments_in_with.cpp ;
+
+# How to time bench_*.cpp compilation ?
