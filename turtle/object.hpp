@@ -15,6 +15,7 @@
 #include "parent.hpp"
 #include "child.hpp"
 #include "type_name.hpp"
+#include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/utility/enable_if.hpp>
