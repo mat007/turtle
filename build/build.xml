@@ -119,7 +119,7 @@
     </tar>
   </target>
 
-  <property name="boost.dir" value="${out.dir}/../boost.mock"/>
+  <property name="boost.dir" value="${out.dir}/../boost"/>
   <target name="boost" description="convert to boost">
     <delete dir="${boost.dir}"/>
     <copy todir="${boost.dir}/boost/mock">
@@ -127,9 +127,10 @@
     </copy>
     <copy todir="${boost.dir}/libs/mock/test">
         <fileset dir="${tests.dir}/test" includes="**"/>
+        <fileset dir="jam" includes="Jamfile.jam"/>
     </copy>
     <copy todir="${boost.dir}">
-        <fileset dir="${libraries.dir}" includes="Jam*"/>
+        <fileset dir="jam" includes="Jamroot.jam,Jamfile.v2"/>
     </copy>
     <replaceregexp match="MOCK" replace="BOOST_MOCK" flags="g">
         <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
