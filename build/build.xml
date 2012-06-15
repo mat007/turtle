@@ -119,6 +119,38 @@
     </tar>
   </target>
 
+  <property name="boost.dir" value="${out.dir}/../boost.mock"/>
+  <target name="boost" description="convert to boost">
+    <delete dir="${boost.dir}"/>
+    <copy todir="${boost.dir}/boost/mock">
+        <fileset dir="${libraries.dir}/turtle" includes="**"/>
+    </copy>
+    <copy todir="${boost.dir}/libs/mock/test">
+        <fileset dir="${tests.dir}/test" includes="**"/>
+    </copy>
+    <copy todir="${boost.dir}">
+        <fileset dir="${libraries.dir}" includes="Jam*"/>
+    </copy>
+    <replaceregexp match="MOCK" replace="BOOST_MOCK" flags="g">
+        <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
+    </replaceregexp>
+    <replaceregexp match="BOOST_MOCK_BOOST_MOCK" replace="BOOST_MOCK" flags="g">
+        <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
+    </replaceregexp>
+    <replaceregexp match='"([^"]+)"' replace="&lt;boost/mock/\1&gt;" flags="g">
+        <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
+    </replaceregexp>
+    <replaceregexp match="&lt;turtle/([^&gt;]+)" replace="&lt;boost/mock/\1" flags="g">
+        <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
+    </replaceregexp>
+    <replaceregexp match="(namespace mock)" replace="namespace boost${line.separator}{${line.separator}\1" flags="g">
+        <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
+    </replaceregexp>
+    <replaceregexp match="(}${line.separator}${line.separator}#endif //)" replace="}${line.separator}\1" flags="g">
+        <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
+    </replaceregexp>
+  </target>
+
   <target name="all" depends="configure,test,bench,reports,export,package" description="configure, build and run tests and benchmark, export and package distribution"/>
 
 </project>
