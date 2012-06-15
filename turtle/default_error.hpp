@@ -72,6 +72,6 @@ namespace mock
             fail( "untriggered expectation", context, file, line );
         }
     };
-}
+} // mock
 
 #endif // MOCK_DEFAULT_ERROR_POLICY_HPP_INCLUDED

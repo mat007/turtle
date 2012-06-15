@@ -172,6 +172,6 @@ namespace detail
         }
     };
 }
-}
+} // mock
 
 #endif // MOCK_INVOCATION_HPP_INCLUDED

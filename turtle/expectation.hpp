@@ -257,6 +257,6 @@ namespace detail
 #undef MOCK_EXPECTATION
 
 }
-}
+} // mock
 
 #endif // MOCK_EXPECTATION_HPP_INCLUDED

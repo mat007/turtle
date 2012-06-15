@@ -215,6 +215,6 @@ namespace detail
         functor_type f_;
     };
 }
-}
+} // mock
 
 #endif // MOCK_ACTION_HPP_INCLUDED

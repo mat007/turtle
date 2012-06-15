@@ -47,6 +47,6 @@ namespace detail
         boost::unit_test::const_string name_;
     };
 }
-}
+} // mock
 
 #endif // MOCK_CHILD_HPP_INCLUDED

@@ -106,6 +106,6 @@ namespace detail
     {
         return detail::not_< Constraint >( c.f_ );
     }
-}
+} // mock
 
 #endif // MOCK_OPERATORS_HPP_INCLUDED

@@ -81,6 +81,6 @@ namespace detail
         const std::type_info* info_;
     };
 }
-}
+} // mock
 
 #endif // MOCK_TYPE_NAME_HPP_INCLUDED

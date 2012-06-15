@@ -137,6 +137,6 @@ namespace detail
     {
         mock::detail::root.reset();
     }
-}
+} // mock
 
 #endif // MOCK_ROOT_HPP_INCLUDED

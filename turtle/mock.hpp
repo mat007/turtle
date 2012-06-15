@@ -75,7 +75,7 @@ namespace detail
     // the method is ambiguous : use MOCK_METHOD_EXT instead
     template< typename T >
     T& ambiguous_method_name_use_MOCK_METHOD_EXT_instead( const T& );
-}
+} // mock
 
 #define MOCK_BASE_CLASS(T, I) \
     struct T : I, mock::object, mock::detail::base< I >

@@ -27,6 +27,6 @@ namespace detail
     no_type operator,( yes_type, yes_type );
     no_type operator,( no_type, yes_type );
 }
-}
+} // mock
 
 #endif // MOCK_YES_NO_TYPE_HPP_INCLUDED

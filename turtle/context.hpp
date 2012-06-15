@@ -39,6 +39,6 @@ namespace detail
             const verifiable& v ) const = 0;
     };
 }
-}
+} // mock
 
 #endif // MOCK_CONTEXT_HPP_INCLUDED

@@ -225,6 +225,6 @@ namespace detail
     {
         return t;
     }
-}
+} // mock
 
 #endif // MOCK_CONSTRAINTS_HPP_INCLUDED

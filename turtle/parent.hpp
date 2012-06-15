@@ -41,6 +41,6 @@ namespace detail
         boost::optional< type_name > type_;
     };
 }
-}
+} // mock
 
 #endif // MOCK_PARENT_HPP_INCLUDED

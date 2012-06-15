@@ -33,7 +33,7 @@ namespace detail
     };
     BOOST_GLOBAL_FIXTURE( cleanup );
 }
-}
+} // mock
 
 #endif
 

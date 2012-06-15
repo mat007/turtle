@@ -48,7 +48,7 @@ namespace detail
         BOOST_MPL_ASSERT_RELATION( n, <=, N );
     };
 }
-}
+} // mock
 
 #define MOCK_ARG(N, n, S, tpn) \
     BOOST_PP_COMMA_IF(n) tpn \

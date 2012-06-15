@@ -21,6 +21,7 @@ namespace boost
 {
     template< typename T > class shared_ptr;
     template< typename T > class weak_ptr;
+    template< typename T > class reference_wrapper;
 
 namespace phoenix
 {
@@ -34,7 +35,6 @@ namespace assign_detail
 {
     template< typename T > class generic_list;
 }
-    template< typename T > class reference_wrapper;
 }
 
 namespace mock
@@ -307,6 +307,6 @@ namespace detail
         *s.s_ << t;
         return s;
     }
-}
+} // mock
 
 #endif // MOCK_LOG_HPP_INCLUDED

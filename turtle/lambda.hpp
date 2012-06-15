@@ -74,6 +74,6 @@ namespace detail
         {}
     };
 }
-}
+} // mock
 
 #endif // MOCK_LAMBDA_HPP_INCLUDED

@@ -130,6 +130,6 @@ namespace detail
     {
         o.impl_->reset();
     }
-}
+} // mock
 
 #endif // MOCK_OBJECT_HPP_INCLUDED

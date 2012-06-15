@@ -27,6 +27,6 @@ namespace detail
         virtual void reset() = 0;
     };
 }
-}
+} // mock
 
 #endif // MOCK_VERIFIABLE_HPP_INCLUDED

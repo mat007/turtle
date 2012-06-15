@@ -45,6 +45,6 @@ namespace detail
         >
     {};
 }
-}
+} // mock
 
 #endif // MOCK_IS_FUNCTOR_HPP_INCLUDED

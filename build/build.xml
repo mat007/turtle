@@ -138,8 +138,8 @@
     <replaceregexp match="BOOST_MOCK_BOOST_MOCK" replace="BOOST_MOCK" flags="g">
         <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
     </replaceregexp>
-    <replaceregexp match='"([^"]+)"' replace="&lt;boost/mock/\1&gt;" flags="g">
-        <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
+    <replaceregexp match='"([^"]+\.hpp)"' replace="&lt;boost/mock/\1&gt;" flags="g">
+        <fileset dir="${boost.dir}" includes="**/*.hpp"/>
     </replaceregexp>
     <replaceregexp match="&lt;turtle/([^&gt;]+)" replace="&lt;boost/mock/\1" flags="g">
         <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
@@ -147,13 +147,10 @@
     <replaceregexp match="(namespace mock)" replace="namespace boost${line.separator}{${line.separator}\1" flags="g">
         <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
     </replaceregexp>
-    <replaceregexp match="(}${line.separator}${line.separator}#endif //)" replace="}${line.separator}\1" flags="g">
+    <replaceregexp match="} // mock" replace="}${line.separator}}" flags="g">
         <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
     </replaceregexp>
-    <replaceregexp match="(}${line.separator}${line.separator}#define)" replace="}${line.separator}\1" flags="g">
-        <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
-    </replaceregexp>
-    <replaceregexp match="(mock::)" replace="boost::\1" flags="g">
+    <replaceregexp match="( mock::)" replace=" boost::mock::" flags="g">
         <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
     </replaceregexp>
   </target>

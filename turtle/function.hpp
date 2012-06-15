@@ -325,6 +325,6 @@ namespace mock
     {
         f.reset();
     }
-}
+} // mock
 
 #endif // MOCK_FUNCTION_HPP_INCLUDED

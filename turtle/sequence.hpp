@@ -63,6 +63,6 @@ namespace detail
 
         boost::shared_ptr< detail::sequence_impl > impl_;
     };
-}
+} // mock
 
 #endif // MOCK_SEQUENCE_HPP_INCLUDED

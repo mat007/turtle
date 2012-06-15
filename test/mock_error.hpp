@@ -24,9 +24,7 @@ namespace
     int untriggered_expectation_count = 0;
 
     std::string last_context;
-}
-namespace mock
-{
+
     template< typename Result >
     struct mock_error
     {

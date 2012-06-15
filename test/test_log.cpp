@@ -134,7 +134,7 @@ namespace mock
     {
         return s << "mock_streamable";
     }
-}
+} // mock
 
 BOOST_AUTO_TEST_CASE( mock_streamable_type_yields_its_value_when_serialized )
 {
@@ -300,7 +300,7 @@ namespace mock
     {
         return s << "ambiguous_convertible_mock_streamable";
     }
-}
+} // mock
 
 BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_mock_streamable_yields_its_value_when_serialized )
 {
@@ -366,7 +366,7 @@ namespace mock
     {
         return s << "template_mock_streamable";
     }
-}
+} // mock
 
 BOOST_AUTO_TEST_CASE( template_mock_streamable_yields_its_value_when_serialized )
 {
@@ -538,7 +538,7 @@ namespace detail
         return s << "mock::detail::template_serializable";
     }
 }
-}
+} // mock
 
 BOOST_AUTO_TEST_CASE( mock_detail_template_type_serializable_yields_its_value_when_serialized )
 {
@@ -564,7 +564,7 @@ namespace detail
         return s << "mock::detail::template_streamable";
     }
 }
-}
+} // mock
 
 BOOST_AUTO_TEST_CASE( mock_detail_template_template_streamable_yields_its_value_when_serialized )
 {

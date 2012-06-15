@@ -103,6 +103,6 @@ namespace detail
         Functor f_;
     };
 }
-}
+} // mock
 
 #endif // MOCK_CHECK_HPP_INCLUDED

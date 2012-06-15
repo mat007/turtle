@@ -20,6 +20,6 @@ namespace mock
         {}
         Constraint f_;
     };
-}
+} // mock
 
 #endif // MOCK_CONSTRAINT_HPP_INCLUDED

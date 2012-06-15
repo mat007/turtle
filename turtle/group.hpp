@@ -60,6 +60,6 @@ namespace detail
         verifiables_t verifiables_;
     };
 }
-}
+} // mock
 
 #endif // MOCK_GROUP_HPP_INCLUDED
