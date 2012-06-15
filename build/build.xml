@@ -40,7 +40,7 @@
       <touch file="${reports.dir}/errors-${platform}.log"/>
     </quiet>
     <for param="file">
-      <fileset dir="${tests.dir}/errors_test" includes="*.cpp"/>
+      <fileset dir="${tests.dir}/test" includes="fail*.cpp"/>
       <sequential>
         <record name="${reports.dir}/errors-${platform}.log" action="start" append="true"/>
         <ant target="-analyse">
@@ -148,6 +148,12 @@
         <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
     </replaceregexp>
     <replaceregexp match="(}${line.separator}${line.separator}#endif //)" replace="}${line.separator}\1" flags="g">
+        <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
+    </replaceregexp>
+    <replaceregexp match="(}${line.separator}${line.separator}#define)" replace="}${line.separator}\1" flags="g">
+        <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
+    </replaceregexp>
+    <replaceregexp match="(mock::)" replace="boost::\1" flags="g">
         <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
     </replaceregexp>
   </target>
