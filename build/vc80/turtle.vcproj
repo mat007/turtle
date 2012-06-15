@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="turtle"
 	ProjectGUID="{831F2DEE-1E35-4533-A3B2-12C01BA8DA1D}"
+	RootNamespace="turtle"
 	>
 	<Platforms>
 		<Platform
@@ -153,115 +154,115 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\turtle\action.hpp"
+				RelativePath="..\..\turtle\action.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\args.hpp"
+				RelativePath="..\..\turtle\args.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\boost_test_error.hpp"
+				RelativePath="..\..\turtle\boost_test_error.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\check.hpp"
+				RelativePath="..\..\turtle\check.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\child.hpp"
+				RelativePath="..\..\turtle\child.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\cleanup.hpp"
+				RelativePath="..\..\turtle\cleanup.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\config.hpp"
+				RelativePath="..\..\turtle\config.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\constraint.hpp"
+				RelativePath="..\..\turtle\constraint.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\constraints.hpp"
+				RelativePath="..\..\turtle\constraints.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\context.hpp"
+				RelativePath="..\..\turtle\context.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\default_error.hpp"
+				RelativePath="..\..\turtle\default_error.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\error.hpp"
+				RelativePath="..\..\turtle\error.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\expectation.hpp"
+				RelativePath="..\..\turtle\expectation.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\function.hpp"
+				RelativePath="..\..\turtle\function.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\group.hpp"
+				RelativePath="..\..\turtle\group.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\invocation.hpp"
+				RelativePath="..\..\turtle\invocation.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\is_functor.hpp"
+				RelativePath="..\..\turtle\is_functor.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\lambda.hpp"
+				RelativePath="..\..\turtle\lambda.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\log.hpp"
+				RelativePath="..\..\turtle\log.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\mock.hpp"
+				RelativePath="..\..\turtle\mock.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\object.hpp"
+				RelativePath="..\..\turtle\object.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\operators.hpp"
+				RelativePath="..\..\turtle\operators.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\parent.hpp"
+				RelativePath="..\..\turtle\parent.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\root.hpp"
+				RelativePath="..\..\turtle\root.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\sequence.hpp"
+				RelativePath="..\..\turtle\sequence.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\type_name.hpp"
+				RelativePath="..\..\turtle\type_name.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\verifiable.hpp"
+				RelativePath="..\..\turtle\verifiable.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\turtle\yes_no_type.hpp"
+				RelativePath="..\..\turtle\yes_no_type.hpp"
 				>
 			</File>
 		</Filter>
