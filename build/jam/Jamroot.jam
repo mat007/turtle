@@ -3,7 +3,7 @@ import modules ;
 
 local boost = [ modules.peek : BOOST ] ;
 
-project turtle : requirements <include>$(boost) <include>. ;
+project mock : requirements <include>$(boost) <include>. ;
 
 # This seems to prevent some Boost.Build errors that otherwise occur :-(
 use-project /boost : $(boost) ;
