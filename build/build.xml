@@ -127,10 +127,10 @@
     </copy>
     <copy todir="${boost.dir}/libs/mock/test">
         <fileset dir="${tests.dir}/test" includes="**"/>
-        <fileset dir="jam" includes="Jamfile.jam"/>
+        <fileset dir="boost" includes="Jamfile.jam"/>
     </copy>
     <copy todir="${boost.dir}">
-        <fileset dir="jam" includes="Jamroot.jam,Jamfile.v2"/>
+        <fileset dir="boost" includes="LICENSE_1_0.txt,Jamroot.jam,Jamfile.v2"/>
     </copy>
     <replaceregexp match="MOCK" replace="BOOST_MOCK" flags="g">
         <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
