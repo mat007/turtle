@@ -27,8 +27,10 @@ namespace mock
     MOCK_BINARY_CONSTRAINT( equal, actual == boost::unwrap_ref( expected_ ) )
     MOCK_BINARY_CONSTRAINT( less, actual < boost::unwrap_ref( expected_ ) )
     MOCK_BINARY_CONSTRAINT( greater, actual > boost::unwrap_ref( expected_ ) )
-    MOCK_BINARY_CONSTRAINT( less_equal, actual <= boost::unwrap_ref( expected_ ) )
-    MOCK_BINARY_CONSTRAINT( greater_equal, actual >= boost::unwrap_ref( expected_ ) )
+    MOCK_BINARY_CONSTRAINT(
+        less_equal, actual <= boost::unwrap_ref( expected_ ) )
+    MOCK_BINARY_CONSTRAINT(
+        greater_equal, actual >= boost::unwrap_ref( expected_ ) )
 
 namespace detail
 {
