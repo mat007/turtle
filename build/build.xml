@@ -125,10 +125,10 @@
     <copy todir="${boost.dir}/boost/mock">
         <fileset dir="${libraries.dir}/turtle" includes="**"/>
     </copy>
-    <copy todir="${boost.dir}/libs/mock/test">
-        <fileset dir="${tests.dir}/test" includes="**"/>
-        <fileset dir="boost" includes="Jamfile.jam"/>
-    </copy>
+    <copy todir="${boost.dir}/libs/mock">
+        <fileset dir="${tests.dir}" includes="test/**"/>
+        <fileset dir="boost" includes="test/**,doc/**,index.html"/>
+    </copy> 
     <copy todir="${boost.dir}">
         <fileset dir="boost" includes="LICENSE_1_0.txt,Jamroot.jam,Jamfile.v2"/>
     </copy>

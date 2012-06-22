@@ -1,0 +1,36 @@
+[library Boost.Mock
+    [quickbook 1.5]
+    [authors [Champlon, Mathieu]]
+    [copyright 2012 Mathieu Champlon]
+    [license
+        Distributed under the Boost Software License, Version 1.0.
+        (See accompanying file LICENSE_1_0.txt or copy at
+        [@http://www.boost.org/LICENSE_1_0.txt])
+    ]
+    [purpose Mock object library for testing]
+]
+
+[section:introduction Introduction]
+
+[note Boost.Mock is not an official Boost library.]
+
+[endsect]
+
+[section:conceptdef Concept Definitions]
+
+[endsect]
+
+[xinclude reference.xml]
+
+[section:rationale Rationale]
+
+[endsect]
+
+[section:future Future Work]
+
+[endsect]
+
+
+[section:acknowledgements Acknowledgements]
+
+[endsect]
