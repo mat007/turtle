@@ -26,6 +26,7 @@ namespace detail
         {
             // $$$$ MAT : because of a bug in Boost.Test
             // this will crash if anything needs to be logged
+            // see https://svn.boost.org/trac/boost/ticket/5563
             //mock::verify();
             mock::reset();
         }
