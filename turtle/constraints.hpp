@@ -19,73 +19,16 @@
 
 namespace mock
 {
-#define MOCK_CONSTRAINT(N,Expr) \
-    namespace detail \
-    { \
-        struct N \
-        { \
-            template< typename Actual > \
-            bool operator()( const Actual& actual ) const \
-            { \
-                return Expr; \
-            } \
-            friend std::ostream& operator<<( std::ostream& s, const N& ) \
-            { \
-                return s << BOOST_STRINGIZE(N); \
-            } \
-        }; \
-    } \
-    template<> \
-    struct constraint< detail::N > \
-    { \
-        constraint() \
-        {} \
-        detail::N f_; \
-    }; \
-    const constraint< detail::N > N;
+    MOCK_UNARY_CONSTRAINT( any, true && &actual )
+    MOCK_UNARY_CONSTRAINT( affirm, !! actual )
+    MOCK_UNARY_CONSTRAINT( negate, ! actual )
+    MOCK_UNARY_CONSTRAINT( evaluate, actual() )
 
-    MOCK_CONSTRAINT(any, true && &actual)
-    MOCK_CONSTRAINT(affirm, !! actual)
-    MOCK_CONSTRAINT(negate, ! actual)
-    MOCK_CONSTRAINT(evaluate, actual())
-
-#undef MOCK_CONSTRAINT
-
-#define MOCK_CONSTRAINT(N,Expr) \
-    namespace detail \
-    { \
-        template< typename Expected > \
-        struct N \
-        { \
-            explicit N( const Expected& expected ) \
-                : expected_( expected ) \
-            {} \
-            template< typename Actual > \
-            bool operator()( const Actual& actual ) const \
-            { \
-                return Expr; \
-            } \
-            friend std::ostream& operator<<( std::ostream& s, const N& n ) \
-            { \
-                return s << BOOST_STRINGIZE(N) \
-                    << "( " << mock::format( n.expected_ ) << " )"; \
-            } \
-            Expected expected_; \
-        }; \
-    } \
-    template< typename T > \
-    constraint< detail::N< T > > N( T t ) \
-    { \
-        return detail::N< T >( t ); \
-    }
-
-    MOCK_CONSTRAINT(equal, actual == boost::unwrap_ref( expected_ ))
-    MOCK_CONSTRAINT(less, actual < boost::unwrap_ref( expected_ ))
-    MOCK_CONSTRAINT(greater, actual > boost::unwrap_ref( expected_ ))
-    MOCK_CONSTRAINT(less_equal, actual <= boost::unwrap_ref( expected_ ))
-    MOCK_CONSTRAINT(greater_equal, actual >= boost::unwrap_ref( expected_ ))
-
-#undef MOCK_CONSTRAINT
+    MOCK_BINARY_CONSTRAINT( equal, actual == boost::unwrap_ref( expected_ ) )
+    MOCK_BINARY_CONSTRAINT( less, actual < boost::unwrap_ref( expected_ ) )
+    MOCK_BINARY_CONSTRAINT( greater, actual > boost::unwrap_ref( expected_ ) )
+    MOCK_BINARY_CONSTRAINT( less_equal, actual <= boost::unwrap_ref( expected_ ) )
+    MOCK_BINARY_CONSTRAINT( greater_equal, actual >= boost::unwrap_ref( expected_ ) )
 
 namespace detail
 {
@@ -222,7 +165,7 @@ namespace detail
     template< typename T >
     constraint< T > call( T t )
     {
-        return t;
+        return constraint< T >( t );
     }
 } // mock
 
