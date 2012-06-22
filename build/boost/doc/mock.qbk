@@ -12,11 +12,515 @@
 
 [section:introduction Introduction]
 
+Mock objects blablabla...
+
 [note Boost.Mock is not an official Boost library.]
 
 [endsect]
 
-[section:conceptdef Concept Definitions]
+[section:motivation Motivation]
+
+Consider a (very) simple calculator class :
+
+ class calculator
+ {
+ public:
+     int add( int a, int b );
+ };
+
+Obviously writing unit tests for such a class is trivial, one of them could be :
+
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+     calculator c;
+     BOOST_CHECK_EQUAL( 0, c.add( 0, 0 ) );
+ }
+
+What now if the calculator class looks more like this :
+
+ class view
+ {
+ public:
+     virtual void display( int result ) = 0;
+ };
+ 
+ class calculator
+ {
+ public:
+     calculator( view& v );
+ 
+     void add( int a, int b ); // the result will be sent to the view 'v'
+ };
+
+Writing unit tests becomes a bit more tedious and requires some boiler-plate code, for instance :
+
+ class my_view : public view
+ {
+ public:
+     my_view()
+         : called( false )
+     {}
+     virtual void display( int result )
+     {
+         called = true;
+         value = result;
+     }
+     bool called;
+     int value;
+ };
+ 
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+     my_view v;
+     calculator c( v );
+     c.add( 0, 0 );
+     BOOST_REQUIRE( v.called );
+     BOOST_CHECK_EQUAL( 0, v.value );
+ }
+
+Mock objects main purpose is to alleviate the user from the burden of writing all this boiler-plate code.
+
+Here is how the last test can be rewritten using a mock object :
+
+ MOCK_BASE_CLASS( mock_view, view ) // declare a 'mock_view' class implementing 'view'
+ {
+     MOCK_METHOD( display, 1 )      // implement the 'display' method from 'view' (taking 1 argument)
+ };
+ 
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+     mock_view v;
+     calculator c( v );
+     MOCK_EXPECT( v.display ).once().with( 0 ); // expect the 'display' method to be called once (and only once) with a parameter value equal to 0
+     c.add( 0, 0 );
+ }
+
+And all the checks are handled by the library.
+
+[endsect]
+
+[section:gettingstarted Getting Started]
+
+This section introduces most of the library features in a series of use cases built on the example from the motivation section.
+
+For all the code examples the following is assumed :
+
+ #define BOOST_AUTO_TEST_MAIN
+ #include <boost/test/auto_unit_test.hpp>
+ #include <turtle/mock.hpp>
+
+[section:create Create, expect, trigger, verify]
+
+A simple unit test with mock objects usually splits into several phases as illustrated by :
+
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+    mock_view v;                               // create mock objects
+    calculator c( v );                         // create object under test
+    MOCK_EXPECT( v.display ).once().with( 0 ); // configure mock objects
+    c.add( 0, 0 );                             // exercise object under test
+ }                                             // verify mock objects
+
+Triggering the object under test in turn calls methods on the mock objects, and any unexpected call raises an error.
+
+Mock objects are automatically verified during their destruction and an error is signalled if any unfulfilled expectation remains.
+
+More sophisticated tests sometimes require more complex use cases and in particular might need to :
+
+* manually verify mock objects
+* manually reset mock objects
+
+Here is an example highlighting the different possibilities :
+
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+    mock_view v;
+    calculator c( v );
+    MOCK_EXPECT( v.display ).once().with( 0 );
+    c.add( 0, 0 );
+    MOCK_VERIFY( v.display );                  // verify all expectations are fulfilled for the 'display' method
+    mock::verify( v );                         // verify all expectations are fulfilled for all methods of 'v'
+    mock::verify();                            // verify all expectations are fulfilled for all existing mock objects
+    MOCK_RESET( v.display );                   // reset all expectations for the 'display' method
+    mock::reset( v );                          // reset all expectations for all methods of 'v'
+    mock::reset();                             // reset all expectations for all existing mock objects
+ }                                             // automatically verify all expectations are fulfilled for all mock objects going out of scope
+
+Note that all verifications upon destruction will be disabled if the mock objects are destroyed in the context of an exception being raised.
+
+[endsect]
+
+[section:selection Expectation selection algorithm]
+
+A method can be configured with several expectations, for instance :
+
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+     mock_view v;
+     calculator c( v );
+     MOCK_EXPECT( v.display ).once().with( 0 ); // this call must occur once (and only once)
+     MOCK_EXPECT( v.display ).with( 1 );        // this call can occur any number of times (including never)
+     c.add( 0, 0 );
+ }
+
+Each method call is then handled by processing the expectations in the order they have been defined :
+
+# looking for a match with valid parameter constraints evaluated from left to right
+# checking that the invocation count for this match is not exhausted
+
+An error is raised if none can be found.
+
+By default the relative order of the calls does not matter. It can however be enforced :
+
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+     mock_view v;
+     calculator c( v );
+     mock::sequence s;
+     MOCK_EXPECT( v.display ).once().with( 0 ).in( s ); // add this expectation to the sequence
+     MOCK_EXPECT( v.display ).with( 1 ).in( s );        // add this expectation to the sequence after the previous one
+     c.add( 0, 0 );
+     c.add( 1, 0 );
+ }
+
+Therefore an error will be issued if the second expectation is matched before the first one has been exhausted.
+
+An expectation can be part of several sequences :
+
+  BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+     mock_view v;
+     calculator c( v );
+     mock::sequence s1, s2;
+     MOCK_EXPECT( v.display ).once().with( 0 ).in( s1 );
+     MOCK_EXPECT( v.display ).once().with( 1 ).in( s2 );
+     MOCK_EXPECT( v.display ).with( 2 ).in( s1 ).in( s2 ); // add this expectation to both sequences after the previous ones
+     c.add( 0, 0 );
+     c.add( 1, 0 );
+     c.add( 1, 1 );
+     c.add( 2, 0 );
+ }
+
+[endsect]
+
+[section:error Error diagnostic]
+
+During the execution of a test case, an error can happen for one of the following reasons :
+
+ * unexpected call when no match can be found for the given arguments (typically logs an error and throws an exception)
+ * sequence failure when an enforced call sequence has not been followed (typically logs an error and throws an exception)
+ * verification failure if a remaining match has not been fulfilled upon manual verification (typically logs an error)
+ * untriggered expectation if a remaining match has not been fulfilled when destroying the mock object (typically logs an error)
+ * missing action if a method supposed to return something else than void has not been configured properly (typically logs an error and throws an exception)
+
+The exact type of the exception thrown depends on the [[#Error_policy]] used.
+
+An error log typically looks like :
+
+ unknown location(0): error in "zero_plus_zero_is_zero": unexpected call: v.mock_view::display( 0 )
+ v once().with( 1 )
+ v once().with( 2 )
+ . once().with( 3 )
+
+On the first line is the description of what happened : here the display method of object v of class mock_view has been called with an actual value of 0.
+The following lines list the set expectations with the check (the v character) meaning the expectation has been exhausted.
+It therefore means that the two first expectations have been fulfilled by two calls, and then instead of 3 in the third call 0 has been erroneously passed on to the mock object.
+
+Another common error looks like :
+
+ src/tests/turtle_test/Tutorial.cpp(73): error in "zero_plus_zero_is_zero": untriggered expectation: v.mock_view::display
+ v once().with( 1 )
+ v once().with( 2 )
+ . once().with( 3 )
+
+The first line tells that a set expectation has not been fulfilled. The file and line number give the location where the corresponding expectation has been configured.
+The following lines once again list the set expectations.
+It means the two first calls correctly passed the expected values to the mock object, but then no third call happened.
+
+[endsect]
+
+[section:boosttest Boost.Test integration]
+
+The only requirement when using [http://www.boost.org/doc/libs/release/libs/test/index.html Boost.Test] is to include it before the mock library, for instance :
+
+ #include <boost/test/auto_unit_test.hpp>
+ #include <turtle/mock.hpp>
+
+This allows the mock library to detect the test framework and to provide various specific error handling mechanisms, see [[#Error_policy]].
+
+Alternatively if for some reason Boost.Test cannot be included before the mock library, the following define can be used :
+
+ #define MOCK_USE_BOOST_TEST
+ #include <turtle/mock.hpp>
+
+[endsect]
+
+[endsect]
+
+[section:customisation Customisation]
+
+This section explains how to customise different aspects of the library.
+
+[section:logging Logging]
+
+The library will perform logging lazily, e.g. only when actually needed, which is usually because an error happens but it depends on the [[#Error_policy]] used.
+Parameters and [[#Constraints]] are serialized to report meaningful diagnostics of the failures.
+
+By default the library attempts to serialize to an std::ostream and if this is not possible will use a '?'.
+Any incomplete type is gracefully handled and yields a '?'.
+
+If for some reason the serialization to an std::ostream shouldn't be used, it can be overridden by a serialization operator to a mock::stream, for instance to log user_type declared in user_namespace :
+
+ namespace user_namespace
+ {
+     inline mock::stream& operator<<( mock::stream& s, const user_type& t )
+     {
+         return s << ...
+     }
+ }
+
+The operators are found using argument-dependent name lookup (e.g. [http://en.wikipedia.org/wiki/Argument-dependent_name_lookup ADL]) which means it needs to be in the namespace of either one of its arguments. The easiest is to define them in the same namespace as the type being serialized. If this is not possible (for instance when serializing a type in namespace std because the C++ standard explicitly forbids adding definitions into the std namespace) a serialization operator to mock::stream can be in the mock namespace instead.
+
+The serialization operators detection doesn't attempt to do conversions when finding a match (because this can sometimes yield an ambiguous resolution error).
+As conversions can prove convenient, for instance when dealing with a base class which is derived to a lot of sub-classes, they can be activated by defining MOCK_USE_CONVERSIONS prior to including the library :
+
+ #define MOCK_USE_CONVERSIONS
+ #include <turtle/mock.hpp>
+
+Be aware though that in this case the compiler can produce a compilation error when attempting to detect whether serialization operators exist or not.
+It is always possible however to define a serialization operator to a mock::stream in order to bypass the detection.
+
+In all custom implementations it is probably a good thing for most of the data to recursively rely on the same mechanism the library uses in order to log everything, for instance this is how std::pair is handled :
+
+ namespace mock
+ {
+     template< typename T1, typename T2 >
+     mock::stream& operator<<( mock::stream& s, const std::pair< T1, T2 >& p )
+     {
+         return s << '(' << mock::format( p.first ) << ',' << mock::format( p.second ) << ')';
+     }
+ }
+
+The interesting part is the call to mock::format which is merely a helper to enable the whole can-be-serialized-or-? logics.
+
+[endsect]
+
+[section:constraints Constraints]
+
+A constraint provides a means to validate a parameter received in a call to a mock object.
+
+The library comes with a set of pre-defined constraints matching the most widely used cases, see [[#Adding_constraints]].
+From time to time however it is rather common to have the need to perform a custom validation.
+
+Creating a constraint is as simple as writing a function, for instance :
+
+ bool custom_constraint( int actual )
+ {
+    return actual == 42;
+ }
+
+Any functor will actually do as long as its signature matches the requirement : take a type convertible from the actual type and return a boolean.
+
+Using the custom constraint is also pretty trivial, for instance :
+
+ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two )
+ {
+    mock_view v;
+    calculator c( v );
+    MOCK_EXPECT( v.display ).with( &custom_constraint );
+    c.add( 41, 1 );
+ }
+
+Simple enough, however this constraint isn't serializable and thus yields a rather uninformative '?' in the logs.
+Just like a parameter, a constraint can be displayed in a readable form using its serialization operator, see [[#Logging]].
+Thus for a widely used constraint (for instance one shipped with the code of a library) it is likely better to define it like this :
+
+ struct custom_constraint
+ {
+     friend bool operator==( int actual, const custom_constraint& )
+     {
+         return actual == 42;
+     }
+ 
+     friend std::ostream& operator<<( std::ostream& s, const custom_constraint& )
+     {
+         return s << "_ == 42";
+     }
+ };
+
+And of course the constraint is to be used in a slightly different manner :
+
+ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two )
+ {
+    mock_view v;
+    calculator c( v );
+    MOCK_EXPECT( v.display ).with( custom_constraint() );
+    c.add( 41, 1 );
+ }
+
+Actually real world use cases sometimes need several other features as well :
+
+* a state
+* (template) parameters
+* an operator with one or several (template) signatures
+
+Therefore a more realistic and complete example would be :
+
+ template< typename Expected >
+ struct near_constraint
+ {
+     near_constraint( Expected expected, Expected threshold )
+       : expected_( expected )
+       , threshold_( threshold )
+     {}
+ 
+     template< typename Actual >
+     bool operator()( Actual actual ) const
+     {
+         return std::abs( actual - boost::unwrap_ref( expected_ ) )
+             < boost::unwrap_ref( threshold_ );
+     }
+ 
+     friend std::ostream& operator<<( std::ostream& s, const near_constraint& c )
+     {
+         return s << "near( " << mock::format( c.expected_ )
+             << ", " << mock::format( c.threshold_ ) << " )";
+     }
+ 
+     Expected expected_, threshold_;
+ };
+ 
+ template< typename Expected >
+ mock::constraint< near_constraint< Expected > > near( Expected expected, Expected threshold )
+ {
+     return near_constraint< Expected >( expected, threshold );
+ }
+
+And it would be used like this :
+
+ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
+ {
+    mock_view v;
+    calculator c( v );
+    MOCK_EXPECT( v.display ).with( near( 42, 1 ) );
+    c.add( 41, 1 );
+ }
+
+The purpose of the 'near' template function is to :
+
+* remove the burden of specifying the template parameter when instantiating near_constraint
+* wrap the constraint in a mock::constraint so that it plays nicely with the operators (e.g. !, && and ||)
+
+The use of boost::unwrap_ref provides support for passing arguments as references with boost::ref and boost::cref and delaying their initialization, for instance :
+
+ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
+ {
+    mock_view v;
+    calculator c( v );
+    int expected, threshold;
+    MOCK_EXPECT( v.display ).with( near( boost::cref( expected ), boost::cref( threshold ) ) );
+    expected = 42;
+    threshold = 1;
+    c.add( 41, 1 );
+ }
+
+See [[#Adding_constraints]] for an explanation of how the library detects whether an argument is a functor or a value.
+
+For more information about the serialization operator and the use of mock::format, refer to [[#Logging]].
+
+[endsect]
+
+[section:arguments Number of arguments]
+
+The maximum number of arguments a mocked method can have is defined by MOCK_MAX_ARGS.
+By default this value is set to 9, but if needed it can be changed to another value before including the library :
+
+ #define MOCK_MAX_ARGS 20
+ #include <turtle/mock.hpp>
+
+This means methods with up to 20 arguments will then be accepted.
+
+The mock object library uses several boost libraries and will adjust some of their constants if they haven't already been defined :
+
+* Boost.Function with BOOST_FUNCTION_MAX_ARGS required at MOCK_MAX_ARGS or higher
+* Boost.FunctionTypes with BOOST_FT_MAX_ARITY required at MOCK_MAX_ARGS + 1 or higher
+* Boost.Phoenix (when increasing MOCK_MAX_ARGS over 9) with PHOENIX_LIMIT required at MOCK_MAX_ARGS or higher
+
+A compilation error will happen if one of those constants is already defined too low.
+
+[endsect]
+
+[section:error_policy Error policy]
+
+Integrating the library with any given unit test framework can be done simply by defining a custom error policy.
+
+The library provides two error policies :
+
+* default_error_policy
+ * logs to std::cerr
+ * throws mock::exception
+* boost_test_error_policy is automatically enabled if Boost.Test is detected, see [[#Boost.Test integration]]
+ * logs using the logger from Boost.Test
+ * throws mock::exception deriving from boost::execution_aborted via boost::enable_current_exception
+
+A custom error policy needs to implement the following concept :
+
+ template< typename Result >
+ struct custom_policy
+ {
+    static Result abort()
+    {
+        // ...
+    }
+    static void checkpoint( const char* file, int line )
+    {
+        // ...
+    }
+    template< typename Context >
+    static void unexpected_call( const Context& context )
+    {
+        // ...
+    }
+    template< typename Context >
+    static void expected_call( const Context& context, const char* file, int line )
+    {
+        // ...
+    }
+    template< typename Context >
+    static void missing_action( const Context& context, const char* file, int line )
+    {
+        // ...
+    }
+    template< typename Context >
+    static void sequence_failed( const Context& context, const char* file, int line )
+    {
+        // ...
+    }
+    template< typename Context >
+    static void verification_failed( const Context& context, const char* file, int line )
+    {
+        // ...
+    }
+    template< typename Context >
+    static void untriggered_expectation( const Context& context, const char* file, int line )
+    {
+        // ...
+    }
+ };
+
+The context, which stands for "something serializable to an std::ostream", is actually built only if an attempt to serialize it is made, thus enabling lazy serialization of all elements (e.g. constraints and parameters).
+File and line show were the expectation has been configured.
+
+The policy can then be activated by defining MOCK_ERROR_POLICY prior to including the library :
+
+ #define MOCK_ERROR_POLICY custom_policy
+ #include <turtle/mock.hpp>
+
+[endsect]
+
+[endsect]
+
+[section:concepts Concepts]
 
 [endsect]
 
@@ -29,7 +533,6 @@
 [section:future Future Work]
 
 [endsect]
-
 
 [section:acknowledgements Acknowledgements]
 
