@@ -18,7 +18,7 @@ Mock objects blablabla...
 
 [endsect]
 
-[section:motivation Motivation]
+[section Motivation]
 
 Consider a (very) simple calculator class :
 
@@ -109,7 +109,7 @@ For all the code examples the following is assumed :
  #include <boost/test/auto_unit_test.hpp>
  #include <turtle/mock.hpp>
 
-[section:create Create, expect, trigger, verify]
+[section Create, expect, trigger, verify]
 
 A simple unit test with mock objects usually splits into several phases as illustrated by :
 
@@ -150,7 +150,7 @@ Note that all verifications upon destruction will be disabled if the mock object
 
 [endsect]
 
-[section:selection Expectation selection algorithm]
+[section Expectation selection algorithm]
 
 A method can be configured with several expectations, for instance :
 
@@ -203,7 +203,7 @@ An expectation can be part of several sequences :
 
 [endsect]
 
-[section:error Error diagnostic]
+[section Error diagnostic]
 
 During the execution of a test case, an error can happen for one of the following reasons :
 
@@ -239,7 +239,7 @@ It means the two first calls correctly passed the expected values to the mock ob
 
 [endsect]
 
-[section:boosttest Boost.Test integration]
+[section Boost.Test integration]
 
 The only requirement when using [http://www.boost.org/doc/libs/release/libs/test/index.html Boost.Test] is to include it before the mock library, for instance :
 
@@ -257,11 +257,11 @@ Alternatively if for some reason Boost.Test cannot be included before the mock l
 
 [endsect]
 
-[section:customisation Customisation]
+[section Customisation]
 
 This section explains how to customise different aspects of the library.
 
-[section:logging Logging]
+[section Logging]
 
 The library will perform logging lazily, e.g. only when actually needed, which is usually because an error happens but it depends on the [[#Error_policy]] used.
 Parameters and [[#Constraints]] are serialized to report meaningful diagnostics of the failures.
@@ -305,7 +305,7 @@ The interesting part is the call to mock::format which is merely a helper to ena
 
 [endsect]
 
-[section:constraints Constraints]
+[section Constraints]
 
 A constraint provides a means to validate a parameter received in a call to a mock object.
 
@@ -430,7 +430,7 @@ For more information about the serialization operator and the use of mock::forma
 
 [endsect]
 
-[section:arguments Number of arguments]
+[section Number of arguments]
 
 The maximum number of arguments a mocked method can have is defined by MOCK_MAX_ARGS.
 By default this value is set to 9, but if needed it can be changed to another value before including the library :
@@ -450,7 +450,7 @@ A compilation error will happen if one of those constants is already defined too
 
 [endsect]
 
-[section:error_policy Error policy]
+[section Error policy]
 
 Integrating the library with any given unit test framework can be done simply by defining a custom error policy.
 
@@ -520,20 +520,447 @@ The policy can then be activated by defining MOCK_ERROR_POLICY prior to includin
 
 [endsect]
 
-[section:concepts Concepts]
+[xinclude reference.xml]
+
+[section Patterns]
+
+This section highlights not-so-obvious features of the library gathered from real use cases.
+
+[section Waiting for an asynchronous call]
+
+Problem :
+
+ namespace
+ {
+     class base_class
+     {
+     public:
+         virtual void method() = 0;
+     };
+ 
+     class my_class
+     {
+     public:
+         explicit my_class( base_class& );
+ 
+         void flush(); // repetitively calling this method will in turn call base_class::method at some point
+     };
+ }
+
+Solution :
+
+ #include <turtle/mock.hpp>
+ #include <boost/lambda/lambda.hpp>
+ #include <boost/thread.hpp>
+ 
+ namespace
+ {
+     template< typename F >
+     void wait( bool& condition, F flush, int timeout = 100, int sleep = 100 )
+     {
+         while( !condition && timeout > 0 )
+         {
+             --timeout;
+             if( sleep > 0 )
+                 boost::this_thread::sleep( boost::posix_time::milliseconds( sleep ) );
+             flush();
+         }
+     }
+     MOCK_BASE_CLASS( mock_base_class, base_class )
+     {
+         MOCK_METHOD( method, 0 )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( method_is_called )
+ {
+     mock_base_class mock;
+     my_class c( mock );
+     bool done = false;
+     MOCK_EXPECT( mock.method ).once().calls( boost::lambda::var( done ) = true );
+     wait( done, boost::bind( &my_class::flush, &c) );
+ }
 
 [endsect]
 
-[xinclude reference.xml]
+[section Retrieving an argument to use in a later constraint]
+
+Problem :
+
+ namespace
+ {
+     class base_class
+     {
+     public:
+         virtual void method( int value ) = 0;
+     };
+ 
+     class my_class
+     {
+     public:
+         explicit my_class( base_class& );
+ 
+         void process(); // the processing will call 'method' two times with the same value, but we don't know what value beforehand
+     };
+ }
+
+Solution :
+
+ #include <turtle/mock.hpp>
+ 
+ namespace
+ {
+     MOCK_BASE_CLASS( mock_base_class, base_class )
+     {
+         MOCK_METHOD( method, 1 )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( method_is_called_two_times_with_the_same_value )
+ {
+     mock_base_class mock;
+     my_class c( mock );
+     int value;
+     MOCK_EXPECT( mock.method ).once().with( mock::retrieve( value ) );
+     MOCK_EXPECT( mock.method ).once().with( boost::cref( value ) );
+     c.process();
+ }
+
+[endsect]
+
+[section Comparing strings properly]
+
+Problem :
+
+ #include <turtle/mock.hpp>
+ 
+ namespace
+ {
+     MOCK_CLASS( mock_class )
+     {
+         MOCK_METHOD_EXT( method, 1, void( const char* ), method )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( comparing_char_pointers_does_not_compare_strings )
+ {
+     mock_class mock;
+     MOCK_EXPECT( mock.method ).with( "some string" ); // this compiles and runs, but the expectation fails because pointers and not strings are being compared
+     mock.method( "some string" );
+ }
+
+Solution :
+
+ BOOST_AUTO_TEST_CASE( comparing_char_pointers_does_not_compare_strings )
+ {
+     mock_class mock;
+     MOCK_EXPECT( mock.method ).with( std::string( "some string" ) ); // this makes the test pass as the expectation now compares strings
+     mock.method( "some string" );
+ }
+
+[endsect]
+
+[section Invoking a functor received as parameter]
+
+ #include <turtle/mock.hpp>
+ #include <boost/function.hpp>
+ #include <boost/bind/apply.hpp>
+ #include <boost/bind.hpp>
+ 
+ namespace
+ {
+     MOCK_CLASS( mock_class )
+     {
+         MOCK_METHOD_EXT( method, 1, void( boost::function< void( int ) > ), method )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( how_to_invoke_a_functor_passed_as_parameter_of_a_mock_method )
+ {
+     mock_class mock;
+     MOCK_EXPECT( mock.method ).calls( boost::bind( boost::apply< void >(), _1, 42 ) ); // whenever 'method' is called, invoke the functor with 42
+     MOCK_FUNCTOR( f, void( int ) );                                                    // create a mock functor to verify this
+     MOCK_EXPECT( f ).once().with( 42 );                                                // expect it to be called with 42
+     mock.method( f );                                                                  // call 'method' with the mock functor
+ }                                                                                      // et voila !
+
+[endsect]
+
+[endsect]
 
 [section:rationale Rationale]
 
+This section explains some of the design and implementation choices.
+
+[section General design forces]
+
+The general idea behind the library design is to be able to write tests quickly and easily as well as to get the best possible diagnostic upon error (both compile and runtime errors). <BR>
+The chainable syntax has been chosen in order to be as intuitive as possible, with the most simple form covering the most general use cases. <BR>
+Several design choices follow the same motivation :
+
+* expectations are automatically verified upon destruction
+* both const and non-const versions of a method are mocked by default
+* the shortcuts for adding constraints cover 95% of the use cases
+* non-serializable types do not yield compilation errors but are logged as '?' by default
+* etc..
+
+At the same time customizing any aspect of the library should require minimum effort, for instance :
+
+* custom constraints can be any functors, including free functions
+* customizing the logging of a type is done by defining a serialization operator
+* etc..
+
 [endsect]
 
-[section:future Future Work]
+[section Exceptions thrown should not extend std::exception]
+
+By design the exceptions thrown upon error should not inherit from std::exception, for instance consider the following test case based on the example from the [[#Motivation]] section :
+
+ BOOST_AUTO_TEST_CASE( overflow_throws )
+ {
+    mock_view v;
+    calculator c( v );
+    BOOST_CHECK_THROW( c.add( std::numeric_limits< int >::max(), 1 ), std::exception );
+ }
+
+Any call to 'v' will be unexpected and yield an exception, which if it were an std::exception would erroneously make the test succeed whereas it is supposed to pass only if the operation overflows (thus not triggering 'v').
 
 [endsect]
 
-[section:acknowledgements Acknowledgements]
+[section The library interface is based on many macros]
+
+Despite being often considered harmful they also provide a number of advantages :
+
+* they pack a lot of code and hide implementation details (MOCK_BASE_CLASS, MOCK_METHOD)
+* they make the interface homogeneous (MOCK_FUNCTOR, MOCK_CLASS)
+* line number and file can be added for logging purposes (MOCK_EXPECT)
+
+[endsect]
+
+[endsect]
+
+[section Limitations]
+
+This section lists the library known limitations.
+
+[section No support for unicode logging]
+
+There is no support for unicode logging mainly because Boost.Test does not support it either.
+
+[endsect]
+
+[section Litteral 0 cannot be used as null pointer in constraints]
+
+The following code does not compile :
+
+ class base
+ {
+ public:
+     virtual void method( int i* ) = 0;
+ };
+ 
+ MOCK_BASE_CLASS( mock_base, base )
+ {
+     MOCK_METHOD( method, 1 )
+ };
+
+ mock_base m;
+ MOCK_EXPECT( m.method ).with( mock::equal( 0 ) ); // this fails
+ MOCK_EXPECT( m.method ).with( 0 );                // this fails too !
+
+This is due to the fact that the library uses templates pretty heavily, and the litteral 0 is considered as an int when instantiating a template function.
+
+A workaround is :
+
+ MOCK_EXPECT( m.method ).with( mock::equal< int* >( 0 ) ); // this compiles
+
+However a somewhat better solution would be :
+
+ MOCK_EXPECT( m.method ).with( mock::negate );
+
+[endsect]
+
+[section Template methods cannot be mocked]
+
+Given the following client code :
+
+ class concept
+ {
+ public:
+     template< typename T >
+     void method( T t )
+     {}
+ };
+ 
+ template< typename T >
+ class client
+ {
+ public:
+     client( T t )             // T is supposed to model the previous concept
+     {
+         t.method( 42 );
+         t.method( "string" );
+     }
+ };
+
+Writing a mock object modeling 'concept' requires to list all the possible versions of 'method' :
+
+ MOCK_CLASS( mock_concept )
+ {
+    MOCK_METHOD_EXT( method, 1, void( int ), method_int )
+    MOCK_METHOD_EXT( method, 1, void( const char* ), method_string )
+ };
+
+While still somewhat possible, mocking a template method is indeed a bit cumbersome.
+
+[endsect]
+
+[section A private pure virtual method cannot be mocked using MOCK_METHOD]
+
+The following code does not compile :
+
+ class base
+ {
+ private:
+     virtual void method() = 0;
+ };
+ MOCK_BASE_CLASS( mock_base, base )
+ {
+     MOCK_METHOD( method, 0 )       // this fails to compile because 'method' is not visible
+ };
+
+The workaround would be to use MOCK_METHOD_EXT :
+
+ MOCK_BASE_CLASS( mock_base, base )
+ {
+     MOCK_METHOD_EXT( method, 0, void(), method )
+ };
+
+[endsect]
+
+[section Commas are not allowed in templates in MOCK_BASE_CLASS]
+
+The following code does not compile :
+
+ template< typename T1, typename T2 >
+ struct my_base_class
+ {};
+ MOCK_BASE_CLASS( my_mock, my_base_class< int, int > )
+ {};
+
+The problem is that the pre-processor believes the macro to be called with 3 arguments because of the comma between the types used to instantiate the template.
+
+One workaround is :
+
+ typedef my_base_class< int, int > my_base_type;
+ 
+ MOCK_BASE_CLASS( my_mock, my_base_type )
+ {};
+
+Of course this is not always possible, as in :
+
+ template< typename T1, typename T2 >
+ MOCK_BASE_CLASS( my_mock, my_base_type< T1, T2 > )
+ {};
+
+Another workaround would make use of [http://www.boost.org/doc/libs/release/libs/preprocessor Boost.PP] :
+
+ template< typename T1, typename T2 >
+ MOCK_BASE_CLASS( my_mock, my_base_type< T1 BOOST_PP_COMMA T2 > )
+ {};
+
+Actually BOOST_PP_COMMA implementation is quite trivial, being only :
+
+ #define BOOST_PP_COMMA() ,
+
+Finally another workaround but be to not use the macro at all :
+
+ template< typename T1, typename T2 >
+ struct my_mock : my_base_type< T1, T2 >, mock::object
+ {};
+
+The extra features provided by MOCK_BASE_CLASS are not usable with template base classes anyway because there is no equivalent to MOCK_METHOD for them.
+
+[endsect]
+
+[section Warning C4505: '...' : unreferenced local function has been removed]
+
+Example :
+
+ warning C4505: 'base::[thunk]: __thiscall base::`vcall'{0,{flat}}' }'' : unreferenced local function has been removed
+
+This seems to be a random bug with some versions of the Microsoft Visual Studio compiler, see https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=324427
+
+The only known workaround is to disable the warning with a pragma :
+
+ #pragma warning( disable: 4505 )
+
+[endsect]
+
+[section Warning C4301: '...': overriding virtual function only differs from '...' by const/volatile qualifier]
+
+Example :
+
+ warning C4301: '`anonymous-namespace'::base::method': overriding virtual function only differs from '`anonymous-namespace'::base::method' by const/volatile qualifier
+
+The following code produces this warning with some versions of the Microsoft Visual Studio compiler :
+
+ class base
+ {
+ public:
+     virtual void method( const int ) = 0;
+ };
+ 
+ MOCK_BASE_CLASS( mock_base, base )
+ {
+     MOCK_METHOD( method, 1 )                                // this produces the warning
+     MOCK_METHOD_EXT( method, 1, void( const int ), method ) // this produces the warning too !
+ };
+
+The problem is that the 'const' is actually not part of the function signature and therefore cannot be introspected.
+
+The first workaround would be to remove the 'const' all together.
+
+This is more sensible than it first sounds, after all the 'const' is useless in this situation, indeed :
+
+ class derived : public base
+ {
+ public:
+     virtual void method( const int );
+ };
+ 
+ void derived::method( int )           // this compiles, links and is valid C++
+ {}
+
+Otherwise another workaround would be to provide a proxy method :
+
+ MOCK_BASE_CLASS( mock_base, base )
+ {
+     void method( const int i )
+     {
+         method_stub( i );
+     }
+     MOCK_METHOD_EXT( method_stub, 1, void( int ), method )
+ };
+
+[endsect]
+
+[section warning C4267: 'argument' : conversion from 'size_t' to 'unsigned int', possible loss of data]
+
+Compiling under Microsoft Visual Studio with the /Wp64 flag produces this warning at various locations in the library code.
+
+This is actually a bug in the compiler, for more information see [http://connect.microsoft.com/VisualStudio/feedback/details/253172/incorrect-warning-c4267 incorrect-warning-c4267].
+
+[endsect]
+
+[endsect]
+
+[section Future Work]
+
+[endsect]
+
+[section Acknowledgements]
+
+Many thanks to Adrien Gervaise and Silvin Lubecki ! 
 
 [endsect]
