@@ -17,7 +17,7 @@
 
 namespace mock
 {
-    struct exception : public boost::execution_aborted
+    struct exception : virtual boost::execution_aborted
     {};
 
     template< typename Result >
