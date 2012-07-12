@@ -28,7 +28,7 @@ namespace phoenix
 }
 namespace lambda
 {
-    template< typename T > struct lambda_functor;
+    template< typename T > class lambda_functor;
 }
 namespace assign_detail
 {
