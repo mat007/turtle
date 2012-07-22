@@ -25,9 +25,6 @@
     <ClInclude Include="..\..\turtle\error.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\is_functor.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\log.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -110,6 +107,9 @@
       <Filter>Source Files\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\detail\function_impl_template.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\is_functor.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
   </ItemGroup>
