@@ -64,11 +64,6 @@ namespace mock
             return impl_->expect();
         }
 
-        void test() const
-        {
-            impl_->test();
-        }
-
         R operator()( BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, t) ) const
         {
             return (*impl_)( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) );
@@ -176,50 +171,47 @@ namespace mock
 #define MOCK_FORMAT(z, n, N) \
     << " " << mock::format( t##n ) \
     << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), " ", ",")
-#define MOCK_CONTEXT(n) \
+#define MOCK_CONTEXT \
     boost::unit_test::lazy_ostream::instance() \
         << lazy_context( this ) \
-        << "(" BOOST_PP_REPEAT(n, MOCK_FORMAT, BOOST_PP_DEC(n)) \
+        << "(" BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FORMAT, \
+            BOOST_PP_DEC(MOCK_NUM_ARGS)) \
         << ")" \
         << lazy_expectations( this )
-#define MOCK_INVOKE(n, A) \
-    { \
-        valid_ = false; \
-        for( expectations_cit it = expectations_.begin(); \
-            it != expectations_.end(); ++it ) \
-            if( it->is_valid( BOOST_PP_ENUM_PARAMS(n, t) ) ) \
-            { \
-                if( ! it->invoke() ) \
-                { \
-                    error_type::sequence_failed( \
-                        MOCK_CONTEXT(n), it->file(), it->line() ); \
-                    return A; \
-                } \
-                if( ! it->functor() ) \
-                { \
-                    error_type::missing_action( \
-                        MOCK_CONTEXT(n), it->file(), it->line() ); \
-                    return A; \
-                } \
-                valid_ = true; \
-                error_type::expected_call( \
-                    MOCK_CONTEXT(n), it->file(), it->line() ); \
-                return it->functor()( BOOST_PP_ENUM_PARAMS(n, t) ); \
-            } \
-        error_type::unexpected_call( MOCK_CONTEXT(n) ); \
-        return A; \
-    }
 
             result_type operator()(
                 BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, t) ) const
-            MOCK_INVOKE(MOCK_NUM_ARGS, error_type::abort())
-
-            void test() const
-            MOCK_INVOKE(0,)
+            {
+                valid_ = false;
+                for( expectations_cit it = expectations_.begin();
+                    it != expectations_.end(); ++it )
+                    if( it->is_valid( \
+                        BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) ) )
+                    {
+                        if( ! it->invoke() )
+                        {
+                            error_type::sequence_failed(
+                                MOCK_CONTEXT, it->file(), it->line() );
+                            return error_type::abort();
+                        }
+                        if( ! it->functor() )
+                        {
+                            error_type::missing_action(
+                                MOCK_CONTEXT, it->file(), it->line() );
+                            return error_type::abort();
+                        }
+                        valid_ = true;
+                        error_type::expected_call(
+                            MOCK_CONTEXT, it->file(), it->line() );
+                        return it->functor()( \
+                            BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) );
+                    }
+                error_type::unexpected_call( MOCK_CONTEXT );
+                return error_type::abort();
+            }
 
 #undef MOCK_FORMAT
 #undef MOCK_OPERATOR
-#undef MOCK_INVOKE
 #undef MOCK_CONTEXT
 
             friend std::ostream& operator<<(

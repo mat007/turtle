@@ -141,8 +141,8 @@ namespace detail
     MOCK_CONSTRUCTOR_AUX(T, n, A, t, BOOST_DEDUCED_TYPENAME)
 
 #define MOCK_DESTRUCTOR(T, t) \
-    ~T() { MOCK_ANONYMOUS_HELPER(t).test(); } \
-    MOCK_METHOD_HELPER(void(), t)
+    MOCK_METHOD_HELPER(void(), t) \
+    ~T() { try { MOCK_ANONYMOUS_HELPER(t)(); } catch( ... ) {} }
 
 #define MOCK_FUNCTION_AUX(F, n, S, t, s, tpn) \
     MOCK_FUNCTION_HELPER(S, t, s) \
