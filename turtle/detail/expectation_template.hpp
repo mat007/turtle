@@ -45,8 +45,7 @@ namespace detail
     public:
 #ifndef MOCK_NUM_ARGS_0
         expectation()
-            :
-            BOOST_PP_REPEAT(MOCK_NUM_ARGS,
+            : BOOST_PP_REPEAT(MOCK_NUM_ARGS,
                 MOCK_EXPECTATION_INITIALIZE, BOOST_PP_EMPTY)
         {}
         template< BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_) >
