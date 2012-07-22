@@ -182,7 +182,7 @@ namespace mock
         << "(" BOOST_PP_REPEAT(n, MOCK_FORMAT, BOOST_PP_DEC(n)) \
         << ")" \
         << lazy_expectations( this )
-#define MOCK_INVOKE(z, n, A) \
+#define MOCK_INVOKE(n, A) \
     { \
         valid_ = false; \
         for( expectations_cit it = expectations_.begin(); \
@@ -212,10 +212,10 @@ namespace mock
 
             result_type operator()(
                 BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, t) ) const
-            MOCK_INVOKE(, MOCK_NUM_ARGS, error_type::abort())
+            MOCK_INVOKE(MOCK_NUM_ARGS, error_type::abort())
 
             void test() const
-            MOCK_INVOKE(, 0,)
+            MOCK_INVOKE(0,)
 
 #undef MOCK_FORMAT
 #undef MOCK_OPERATOR
