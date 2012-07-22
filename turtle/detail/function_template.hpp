@@ -103,7 +103,7 @@ namespace detail
             public boost::enable_shared_from_this< function_impl >
         {
         public:
-            typedef MOCK_ERROR_POLICY< result_type > error_type;
+            typedef MOCK_ERROR_POLICY< R > error_type;
 
         public:
             function_impl()
@@ -181,7 +181,7 @@ namespace detail
         << ")" \
         << lazy_expectations( this )
 
-            result_type operator()(
+            R operator()(
                 BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, t) ) const
             {
                 valid_ = false;
