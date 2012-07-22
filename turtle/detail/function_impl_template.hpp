@@ -9,8 +9,8 @@
 #include "expectation_template.hpp"
 
 #define MOCK_FORMAT(z, n, N) \
-    << " " << mock::format( t##n ) \
-    << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), " ", ",")
+    << ' ' << mock::format( t##n ) \
+    << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), ' ', ',')
 
 #define MOCK_CONTEXT \
     boost::unit_test::lazy_ostream::instance() \
