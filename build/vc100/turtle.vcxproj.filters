@@ -112,5 +112,11 @@
     <ClInclude Include="..\..\turtle\detail\is_functor.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\turtle\stream.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\format.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

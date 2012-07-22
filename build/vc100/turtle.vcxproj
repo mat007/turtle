@@ -49,10 +49,12 @@
     <ClInclude Include="..\..\turtle\detail\verifiable.hpp" />
     <ClInclude Include="..\..\turtle\detail\yes_no_type.hpp" />
     <ClInclude Include="..\..\turtle\error.hpp" />
+    <ClInclude Include="..\..\turtle\format.hpp" />
     <ClInclude Include="..\..\turtle\log.hpp" />
     <ClInclude Include="..\..\turtle\mock.hpp" />
     <ClInclude Include="..\..\turtle\object.hpp" />
     <ClInclude Include="..\..\turtle\sequence.hpp" />
+    <ClInclude Include="..\..\turtle\stream.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{831F2DEE-1E35-4533-A3B2-12C01BA8DA1D}</ProjectGuid>
