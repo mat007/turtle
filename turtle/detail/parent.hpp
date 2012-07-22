@@ -10,8 +10,8 @@
 #define MOCK_PARENT_HPP_INCLUDED
 
 #include "type_name.hpp"
-#include <boost/optional.hpp>
 #include <boost/test/utils/basic_cstring/io.hpp>
+#include <boost/optional.hpp>
 #include <ostream>
 
 namespace mock

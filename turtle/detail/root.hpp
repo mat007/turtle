@@ -14,6 +14,7 @@
 #include "context.hpp"
 #include "child.hpp"
 #include <boost/test/utils/trivial_singleton.hpp>
+#include <boost/optional.hpp>
 #include <ostream>
 #include <map>
 
