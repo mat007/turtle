@@ -9,7 +9,7 @@
 #ifndef MOCK_FORMATTER_HPP_INCLUDED
 #define MOCK_FORMATTER_HPP_INCLUDED
 
-#include "stream.hpp"
+#include "../stream.hpp"
 #include <boost/utility/addressof.hpp>
 
 namespace mock
