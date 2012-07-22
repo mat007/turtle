@@ -32,6 +32,7 @@
     <ClInclude Include="..\..\turtle\detail\expectation_base.hpp" />
     <ClInclude Include="..\..\turtle\detail\expectation_template.hpp" />
     <ClInclude Include="..\..\turtle\detail\function.hpp" />
+    <ClInclude Include="..\..\turtle\detail\function_impl_template.hpp" />
     <ClInclude Include="..\..\turtle\detail\function_iterate.hpp" />
     <ClInclude Include="..\..\turtle\detail\function_template.hpp" />
     <ClInclude Include="..\..\turtle\detail\group.hpp" />

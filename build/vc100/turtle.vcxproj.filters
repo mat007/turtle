@@ -109,5 +109,8 @@
     <ClInclude Include="..\..\turtle\detail\object_impl.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\function_impl_template.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
