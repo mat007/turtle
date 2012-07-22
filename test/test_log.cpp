@@ -451,6 +451,30 @@ BOOST_AUTO_TEST_CASE( std_multisets_are_serialized )
     BOOST_CHECK_EQUAL( "(12,42)", to_string( s ) );
 }
 
+BOOST_AUTO_TEST_CASE( std_deques_of_vectors_are_serialized )
+{
+    std::deque< std::vector< int > > v;
+    std::vector< int > v1, v2;
+    v1.push_back( 12 );
+    v2.push_back( 42 );
+    v2.push_back( 77 );
+    v.push_back( v1 );
+    v.push_back( v2 );
+    BOOST_CHECK_EQUAL( "((12),(42,77))", to_string( v ) );
+}
+
+BOOST_AUTO_TEST_CASE( std_vectors_of_deques_are_serialized )
+{
+    std::vector< std::deque< int > > v;
+    std::deque< int > v1, v2;
+    v1.push_back( 12 );
+    v2.push_back( 42 );
+    v2.push_back( 77 );
+    v.push_back( v1 );
+    v.push_back( v2 );
+    BOOST_CHECK_EQUAL( "((12),(42,77))", to_string( v ) );
+}
+
 BOOST_AUTO_TEST_CASE( boost_assign_list_of_are_serialized )
 {
     BOOST_CHECK_EQUAL( "(12,42)", to_string( boost::assign::list_of( 12 )( 42 ) ) );
