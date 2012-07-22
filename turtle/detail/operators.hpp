@@ -9,8 +9,8 @@
 #ifndef MOCK_OPERATORS_HPP_INCLUDED
 #define MOCK_OPERATORS_HPP_INCLUDED
 
-#include "constraint.hpp"
-#include "log.hpp"
+#include "../constraint.hpp"
+#include "../log.hpp"
 
 namespace mock
 {

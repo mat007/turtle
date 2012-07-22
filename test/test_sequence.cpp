@@ -8,7 +8,7 @@
 
 #include "mock_error.hpp"
 #include <turtle/sequence.hpp>
-#include <turtle/function.hpp>
+#include <turtle/detail/function.hpp>
 #include <boost/test/auto_unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE( registering_to_a_sequence_and_calling_out_of_order_throws )

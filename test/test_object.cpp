@@ -8,7 +8,7 @@
 
 #include "mock_error.hpp"
 #include <turtle/object.hpp>
-#include <turtle/function.hpp>
+#include <turtle/detail/function.hpp>
 #include <boost/test/auto_unit_test.hpp>
 
 namespace

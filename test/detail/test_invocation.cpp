@@ -6,7 +6,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <turtle/invocation.hpp>
+#include <turtle/detail/invocation.hpp>
 #include <boost/test/auto_unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE( unlimited )

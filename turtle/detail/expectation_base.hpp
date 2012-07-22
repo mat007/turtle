@@ -10,7 +10,7 @@
 #define MOCK_EXPECTATION_BASE_HPP_INCLUDED
 
 #include "invocation.hpp"
-#include "sequence.hpp"
+#include "../sequence.hpp"
 #include <boost/shared_ptr.hpp>
 #include <vector>
 

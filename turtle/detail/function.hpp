@@ -9,18 +9,18 @@
 #ifndef MOCK_FUNCTION_HPP_INCLUDED
 #define MOCK_FUNCTION_HPP_INCLUDED
 
-#include "config.hpp"
-#include "error.hpp"
-#include "log.hpp"
+#include "../config.hpp"
+#include "../error.hpp"
+#include "../log.hpp"
+#include "../constraints.hpp"
+#include "../sequence.hpp"
 #include "check.hpp"
 #include "action.hpp"
+#include "verifiable.hpp"
+#include "type_name.hpp"
+#include "context.hpp"
 #include "invocation.hpp"
-#include "constraints.hpp"
-#include "sequence.hpp"
 #include "expectation_base.hpp"
-#include "detail/verifiable.hpp"
-#include "detail/type_name.hpp"
-#include "detail/context.hpp"
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>

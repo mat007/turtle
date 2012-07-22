@@ -21,13 +21,7 @@
     <ClCompile Include="..\..\test\test_error.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\test_function.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\test_integration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\test\test_invocation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\test\test_is_functor.cpp">
@@ -55,6 +49,12 @@
       <Filter>Source Files\detail</Filter>
     </ClCompile>
     <ClCompile Include="..\..\test\detail\test_parameters.cpp">
+      <Filter>Source Files\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\detail\test_function.cpp">
+      <Filter>Source Files\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\detail\test_invocation.cpp">
       <Filter>Source Files\detail</Filter>
     </ClCompile>
   </ItemGroup>

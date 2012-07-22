@@ -9,7 +9,7 @@
 #ifndef MOCK_ACTION_HPP_INCLUDED
 #define MOCK_ACTION_HPP_INCLUDED
 
-#include "detail/lambda.hpp"
+#include "lambda.hpp"
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/shared_ptr.hpp>

@@ -25,12 +25,6 @@
     <ClInclude Include="..\..\turtle\error.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\function.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\invocation.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\is_functor.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -43,22 +37,10 @@
     <ClInclude Include="..\..\turtle\object.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\operators.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\sequence.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\action.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\boost_test_error.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\check.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\cleanup.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\detail\signature.hpp">
@@ -94,17 +76,35 @@
     <ClInclude Include="..\..\turtle\detail\parameters.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\function_template.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\turtle\detail\cleanup.hpp">
+      <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\expectation_base.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\turtle\detail\action.hpp">
+      <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\expectation_template.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\turtle\detail\check.hpp">
+      <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\function_iterate.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\turtle\detail\expectation_template.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\function.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\function_iterate.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\function_template.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\expectation_base.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\invocation.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\operators.hpp">
+      <Filter>Source Files\detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

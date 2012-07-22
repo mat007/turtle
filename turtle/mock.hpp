@@ -10,12 +10,12 @@
 #define MOCK_MOCK_HPP_INCLUDED
 
 #include "config.hpp"
-#include "cleanup.hpp"
 #include "object.hpp"
-#include "function.hpp"
+#include "detail/function.hpp"
 #include "detail/type_name.hpp"
 #include "detail/parameters.hpp"
 #include "detail/signature.hpp"
+#include "detail/cleanup.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 

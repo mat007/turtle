@@ -6,7 +6,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <turtle/type_name.hpp>
+#include <turtle/detail/type_name.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/lexical_cast.hpp>
 

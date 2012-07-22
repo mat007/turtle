@@ -9,11 +9,11 @@
 #ifndef MOCK_CLEANUP_HPP_INCLUDED
 #define MOCK_CLEANUP_HPP_INCLUDED
 
-#include "config.hpp"
+#include "../config.hpp"
 
 #ifdef MOCK_USE_BOOST_TEST
 
-#include "detail/root.hpp"
+#include "root.hpp"
 #include <boost/test/unit_test_suite.hpp>
 
 namespace mock

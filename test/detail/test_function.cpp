@@ -7,8 +7,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #define BOOST_AUTO_TEST_MAIN
-#include "mock_error.hpp"
-#include <turtle/function.hpp>
+#include "../mock_error.hpp"
+#include <turtle/detail/function.hpp>
 #include <turtle/constraints.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework

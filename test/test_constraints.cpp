@@ -7,7 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <turtle/constraints.hpp>
-#include <turtle/operators.hpp>
+#include <turtle/detail/operators.hpp>
 #include <boost/test/auto_unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE( all_comparison_constraints_can_be_instanciated )
