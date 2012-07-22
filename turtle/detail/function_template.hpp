@@ -55,7 +55,7 @@ namespace detail
         void reset( const char* file, int line )
         {
             error_type::checkpoint( file, line );
-            return impl_->reset();
+            impl_->reset();
         }
 
         expectation_type& expect( const char* file, int line )
