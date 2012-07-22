@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\detail">
+      <UniqueIdentifier>{b9cb2ff2-1351-456d-985e-cb0dd3f4e12d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\turtle\config.hpp">
@@ -14,9 +17,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\constraints.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\context.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\default_error.hpp">
@@ -31,16 +31,10 @@
     <ClInclude Include="..\..\turtle\function.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\group.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\invocation.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\is_functor.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\lambda.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\log.hpp">
@@ -55,28 +49,10 @@
     <ClInclude Include="..\..\turtle\operators.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\parent.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\root.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\sequence.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\type_name.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\verifiable.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\yes_no_type.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\action.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\args.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\boost_test_error.hpp">
@@ -85,11 +61,41 @@
     <ClInclude Include="..\..\turtle\check.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\child.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\cleanup.hpp">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\signature.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\lambda.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\args.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\child.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\group.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\context.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\parent.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\root.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\type_name.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\verifiable.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\yes_no_type.hpp">
+      <Filter>Source Files\detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,8 +9,8 @@
 #ifndef MOCK_CHILD_HPP_INCLUDED
 #define MOCK_CHILD_HPP_INCLUDED
 
-#include "parent.hpp"
-#include "type_name.hpp"
+#include "detail/type_name.hpp"
+#include "detail/parent.hpp"
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/optional.hpp>
 #include <ostream>

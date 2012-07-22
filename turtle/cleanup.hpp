@@ -13,7 +13,7 @@
 
 #ifdef MOCK_USE_BOOST_TEST
 
-#include "root.hpp"
+#include "detail/root.hpp"
 #include <boost/test/unit_test_suite.hpp>
 
 namespace mock

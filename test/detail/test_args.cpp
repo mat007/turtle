@@ -6,7 +6,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <turtle/args.hpp>
+#include <turtle/detail/args.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/mpl/assert.hpp>
 

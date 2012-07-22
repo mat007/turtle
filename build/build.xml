@@ -141,6 +141,9 @@
     <replaceregexp match='"([^"]+\.hpp)"' replace="&lt;boost/mock/\1&gt;" flags="g">
         <fileset dir="${boost.dir}" includes="**/*.hpp"/>
     </replaceregexp>
+    <replaceregexp match='"\.\./([^"]+\.hpp)"' replace="&lt;boost/mock/\1&gt;" flags="g">
+        <fileset dir="${boost.dir}" includes="**/*.hpp"/>
+    </replaceregexp>
     <replaceregexp match="&lt;turtle/([^&gt;]+)" replace="&lt;boost/mock/\1" flags="g">
         <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
     </replaceregexp>

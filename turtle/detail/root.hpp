@@ -9,11 +9,10 @@
 #ifndef MOCK_ROOT_HPP_INCLUDED
 #define MOCK_ROOT_HPP_INCLUDED
 
-#include "group.hpp"
-#include "context.hpp"
-#include "parent.hpp"
-#include "child.hpp"
-#include "function.hpp"
+#include "detail/parent.hpp"
+#include "detail/group.hpp"
+#include "detail/context.hpp"
+#include "detail/child.hpp"
 #include <boost/test/utils/trivial_singleton.hpp>
 #include <ostream>
 #include <map>

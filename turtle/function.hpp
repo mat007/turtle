@@ -11,12 +11,12 @@
 
 #include "config.hpp"
 #include "error.hpp"
-#include "context.hpp"
 #include "expectation.hpp"
-#include "verifiable.hpp"
 #include "log.hpp"
-#include "args.hpp"
-#include "type_name.hpp"
+#include "detail/verifiable.hpp"
+#include "detail/type_name.hpp"
+#include "detail/context.hpp"
+#include "detail/args.hpp"
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/function_arity.hpp>
 #include <boost/function_types/parameter_types.hpp>

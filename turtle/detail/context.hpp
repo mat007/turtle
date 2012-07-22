@@ -9,7 +9,7 @@
 #ifndef MOCK_CONTEXT_HPP_INCLUDED
 #define MOCK_CONTEXT_HPP_INCLUDED
 
-#include "type_name.hpp"
+#include "detail/type_name.hpp"
 #include <boost/noncopyable.hpp>
 #include <boost/optional.hpp>
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>

@@ -5,6 +5,9 @@
       <UniqueIdentifier>{7b7d91a4-7b1e-441a-ac3f-2f93e73ae2ac}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx;h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Source Files\detail">
+      <UniqueIdentifier>{214599f8-6837-4d60-96ae-b913798819ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\test\mock_error.hpp">
@@ -12,9 +15,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\test\test_args.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\test_constraints.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,8 +48,14 @@
     <ClCompile Include="..\..\test\test_sequence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\test_type_name.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\test\detail\test_signature.cpp">
+      <Filter>Source Files\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\detail\test_args.cpp">
+      <Filter>Source Files\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\detail\test_type_name.cpp">
+      <Filter>Source Files\detail</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

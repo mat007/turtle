@@ -9,7 +9,7 @@
 #ifndef MOCK_LAMBDA_HPP_INCLUDED
 #define MOCK_LAMBDA_HPP_INCLUDED
 
-#include "config.hpp"
+#include "../config.hpp"
 #ifdef MOCK_USE_BOOST_PHOENIX
 #include <boost/spirit/home/phoenix/bind.hpp>
 #else

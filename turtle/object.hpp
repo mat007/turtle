@@ -9,11 +9,11 @@
 #ifndef MOCK_OBJECT_HPP_INCLUDED
 #define MOCK_OBJECT_HPP_INCLUDED
 
-#include "root.hpp"
-#include "context.hpp"
-#include "parent.hpp"
-#include "child.hpp"
-#include "type_name.hpp"
+#include "detail/root.hpp"
+#include "detail/parent.hpp"
+#include "detail/type_name.hpp"
+#include "detail/context.hpp"
+#include "detail/child.hpp"
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/type_traits/is_base_of.hpp>

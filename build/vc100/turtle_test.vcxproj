@@ -22,7 +22,9 @@
     <ClInclude Include="..\..\test\mock_error.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\test\test_args.cpp" />
+    <ClCompile Include="..\..\test\detail\test_args.cpp" />
+    <ClCompile Include="..\..\test\detail\test_signature.cpp" />
+    <ClCompile Include="..\..\test\detail\test_type_name.cpp" />
     <ClCompile Include="..\..\test\test_constraints.cpp" />
     <ClCompile Include="..\..\test\test_error.cpp" />
     <ClCompile Include="..\..\test\test_function.cpp" />
@@ -34,7 +36,6 @@
     <ClCompile Include="..\..\test\test_mock.cpp" />
     <ClCompile Include="..\..\test\test_object.cpp" />
     <ClCompile Include="..\..\test\test_sequence.cpp" />
-    <ClCompile Include="..\..\test\test_type_name.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{74810A2A-33D8-47D6-9A50-71261F1683F5}</ProjectGuid>
@@ -84,7 +85,7 @@
     <ClCompile>
       <AdditionalOptions>/Zm172 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../../..; ../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../..; ../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -117,7 +118,7 @@
     <ClCompile>
       <AdditionalOptions>/Zm172 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../../..; ../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../..; ../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -150,7 +151,7 @@
     <ClCompile>
       <AdditionalOptions>/Zm162 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>../../../..; ../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../..; ../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -183,7 +184,7 @@
     <ClCompile>
       <AdditionalOptions>/Zm162 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>../../../..; ../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../..; ../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>

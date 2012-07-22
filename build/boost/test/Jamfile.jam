@@ -8,7 +8,7 @@
 
 import testing ;
 
-run [ glob test_*.cpp ] /boost//unit_test_framework ;
+run [ glob test_*.cpp detail/test_*.cpp ] /boost//unit_test_framework ;
 
 compile-fail fail_ambiguous_mock_method.cpp ;
 compile-fail fail_constraint_functor_not_compatible.cpp ;

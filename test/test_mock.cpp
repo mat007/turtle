@@ -14,26 +14,6 @@
 
 namespace
 {
-    struct s
-    {
-        void m1();
-        float m2( int );
-    };
-
-    BOOST_MPL_ASSERT((
-        boost::is_same<
-            void(),
-            mock::detail::signature< BOOST_TYPEOF( &s::m1 ) >::type
-        > ));
-    BOOST_MPL_ASSERT((
-        boost::is_same<
-            float( int ),
-            mock::detail::signature< BOOST_TYPEOF( &s::m2 ) >::type
-         > ));
-}
-
-namespace
-{
     template< typename T >
     void my_function( T& t )
     {
