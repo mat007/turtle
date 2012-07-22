@@ -21,6 +21,7 @@
 #include "context.hpp"
 #include "invocation.hpp"
 #include "expectation_base.hpp"
+#include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
@@ -40,10 +41,11 @@
 #undef MOCK_NUM_ARGS_0
 #undef MOCK_NUM_ARGS
 
-#define BOOST_PP_ITERATION_PARAMS_1 \
-    (3,(1,MOCK_MAX_ARGS,"function_iterate.hpp"))
+#define BOOST_PP_FILENAME_1 "turtle/detail/function_iterate.hpp"
+#define BOOST_PP_ITERATION_LIMITS (1, MOCK_MAX_ARGS)
 #include BOOST_PP_ITERATE()
-#undef BOOST_PP_ITERATION_PARAMS_1
+#undef BOOST_PP_FILENAME_1
+#undef BOOST_PP_ITERATION_LIMITS
 
 namespace mock
 {
