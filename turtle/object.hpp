@@ -9,9 +9,9 @@
 #ifndef MOCK_OBJECT_HPP_INCLUDED
 #define MOCK_OBJECT_HPP_INCLUDED
 
-#include "object_impl.hpp"
 #include "detail/root.hpp"
 #include "detail/type_name.hpp"
+#include "detail/object_impl.hpp"
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/utility/enable_if.hpp>
