@@ -14,7 +14,7 @@
 #include "object.hpp"
 #include "function.hpp"
 #include "detail/type_name.hpp"
-#include "detail/args.hpp"
+#include "detail/parameters.hpp"
 #include "detail/signature.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
@@ -65,6 +65,17 @@ namespace detail
             BOOST_PP_STRINGIZE(t) ); \
         return t##_mock_; \
     }
+
+#define MOCK_PARAM(z, n, d) \
+    BOOST_PP_COMMA_IF(n) d::at< n >::type p##n
+
+#define MOCK_PARAMS(n, S, tpn) \
+    BOOST_PP_REPEAT(n, MOCK_PARAM, \
+        tpn mock::detail::parameters< S BOOST_PP_COMMA() n >)
+
+#define MOCK_DECL(M, n, S, c, tpn) \
+    tpn boost::function_types::result_type< S >::type M( \
+        MOCK_PARAMS(n, S, tpn) ) c
 
 #define MOCK_METHOD_AUX(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
@@ -119,7 +130,7 @@ namespace detail
 
 #define MOCK_CONSTRUCTOR_AUX(T, n, A, t, tpn) \
     MOCK_FUNCTION_HELPER(void A, t, static) \
-    T( MOCK_ARGS(n, void A, tpn) ) \
+    T( MOCK_PARAMS(n, void A, tpn) ) \
     { \
         MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }

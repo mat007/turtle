@@ -51,10 +51,10 @@
     <ClCompile Include="..\..\test\detail\test_signature.cpp">
       <Filter>Source Files\detail</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\detail\test_args.cpp">
+    <ClCompile Include="..\..\test\detail\test_type_name.cpp">
       <Filter>Source Files\detail</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\detail\test_type_name.cpp">
+    <ClCompile Include="..\..\test\detail\test_parameters.cpp">
       <Filter>Source Files\detail</Filter>
     </ClCompile>
   </ItemGroup>
