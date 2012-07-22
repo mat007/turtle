@@ -102,7 +102,7 @@
 
   <target name="export" description="export distribution">
     <sync todir="${dist.dir}/include">
-      <fileset dir="${libraries.dir}" includes="turtle/**.hpp"/>
+      <fileset dir="${libraries.dir}" includes="turtle/**"/>
     </sync>
     <info version="svn rev ${svn.revision}" todir="${dist.dir}"/>
   </target>
