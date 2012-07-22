@@ -14,9 +14,9 @@
 #define MOCK_CONTEXT \
 boost::unit_test::lazy_ostream::instance() \
     << lazy_context( this ) \
-    << "(" BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FORMAT, \
+    << '(' BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FORMAT, \
         BOOST_PP_DEC(MOCK_NUM_ARGS)) \
-    << ")" \
+    << ')' \
     << lazy_expectations( this )
 
 namespace mock
@@ -146,7 +146,7 @@ namespace detail
                 if( c.impl_->context_ )
                     c.impl_->context_->serialize( s, *c.impl_ );
                 else
-                    s << "?";
+                    s << '?';
                 return s;
             }
             const function_impl* impl_;
