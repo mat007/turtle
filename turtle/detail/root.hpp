@@ -30,7 +30,7 @@ namespace detail
             boost::optional< type_name > type,
             boost::unit_test::const_string name )
         {
-            children_it it = children_.lower_bound( &v );
+            children_t::iterator it = children_.lower_bound( &v );
             if( it == children_.end() ||
                 children_.key_comp()( &v, it->first ) )
                 it = children_.insert( it,
@@ -69,7 +69,6 @@ namespace detail
     private:
         typedef std::map< const void*,
             std::pair< parent, std::size_t > > parents_t;
-        typedef parents_t::iterator parents_it;
 
         class counter_child
         {
@@ -109,13 +108,12 @@ namespace detail
             counter_child& operator=( const counter_child& );
 
             parents_t* parents_;
-            parents_it it_;
+            parents_t::iterator it_;
             child child_;
         };
 
         typedef std::map< const verifiable*, counter_child > children_t;
         typedef children_t::const_iterator children_cit;
-        typedef children_t::iterator children_it;
 
         parents_t parents_;
         children_t children_;

@@ -39,7 +39,7 @@ namespace detail
 
         void invalidate( const void* e )
         {
-            elements_it it =
+            elements_type::iterator it =
                 std::find( elements_.begin(), elements_.end(), e );
             if( it != elements_.end() )
                 elements_.erase( elements_.begin(), it );
@@ -47,7 +47,6 @@ namespace detail
 
     private:
         typedef std::vector< void* > elements_type;
-        typedef elements_type::iterator elements_it;
 
         elements_type elements_;
     };
