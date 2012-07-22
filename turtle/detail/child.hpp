@@ -27,7 +27,7 @@ namespace detail
         {}
         void update( parent& p,
             boost::unit_test::const_string instance,
-            const boost::optional< type_name >& type,
+            boost::optional< type_name > type,
             boost::unit_test::const_string name )
         {
             if( instance != "?." || name_.empty() )

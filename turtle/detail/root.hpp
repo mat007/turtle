@@ -27,7 +27,7 @@ namespace detail
     public:
         virtual void add( const void* p, verifiable& v,
             boost::unit_test::const_string instance,
-            const boost::optional< type_name >& type,
+            boost::optional< type_name > type,
             boost::unit_test::const_string name )
         {
             children_it it = children_.lower_bound( &v );
@@ -94,7 +94,7 @@ namespace detail
                     parents_->erase( it_ );
             }
             void update( boost::unit_test::const_string instance,
-                const boost::optional< type_name >& type,
+                boost::optional< type_name > type,
                 boost::unit_test::const_string name )
             {
                 child_.update( it_->second.first, instance, type, name );

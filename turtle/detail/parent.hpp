@@ -24,7 +24,7 @@ namespace detail
         parent()
         {}
         parent( boost::unit_test::const_string instance,
-            const boost::optional< type_name >& type )
+            boost::optional< type_name > type )
             : instance_( instance )
             , type_( type )
         {}

@@ -29,7 +29,7 @@ namespace detail
 
         virtual void add( const void* p, verifiable& v,
             boost::unit_test::const_string instance,
-            const boost::optional< type_name >& type,
+            boost::optional< type_name > type,
             boost::unit_test::const_string name ) = 0;
         virtual void add( verifiable& v ) = 0;
         virtual void remove( verifiable& v ) = 0;

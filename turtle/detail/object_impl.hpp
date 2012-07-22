@@ -29,7 +29,7 @@ namespace detail
     public:
         virtual void add( const void* /*p*/, detail::verifiable& v,
             boost::unit_test::const_string instance,
-            const boost::optional< detail::type_name >& type,
+            boost::optional< detail::type_name > type,
             boost::unit_test::const_string name )
         {
             if( children_.empty() )

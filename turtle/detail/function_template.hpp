@@ -92,7 +92,7 @@ namespace mock
 
         void configure( detail::context& c, const void* p,
             boost::unit_test::const_string instance,
-            const boost::optional< detail::type_name >& type,
+            boost::optional< detail::type_name > type,
             boost::unit_test::const_string name ) const
         {
             if( ! impl_->context_ )
