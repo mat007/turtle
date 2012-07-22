@@ -595,3 +595,12 @@ BOOST_AUTO_TEST_CASE( resetting_self_referenced_mock_class_does_not_crash )
     }
     mock::reset();
 }
+
+namespace
+{
+    template< typename T1, typename T2 >
+    struct my_base
+    {};
+    MOCK_BASE_CLASS( my_comma_mock, my_base< int BOOST_PP_COMMA() int > )
+    {};
+}
