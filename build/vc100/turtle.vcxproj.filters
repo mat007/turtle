@@ -127,5 +127,8 @@
     <ClInclude Include="..\..\turtle\detail\sequence_impl.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\formatter.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
