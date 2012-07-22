@@ -97,9 +97,6 @@
     <ClInclude Include="..\..\turtle\detail\invocation.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\operators.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\detail\object_impl.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
