@@ -13,7 +13,6 @@
 #include "../error.hpp"
 #include "../log.hpp"
 #include "../constraints.hpp"
-#include "../sequence.hpp"
 #include "check.hpp"
 #include "action.hpp"
 #include "verifiable.hpp"

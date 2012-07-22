@@ -50,10 +50,8 @@
 
 #define MOCK_PARAM(z, n, d) \
     BOOST_PP_COMMA_IF(n) d, n >::type p##n
-
 #define MOCK_PARAMS(n, S, tpn) \
     BOOST_PP_REPEAT(n, MOCK_PARAM, tpn mock::detail::parameter< S)
-
 #define MOCK_DECL(M, n, S, c, tpn) \
     tpn boost::function_types::result_type< S >::type M( \
         MOCK_PARAMS(n, S, tpn) ) c
