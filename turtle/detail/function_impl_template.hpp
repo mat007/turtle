@@ -11,13 +11,14 @@
 #define MOCK_FORMAT(z, n, N) \
     << " " << mock::format( t##n ) \
     << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), " ", ",")
+
 #define MOCK_CONTEXT \
-boost::unit_test::lazy_ostream::instance() \
-    << lazy_context( this ) \
-    << '(' BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FORMAT, \
-        BOOST_PP_DEC(MOCK_NUM_ARGS)) \
-    << ')' \
-    << lazy_expectations( this )
+    boost::unit_test::lazy_ostream::instance() \
+        << lazy_context( this ) \
+        << '(' BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FORMAT, \
+            BOOST_PP_DEC(MOCK_NUM_ARGS)) \
+        << ')' \
+        << lazy_expectations( this )
 
 namespace mock
 {
