@@ -27,6 +27,8 @@
     struct T : I, mock::object, mock::detail::base< I >
 #define MOCK_CLASS(T) \
     struct T : mock::object
+#define MOCK_FUNCTOR(f, S) \
+    mock::detail::functor< S > f, f##_mock
 
 #define MOCK_HELPER(t) \
     t##_mock( mock::detail::root, BOOST_PP_STRINGIZE(t) )

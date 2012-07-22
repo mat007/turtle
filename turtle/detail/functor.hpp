@@ -33,7 +33,4 @@ namespace detail
 }
 } // mock
 
-#define MOCK_FUNCTOR(f, S) \
-    mock::detail::functor< S > f, f##_mock
-
 #endif // MOCK_FUNCTOR_HPP_INCLUDED
