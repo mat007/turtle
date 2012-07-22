@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE( call_mock_method_with_max_number_of_args )
     m.method( BOOST_PP_ENUM(MOCK_MAX_ARGS, IDENTITY, 0) );
 }
 
-BOOST_AUTO_TEST_CASE( call_mock_method_with_max_number_of_args_and_returning_something )
+BOOST_AUTO_TEST_CASE( call_mock_method_with_max_number_of_args_and_a_return_value )
 {
     my_custom_mock m;
     MOCK_EXPECT( m.method2 ).once().with( BOOST_PP_ENUM(MOCK_MAX_ARGS, IDENTITY, 0) ).returns( 42 );
