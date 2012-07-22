@@ -25,9 +25,6 @@
     <ClInclude Include="..\..\turtle\error.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\expectation.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\function.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -96,6 +93,18 @@
     </ClInclude>
     <ClInclude Include="..\..\turtle\detail\parameters.hpp">
       <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\function_template.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\expectation_base.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\expectation_template.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\function_iterate.hpp">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

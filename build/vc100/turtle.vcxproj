@@ -39,8 +39,11 @@
     <ClInclude Include="..\..\turtle\detail\verifiable.hpp" />
     <ClInclude Include="..\..\turtle\detail\yes_no_type.hpp" />
     <ClInclude Include="..\..\turtle\error.hpp" />
-    <ClInclude Include="..\..\turtle\expectation.hpp" />
+    <ClInclude Include="..\..\turtle\expectation_base.hpp" />
+    <ClInclude Include="..\..\turtle\expectation_template.hpp" />
     <ClInclude Include="..\..\turtle\function.hpp" />
+    <ClInclude Include="..\..\turtle\function_iterate.hpp" />
+    <ClInclude Include="..\..\turtle\function_template.hpp" />
     <ClInclude Include="..\..\turtle\invocation.hpp" />
     <ClInclude Include="..\..\turtle\is_functor.hpp" />
     <ClInclude Include="..\..\turtle\log.hpp" />

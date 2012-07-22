@@ -96,7 +96,7 @@
   </target>
 
   <target name="reports" description="generate code analysis reports">
-    <headers name="turtle"/>
+    <headers name="turtle" excludes="*_iterate.hpp,*_template.hpp"/>
     <check name="turtle"/>
   </target>
 
