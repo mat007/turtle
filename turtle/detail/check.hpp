@@ -11,6 +11,7 @@
 
 #include "is_functor.hpp"
 #include "../log.hpp"
+#include "../constraint.hpp"
 #include <boost/utility/enable_if.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ref.hpp>
