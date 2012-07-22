@@ -9,6 +9,9 @@
 #ifndef MOCK_CONSTRAINT_HPP_INCLUDED
 #define MOCK_CONSTRAINT_HPP_INCLUDED
 
+#include <boost/preprocessor/stringize.hpp>
+#include "log.hpp"
+
 namespace mock
 {
     template< typename Constraint >

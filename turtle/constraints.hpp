@@ -10,12 +10,10 @@
 #define MOCK_CONSTRAINTS_HPP_INCLUDED
 
 #include "constraint.hpp"
-#include "log.hpp"
 #include <boost/ref.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/utility/addressof.hpp>
 #include <boost/type_traits/is_convertible.hpp>
-#include <boost/preprocessor/stringize.hpp>
 
 namespace mock
 {
