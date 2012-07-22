@@ -38,9 +38,8 @@ namespace detail
         {
             const char* name = info.name();
 #ifdef __GNUC__
-            size_t size = 0;
             int status = 0;
-            char* result = abi::__cxa_demangle( name, NULL, &size, &status );
+            char* result = abi::__cxa_demangle( name, NULL, 0, &status );
             struct guard
             {
                 explicit guard( char* p )
@@ -53,7 +52,7 @@ namespace detail
             private:
                 char* p_;
             } g( result );
-            if( result )
+            if( ! status && result )
                 serialize( s, result );
             else
 #endif
