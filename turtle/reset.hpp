@@ -11,7 +11,7 @@
 
 #include "object.hpp"
 #include "detail/root.hpp"
-#include "detail/function.hpp"
+#include "detail/functor.hpp"
 
 namespace mock
 {
@@ -24,7 +24,7 @@ namespace mock
         o.impl_->reset();
     }
     template< typename Signature >
-    void reset( detail::function< Signature >& f )
+    void reset( detail::functor< Signature >& f )
     {
         f.reset();
     }

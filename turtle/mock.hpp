@@ -13,56 +13,20 @@
 #include "object.hpp"
 #include "reset.hpp"
 #include "verify.hpp"
+#include "detail/functor.hpp"
 #include "detail/function.hpp"
 #include "detail/type_name.hpp"
 #include "detail/signature.hpp"
+#include "detail/parameter.hpp"
 #include "detail/cleanup.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
-#include <boost/function_types/parameter_types.hpp>
-#include <boost/function_types/function_arity.hpp>
 #include <boost/mpl/assert.hpp>
-#include <boost/mpl/at.hpp>
-
-namespace mock
-{
-namespace detail
-{
-    template< typename Signature, int n >
-    struct parameter
-    {
-        typedef BOOST_DEDUCED_TYPENAME
-            boost::mpl::at_c<
-                BOOST_DEDUCED_TYPENAME
-                    boost::function_types::parameter_types< Signature >,
-                n
-            >::type type;
-    };
-
-    template< typename S >
-    struct functor : mock::detail::function< S >
-    {
-        functor()
-        {
-            static functor* f = 0;
-            if( f )
-            {
-                *this = *f;
-                f = 0;
-            }
-            else
-                f = this;
-        }
-    };
-}
-} // mock
 
 #define MOCK_BASE_CLASS(T, I) \
     struct T : I, mock::object, mock::detail::base< I >
 #define MOCK_CLASS(T) \
     struct T : mock::object
-#define MOCK_FUNCTOR(f, S) \
-    mock::detail::functor< S > f, f##_mock
 
 #define MOCK_HELPER(t) \
     t##_mock( mock::detail::root, BOOST_PP_STRINGIZE(t) )

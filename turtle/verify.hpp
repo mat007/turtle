@@ -11,7 +11,7 @@
 
 #include "object.hpp"
 #include "detail/root.hpp"
-#include "detail/function.hpp"
+#include "detail/functor.hpp"
 
 namespace mock
 {
@@ -24,7 +24,7 @@ namespace mock
         return o.impl_->verify();
     }
     template< typename Signature >
-    bool verify( const detail::function< Signature >& f )
+    bool verify( const detail::functor< Signature >& f )
     {
         return f.verify();
     }

@@ -35,12 +35,14 @@
     <ClInclude Include="..\..\turtle\detail\function_impl_template.hpp" />
     <ClInclude Include="..\..\turtle\detail\function_iterate.hpp" />
     <ClInclude Include="..\..\turtle\detail\function_template.hpp" />
+    <ClInclude Include="..\..\turtle\detail\functor.hpp" />
     <ClInclude Include="..\..\turtle\detail\group.hpp" />
     <ClInclude Include="..\..\turtle\detail\invocation.hpp" />
     <ClInclude Include="..\..\turtle\detail\is_functor.hpp" />
     <ClInclude Include="..\..\turtle\detail\lambda.hpp" />
     <ClInclude Include="..\..\turtle\detail\object_impl.hpp" />
     <ClInclude Include="..\..\turtle\detail\operators.hpp" />
+    <ClInclude Include="..\..\turtle\detail\parameter.hpp" />
     <ClInclude Include="..\..\turtle\detail\parameters.hpp" />
     <ClInclude Include="..\..\turtle\detail\parent.hpp" />
     <ClInclude Include="..\..\turtle\detail\root.hpp" />

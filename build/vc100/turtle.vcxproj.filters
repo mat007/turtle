@@ -124,5 +124,11 @@
     <ClInclude Include="..\..\turtle\reset.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\functor.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\parameter.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
