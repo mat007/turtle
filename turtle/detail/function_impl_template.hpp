@@ -29,15 +29,13 @@ namespace detail
     template< typename R BOOST_PP_COMMA_IF(MOCK_NUM_ARGS)
         BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T) >
     class function_impl< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
-        : public detail::verifiable,
-        public boost::enable_shared_from_this<
+        : public verifiable, public boost::enable_shared_from_this<
             function_impl< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )> >
     {
     public:
         typedef MOCK_ERROR_POLICY< R > error_type;
 
-        typedef detail::expectation<
-            R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
+        typedef expectation< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
         > expectation_type;
 
     public:
@@ -174,7 +172,7 @@ namespace detail
             expectations_type::const_iterator expectations_cit;
 
         expectations_type expectations_;
-        detail::context* context_;
+        context* context_;
         mutable bool valid_;
     };
 }

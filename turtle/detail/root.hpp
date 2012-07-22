@@ -21,8 +21,7 @@ namespace mock
 {
 namespace detail
 {
-    class root_t : public boost::unit_test::singleton< root_t >,
-                   public detail::context
+    class root_t : public boost::unit_test::singleton< root_t >, public context
     {
     public:
         virtual void add( const void* p, verifiable& v,

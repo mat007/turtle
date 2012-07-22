@@ -11,20 +11,13 @@
 
 #define MOCK_EXPECTATION_INITIALIZE(z, n, d) \
     BOOST_PP_COMMA_IF(n) c##n##_( \
-        new detail::check< \
-            arg##n##_type, \
-            constraint< detail::any > \
-        >( mock::any ) )
+        new check< arg##n##_type, constraint< any > >( mock::any ) )
 
 #define MOCK_EXPECTATION_WITH(z, n, d) \
-    c##n##_.reset( \
-        new detail::check< \
-            arg##n##_type, \
-            Constraint_##n \
-        >( c##n ) );
+    c##n##_.reset( new check< arg##n##_type, Constraint_##n >( c##n ) );
 
 #define MOCK_EXPECTATION_MEMBER(z, n, d) \
-    boost::shared_ptr< detail::check_base< arg##n##_type > > c##n##_;
+    boost::shared_ptr< check_base< arg##n##_type > > c##n##_;
 
 #define MOCK_EXPECTATION_ARGS(z, n, d) \
     BOOST_PP_COMMA_IF(n) arg##n##_type a##n

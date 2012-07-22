@@ -22,7 +22,7 @@ namespace detail
     {
     public:
         expectation_base()
-            : i_( new detail::unlimited() )
+            : i_( new unlimited() )
             , file_( "unknown location" )
             , line_( 0 )
         {}
@@ -72,22 +72,22 @@ namespace detail
                 (*it)->remove( this );
         }
 
-        void expect( detail::invocation* i )
+        void expect( invocation* i )
         {
             i_.reset( i );
         }
 
-        void add( boost::shared_ptr< detail::sequence_impl > s )
+        void add( boost::shared_ptr< sequence_impl > s )
         {
             s->add( this );
             sequences_.push_back( s );
         }
 
-        boost::shared_ptr< detail::invocation > i_;
+        boost::shared_ptr< invocation > i_;
 
     private:
         typedef std::vector<
-            boost::shared_ptr< detail::sequence_impl >
+            boost::shared_ptr< sequence_impl >
         > sequences_type;
         typedef sequences_type::const_iterator sequences_cit;
 

@@ -78,20 +78,20 @@ namespace detail
             return s << *e.impl_;
         }
 
-        function& operator()( detail::context& c,
+        function& operator()( context& c,
             boost::unit_test::const_string instance )
         {
             if( ! impl_->context_ )
                 c.add( *impl_ );
             c.add( impl_.get(), *impl_, instance,
-                boost::optional< detail::type_name >(), "" );
+                boost::optional< type_name >(), "" );
             impl_->context_ = &c;
             return *this;
         }
 
-        void configure( detail::context& c, const void* p,
+        void configure( context& c, const void* p,
             boost::unit_test::const_string instance,
-            boost::optional< detail::type_name > type,
+            boost::optional< type_name > type,
             boost::unit_test::const_string name ) const
         {
             if( ! impl_->context_ )

@@ -38,7 +38,7 @@ namespace detail
     template< typename E >
     E& configure( const object& o, E& e,
         boost::unit_test::const_string instance,
-        boost::optional< detail::type_name > type,
+        boost::optional< type_name > type,
         boost::unit_test::const_string name )
     {
         e.configure( *o.impl_, o.impl_.get(), instance, type, name );
@@ -48,7 +48,7 @@ namespace detail
     template< typename T, typename E >
     E& configure( const T& t, E& e,
         boost::unit_test::const_string instance,
-        boost::optional< detail::type_name > type,
+        boost::optional< type_name > type,
         boost::unit_test::const_string name,
         BOOST_DEDUCED_TYPENAME boost::disable_if<
             BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >

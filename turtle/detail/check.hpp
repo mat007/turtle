@@ -81,7 +81,7 @@ namespace detail
     template< typename Actual, typename Functor >
     class check< Actual, Functor,
         BOOST_DEDUCED_TYPENAME boost::enable_if<
-            detail::is_functor< Functor >
+            is_functor< Functor >
         >::type
     > : public check_base< Actual >
     {
