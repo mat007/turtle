@@ -45,9 +45,6 @@
     <ClCompile Include="..\..\test\detail\test_type_name.cpp">
       <Filter>Source Files\detail</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\detail\test_parameters.cpp">
-      <Filter>Source Files\detail</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\detail\test_function.cpp">
       <Filter>Source Files\detail</Filter>
     </ClCompile>

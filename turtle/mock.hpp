@@ -13,16 +13,30 @@
 #include "object.hpp"
 #include "detail/function.hpp"
 #include "detail/type_name.hpp"
-#include "detail/parameters.hpp"
 #include "detail/signature.hpp"
 #include "detail/cleanup.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
+#include <boost/function_types/parameter_types.hpp>
+#include <boost/function_types/function_arity.hpp>
+#include <boost/mpl/assert.hpp>
+#include <boost/mpl/at.hpp>
 
 namespace mock
 {
 namespace detail
 {
+    template< typename Signature, int n >
+    struct parameter
+    {
+        typedef BOOST_DEDUCED_TYPENAME
+            boost::mpl::at_c<
+                BOOST_DEDUCED_TYPENAME
+                    boost::function_types::parameter_types< Signature >,
+                n
+            >::type type;
+    };
+
     template< typename S >
     struct functor : mock::detail::function< S >
     {
@@ -67,11 +81,10 @@ namespace detail
     }
 
 #define MOCK_PARAM(z, n, d) \
-    BOOST_PP_COMMA_IF(n) d::at< n >::type p##n
+    BOOST_PP_COMMA_IF(n) d, n >::type p##n
 
 #define MOCK_PARAMS(n, S, tpn) \
-    BOOST_PP_REPEAT(n, MOCK_PARAM, \
-        tpn mock::detail::parameters< S BOOST_PP_COMMA() n >)
+    BOOST_PP_REPEAT(n, MOCK_PARAM, tpn mock::detail::parameter< S)
 
 #define MOCK_DECL(M, n, S, c, tpn) \
     tpn boost::function_types::result_type< S >::type M( \
@@ -80,6 +93,8 @@ namespace detail
 #define MOCK_METHOD_AUX(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
     { \
+        BOOST_MPL_ASSERT_RELATION( n, ==, \
+            boost::function_types::function_arity< S >::value ); \
         return MOCK_ANONYMOUS_HELPER(t)( \
             BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
@@ -148,6 +163,8 @@ namespace detail
     MOCK_FUNCTION_HELPER(S, t, s) \
     s MOCK_DECL(F, n, S,,tpn) \
     { \
+        BOOST_MPL_ASSERT_RELATION( n, ==, \
+            boost::function_types::function_arity< S >::value ); \
         return MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 #define MOCK_FUNCTION(F, n, S, t) \
