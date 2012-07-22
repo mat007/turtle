@@ -50,6 +50,7 @@
     <ClInclude Include="..\..\turtle\log.hpp" />
     <ClInclude Include="..\..\turtle\mock.hpp" />
     <ClInclude Include="..\..\turtle\object.hpp" />
+    <ClInclude Include="..\..\turtle\object_impl.hpp" />
     <ClInclude Include="..\..\turtle\sequence.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

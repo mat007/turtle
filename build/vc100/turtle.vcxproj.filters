@@ -106,5 +106,8 @@
     <ClInclude Include="..\..\turtle\detail\operators.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\turtle\object_impl.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
