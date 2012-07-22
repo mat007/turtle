@@ -53,7 +53,6 @@ namespace detail
 
     private:
         typedef std::vector< verifiable* > verifiables_t;
-        typedef verifiables_t::iterator verifiables_it;
         typedef verifiables_t::const_iterator verifiables_cit;
 
         verifiables_t verifiables_;
