@@ -54,7 +54,7 @@ namespace detail
             BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >
         >::type* = 0 )
     {
-        e.configure( mock::detail::root, &t, instance, type, name );
+        e.configure( detail::root, &t, instance, type, name );
         return e;
     }
 }

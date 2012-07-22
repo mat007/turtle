@@ -24,7 +24,7 @@ namespace detail
         {}
         void serialize( stream& s ) const
         {
-            mock::detail::serialize( s, *t_ );
+            detail::serialize( s, *t_ );
         }
         const T* t_;
     };

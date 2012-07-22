@@ -126,11 +126,11 @@ namespace detail
 
     inline bool verify()
     {
-        return mock::detail::root.verify();
+        return detail::root.verify();
     }
     inline void reset()
     {
-        mock::detail::root.reset();
+        detail::root.reset();
     }
 } // mock
 

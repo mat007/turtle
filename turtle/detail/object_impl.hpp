@@ -33,7 +33,7 @@ namespace detail
             boost::unit_test::const_string name )
         {
             if( children_.empty() )
-                mock::detail::root.add( *this );
+                detail::root.add( *this );
             children_[ &v ].update( parent_, instance, type, name );
         }
         virtual void add( verifiable& v )
@@ -45,7 +45,7 @@ namespace detail
             group_.remove( v );
             children_.erase( &v );
             if( children_.empty() )
-                mock::detail::root.remove( *this );
+                detail::root.remove( *this );
         }
 
         virtual void serialize( std::ostream& s, const verifiable& v ) const
