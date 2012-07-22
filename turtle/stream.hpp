@@ -63,13 +63,13 @@ namespace conversion
         const T* t_;
     };
 
-    struct data
+    struct any
     {
         template< typename T >
-        data( const T& t )
+        any( const T& t )
             : h_( new holder_imp< T >( t ) )
         {}
-        ~data()
+        ~any()
         {
             delete h_;
         }
@@ -78,7 +78,7 @@ namespace conversion
 }
 }
 
-    inline stream& operator<<( stream& s, const detail::conversion::data& d )
+    inline stream& operator<<( stream& s, const detail::conversion::any& d )
     {
         d.h_->serialize( *s.s_ );
         return s;
