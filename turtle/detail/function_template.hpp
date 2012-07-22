@@ -10,6 +10,8 @@
 
 namespace mock
 {
+namespace detail
+{
     template< typename Signature > class function;
 
     template< typename R BOOST_PP_COMMA_IF(MOCK_NUM_ARGS)
@@ -264,4 +266,5 @@ namespace mock
 
         boost::shared_ptr< function_impl > impl_;
     };
+}
 } // mock

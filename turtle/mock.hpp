@@ -24,7 +24,7 @@ namespace mock
 namespace detail
 {
     template< typename S >
-    struct functor : mock::function< S >
+    struct functor : mock::detail::function< S >
     {
         functor()
         {
@@ -54,8 +54,8 @@ namespace detail
     t##_mock( mock::detail::root, "?." )
 
 #define MOCK_METHOD_HELPER(S, t) \
-    mutable mock::function< S > t##_mock_; \
-    mock::function< S >& t##_mock( \
+    mutable mock::detail::function< S > t##_mock_; \
+    mock::detail::function< S >& t##_mock( \
         const mock::detail::context&, \
         boost::unit_test::const_string instance ) const \
     { \
@@ -120,11 +120,11 @@ namespace detail
     MOCK_METHOD_HELPER(T(), t)
 
 #define MOCK_FUNCTION_HELPER(S, t, s) \
-    s mock::function< S >& t##_mock( \
+    s mock::detail::function< S >& t##_mock( \
         mock::detail::context& context, \
         boost::unit_test::const_string instance ) \
     { \
-        static mock::function< S > f; \
+        static mock::detail::function< S > f; \
         return f( context, instance ); \
     }
 

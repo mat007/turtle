@@ -48,12 +48,12 @@
 namespace mock
 {
     template< typename Signature >
-    bool verify( const function< Signature >& f )
+    bool verify( const detail::function< Signature >& f )
     {
         return f.verify();
     }
     template< typename Signature >
-    void reset( function< Signature >& f )
+    void reset( detail::function< Signature >& f )
     {
         f.reset();
     }
