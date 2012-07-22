@@ -70,9 +70,6 @@
     <ClInclude Include="..\..\turtle\detail\yes_no_type.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\parameters.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\detail\cleanup.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
