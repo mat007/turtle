@@ -47,18 +47,4 @@
 #undef BOOST_PP_FILENAME_1
 #undef BOOST_PP_ITERATION_LIMITS
 
-namespace mock
-{
-    template< typename Signature >
-    bool verify( const detail::function< Signature >& f )
-    {
-        return f.verify();
-    }
-    template< typename Signature >
-    void reset( detail::function< Signature >& f )
-    {
-        f.reset();
-    }
-} // mock
-
 #endif // MOCK_FUNCTION_HPP_INCLUDED

@@ -123,15 +123,6 @@ namespace detail
     };
     BOOST_TEST_SINGLETON_INST( root )
 }
-
-    inline bool verify()
-    {
-        return detail::root.verify();
-    }
-    inline void reset()
-    {
-        detail::root.reset();
-    }
 } // mock
 
 #endif // MOCK_ROOT_HPP_INCLUDED

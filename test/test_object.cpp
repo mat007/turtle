@@ -7,7 +7,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "mock_error.hpp"
-#include <turtle/object.hpp>
+#include <turtle/reset.hpp>
+#include <turtle/verify.hpp>
 #include <turtle/detail/function.hpp>
 #include <boost/test/auto_unit_test.hpp>
 

@@ -11,6 +11,8 @@
 
 #include "config.hpp"
 #include "object.hpp"
+#include "reset.hpp"
+#include "verify.hpp"
 #include "detail/function.hpp"
 #include "detail/type_name.hpp"
 #include "detail/signature.hpp"

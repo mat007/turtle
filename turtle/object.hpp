@@ -20,18 +20,7 @@
 
 namespace mock
 {
-    class object
-    {
-    public:
-        object()
-            : impl_( new detail::object_impl() )
-        {}
-    protected:
-        ~object()
-        {}
-    public:
-        boost::shared_ptr< detail::object_impl > impl_;
-    };
+    class object;
 
 namespace detail
 {
@@ -39,11 +28,7 @@ namespace detail
     E& configure( const object& o, E& e,
         boost::unit_test::const_string instance,
         boost::optional< type_name > type,
-        boost::unit_test::const_string name )
-    {
-        e.configure( *o.impl_, o.impl_.get(), instance, type, name );
-        return e;
-    }
+        boost::unit_test::const_string name );
 
     template< typename T, typename E >
     E& configure( const T& t, E& e,
@@ -58,14 +43,30 @@ namespace detail
         return e;
     }
 }
-    inline bool verify( const object& o )
+    class object
     {
-        return o.impl_->verify();
-    }
-    inline void reset( object& o )
-    {
-        o.impl_->reset();
-    }
+    public:
+        object()
+            : impl_( new detail::object_impl() )
+        {}
+    protected:
+        ~object()
+        {}
+    private:
+        friend void reset( const object& o );
+        friend bool verify( const object& o );
+        template< typename E >
+        friend E& detail::configure( const object& o, E& e,
+            boost::unit_test::const_string instance,
+            boost::optional< detail::type_name > type,
+            boost::unit_test::const_string name )
+        {
+            e.configure( *o.impl_, o.impl_.get(), instance, type, name );
+            return e;
+        }
+    private:
+        boost::shared_ptr< detail::object_impl > impl_;
+    };
 } // mock
 
 #endif // MOCK_OBJECT_HPP_INCLUDED
