@@ -6,8 +6,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "expectation_base.hpp"
-
 #define MOCK_EXPECTATION_TYPEDEF(z, n, d) \
     typedef T##n arg##n##_type;
 

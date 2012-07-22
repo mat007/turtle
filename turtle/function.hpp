@@ -17,6 +17,7 @@
 #include "invocation.hpp"
 #include "constraints.hpp"
 #include "sequence.hpp"
+#include "expectation_base.hpp"
 #include "detail/verifiable.hpp"
 #include "detail/type_name.hpp"
 #include "detail/context.hpp"
