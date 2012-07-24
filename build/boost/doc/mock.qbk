@@ -887,7 +887,9 @@ The extra features provided by MOCK_BASE_CLASS are not usable with template base
 
 Example :
 
+'''
  warning C4505: 'base::[thunk]: __thiscall base::`vcall'{0,{flat}}' }'' : unreferenced local function has been removed
+'''
 
 This seems to be a random bug with some versions of the Microsoft Visual Studio compiler, see https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=324427
 
@@ -901,7 +903,9 @@ The only known workaround is to disable the warning with a pragma :
 
 Example :
 
+'''
  warning C4301: '`anonymous-namespace'::base::method': overriding virtual function only differs from '`anonymous-namespace'::base::method' by const/volatile qualifier
+'''
 
 The following code produces this warning with some versions of the Microsoft Visual Studio compiler :
 
