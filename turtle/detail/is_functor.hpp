@@ -11,6 +11,7 @@
 
 #include "yes_no_type.hpp"
 #include <boost/function_types/is_callable_builtin.hpp>
+#include <boost/mpl/has_xxx.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/or.hpp>
 
@@ -18,21 +19,9 @@ namespace mock
 {
 namespace detail
 {
-#define MOCK_IS_FUNCTION_HELPER(N, M) \
-    template< typename T > yes_type& N##_helper( \
-        BOOST_DEDUCED_TYPENAME T::M* ); \
-    template< typename T > no_type& N##_helper( ... ); \
-    template< typename T > struct N \
-        : boost::mpl::bool_< \
-            sizeof( N##_helper< T >( 0 ) ) == sizeof( yes_type ) \
-        > \
-    {};
-
-    MOCK_IS_FUNCTION_HELPER( has_result_type, result_type )
-    MOCK_IS_FUNCTION_HELPER( has_sig, BOOST_NESTED_TEMPLATE sig< void > )
-    MOCK_IS_FUNCTION_HELPER( has_result, BOOST_NESTED_TEMPLATE result< void > )
-
-#undef MOCK_IS_FUNCTION_HELPER
+    BOOST_MPL_HAS_XXX_TRAIT_DEF( result_type )
+    BOOST_MPL_HAS_XXX_TEMPLATE_DEF( sig )
+    BOOST_MPL_HAS_XXX_TEMPLATE_DEF( result )
 
     template< typename T >
     struct is_functor
