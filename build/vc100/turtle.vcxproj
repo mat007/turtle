@@ -19,15 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\turtle\boost_test_error.hpp" />
     <ClInclude Include="..\..\turtle\config.hpp" />
     <ClInclude Include="..\..\turtle\constraint.hpp" />
     <ClInclude Include="..\..\turtle\constraints.hpp" />
-    <ClInclude Include="..\..\turtle\default_error.hpp" />
     <ClInclude Include="..\..\turtle\detail\action.hpp" />
     <ClInclude Include="..\..\turtle\detail\check.hpp" />
     <ClInclude Include="..\..\turtle\detail\child.hpp" />
-    <ClInclude Include="..\..\turtle\detail\cleanup.hpp" />
     <ClInclude Include="..\..\turtle\detail\context.hpp" />
     <ClInclude Include="..\..\turtle\detail\expectation_base.hpp" />
     <ClInclude Include="..\..\turtle\detail\expectation_template.hpp" />

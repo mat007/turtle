@@ -43,10 +43,4 @@
 #   endif
 #endif
 
-#ifndef MOCK_USE_BOOST_TEST
-#   ifdef BOOST_TEST_DECL
-#       define MOCK_USE_BOOST_TEST
-#   endif
-#endif
-
 #endif // MOCK_CONFIG_HPP_INCLUDED

@@ -8,6 +8,10 @@
 
 #include "expectation_template.hpp"
 
+#ifndef MOCK_ERROR_POLICY
+#   error no error policy has been set
+#endif
+
 #define MOCK_FORMAT(z, n, N) \
     << ' ' << mock::format( t##n ) \
     << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), ' ', ',')

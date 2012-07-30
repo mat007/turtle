@@ -18,7 +18,6 @@
 #include "detail/type_name.hpp"
 #include "detail/signature.hpp"
 #include "detail/parameter.hpp"
-#include "detail/cleanup.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/mpl/assert.hpp>

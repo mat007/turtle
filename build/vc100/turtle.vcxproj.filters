@@ -19,9 +19,6 @@
     <ClInclude Include="..\..\turtle\constraints.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\default_error.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\error.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -35,9 +32,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\sequence.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\boost_test_error.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\detail\signature.hpp">
@@ -68,9 +62,6 @@
       <Filter>Source Files\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\detail\yes_no_type.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\cleanup.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\detail\action.hpp">
