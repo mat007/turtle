@@ -207,11 +207,11 @@ An expectation can be part of several sequences :
 
 During the execution of a test case, an error can happen for one of the following reasons :
 
- * unexpected call when no match can be found for the given arguments (typically logs an error and throws an exception)
- * sequence failure when an enforced call sequence has not been followed (typically logs an error and throws an exception)
- * verification failure if a remaining match has not been fulfilled upon manual verification (typically logs an error)
- * untriggered expectation if a remaining match has not been fulfilled when destroying the mock object (typically logs an error)
- * missing action if a method supposed to return something else than void has not been configured properly (typically logs an error and throws an exception)
+* unexpected call when no match can be found for the given arguments (typically logs an error and throws an exception)
+* sequence failure when an enforced call sequence has not been followed (typically logs an error and throws an exception)
+* verification failure if a remaining match has not been fulfilled upon manual verification (typically logs an error)
+* untriggered expectation if a remaining match has not been fulfilled when destroying the mock object (typically logs an error)
+* missing action if a method supposed to return something else than void has not been configured properly (typically logs an error and throws an exception)
 
 The exact type of the exception thrown depends on the [[#Error_policy]] used.
 
