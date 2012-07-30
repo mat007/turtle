@@ -15,7 +15,8 @@
 #ifdef _MSC_VER
 #pragma warning( push, 0 )
 #endif
-#include <boost/phoenix.hpp>
+#include <boost/spirit/home/phoenix.hpp>
+#include <boost/spirit/home/phoenix/bind.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #ifdef _MSC_VER
