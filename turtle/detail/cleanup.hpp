@@ -11,8 +11,8 @@
 
 #include "../config.hpp"
 #ifdef MOCK_USE_BOOST_TEST
-#include "verify.hpp"
-#include "reset.hpp"
+#include "../verify.hpp"
+#include "../reset.hpp"
 #include <boost/test/unit_test_suite.hpp>
 
 namespace mock

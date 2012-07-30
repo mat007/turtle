@@ -25,6 +25,7 @@
     <ClInclude Include="..\..\turtle\detail\action.hpp" />
     <ClInclude Include="..\..\turtle\detail\check.hpp" />
     <ClInclude Include="..\..\turtle\detail\child.hpp" />
+    <ClInclude Include="..\..\turtle\detail\cleanup.hpp" />
     <ClInclude Include="..\..\turtle\detail\context.hpp" />
     <ClInclude Include="..\..\turtle\detail\expectation_base.hpp" />
     <ClInclude Include="..\..\turtle\detail\expectation_template.hpp" />
