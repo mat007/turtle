@@ -12,6 +12,11 @@
 #include <boost/preprocessor/arithmetic/inc.hpp>
 #include <boost/preprocessor/comparison/less.hpp>
 
+#ifndef MOCK_ERROR_POLICY
+#   define MOCK_ERROR_POLICY mock::error
+#   define MOCK_USE_BOOST_TEST
+#endif
+
 #ifndef MOCK_MAX_ARGS
 #   define MOCK_MAX_ARGS 9
 #elif BOOST_PP_LESS(9, MOCK_MAX_ARGS)
