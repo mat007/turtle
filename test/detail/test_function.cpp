@@ -16,51 +16,6 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 
-#define CHECK_CALLS( calls ) \
-    BOOST_CHECK_EQUAL( calls, expected_call_count ); \
-    expected_call_count = 0;
-#define CHECK_ERROR( expr, error, calls, context ) \
-    BOOST_CHECK( verify() ); \
-    try { expr; } catch( ... ) {} \
-    BOOST_CHECK_EQUAL( 1, error##_count ); \
-    CHECK_CALLS( calls ); \
-    BOOST_CHECK_EQUAL( context, last_context ); \
-    reset();
-
-namespace
-{
-    struct error_fixture
-    {
-        error_fixture()
-        {
-            reset();
-        }
-        ~error_fixture()
-        {
-            BOOST_CHECK( verify() );
-            BOOST_CHECK_EQUAL( 0, expected_call_count );
-        }
-        void reset()
-        {
-            missing_action_count = 0;
-            expected_call_count = 0;
-            unexpected_call_count = 0;
-            sequence_failed_count = 0;
-            verification_failed_count = 0;
-            untriggered_expectation_count = 0;
-            last_context.clear();
-        }
-        bool verify() const
-        {
-            return missing_action_count == 0 &&
-                unexpected_call_count == 0 &&
-                sequence_failed_count == 0 &&
-                verification_failed_count == 0 &&
-                untriggered_expectation_count == 0;
-        }
-    };
-}
-
 // static
 
 namespace
@@ -88,11 +43,11 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_unconfigured_function_calls_unexpected_ca
 {
     {
         mock::detail::function< void() > f;
-        CHECK_ERROR( f(), unexpected_call, 0, "?()" );
+        CHECK_ERROR( f(), "unexpected call", 0, "?()" );
     }
     {
         mock::detail::function< int( int, const std::string& ) > f;
-        CHECK_ERROR( f( 1, "s" ), unexpected_call, 0, "?( 1, \"s\" )" );
+        CHECK_ERROR( f( 1, "s" ), "unexpected call", 0, "?( 1, \"s\" )" );
     }
 }
 
@@ -101,12 +56,12 @@ BOOST_FIXTURE_TEST_CASE( triggering_a_never_expectation_calls_unexpected_call_er
     {
         mock::detail::function< void() > f;
         f.expect().never();
-        CHECK_ERROR( f(), unexpected_call, 0, "?()\nv never()" );
+        CHECK_ERROR( f(), "unexpected call", 0, "?()\nv never()" );
     }
     {
         mock::detail::function< int( int, const std::string& ) > f;
         f.expect().never();
-        CHECK_ERROR( f( 1, "s" ), unexpected_call, 0, "?( 1, \"s\" )\nv never().with( any, any )" );
+        CHECK_ERROR( f( 1, "s" ), "unexpected call", 0, "?( 1, \"s\" )\nv never().with( any, any )" );
     }
 }
 
@@ -134,13 +89,13 @@ BOOST_FIXTURE_TEST_CASE( triggering_a_once_expectation_calls_unexpected_call_err
         mock::detail::function< void() > f;
         f.expect().once();
         f();
-        CHECK_ERROR( f(), unexpected_call, 1, "?()\nv once()" );
+        CHECK_ERROR( f(), "unexpected call", 1, "?()\nv once()" );
     }
     {
         mock::detail::function< void( int, const std::string& ) > f;
         f.expect().once();
         f( 1, "s" );
-        CHECK_ERROR( f( 1, "s" ), unexpected_call, 1, "?( 1, \"s\" )\nv once().with( any, any )" );
+        CHECK_ERROR( f( 1, "s" ), "unexpected call", 1, "?( 1, \"s\" )\nv once().with( any, any )" );
     }
 }
 
@@ -207,12 +162,12 @@ BOOST_FIXTURE_TEST_CASE( verifying_a_once_expectation_before_the_call_fails, err
     {
         mock::detail::function< void() > f;
         f.expect().once();
-        CHECK_ERROR( BOOST_CHECK( ! f.verify() ), verification_failed, 0, "?\n. once()" );
+        CHECK_ERROR( BOOST_CHECK( ! f.verify() ), "verification failed", 0, "?\n. once()" );
     }
     {
         mock::detail::function< int( int, const std::string& ) > f;
         f.expect().once();
-        CHECK_ERROR( BOOST_CHECK( ! f.verify() ), verification_failed, 0, "?\n. once().with( any, any )" );
+        CHECK_ERROR( BOOST_CHECK( ! f.verify() ), "verification failed", 0, "?\n. once().with( any, any )" );
     }
 }
 
@@ -220,7 +175,7 @@ BOOST_FIXTURE_TEST_CASE( verifying_a_once_expectation_after_a_verify_and_one_cal
 {
     mock::detail::function< void() > f;
     f.expect().once();
-    CHECK_ERROR( BOOST_CHECK( ! f.verify() ), verification_failed, 0, "?\n. once()" );
+    CHECK_ERROR( BOOST_CHECK( ! f.verify() ), "verification failed", 0, "?\n. once()" );
     f();
     BOOST_CHECK( f.verify() );
     CHECK_CALLS( 1 );
@@ -234,13 +189,13 @@ BOOST_FIXTURE_TEST_CASE( triggering_a_reset_function_calls_unexpected_call_error
         mock::detail::function< void() > f;
         f.expect();
         f.reset();
-        CHECK_ERROR( f(), unexpected_call, 0, "?()" );
+        CHECK_ERROR( f(), "unexpected call", 0, "?()" );
     }
     {
         mock::detail::function< int( int, const std::string& ) > f;
         f.expect();
         f.reset();
-        CHECK_ERROR( f( 1, "s" ), unexpected_call, 0, "?( 1, \"s\" )" );
+        CHECK_ERROR( f( 1, "s" ), "unexpected call", 0, "?( 1, \"s\" )" );
     }
 }
 
@@ -267,12 +222,12 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in
     {
         mock::detail::function< void( int ) > f;
         f.expect().with( 42 );
-        CHECK_ERROR( f( 43 ), unexpected_call, 0, "?( 43 )\n. unlimited().with( 42 )" );
+        CHECK_ERROR( f( 43 ), "unexpected call", 0, "?( 43 )\n. unlimited().with( 42 )" );
     }
     {
         mock::detail::function< int( int, const std::string& ) > f;
         f.expect().with( 42, "expected" );
-        CHECK_ERROR( f( 42, "actual" ), unexpected_call, 0, "?( 42, \"actual\" )\n. unlimited().with( 42, \"expected\" )" );
+        CHECK_ERROR( f( 42, "actual" ), "unexpected call", 0, "?( 42, \"actual\" )\n. unlimited().with( 42, \"expected\" )" );
     }
 }
 
@@ -282,7 +237,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in
     f.expect().with( mock::equal( 42 ) || mock::less( 42 ) );
     f( 41 );
     f( 42 );
-    CHECK_ERROR( f( 43 ), unexpected_call, 2, "?( 43 )\n. unlimited().with( ( equal( 42 ) || less( 42 ) ) )" );
+    CHECK_ERROR( f( 43 ), "unexpected call", 2, "?( 43 )\n. unlimited().with( ( equal( 42 ) || less( 42 ) ) )" );
 }
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in_equal_and_not_less_constraint_calls_unexpected_call_error, error_fixture )
@@ -290,7 +245,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in
     mock::detail::function< void( int ) > f;
     f.expect().with( mock::equal( 42 ) && ! mock::less( 41 ) );
     f( 42 );
-    CHECK_ERROR( f( 43 ), unexpected_call, 1, "?( 43 )\n. unlimited().with( ( equal( 42 ) && ! less( 41 ) ) )" );
+    CHECK_ERROR( f( 43 ), "unexpected call", 1, "?( 43 )\n. unlimited().with( ( equal( 42 ) && ! less( 41 ) ) )" );
 }
 
 namespace
@@ -339,12 +294,12 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_failing_custom_constrain
     {
         mock::detail::function< void( int ) > f;
         f.expect().with( &custom_constraint );
-        CHECK_ERROR( f( 42 ), unexpected_call, 0, "?( 42 )\n. unlimited().with( ? )" );
+        CHECK_ERROR( f( 42 ), "unexpected call", 0, "?( 42 )\n. unlimited().with( ? )" );
     }
     {
         mock::detail::function< int( int, const std::string& ) > f;
         f.expect().with( &custom_constraint, "actual" );
-        CHECK_ERROR( f( 42, "actual" ), unexpected_call, 0, "?( 42, \"actual\" )\n. unlimited().with( ?, \"actual\" )" );
+        CHECK_ERROR( f( 42, "actual" ), "unexpected call", 0, "?( 42, \"actual\" )\n. unlimited().with( ?, \"actual\" )" );
     }
 }
 
@@ -363,17 +318,17 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_no_return_set_calls_miss
     {
         mock::detail::function< int() > f;
         f.expect();
-        CHECK_ERROR( f(), missing_action, 0, "?()\n. unlimited()" );
+        CHECK_ERROR( f(), "missing action", 0, "?()\n. unlimited()" );
     }
     {
         mock::detail::function< int&() > f;
         f.expect();
-        CHECK_ERROR( f(), missing_action, 0, "?()\n. unlimited()" );
+        CHECK_ERROR( f(), "missing action", 0, "?()\n. unlimited()" );
     }
     {
         mock::detail::function< const std::string&() > f;
         f.expect();
-        CHECK_ERROR( f(), missing_action, 0, "?()\n. unlimited()" );
+        CHECK_ERROR( f(), "missing action", 0, "?()\n. unlimited()" );
     }
 }
 
@@ -591,7 +546,7 @@ BOOST_FIXTURE_TEST_CASE( expecting_twice_a_single_expectation_makes_it_callable_
         f.expect().once();
         f();
         f();
-        CHECK_ERROR( f(), unexpected_call, 2, "?()\nv once()\nv once()" );
+        CHECK_ERROR( f(), "unexpected call", 2, "?()\nv once()\nv once()" );
     }
     {
         mock::detail::function< void( const std::string& ) > f;
@@ -599,7 +554,7 @@ BOOST_FIXTURE_TEST_CASE( expecting_twice_a_single_expectation_makes_it_callable_
         f.expect().once().with( "second" );
         f( "first" );
         f( "second" );
-        CHECK_ERROR( f( "third"), unexpected_call, 2, "?( \"third\" )\nv once().with( \"first\" )\nv once().with( \"second\" )" );
+        CHECK_ERROR( f( "third"), "unexpected call", 2, "?( \"third\" )\nv once().with( \"first\" )\nv once().with( \"second\" )" );
     }
 }
 
@@ -611,7 +566,7 @@ BOOST_FIXTURE_TEST_CASE( best_expectation_is_selected_first, error_fixture )
         f.expect().once().with( 2 );
         f( 2 );
         f( 1 );
-        CHECK_ERROR( f( 3 ), unexpected_call, 2, "?( 3 )\nv once().with( 1 )\nv once().with( 2 )" );
+        CHECK_ERROR( f( 3 ), "unexpected call", 2, "?( 3 )\nv once().with( 1 )\nv once().with( 2 )" );
     }
     {
         mock::detail::function< void( const std::string& ) > f;
@@ -619,7 +574,7 @@ BOOST_FIXTURE_TEST_CASE( best_expectation_is_selected_first, error_fixture )
         f.expect().once().with( "second" );
         f( "second" );
         f( "first" );
-        CHECK_ERROR( f( "third"), unexpected_call, 2, "?( \"third\" )\nv once().with( \"first\" )\nv once().with( \"second\" )" );
+        CHECK_ERROR( f( "third"), "unexpected call", 2, "?( \"third\" )\nv once().with( \"first\" )\nv once().with( \"second\" )" );
     }
 }
 
@@ -717,28 +672,28 @@ BOOST_FIXTURE_TEST_CASE( expectation_with_remaining_untriggered_matches_upon_des
 {
     std::auto_ptr< mock::detail::function< void() > > f( new mock::detail::function< void() > );
     f->expect().once();
-    CHECK_ERROR( f.reset(), untriggered_expectation, 0, "?\n. once()" );
+    CHECK_ERROR( f.reset(), "untriggered expectation", 0, "?\n. once()" );
 }
 
 BOOST_FIXTURE_TEST_CASE( verifying_expectation_with_remaining_matches_disables_the_automatic_verification_upon_destruction, error_fixture )
 {
     mock::detail::function< void() > f;
     f.expect().once();
-    CHECK_ERROR( f.verify(), verification_failed, 0, "?\n. once()" );
+    CHECK_ERROR( f.verify(), "verification failed", 0, "?\n. once()" );
 }
 
 BOOST_FIXTURE_TEST_CASE( triggering_unexpected_call_call_disables_the_automatic_verification_upon_destruction, error_fixture )
 {
     mock::detail::function< void() > f;
-    CHECK_ERROR( f(), unexpected_call, 0, "?()" );
+    CHECK_ERROR( f(), "unexpected call", 0, "?()" );
 }
 
 BOOST_FIXTURE_TEST_CASE( adding_an_expectation_reactivates_the_verification_upon_destruction, error_fixture )
 {
     std::auto_ptr< mock::detail::function< void() > > f( new mock::detail::function< void() > );
-    CHECK_ERROR( (*f)(), unexpected_call, 0, "?()" );
+    CHECK_ERROR( (*f)(), "unexpected call", 0, "?()" );
     f->expect().once();
-    CHECK_ERROR( f.reset(), untriggered_expectation, 0, "?\n. once()" );
+    CHECK_ERROR( f.reset(), "untriggered expectation", 0, "?\n. once()" );
 }
 
 BOOST_FIXTURE_TEST_CASE( throwing_an_exception_disables_the_automatic_verification_upon_destruction, error_fixture )

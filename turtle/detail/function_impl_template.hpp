@@ -54,11 +54,11 @@ namespace detail
                     it != expectations_.end(); ++it )
                 {
                     if( ! it->verify() )
-                        error_type::untriggered_expectation(
+                        error_type::fail( "untriggered expectation",
                             boost::unit_test::lazy_ostream::instance()
                                 << *this, it->file(), it->line() );
                     else if( ! it->invoked() )
-                        error_type::expected_call(
+                        error_type::call(
                             boost::unit_test::lazy_ostream::instance()
                                 << *this, it->file(), it->line() );
                 }
@@ -73,7 +73,7 @@ namespace detail
                 if( !it->verify() )
                 {
                     valid_ = false;
-                    error_type::verification_failed(
+                    error_type::fail( "verification failed",
                         boost::unit_test::lazy_ostream::instance()
                             << *this, it->file(), it->line() );
                 }
@@ -112,23 +112,23 @@ namespace detail
                 {
                     if( ! it->invoke() )
                     {
-                        error_type::sequence_failed(
+                        error_type::fail( "sequence failed",
                             MOCK_CONTEXT, it->file(), it->line() );
                         return error_type::abort();
                     }
                     if( ! it->functor() )
                     {
-                        error_type::missing_action(
+                        error_type::fail( "missing action",
                             MOCK_CONTEXT, it->file(), it->line() );
                         return error_type::abort();
                     }
                     valid_ = true;
-                    error_type::expected_call(
+                    error_type::call(
                         MOCK_CONTEXT, it->file(), it->line() );
                     return it->functor()(
                         BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) );
                 }
-            error_type::unexpected_call( MOCK_CONTEXT );
+            error_type::fail( "unexpected call", MOCK_CONTEXT );
             return error_type::abort();
         }
 

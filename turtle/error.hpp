@@ -32,15 +32,14 @@ namespace mock
             throw boost::enable_current_exception( exception() );
         }
 
-        static void checkpoint( const char* file, int line )
+        static void pass( const char* file, int line )
         {
             boost::unit_test::unit_test_log.set_checkpoint( file,
                 static_cast< std::size_t >( line ) );
         }
 
         template< typename Context >
-        static void fail(
-            const char* message, const Context& context,
+        static void fail( const char* message, const Context& context,
             const char* file = "unknown location", int line = 0 )
         {
             boost::unit_test::framework::assertion_result( false );
@@ -53,7 +52,7 @@ namespace mock
         }
 
         template< typename Context >
-        static void expected_call( const Context& context,
+        static void call( const Context& context,
             const char* file, int line )
         {
             boost::unit_test::framework::assertion_result( true );
@@ -63,36 +62,6 @@ namespace mock
                 << boost::unit_test::log_successful_tests
                 << "mock expectation fulfilled: " << context
                 << boost::unit_test::log::end();
-        }
-
-        template< typename Context >
-        static void missing_action( const Context& context,
-            const char* file, int line )
-        {
-            fail( "missing action", context, file, line );
-        }
-        template< typename Context >
-        static void unexpected_call( const Context& context )
-        {
-            fail( "unexpected call", context );
-        }
-        template< typename Context >
-        static void sequence_failed( const Context& context,
-            const char* file, int line )
-        {
-            fail( "sequence failed", context, file, line );
-        }
-        template< typename Context >
-        static void verification_failed( const Context& context,
-            const char* file, int line )
-        {
-            fail( "verification failed", context, file, line );
-        }
-        template< typename Context >
-        static void untriggered_expectation( const Context& context,
-            const char* file, int line )
-        {
-            fail( "untriggered expectation", context, file, line );
         }
     };
 } // mock

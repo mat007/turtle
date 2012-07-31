@@ -45,7 +45,7 @@ namespace detail
         }
         bool verify( const char* file, int line ) const
         {
-            error_type::checkpoint( file, line );
+            error_type::pass( file, line );
             return impl_->verify();
         }
         void reset()
@@ -54,13 +54,13 @@ namespace detail
         }
         void reset( const char* file, int line )
         {
-            error_type::checkpoint( file, line );
+            error_type::pass( file, line );
             impl_->reset();
         }
 
         expectation_type& expect( const char* file, int line )
         {
-            error_type::checkpoint( file, line );
+            error_type::pass( file, line );
             return impl_->expect();
         }
         expectation_type& expect()

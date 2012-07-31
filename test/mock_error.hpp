@@ -10,18 +10,16 @@
 #define MOCK_TEST_MOCK_ERROR_HPP_INCLUDED
 
 #define MOCK_ERROR_POLICY mock_error
+#include <boost/test/test_tools.hpp>
 #include <boost/lexical_cast.hpp>
 #include <stdexcept>
 
 namespace
 {
-    int missing_action_count = 0;
-    int expected_call_count = 0;
-    int unexpected_call_count = 0;
-    int sequence_failed_count = 0;
-    int verification_failed_count = 0;
-    int untriggered_expectation_count = 0;
+    int error_count = 0;
+    int call_count = 0;
 
+    std::string last_message;
     std::string last_context;
 
     template< typename Result >
@@ -32,51 +30,62 @@ namespace
             throw std::runtime_error( "aborted" );
         }
 
-        static void checkpoint( const char* /*file*/, int /*line*/ )
+        static void pass( const char* /*file*/, int /*line*/ )
         {}
 
         template< typename Context >
-        static void missing_action( const Context& context,
-            const char* /*file*/, int /*line*/ )
-        {
-            last_context = boost::lexical_cast< std::string >( context );
-            ++missing_action_count;
-        }
-        template< typename Context >
-        static void expected_call( const Context& /*context*/,
+        static void call( const Context& /*context*/,
             const char* /*file*/, int /*line*/ )
         {
             last_context.clear();
-            ++expected_call_count;
+            last_message.clear();
+            ++call_count;
         }
+
         template< typename Context >
-        static void unexpected_call( const Context& context )
+        static void fail( const std::string& message, const Context& context,
+            const char* /*file*/ = "", int /*line*/ = 0 )
         {
             last_context = boost::lexical_cast< std::string >( context );
-            ++unexpected_call_count;
+            last_message = message;
+            ++error_count;
         }
-        template< typename Context >
-        static void sequence_failed( const Context& context,
-            const char* /*file*/, int /*line*/ )
+    };
+
+    struct error_fixture
+    {
+        error_fixture()
         {
-            last_context = boost::lexical_cast< std::string >( context );
-            ++sequence_failed_count;
+            reset();
         }
-        template< typename Context >
-        static void verification_failed( const Context& context,
-            const char* /*file*/, int /*line*/ )
+        ~error_fixture()
         {
-            last_context = boost::lexical_cast< std::string >( context );
-            ++verification_failed_count;
+            BOOST_CHECK( verify() );
+            BOOST_CHECK_EQUAL( 0, call_count );
         }
-        template< typename Context >
-        static void untriggered_expectation( const Context& context,
-            const char* /*file*/, int /*line*/ )
+        void reset()
         {
-            last_context = boost::lexical_cast< std::string >( context );
-            ++untriggered_expectation_count;
+            error_count = 0;
+            last_message.clear();
+            last_context.clear();
+        }
+        bool verify() const
+        {
+            return error_count == 0;
         }
     };
 }
+
+#define CHECK_CALLS( calls ) \
+    BOOST_CHECK_EQUAL( calls, call_count ); \
+    call_count = 0;
+#define CHECK_ERROR( expr, error, calls, context ) \
+    BOOST_CHECK( verify() ); \
+    try { expr; } catch( ... ) {} \
+    BOOST_CHECK_EQUAL( 1, error_count ); \
+    BOOST_CHECK_EQUAL( error, last_message ); \
+    BOOST_CHECK_EQUAL( context, last_context ); \
+    CHECK_CALLS( calls ); \
+    reset();
 
 #endif // MOCK_TEST_MOCK_ERROR_HPP_INCLUDED
