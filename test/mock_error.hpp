@@ -65,6 +65,7 @@ namespace
         }
         void reset()
         {
+            call_count = 0;
             error_count = 0;
             last_message.clear();
             last_context.clear();
