@@ -154,30 +154,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\turtle\action.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\args.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\boost_test_error.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\check.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\child.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\cleanup.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\turtle\config.hpp"
 				>
 			</File>
@@ -190,39 +166,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\turtle\context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\default_error.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\turtle\error.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\turtle\expectation.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\function.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\group.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\invocation.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\is_functor.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\lambda.hpp"
+				RelativePath="..\..\turtle\format.hpp"
 				>
 			</File>
 			<File
@@ -238,15 +186,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\turtle\operators.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\parent.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\turtle\root.hpp"
+				RelativePath="..\..\turtle\reset.hpp"
 				>
 			</File>
 			<File
@@ -254,17 +194,121 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\turtle\type_name.hpp"
+				RelativePath="..\..\turtle\stream.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\turtle\verifiable.hpp"
+				RelativePath="..\..\turtle\verify.hpp"
 				>
 			</File>
-			<File
-				RelativePath="..\..\turtle\yes_no_type.hpp"
+			<Filter
+				Name="detail"
 				>
-			</File>
+				<File
+					RelativePath="..\..\turtle\detail\action.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\check.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\child.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\cleanup.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\context.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\expectation_base.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\expectation_template.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\formatter.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\function.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\function_impl_template.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\function_iterate.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\function_template.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\functor.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\group.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\invocation.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\is_functor.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\lambda.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\object_impl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\parameter.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\parent.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\root.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\sequence_impl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\signature.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\type_name.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\verifiable.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\turtle\detail\yes_no_type.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>
