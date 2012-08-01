@@ -28,9 +28,6 @@
     <build-turtle-test name="turtle_use_conversions">
       <defineset define="MOCK_USE_CONVERSIONS"/>
     </build-turtle-test>
-    <build-turtle-test name="turtle_use_boost_test">
-      <defineset define="MOCK_USE_BOOST_TEST"/>
-    </build-turtle-test>
   </target>
 
   <target name="analyse" description="run errors analyser">
