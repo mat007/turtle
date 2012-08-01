@@ -73,9 +73,9 @@ namespace detail
             return (*impl_)( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) );
         }
 
-        friend std::ostream& operator<<( std::ostream& s, const function& e )
+        friend std::ostream& operator<<( std::ostream& s, const function& f )
         {
-            return s << *e.impl_;
+            return s << *f.impl_;
         }
 
         function& operator()( context& c,
