@@ -405,7 +405,7 @@ namespace
 
 BOOST_AUTO_TEST_CASE( constraints_and_arguments_are_serialized_lazily )
 {
-    MOCK_FUNCTOR( f, void( custom_argument ) );
+    MOCK_FUNCTOR( f, void( const custom_argument& ) );
     MOCK_EXPECT( f ).with( custom_constraint() );
     f( custom_argument() );
     BOOST_CHECK( ! serialized );
