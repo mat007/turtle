@@ -16,11 +16,45 @@
 
 namespace
 {
-    int error_count = 0;
-    int call_count = 0;
+    struct mock_error_data
+    {
+        void reset()
+        {
+            call_count = 0;
+            error_count = 0;
+            last_message.clear();
+            last_context.clear();
+        }
+        bool verify()
+        {
+            return error_count == 0;
+        }
 
-    std::string last_message;
-    std::string last_context;
+        void call()
+        {
+            last_context.clear();
+            last_message.clear();
+            ++call_count;
+        }
+        void fail( const std::string& message,
+            const std::string& context )
+        {
+            last_context = context;
+            last_message = message;
+            ++error_count;
+        }
+
+        int error_count;
+        int call_count;
+        std::string last_message;
+        std::string last_context;
+    };
+
+    inline mock_error_data& data()
+    {
+        static mock_error_data p;
+        return p;
+    }
 
     template< typename Result >
     struct mock_error
@@ -37,18 +71,14 @@ namespace
         static void call( const Context& /*context*/,
             const char* /*file*/, int /*line*/ )
         {
-            last_context.clear();
-            last_message.clear();
-            ++call_count;
+            data().call();
         }
 
         template< typename Context >
         static void fail( const std::string& message, const Context& context,
             const char* /*file*/ = "", int /*line*/ = 0 )
         {
-            last_context = boost::lexical_cast< std::string >( context );
-            last_message = message;
-            ++error_count;
+            data().fail( message, boost::lexical_cast< std::string >( context ) );
         }
     };
 
@@ -56,37 +86,26 @@ namespace
     {
         error_fixture()
         {
-            reset();
+            data().reset();
         }
         ~error_fixture()
         {
-            BOOST_CHECK( verify() );
-            BOOST_CHECK_EQUAL( 0, call_count );
-        }
-        void reset()
-        {
-            call_count = 0;
-            error_count = 0;
-            last_message.clear();
-            last_context.clear();
-        }
-        bool verify() const
-        {
-            return error_count == 0;
+            BOOST_CHECK( data().verify() );
+            BOOST_CHECK_EQUAL( 0, data().call_count );
         }
     };
 }
 
 #define CHECK_CALLS( calls ) \
-    BOOST_CHECK_EQUAL( calls, call_count ); \
-    call_count = 0;
+    BOOST_CHECK_EQUAL( calls, data().call_count ); \
+    data().call_count = 0;
 #define CHECK_ERROR( expr, error, calls, context ) \
-    BOOST_CHECK( verify() ); \
+    BOOST_CHECK( data().verify() ); \
     try { expr; } catch( ... ) {} \
-    BOOST_CHECK_EQUAL( 1, error_count ); \
-    BOOST_CHECK_EQUAL( error, last_message ); \
-    BOOST_CHECK_EQUAL( context, last_context ); \
+    BOOST_CHECK_EQUAL( 1, data().error_count ); \
+    BOOST_CHECK_EQUAL( error, data().last_message ); \
+    BOOST_CHECK_EQUAL( context, data().last_context ); \
     CHECK_CALLS( calls ); \
-    reset();
+    data().reset();
 
 #endif // MOCK_TEST_MOCK_ERROR_HPP_INCLUDED
