@@ -32,7 +32,14 @@
 namespace
 {
     template< typename T >
-    std::string to_string( T t )
+    std::string to_string( const T& t )
+    {
+        std::stringstream s;
+        s << mock::format( t );
+        return s.str();
+    }
+    template< typename T >
+    std::string to_string( T* t )
     {
         std::stringstream s;
         s << mock::format( t );
