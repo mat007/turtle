@@ -14,7 +14,7 @@ namespace
     template< typename Expected, typename Actual >
     bool check( Expected expected, Actual actual )
     {
-        return mock::detail::check< Expected, Actual >( expected )( actual );
+        return mock::detail::check< Actual, Expected >( expected )( actual );
     }
 }
 
@@ -27,6 +27,6 @@ BOOST_AUTO_TEST_CASE( int_and_int_can_be_compared )
 
 BOOST_AUTO_TEST_CASE( ref_to_int_and_int_can_be_compared )
 {
-    BOOST_CHECK( check< int >( boost::cref( 3 ), 3 ) );
-    BOOST_CHECK( ! check< int >( boost::cref( 3 ), 4 ) );
+    BOOST_CHECK( check( 3, boost::cref( 3 ) ) );
+    BOOST_CHECK( ! check( 4, boost::cref( 3 ) ) );
 }
