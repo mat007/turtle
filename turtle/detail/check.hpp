@@ -57,6 +57,26 @@ namespace detail
         Expected expected_;
     };
 
+    template<>
+    class check< const char*, const char* > : public check_base< const char* >
+    {
+    public:
+        explicit check( const char* expected )
+            : expected_( expected )
+        {}
+        virtual bool operator()( const char* actual )
+        {
+            return strcmp( actual, expected_ ) == 0;
+        }
+    private:
+        virtual void serialize( std::ostream& s ) const
+        {
+            s << mock::format( expected_ );
+        }
+    private:
+        const char* expected_;
+    };
+
     template< typename Actual, typename Constraint >
     class check< Actual, mock::constraint< Constraint > >
         : public check_base< Actual >
