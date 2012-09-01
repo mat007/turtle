@@ -54,5 +54,8 @@
     <ClCompile Include="..\..\test\detail\test_is_functor.cpp">
       <Filter>Source Files\detail</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\test\detail\test_check.cpp">
+      <Filter>Source Files\detail</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

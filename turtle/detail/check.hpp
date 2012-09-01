@@ -44,11 +44,11 @@ namespace detail
         explicit check( Expected expected )
             : expected_( expected )
         {}
-    private:
         virtual bool operator()( Actual actual )
         {
             return actual == boost::unwrap_ref( expected_ );
         }
+    private:
         virtual void serialize( std::ostream& s ) const
         {
             s << mock::format( expected_ );
@@ -65,11 +65,11 @@ namespace detail
         explicit check( const constraint< Constraint >& c )
             : c_( c.f_ )
         {}
-    private:
         virtual bool operator()( Actual actual )
         {
             return c_( actual );
         }
+    private:
         virtual void serialize( std::ostream& s ) const
         {
             s << mock::format( c_ );
@@ -89,11 +89,11 @@ namespace detail
         explicit check( const Functor& f )
             : f_( f )
         {}
-    private:
         virtual bool operator()( Actual actual )
         {
             return f_( actual );
         }
+    private:
         virtual void serialize( std::ostream& s ) const
         {
             s << mock::format( f_ );

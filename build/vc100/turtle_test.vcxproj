@@ -22,6 +22,7 @@
     <ClInclude Include="..\..\test\mock_error.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\test\detail\test_check.cpp" />
     <ClCompile Include="..\..\test\detail\test_function.cpp" />
     <ClCompile Include="..\..\test\detail\test_invocation.cpp" />
     <ClCompile Include="..\..\test\detail\test_is_functor.cpp" />
