@@ -15,6 +15,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ref.hpp>
+#include <cstring>
 
 namespace mock
 {
@@ -66,7 +67,7 @@ namespace detail
         {}
         virtual bool operator()( const char* actual )
         {
-            return strcmp( actual, expected_ ) == 0;
+            return std::strcmp( actual, expected_ ) == 0;
         }
     private:
         virtual void serialize( std::ostream& s ) const
