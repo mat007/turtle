@@ -15,6 +15,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ref.hpp>
+#include <cstring>
 
 namespace mock
 {
@@ -55,6 +56,26 @@ namespace detail
         }
     private:
         Expected expected_;
+    };
+
+    template<>
+    class check< const char*, const char* > : public check_base< const char* >
+    {
+    public:
+        explicit check( const char* expected )
+            : expected_( expected )
+        {}
+        virtual bool operator()( const char* actual )
+        {
+            return std::strcmp( actual, expected_ ) == 0;
+        }
+    private:
+        virtual void serialize( std::ostream& s ) const
+        {
+            s << mock::format( expected_ );
+        }
+    private:
+        const char* expected_;
     };
 
     template< typename Actual, typename Constraint >
