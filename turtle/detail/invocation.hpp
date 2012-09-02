@@ -133,7 +133,7 @@ namespace detail
     {
     public:
         explicit at_least( std::size_t min )
-            : between( min, std::numeric_limits< std::size_t >::max() )
+            : between( min, (std::numeric_limits< std::size_t >::max)() )
         {}
 
     private:
