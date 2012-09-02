@@ -13,6 +13,8 @@
 #include <boost/test/auto_unit_test.hpp>
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
+#include <boost/utility/result_of.hpp>
+#include <boost/mpl/assert.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 
@@ -21,6 +23,15 @@
 namespace
 {
     boost::function< void() > static_f;
+
+    BOOST_MPL_ASSERT((
+        boost::is_same< void, boost::result_of< mock::detail::function< void() >() >::type > ));
+    BOOST_MPL_ASSERT((
+        boost::is_same< int, boost::result_of< mock::detail::function< int() >() >::type > ));
+    BOOST_MPL_ASSERT((
+        boost::is_same< void, boost::result_of< mock::detail::function< void( float ) >( float ) >::type > ));
+    BOOST_MPL_ASSERT((
+        boost::is_same< int, boost::result_of< mock::detail::function< int( float ) >( float ) >::type > ));
 }
 
 // functor
