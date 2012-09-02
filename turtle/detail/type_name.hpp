@@ -10,6 +10,7 @@
 #define MOCK_TYPE_NAME_HPP_INCLUDED
 
 #include <boost/test/utils/basic_cstring/io.hpp>
+#include <boost/detail/sp_typeinfo.hpp>
 #include <stdexcept>
 #include <typeinfo>
 #include <ostream>
@@ -25,7 +26,7 @@ namespace detail
     class type_name
     {
     public:
-        explicit type_name( const std::type_info& info )
+        explicit type_name( const boost::detail::sp_typeinfo& info )
             : info_( &info )
         {}
         friend std::ostream& operator<<( std::ostream& s, const type_name& t )
@@ -34,7 +35,8 @@ namespace detail
             return s;
         }
     private:
-        void serialize( std::ostream& s, const std::type_info& info ) const
+        void serialize( std::ostream& s,
+            const boost::detail::sp_typeinfo& info ) const
         {
             const char* name = info.name();
 #ifdef __GNUC__
@@ -76,7 +78,7 @@ namespace detail
             s << name;
         }
 
-        const std::type_info* info_;
+        const boost::detail::sp_typeinfo* info_;
     };
 }
 } // mock

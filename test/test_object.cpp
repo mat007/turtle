@@ -32,7 +32,7 @@ namespace
     {
         fixture()
         {
-            mock::detail::configure( o, e, "instance", mock::detail::type_name( typeid( o ) ), "name" );
+            mock::detail::configure( o, e, "instance", mock::detail::type_name( BOOST_SP_TYPEID( o ) ), "name" );
         }
         object o;
         mock::detail::function< void() > e;
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE( an_object_is_assignable_by_sharing_its_state )
     mock::detail::function< void() > e;
     {
         object o2;
-        mock::detail::configure( o2, e, "instance", mock::detail::type_name( typeid( o2 ) ), "name" );
+        mock::detail::configure( o2, e, "instance", mock::detail::type_name( BOOST_SP_TYPEID( o2 ) ), "name" );
         e.expect().once();
         o1 = o2;
         BOOST_CHECK( ! mock::verify( o2 ) );
@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE( an_object_is_copiable_by_sharing_its_state )
     std::auto_ptr< object > o2( new object );
     const object o1( *o2 );
     mock::detail::function< void() > e;
-    mock::detail::configure( *o2, e, "instance", mock::detail::type_name( typeid( *o2 ) ), "name" );
+    mock::detail::configure( *o2, e, "instance", mock::detail::type_name( BOOST_SP_TYPEID( *o2 ) ), "name" );
     e.expect().once();
     BOOST_CHECK( ! mock::verify( *o2 ) );
     BOOST_CHECK( ! mock::verify( o1 ) );

@@ -17,7 +17,7 @@ namespace
     template< typename T >
     std::string to_string( const T& )
     {
-        return boost::lexical_cast< std::string >( mock::detail::type_name( typeid( T ) ) );
+        return boost::lexical_cast< std::string >( mock::detail::type_name( BOOST_SP_TYPEID( T ) ) );
     }
 }
 
@@ -75,5 +75,5 @@ BOOST_AUTO_TEST_CASE( name_of_type_from_unnamed_inner_namespace_is_extracted )
 BOOST_AUTO_TEST_CASE( name_of_local_type_is_extracted )
 {
     struct my_local_type {};
-    BOOST_CHECK_EQUAL( "my_local_type", boost::lexical_cast< std::string >( mock::detail::type_name( typeid( my_local_type ) ) ) );
+    BOOST_CHECK_EQUAL( "my_local_type", boost::lexical_cast< std::string >( mock::detail::type_name( BOOST_SP_TYPEID( my_local_type ) ) ) );
 }

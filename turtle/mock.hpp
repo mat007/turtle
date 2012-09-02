@@ -43,7 +43,7 @@
     { \
         mock::detail::configure( *this, t##_mock_, \
             instance.substr( 0, instance.rfind( BOOST_PP_STRINGIZE(t) ) ), \
-            mock::detail::type_name( typeid( *this ) ), \
+            mock::detail::type_name( BOOST_SP_TYPEID( *this ) ), \
             BOOST_PP_STRINGIZE(t) ); \
         return t##_mock_; \
     }
