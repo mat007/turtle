@@ -32,5 +32,12 @@ boostbook standalone
     mock
   :
     <dependency>reference
-    <xsl:param>boost.root=../../../..
+#    <xsl:param>boost.root=../../../..
+#    <xsl:param>img.src.path=../images
+    <xsl:param>boost.image.src=../images/boost.png
+#    <xsl:param>boost.image.alt="\"My Project\""
+#    <xsl:param>boost.image.w=100
+#    <xsl:param>boost.image.h=50
+    <xsl:param>chunk.first.sections=1
+    <xsl:param>nav.layout=horizontal
 ;
