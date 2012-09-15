@@ -959,6 +959,94 @@ This is actually a bug in the compiler, for more information see [http://connect
 
 [endsect]
 
+[section Changelog]
+
+[section trunk]
+Not yet released
+
+* Fixed boost::lambda_functor forward declaration
+* Added test for whether BOOST_RESULT_OF_NUM_ARGS is large enough
+* Removed default error policy keeping only Boost.Test integration
+* Refactored error policy to simplify test frameworks integration
+* Changed C-string constraint short-cut behaviour to compare strings instead of pointers
+* Fixed potential conflict with macro max
+
+[endsect]
+
+[section 1.2.0]
+Released 25 May 2012
+
+* Changed MOCK_FUNCTOR syntax to MOCK_FUNCTOR( functor, signature )
+* Changed MOCK_EXPECT syntax to MOCK_EXPECT( object.tag ) and MOCK_EXPECT( functor )
+* Changed MOCK_RESET syntax to MOCK_RESET( object.tag ) and MOCK_RESET( functor )
+* Changed MOCK_VERIFY syntax to MOCK_VERIFY( object.tag ) and MOCK_VERIFY( functor )
+* Replaced object.verify() with mock::verify( instance )
+* Replaced object.reset() with mock::reset( instance )
+* Added MOCK_FUNCTION, MOCK_STATIC_METHOD and MOCK_STATIC_METHOD_TPL
+* Removed all std::string to spare unnecessary memory allocations
+* Wrapped constraints parameters with boost::addressof where needed in order to support types with overloaded operator &
+* Fixed limitation on operator() of a custom constraint which is no longer required to be const
+* Added support for mock::reset( functor ) and mock::verify( functor )
+* Renamed basic_error_policy to default_error_policy
+* Added checkpoint notification to error policy
+* Added specialization to log unsigned chars as integers
+* Fixed a bug that caused an object to remain invalid forever after being invalid and verified once
+* Added support for mocking constructors
+* Fixed phoenix and lambda functors logging in the presence of their operators & and <<
+* Fixed a crash when resetting self-referenced object
+
+[endsect]
+
+[section 1.1.1]
+Released 10 July 2011
+
+* Added support for boost::cref and boost::ref in built-in constraints and mock::format
+* Removed MOCK_METHOD_TPL for using non compliant code
+* Added a mock::affirm constraint as evaluating ''actual'' as a boolean
+* Fixed a bug preventing non-const pointers to be logged properly
+* Added support for logging std::auto_ptr, boost::shared_ptr and boost::weak_ptr
+* Added missing check for BOOST_FT_MAX_ARITY when MOCK_MAX_ARGS was set to 21 or higher
+* Fixed a bug with const smart pointers as first argument to MOCK_EXPECT being invalid
+* Fixed a crash with Boost.Test when destroying failed static mock objects
+
+[endsect]
+
+[section 1.1.0 ]
+Released 23 March 2011
+
+* Added Boost.Test log info when an expectation is fulfilled
+* Fixed a bug preventing to increase the maximum number of arguments of a mocked method using MOCK_MAX_ARGS
+* Changed the default value for MOCK_MAX_ARGS to 9 instead of 10
+* Renamed mock::constraint to mock::call
+* Added custom constraints logging customisation in the same way as parameters
+* Changed the way the default logging of constraints and parameters can be overridden to use a serialization operator to a mock::stream
+* Enhanced logging by lazily serializing constraints and parameters
+* Added the possibility to perform conversions when logging constraints and parameters by defining MOCK_USE_CONVERSIONS
+
+[endsect]
+
+[section 1.0.1]
+Released 16 June 2010
+
+* Destroying a sequence does not remove the associated order call enforcement any more
+* Added detection for a pointer in mock::assign to dereference it before performing the assignment
+* Renamed error policies no_match method to unexpected_call
+* Made boost_test_error_policy throw a mock::exception extending boost::execution_aborted (helpful in order to filter on exceptions)
+* Fully qualified function calls to prevent unwanted [http://en.wikipedia.org/wiki/Argument_dependent_name_lookup ADL]
+* Added extra namespace level to protect from unwanted [http://en.wikipedia.org/wiki/Argument_dependent_name_lookup ADL] with operator<<
+* Fixed a crash due to [http://www.parashift.com/c++-faq-lite/ctors.html#faq-10.12 static initialization order fiasco] on some platforms
+* Added support for mocking conversion operators
+* Added [http://www.boost.org/doc/libs/release/libs/concept_check/concept_check.htm concept checks] for better diagnostic upon compilation error
+* Made template parameter names more user friendly for better diagnostic upon compilation error
+* Fixed expectation argument types to match signature
+* Shared parent names among their expectations when a mock::object is used as a base class
+* Fixed maximum number of mocked methods arguments
+* Prevented a crash when mocking a destructor and throwing out of the object scope
+
+[endsect]
+
+[endsect]
+
 [section Future Work]
 
 [endsect]
