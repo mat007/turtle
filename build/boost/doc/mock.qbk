@@ -522,223 +522,6 @@ The policy can then be activated by defining MOCK_ERROR_POLICY prior to includin
 
 [/ [xinclude reference.xml] ]
 
-[section Patterns]
-
-This section highlights not-so-obvious features of the library gathered from real use cases.
-
-[section Waiting for an asynchronous call]
-
-Problem :
-
- namespace
- {
-     class base_class
-     {
-     public:
-         virtual void method() = 0;
-     };
- 
-     class my_class
-     {
-     public:
-         explicit my_class( base_class& );
- 
-         void flush(); // repetitively calling this method will in turn call base_class::method at some point
-     };
- }
-
-Solution :
-
- #include <turtle/mock.hpp>
- #include <boost/lambda/lambda.hpp>
- #include <boost/thread.hpp>
- 
- namespace
- {
-     template< typename F >
-     void wait( bool& condition, F flush, int timeout = 100, int sleep = 100 )
-     {
-         while( !condition && timeout > 0 )
-         {
-             --timeout;
-             if( sleep > 0 )
-                 boost::this_thread::sleep( boost::posix_time::milliseconds( sleep ) );
-             flush();
-         }
-     }
-     MOCK_BASE_CLASS( mock_base_class, base_class )
-     {
-         MOCK_METHOD( method, 0 )
-     };
- }
- 
- BOOST_AUTO_TEST_CASE( method_is_called )
- {
-     mock_base_class mock;
-     my_class c( mock );
-     bool done = false;
-     MOCK_EXPECT( mock.method ).once().calls( boost::lambda::var( done ) = true );
-     wait( done, boost::bind( &my_class::flush, &c) );
- }
-
-[endsect]
-
-[section Retrieving an argument to use in a later constraint]
-
-Problem :
-
- namespace
- {
-     class base_class
-     {
-     public:
-         virtual void method( int value ) = 0;
-     };
- 
-     class my_class
-     {
-     public:
-         explicit my_class( base_class& );
- 
-         void process(); // the processing will call 'method' two times with the same value, but we don't know what value beforehand
-     };
- }
-
-Solution :
-
- #include <turtle/mock.hpp>
- 
- namespace
- {
-     MOCK_BASE_CLASS( mock_base_class, base_class )
-     {
-         MOCK_METHOD( method, 1 )
-     };
- }
- 
- BOOST_AUTO_TEST_CASE( method_is_called_two_times_with_the_same_value )
- {
-     mock_base_class mock;
-     my_class c( mock );
-     int value;
-     MOCK_EXPECT( mock.method ).once().with( mock::retrieve( value ) );
-     MOCK_EXPECT( mock.method ).once().with( boost::cref( value ) );
-     c.process();
- }
-
-[endsect]
-
-[section Comparing strings properly]
-
-Problem :
-
- #include <turtle/mock.hpp>
- 
- namespace
- {
-     MOCK_CLASS( mock_class )
-     {
-         MOCK_METHOD_EXT( method, 1, void( const char* ), method )
-     };
- }
- 
- BOOST_AUTO_TEST_CASE( comparing_char_pointers_does_not_compare_strings )
- {
-     mock_class mock;
-     MOCK_EXPECT( mock.method ).with( "some string" ); // this compiles and runs, but the expectation fails because pointers and not strings are being compared
-     mock.method( "some string" );
- }
-
-Solution :
-
- BOOST_AUTO_TEST_CASE( comparing_char_pointers_does_not_compare_strings )
- {
-     mock_class mock;
-     MOCK_EXPECT( mock.method ).with( std::string( "some string" ) ); // this makes the test pass as the expectation now compares strings
-     mock.method( "some string" );
- }
-
-[endsect]
-
-[section Invoking a functor received as parameter]
-
- #include <turtle/mock.hpp>
- #include <boost/function.hpp>
- #include <boost/bind/apply.hpp>
- #include <boost/bind.hpp>
- 
- namespace
- {
-     MOCK_CLASS( mock_class )
-     {
-         MOCK_METHOD_EXT( method, 1, void( boost::function< void( int ) > ), method )
-     };
- }
- 
- BOOST_AUTO_TEST_CASE( how_to_invoke_a_functor_passed_as_parameter_of_a_mock_method )
- {
-     mock_class mock;
-     MOCK_EXPECT( mock.method ).calls( boost::bind( boost::apply< void >(), _1, 42 ) ); // whenever 'method' is called, invoke the functor with 42
-     MOCK_FUNCTOR( f, void( int ) );                                                    // create a mock functor to verify this
-     MOCK_EXPECT( f ).once().with( 42 );                                                // expect it to be called with 42
-     mock.method( f );                                                                  // call 'method' with the mock functor
- }                                                                                      // et voila !
-
-[endsect]
-
-[endsect]
-
-[section:rationale Rationale]
-
-This section explains some of the design and implementation choices.
-
-[section General design forces]
-
-The general idea behind the library design is to be able to write tests quickly and easily as well as to get the best possible diagnostic upon error (both compile and runtime errors). <BR>
-The chainable syntax has been chosen in order to be as intuitive as possible, with the most simple form covering the most general use cases. <BR>
-Several design choices follow the same motivation :
-
-* expectations are automatically verified upon destruction
-* both const and non-const versions of a method are mocked by default
-* the shortcuts for adding constraints cover 95% of the use cases
-* non-serializable types do not yield compilation errors but are logged as '?' by default
-* etc..
-
-At the same time customizing any aspect of the library should require minimum effort, for instance :
-
-* custom constraints can be any functors, including free functions
-* customizing the logging of a type is done by defining a serialization operator
-* etc..
-
-[endsect]
-
-[section Exceptions thrown should not extend std::exception]
-
-By design the exceptions thrown upon error should not inherit from std::exception, for instance consider the following test case based on the example from the [[#Motivation]] section :
-
- BOOST_AUTO_TEST_CASE( overflow_throws )
- {
-    mock_view v;
-    calculator c( v );
-    BOOST_CHECK_THROW( c.add( std::numeric_limits< int >::max(), 1 ), std::exception );
- }
-
-Any call to 'v' will be unexpected and yield an exception, which if it were an std::exception would erroneously make the test succeed whereas it is supposed to pass only if the operation overflows (thus not triggering 'v').
-
-[endsect]
-
-[section The library interface is based on many macros]
-
-Despite being often considered harmful they also provide a number of advantages :
-
-* they pack a lot of code and hide implementation details (MOCK_BASE_CLASS, MOCK_METHOD)
-* they make the interface homogeneous (MOCK_FUNCTOR, MOCK_CLASS)
-* line number and file can be added for logging purposes (MOCK_EXPECT)
-
-[endsect]
-
-[endsect]
-
 [section Limitations]
 
 This section lists the library known limitations.
@@ -959,7 +742,224 @@ This is actually a bug in the compiler, for more information see [http://connect
 
 [endsect]
 
-[section Changelog]
+[section:rationale Rationale]
+
+This section explains some of the design and implementation choices.
+
+[section General design forces]
+
+The general idea behind the library design is to be able to write tests quickly and easily as well as to get the best possible diagnostic upon error (both compile and runtime errors). <BR>
+The chainable syntax has been chosen in order to be as intuitive as possible, with the most simple form covering the most general use cases. <BR>
+Several design choices follow the same motivation :
+
+* expectations are automatically verified upon destruction
+* both const and non-const versions of a method are mocked by default
+* the shortcuts for adding constraints cover 95% of the use cases
+* non-serializable types do not yield compilation errors but are logged as '?' by default
+* etc..
+
+At the same time customizing any aspect of the library should require minimum effort, for instance :
+
+* custom constraints can be any functors, including free functions
+* customizing the logging of a type is done by defining a serialization operator
+* etc..
+
+[endsect]
+
+[section Exceptions thrown should not extend std::exception]
+
+By design the exceptions thrown upon error should not inherit from std::exception, for instance consider the following test case based on the example from the [[#Motivation]] section :
+
+ BOOST_AUTO_TEST_CASE( overflow_throws )
+ {
+    mock_view v;
+    calculator c( v );
+    BOOST_CHECK_THROW( c.add( std::numeric_limits< int >::max(), 1 ), std::exception );
+ }
+
+Any call to 'v' will be unexpected and yield an exception, which if it were an std::exception would erroneously make the test succeed whereas it is supposed to pass only if the operation overflows (thus not triggering 'v').
+
+[endsect]
+
+[section The library interface is based on many macros]
+
+Despite being often considered harmful they also provide a number of advantages :
+
+* they pack a lot of code and hide implementation details (MOCK_BASE_CLASS, MOCK_METHOD)
+* they make the interface homogeneous (MOCK_FUNCTOR, MOCK_CLASS)
+* line number and file can be added for logging purposes (MOCK_EXPECT)
+
+[endsect]
+
+[endsect]
+
+[section Patterns]
+
+This section highlights not-so-obvious features of the library gathered from real use cases.
+
+[section Waiting for an asynchronous call]
+
+Problem :
+
+ namespace
+ {
+     class base_class
+     {
+     public:
+         virtual void method() = 0;
+     };
+ 
+     class my_class
+     {
+     public:
+         explicit my_class( base_class& );
+ 
+         void flush(); // repetitively calling this method will in turn call base_class::method at some point
+     };
+ }
+
+Solution :
+
+ #include <turtle/mock.hpp>
+ #include <boost/lambda/lambda.hpp>
+ #include <boost/thread.hpp>
+ 
+ namespace
+ {
+     template< typename F >
+     void wait( bool& condition, F flush, int timeout = 100, int sleep = 100 )
+     {
+         while( !condition && timeout > 0 )
+         {
+             --timeout;
+             if( sleep > 0 )
+                 boost::this_thread::sleep( boost::posix_time::milliseconds( sleep ) );
+             flush();
+         }
+     }
+     MOCK_BASE_CLASS( mock_base_class, base_class )
+     {
+         MOCK_METHOD( method, 0 )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( method_is_called )
+ {
+     mock_base_class mock;
+     my_class c( mock );
+     bool done = false;
+     MOCK_EXPECT( mock.method ).once().calls( boost::lambda::var( done ) = true );
+     wait( done, boost::bind( &my_class::flush, &c) );
+ }
+
+[endsect]
+
+[section Retrieving an argument to use in a later constraint]
+
+Problem :
+
+ namespace
+ {
+     class base_class
+     {
+     public:
+         virtual void method( int value ) = 0;
+     };
+ 
+     class my_class
+     {
+     public:
+         explicit my_class( base_class& );
+ 
+         void process(); // the processing will call 'method' two times with the same value, but we don't know what value beforehand
+     };
+ }
+
+Solution :
+
+ #include <turtle/mock.hpp>
+ 
+ namespace
+ {
+     MOCK_BASE_CLASS( mock_base_class, base_class )
+     {
+         MOCK_METHOD( method, 1 )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( method_is_called_two_times_with_the_same_value )
+ {
+     mock_base_class mock;
+     my_class c( mock );
+     int value;
+     MOCK_EXPECT( mock.method ).once().with( mock::retrieve( value ) );
+     MOCK_EXPECT( mock.method ).once().with( boost::cref( value ) );
+     c.process();
+ }
+
+[endsect]
+
+[section Comparing strings properly]
+
+Problem :
+
+ #include <turtle/mock.hpp>
+ 
+ namespace
+ {
+     MOCK_CLASS( mock_class )
+     {
+         MOCK_METHOD_EXT( method, 1, void( const char* ), method )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( comparing_char_pointers_does_not_compare_strings )
+ {
+     mock_class mock;
+     MOCK_EXPECT( mock.method ).with( "some string" ); // this compiles and runs, but the expectation fails because pointers and not strings are being compared
+     mock.method( "some string" );
+ }
+
+Solution :
+
+ BOOST_AUTO_TEST_CASE( comparing_char_pointers_does_not_compare_strings )
+ {
+     mock_class mock;
+     MOCK_EXPECT( mock.method ).with( std::string( "some string" ) ); // this makes the test pass as the expectation now compares strings
+     mock.method( "some string" );
+ }
+
+[endsect]
+
+[section Invoking a functor received as parameter]
+
+ #include <turtle/mock.hpp>
+ #include <boost/function.hpp>
+ #include <boost/bind/apply.hpp>
+ #include <boost/bind.hpp>
+ 
+ namespace
+ {
+     MOCK_CLASS( mock_class )
+     {
+         MOCK_METHOD_EXT( method, 1, void( boost::function< void( int ) > ), method )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( how_to_invoke_a_functor_passed_as_parameter_of_a_mock_method )
+ {
+     mock_class mock;
+     MOCK_EXPECT( mock.method ).calls( boost::bind( boost::apply< void >(), _1, 42 ) ); // whenever 'method' is called, invoke the functor with 42
+     MOCK_FUNCTOR( f, void( int ) );                                                    // create a mock functor to verify this
+     MOCK_EXPECT( f ).once().with( 42 );                                                // expect it to be called with 42
+     mock.method( f );                                                                  // call 'method' with the mock functor
+ }                                                                                      // et voila !
+
+[endsect]
+
+[endsect]
+
+[section Change Log]
 
 [section trunk]
 Not yet released
