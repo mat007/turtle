@@ -129,7 +129,7 @@
       <fileset dir="boost" includes="test/**,doc/**,index.html"/>
     </copy>
     <copy todir="${boost.dir}/libs/mock/doc/html">
-      <fileset dir="${env.BOOST_ROOT}/doc/src"/>
+      <fileset dir="${env.BOOST_ROOT}/doc/src" includes="**/*.css,**/**.png"/>
     </copy>
     <copy todir="${boost.dir}">
       <fileset dir="boost" includes="LICENSE_1_0.txt,Jamroot.jam,Jamfile.v2"/>
