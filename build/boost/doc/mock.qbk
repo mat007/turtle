@@ -520,7 +520,7 @@ The policy can then be activated by defining MOCK_ERROR_POLICY prior to includin
 
 [endsect]
 
-[xinclude reference.xml]
+[/ [xinclude reference.xml] ]
 
 [section Patterns]
 
