@@ -1,4 +1,4 @@
-[library Boost.Mock
+[library Turtle
     [quickbook 1.5]
     [authors [Champlon, Mathieu]]
     [copyright 2012 Mathieu Champlon]
