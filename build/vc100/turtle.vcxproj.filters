@@ -67,9 +67,6 @@
     <ClInclude Include="..\..\turtle\detail\action.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\check.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\detail\expectation_template.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
@@ -122,6 +119,12 @@
       <Filter>Source Files\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\turtle\detail\cleanup.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\matcher.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\turtle\detail\matcher_base.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
   </ItemGroup>

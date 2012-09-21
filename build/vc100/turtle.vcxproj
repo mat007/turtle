@@ -23,7 +23,6 @@
     <ClInclude Include="..\..\turtle\constraint.hpp" />
     <ClInclude Include="..\..\turtle\constraints.hpp" />
     <ClInclude Include="..\..\turtle\detail\action.hpp" />
-    <ClInclude Include="..\..\turtle\detail\check.hpp" />
     <ClInclude Include="..\..\turtle\detail\child.hpp" />
     <ClInclude Include="..\..\turtle\detail\cleanup.hpp" />
     <ClInclude Include="..\..\turtle\detail\context.hpp" />
@@ -39,6 +38,7 @@
     <ClInclude Include="..\..\turtle\detail\invocation.hpp" />
     <ClInclude Include="..\..\turtle\detail\is_functor.hpp" />
     <ClInclude Include="..\..\turtle\detail\lambda.hpp" />
+    <ClInclude Include="..\..\turtle\detail\matcher_base.hpp" />
     <ClInclude Include="..\..\turtle\detail\object_impl.hpp" />
     <ClInclude Include="..\..\turtle\detail\parameter.hpp" />
     <ClInclude Include="..\..\turtle\detail\parent.hpp" />
@@ -51,6 +51,7 @@
     <ClInclude Include="..\..\turtle\error.hpp" />
     <ClInclude Include="..\..\turtle\format.hpp" />
     <ClInclude Include="..\..\turtle\log.hpp" />
+    <ClInclude Include="..\..\turtle\matcher.hpp" />
     <ClInclude Include="..\..\turtle\mock.hpp" />
     <ClInclude Include="..\..\turtle\object.hpp" />
     <ClInclude Include="..\..\turtle\reset.hpp" />

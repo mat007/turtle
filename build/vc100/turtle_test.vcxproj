@@ -22,7 +22,6 @@
     <ClInclude Include="..\..\test\mock_error.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\test\detail\test_check.cpp" />
     <ClCompile Include="..\..\test\detail\test_function.cpp" />
     <ClCompile Include="..\..\test\detail\test_invocation.cpp" />
     <ClCompile Include="..\..\test\detail\test_is_functor.cpp" />
@@ -32,6 +31,7 @@
     <ClCompile Include="..\..\test\test_error.cpp" />
     <ClCompile Include="..\..\test\test_integration.cpp" />
     <ClCompile Include="..\..\test\test_log.cpp" />
+    <ClCompile Include="..\..\test\test_matcher.cpp" />
     <ClCompile Include="..\..\test\test_max_args.cpp" />
     <ClCompile Include="..\..\test\test_mock.cpp" />
     <ClCompile Include="..\..\test\test_object.cpp" />
