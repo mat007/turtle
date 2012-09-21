@@ -10,8 +10,6 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/lexical_cast.hpp>
 
-struct my_type_from_default_namespace {};
-
 namespace
 {
     template< typename T >
@@ -20,6 +18,8 @@ namespace
         return boost::lexical_cast< std::string >( mock::detail::type_name( BOOST_SP_TYPEID( T ) ) );
     }
 }
+
+struct my_type_from_default_namespace {};
 
 BOOST_AUTO_TEST_CASE( name_of_type_from_default_namespace_is_extracted )
 {
