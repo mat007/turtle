@@ -1,13 +1,14 @@
 [article Turtle
     [quickbook 1.5]
 [/    [authors [Champlon, Mathieu]] ]
+    [authors [,A C++ mock object library for Boost]]
     [copyright 2012 Mathieu Champlon]
     [license
         Distributed under the Boost Software License, Version 1.0.
         (See accompanying file LICENSE_1_0.txt or copy at
         [@http://www.boost.org/LICENSE_1_0.txt])
     ]
-    [purpose A C++ Mock object library written for Boost with a focus on usability, simplicity and flexibility]
+[/    [purpose A C++ mock object library for Boost] ]
 ]
 
 [/
