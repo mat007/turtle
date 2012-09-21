@@ -7,7 +7,7 @@
 # http://www.boost.org/LICENSE_1_0.txt)
 
 import path ;
-using boostbook ;
+using boostbook : : : [ path.pwd ] ;
 using quickbook ;
 using doxygen ;
 

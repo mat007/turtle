@@ -124,12 +124,15 @@
     <copy todir="${boost.dir}/boost/mock">
       <fileset dir="${libraries.dir}/turtle" includes="**"/>
     </copy>
-    <copy todir="${boost.dir}/libs/mock">
-      <fileset dir="${tests.dir}" includes="test/**"/>
-      <fileset dir="boost" includes="test/**,doc/**,index.html"/>
+    <copy todir="${boost.dir}/libs/mock/doc">
+      <fileset dir="${env.BOOST_ROOT}/tools/boostbook" includes="xsl/**,dtd/**"/>
     </copy>
     <copy todir="${boost.dir}/libs/mock/doc/html">
       <fileset dir="${env.BOOST_ROOT}/doc/src" includes="**/*.css,**/**.png"/>
+    </copy>
+    <copy todir="${boost.dir}/libs/mock" overwrite="true">
+      <fileset dir="${tests.dir}" includes="test/**"/>
+      <fileset dir="boost" includes="test/**,doc/**,index.html"/>
     </copy>
     <copy todir="${boost.dir}">
       <fileset dir="boost" includes="LICENSE_1_0.txt,Jamroot.jam,Jamfile.v2"/>
