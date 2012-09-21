@@ -25,7 +25,7 @@ namespace
     BOOST_MPL_ASSERT_NOT(( mock::detail::is_functor< declared_but_not_defined > ));
 
     template< typename T >
-    void check( T )
+    void is_functor( T )
     {
         BOOST_MPL_ASSERT(( mock::detail::is_functor< T > ));
     }
@@ -37,27 +37,27 @@ namespace
 
 BOOST_AUTO_TEST_CASE( function_is_functor )
 {
-    check( f0 );
-    check( f1 );
-    check( f2 );
+    is_functor( f0 );
+    is_functor( f1 );
+    is_functor( f2 );
 }
 
 BOOST_AUTO_TEST_CASE( function_pointer_is_functor )
 {
-    check( &f0 );
-    check( &f1 );
-    check( &f2 );
+    is_functor( &f0 );
+    is_functor( &f1 );
+    is_functor( &f2 );
 }
 
 BOOST_AUTO_TEST_CASE( std_ptr_fun_is_functor )
 {
-    check( std::ptr_fun( &f1 ) );
-    check( std::ptr_fun( &f2 ) );
+    is_functor( std::ptr_fun( &f1 ) );
+    is_functor( std::ptr_fun( &f2 ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_bind_first_is_functor )
 {
-    check( std::bind1st( std::ptr_fun( &f2 ), "" ) );
+    is_functor( std::bind1st( std::ptr_fun( &f2 ), "" ) );
 }
 
 namespace
@@ -71,31 +71,31 @@ namespace
 }
 BOOST_AUTO_TEST_CASE( std_unary_functor_is_functor )
 {
-    check( unary_functor0() );
-    check( unary_functor1() );
+    is_functor( unary_functor0() );
+    is_functor( unary_functor1() );
 }
 
 BOOST_AUTO_TEST_CASE( boost_bind_is_functor )
 {
-    check( boost::bind( &f0 ) );
-    check( boost::bind( &f1, _1 ) );
-    check( boost::bind( &f2, "", _1 ) );
+    is_functor( boost::bind( &f0 ) );
+    is_functor( boost::bind( &f1, _1 ) );
+    is_functor( boost::bind( &f2, "", _1 ) );
 }
 
 BOOST_AUTO_TEST_CASE( boost_lambda_is_functor )
 {
-    check( boost::lambda::_1 < 42 );
+    is_functor( boost::lambda::_1 < 42 );
 }
 
 BOOST_AUTO_TEST_CASE( boost_phoenix_is_functor )
 {
-    check( boost::phoenix::arg_names::arg1 < 42 );
-    check( boost::phoenix::arg_names::_1 < 42 );
+    is_functor( boost::phoenix::arg_names::arg1 < 42 );
+    is_functor( boost::phoenix::arg_names::_1 < 42 );
 }
 
 BOOST_AUTO_TEST_CASE( boost_function_is_functor )
 {
-    check( boost::function< void() >() );
+    is_functor( boost::function< void() >() );
 }
 
 namespace
@@ -107,7 +107,7 @@ namespace
 }
 BOOST_AUTO_TEST_CASE( class_with_result_type_is_functor )
 {
-    check( result_type_functor() );
+    is_functor( result_type_functor() );
 }
 
 namespace
@@ -123,5 +123,5 @@ namespace
 }
 BOOST_AUTO_TEST_CASE( class_with_sig_is_functor )
 {
-    check( sig_functor() );
+    is_functor( sig_functor() );
 }
