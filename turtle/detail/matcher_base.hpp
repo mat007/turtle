@@ -24,7 +24,8 @@ namespace detail
 
         virtual bool operator()( Actual ) = 0;
 
-        friend std::ostream& operator<<( std::ostream& s, const matcher_base& c )
+        friend std::ostream& operator<<(
+            std::ostream& s, const matcher_base& c )
         {
             c.serialize( s );
             return s;
