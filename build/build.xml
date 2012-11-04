@@ -137,6 +137,7 @@
     <copy todir="${boost.dir}">
       <fileset dir="boost" includes="LICENSE_1_0.txt,Jamroot.jam,Jamfile.v2"/>
     </copy>
+<!--
     <replaceregexp match="MOCK" replace="BOOST_MOCK" flags="g">
       <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
     </replaceregexp>
@@ -164,6 +165,7 @@
     <replaceregexp match="http://turtle.sourceforge.net" replace="Boost.Mock" flags="g">
       <fileset dir="${boost.dir}" includes="**/*.hpp,**/*.cpp"/>
     </replaceregexp>
+-->
   </target>
 
   <target name="all" depends="configure,test,bench,reports,export,package" description="configure, build and run tests and benchmark, export and package distribution"/>
