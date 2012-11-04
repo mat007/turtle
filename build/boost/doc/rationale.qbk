@@ -46,7 +46,7 @@ Despite being often considered harmful they also provide a number of advantages 
 
 * they pack a lot of code and hide implementation details (MOCK_BASE_CLASS, MOCK_METHOD)
 * they make the interface homogeneous (MOCK_FUNCTOR, MOCK_CLASS)
-* line number and file can be added for logging purposes (MOCK_EXPECT)
+* line number and file name can be added for logging purposes (MOCK_EXPECT)
 
 [endsect]
 

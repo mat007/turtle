@@ -71,11 +71,11 @@ Released 16 June 2010
 * Added detection for a pointer in mock::assign to dereference it before performing the assignment
 * Renamed error policies no_match method to unexpected_call
 * Made boost_test_error_policy throw a mock::exception extending boost::execution_aborted (helpful in order to filter on exceptions)
-* Fully qualified function calls to prevent unwanted [http://en.wikipedia.org/wiki/Argument_dependent_name_lookup ADL]
-* Added extra namespace level to protect from unwanted [http://en.wikipedia.org/wiki/Argument_dependent_name_lookup ADL] with operator<<
-* Fixed a crash due to [http://www.parashift.com/c++-faq-lite/ctors.html#faq-10.12 static initialization order fiasco] on some platforms
+* Fully qualified function calls to prevent unwanted [@http://en.wikipedia.org/wiki/Argument_dependent_name_lookup ADL]
+* Added extra namespace level to protect from unwanted [@http://en.wikipedia.org/wiki/Argument_dependent_name_lookup ADL] with operator<<
+* Fixed a crash due to [@http://www.parashift.com/c++-faq-lite/ctors.html#faq-10.12 static initialization order fiasco] on some platforms
 * Added support for mocking conversion operators
-* Added [http://www.boost.org/doc/libs/release/libs/concept_check/concept_check.htm concept checks] for better diagnostic upon compilation error
+* Added [@http://www.boost.org/doc/libs/release/libs/concept_check/concept_check.htm concept checks] for better diagnostic upon compilation error
 * Made template parameter names more user friendly for better diagnostic upon compilation error
 * Fixed expectation argument types to match signature
 * Shared parent names among their expectations when a mock::object is used as a base class

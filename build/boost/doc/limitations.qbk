@@ -154,7 +154,7 @@ Example :
 
 [c++]
 
-This seems to be a random bug with some versions of the Microsoft Visual Studio compiler, see https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=324427
+This seems to be [@https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=324427 a random bug] with some versions of the Microsoft Visual Studio compiler.
 
 The only known workaround is to disable the warning with a pragma :
 

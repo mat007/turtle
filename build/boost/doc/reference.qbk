@@ -31,6 +31,8 @@ Most of the time the identifier will be identical to the object name, but in cas
 
 [section Class]
 
+The prefered form for defining a mock class is with using MOCK_CLASS and MOCK_BASE_CLASS, however equivalent alternatives exist without the macros.
+
 Synopsis :
 
  MOCK_CLASS( name )
@@ -39,15 +41,6 @@ Synopsis :
  
  template< typename T >
  MOCK_CLASS( name )
- {
- };
- 
- struct name : mock::object
- {
- };
- 
- template< typename T >
- struct name : mock::object
  {
  };
  
@@ -60,16 +53,27 @@ Synopsis :
  {
  };
  
- struct name : base, mock::object
+ struct name : mock::object // equivalent to using MOCK_CLASS
  {
+ };
+ 
+ template< typename T >
+ struct name : mock::object // equivalent to using MOCK_CLASS
+ {
+ };
+ 
+ struct name : base, mock::object // equivalent to using MOCK_BASE_CLASS
+ {
+     typedef base base_type;
  };
  
  template< typename T >
  struct mock : base< T >, mock::object
  {
+     typedef typename base< T > base_type;
  };
 
-Using the macro or deriving from mock::object is optional but provides the additional following features :
+Deriving from mock::object is optional but provides the additional following benefits :
 
 * the object acts as a composite to [link turtle.reference.verification verify] and [link turtle.reference.reset reset] all the expectations for all its methods at once
 * logs involving the object are enhanced because configuring an expectation for a method will set the class name for all the other methods as well
@@ -135,7 +139,7 @@ Example :
 
 Synopsis :
 
- MOCK_METHOD( name, arity )                                          // only works in the context of a derived MOCK_BASE_CLASS and generates both const and non-const methods
+ MOCK_METHOD( name, arity )                                          // only works in the context of a derived MOCK_BASE_CLASS or base_type typedef and generates both const and non-const methods
  
  MOCK_METHOD_EXT( name, arity, signature, identifier )               // generates both const and non-const methods
  MOCK_CONST_METHOD_EXT( name, arity, signature, identifier )         // generates only the const version of the method
@@ -430,74 +434,50 @@ Example :
 
 Synopsis :
 
- MOCK_EXPECT( identifier ).with( ''parameter1_constraint'', ''parameter2_constraint'', ... );
+ MOCK_EXPECT( identifier ).with( constraint_1, constraint_2, ... );
 
 Constraints :
 
-{| style="border-collapse: collapse; border:1px solid lightgray;" border="1"
-! Expression || Effect || Description || width="25%" | Explanation
-|-
-| mock::any || true || does not perform any verification
-|-
-| rowspan=3 | ''expected''
-| ''expected''( ''actual'' )
-| calls ''expected'' as a functor returning a ''bool'', throws std::invalid_argument if !''expected''
-| rowspan=3 | when passing ''expected'' directly as a short-cut :
-* ''expected''( ''actual'' ) is implied for :
-** a function
-** a function pointer
-** an instance of a type with a ''result_type'' member typedef (support for standard library, [http://www.boost.org/libs/bind/bind.html Boost.Bind], [http://www.boost.org/doc/html/function.html Boost.Function] functors)
-** an instance of a type with a ''sig'' member (support for [http://www.boost.org/doc/html/lambda.html Boost.Lambda] functors)
-** an instance of a type with a ''result'' member (support for [http://www.boost.org/doc/libs/release/libs/spirit/phoenix Boost.Phoenix] functors)
-* std::strcmp( ''actual'', ''expected'' ) == 0 is implied if both ''actual'' and ''expected'' are of type ''const char*''
-* ''actual'' == ''expected'' is implied for anything else
-|-
-| std::strcmp( ''actual'', ''expected'' ) == 0
-| compares C-strings ''actual'' and ''expected''
-|-
-| ''actual'' == ''expected''
-| compares ''actual'' to ''expected'' using operator ==
-|-
-| mock::equal( ''expected'' ) || ''actual'' == ''expected'' || compares ''actual'' to ''expected'' using operator ==
-|-
-| mock::less( ''expected'' ) || ''actual'' < ''expected'' || compares ''actual'' to ''expected'' using operator <
-|-
-| mock::greater( ''expected'' ) || ''actual'' > ''expected'' || compares ''actual'' to ''expected'' using operator >
-|-
-| mock::less_equal( ''expected'' ) || ''actual'' <= ''expected'' || compares ''actual'' to ''expected'' using operator <=
-|-
-| mock::greater_equal( ''expected'' ) || ''actual'' >= ''expected'' || compares ''actual'' to ''expected'' using operator >=
-|-
-| mock::call( ''expected'' ) || ''expected''( ''actual'' ) || calls ''expected'' as a functor returning a ''bool'' and accepting ''actual'' as parameter
-|-
-| mock::same( ''expected'' ) || &''actual'' == &''expected'' || compares ''actual'' to ''expected'' by comparing their pointers
-|-
-| rowspan=2 | mock::assign( ''expected'' )
-| ''actual'' = ''expected'', true
-| assigns ''expected'' to ''actual'' using operator =
-| rowspan=4 | The switch to one form or another is made depending on whichever is the most relevant based on types involved.
-'''These constraints have side effects''' and they may modify data in unexpected ways. For instance they may be called again after their expectations have already been exhausted because of the way the expectation selection algorithm works, see [[#Expectation_selection_algorithm]]. Therefore it is probably a good idea to use an action instead, see [[#Configuring actions]]
-|-
-| *''actual'' = ''expected'', true
-| assigns ''expected'' to *''actual'' using operator =
-|-
-| rowspan=2 | mock::retrieve( ''expected'' )
-| ''expected'' = ''actual'', true
-| retrieves ''actual'' into ''expected'' using operator =
-|-
-| ''expected'' = &''actual'', true
-| retrieves ''actual'' address into ''expected'' using operator =
-|-
-| mock::contain( ''expected'' ) || ''actual.find( expected_ ) != std::string::npos'' || checks whether ''expected'' is contained in the std::string ''actual''
-|-
-| mock::affirm || ''actual'' || uses ''actual'' as a boolean
-|-
-| mock::negate || !''actual'' || negates ''actual'' using operator !
-|-
-| mock::evaluate || ''actual''() || evaluates ''actual'' as a functor returning a bool and taking no argument
-|}
+[table
+ [[Constraint]                         [Effect]                     [Description]]
+ [[mock::any]                          [true]                       [does not perform any verification]]
+ [[['expected]]                        [['expected]( ['actual] )
 
-[note All constraints taking a parameter support the use of boost::ref and boost::cref in order to delay its initialization.]
+                                        ['actual] == ['expected]]   [calls ['expected] as a functor returning a ['bool], throws std::invalid_argument if ! ['expected]
+
+                                                                     compares ['actual] to ['expected] using operator ==]]
+ [[mock::equal( ['expected] )]         [['actual] == ['expected]]   [compares ['actual] to ['expected] using operator ==]]
+ [[mock::less( ['expected] )]          [['actual] < ['expected]]    [compares ['actual] to ['expected] using operator <]]
+ [[mock::greater( ['expected] )]       [['actual] > ['expected]]    [compares ['actual] to ['expected] using operator >]]
+ [[mock::less_equal( ['expected] )]    [['actual] <= ['expected]]   [compares ['actual] to ['expected] using operator <=]]
+ [[mock::greater_equal( ['expected] )] [['actual] >= ['expected]]   [compares ['actual] to ['expected] using operator >=]]
+ [[mock::call( ['expected] )]          [['expected]( ['actual] )]   [calls ['expected] as a functor returning a ['bool] and accepting ['actual] as parameter]]
+ [[mock::same( ['expected] )]          [&['actual] == &['expected]] [compares ['actual] to ['expected] by comparing their pointers]]
+ [[mock::assign( ['expected] )]        [['actual] = ['expected], true
+
+                                        *['actual] = ['expected], true] [assigns ['expected] to ['actual] using operator =
+
+                                                                         assigns ['expected] to ['actual] content using operator =]]
+ [[mock::retrieve( ['expected] )]      [['expected] = ['actual], true
+
+                                        ['expected] = &['actual], true] [retrieves ['actual] into ['expected] using operator =
+
+                                                                         retrieves ['actual] address into ['expected] using operator =]]
+ [[mock::contain( ['expected] )]       [['actual].find( ['expected] ) != std::string::npos] [checks whether ['expected] is contained in the std::string ['actual]]]
+ [[mock::affirm]                       [['actual]]                                          [uses ['actual] as a boolean]]
+ [[mock::negate]                       [! ['actual]]                                         [negates ['actual] using operator !]]
+ [[mock::evaluate]                     [['actual]()]                                        [evaluates ['actual] as a functor returning a bool and taking no argument]]
+]
+
+[important When passing ['expected] directly as a shortcut mock::call is implied for a function, a function pointer, an instance of a type with a result_type member typedef (support for standard library, [@http://www.boost.org/libs/bind/bind.html Boost.Bind], [@http://www.boost.org/libs/function Boost.Function] functors), an instance of a type with a sig member (support for [@http://www.boost.org/libs/lambda Boost.Lambda] functors), an instance of a type with a result member (support for [@http://www.boost.org/libs/phoenix Boost.Phoenix] functors); mock::equal is implied for anything else.]
+
+[warning Because mock::assign and mock::retrieve have side effects they may modify ['expected] in unexpected ways. For instance they may be called again after their expectations have already been exhausted because of the way the [link turtle.getting_started.expectation_selection_algorithm expectation selection algorithm] works. Therefore it is probably a good idea to use an [link turtle.reference.expectation.actions action] instead.]
+
+[note For mock::assign and mock::retrieve the switch to one form or another is made depending on whichever is the most relevant based on types involved.]
+
+[note All constraints accepting a parameter support the use of boost::ref and boost::cref in order to delay initialization.]
+
+[note All constraints can be combined using the && and || operators, as well as negated with the ! operator.]
 
 Example :
 
@@ -539,7 +519,7 @@ Example using a standard library functor :
     MOCK_EXPECT( c.method ).with( std::bind1st( std::ptr_fun( &custom_constraint ), 42 ) ); // std::ptr_fun creates an std::unary_function
  }
 
-Example using [http://www.boost.org/libs/bind/bind.html Boost.Bind] :
+Example using [@http://www.boost.org/libs/bind Boost.Bind] :
 
  bool custom_constraint( int expected, int actual )
  {
@@ -552,7 +532,7 @@ Example using [http://www.boost.org/libs/bind/bind.html Boost.Bind] :
     MOCK_EXPECT( c.method ).with( boost::bind( &custom_constraint, 42, _1 ) ) );
  }
 
-Example using [http://www.boost.org/doc/html/lambda.html Boost.Lambda] :
+Example using [@http://www.boost.org/libs/lambda Boost.Lambda] :
 
  BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_lambda )
  {
@@ -560,7 +540,7 @@ Example using [http://www.boost.org/doc/html/lambda.html Boost.Lambda] :
     MOCK_EXPECT( c.method ).with( boost::lambda::_1 == 42 );
  }
 
-Example using [http://www.boost.org/doc/libs/release/libs/spirit/phoenix Boost.Phoenix] :
+Example using [@http://www.boost.org/libs/phoenix Boost.Phoenix] :
 
  BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_phoenix )
  {
@@ -569,7 +549,7 @@ Example using [http://www.boost.org/doc/libs/release/libs/spirit/phoenix Boost.P
     MOCK_EXPECT( c.method ).with( boost::phoenix::arg_names::_1 == 42 );
  }
 
-Example combining constraints using ''&&'', ''||'' and ''!'' :
+Example using &&, || and ! :
 
  BOOST_AUTO_TEST_CASE( demonstrates_combining_constraints )
  {
@@ -584,36 +564,41 @@ Example combining constraints using ''&&'', ''||'' and ''!'' :
 Synopsis :
 
  mock::sequence s;
- MOCK_EXPECT( ''identifier1'' ).in( s );
- MOCK_EXPECT( ''identifier2'' ).in( s );
+ MOCK_EXPECT( identifier_1 ).in( s );
+ MOCK_EXPECT( identifier_2 ).in( s );
 
 Example :
 
- MOCK_CLASS( mock_class1 )
+ MOCK_CLASS( mock_class_1 )
  {
-     MOCK_METHOD_EXT( method1, 0, void(), method1 )
+     MOCK_METHOD_EXT( method_1, 0, void(), method_1 )
  };
- MOCK_CLASS( mock_class2 )
+ MOCK_CLASS( mock_class_2 )
  {
-     MOCK_METHOD_EXT( method2, 0, void(), method2 )
+     MOCK_METHOD_EXT( method_2, 0, void(), method_2 )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_enforcing_expectations_order )
  {
-    mock_class1 c1;
-    mock_class2 c2;
+    mock_class_1 c_1;
+    mock_class_2 c_2;
     mock::sequence s;
-    MOCK_EXPECT( c1.method1 ).in( s );
-    MOCK_EXPECT( c2.method2 ).in( s );
+    MOCK_EXPECT( c_1.method_1 ).in( s );
+    MOCK_EXPECT( c_2.method_2 ).in( s );
  }
 
-Example of setting several sequences by chaining calls to ''in'' :
+Example of setting several sequences by chaining calls to ['in] :
 
+ MOCK_CLASS( mock_class )
+ {
+     MOCK_METHOD_EXT( method, 0, void(), method )
+ };
+ 
  BOOST_AUTO_TEST_CASE( demonstrates_enforcing_several_expectations_orders )
  {
-    mock_class1 c1;
-    mock::sequence s1, s2;
-    MOCK_EXPECT( c1.method1 ).in( s1 ).in( s2 );
+    mock_class c;
+    mock::sequence s_1, s_2;
+    MOCK_EXPECT( c.method ).in( s_1 ).in( s_2 );
  }
 
 [endsect]
@@ -622,9 +607,9 @@ Example of setting several sequences by chaining calls to ''in'' :
 
 Synopsis :
 
- MOCK_EXPECT( identifier ).returns( ''value'' );
- MOCK_EXPECT( identifier ).throws( ''exception'' );
- MOCK_EXPECT( identifier ).calls( ''functor'' );    // throws std::invalid_argument if !''functor''
+ MOCK_EXPECT( identifier ).returns( value );
+ MOCK_EXPECT( identifier ).throws( exception );
+ MOCK_EXPECT( identifier ).calls( functor );    // throws std::invalid_argument if ! ['functor]
 
 Example :
 
@@ -656,14 +641,15 @@ Example :
 Synopsis :
 
  MOCK_VERIFY( identifier );
- mock::verify( ''object'' );              // verifies all expectations set for all methods of 'object' which must be an instance of a class created using MOCK_CLASS or MOCK_BASE_CLASS, or inherit mock::object
- mock::verify( ''functor'' );             // verifies all expectations set for 'functor' which must be an instance of a functor created using MOCK_FUNCTOR
- mock::verify();                      // verifies all existing mock objects, functions and functors
+ mock::verify( object );   // verifies all expectations set for all methods of 'object' which must be an instance of a class created using MOCK_CLASS or MOCK_BASE_CLASS, or inherit mock::object
+ mock::verify( functor );  // verifies all expectations set for 'functor' which must be an instance of a functor created using MOCK_FUNCTOR
+ mock::verify();           // verifies all existing mock objects, functions and functors
 
-These calls all return a boolean indicating whether the verification was successful or not, however usually simply calling them is enough because a failing verification delegates to the [[#Error_policy]] in order to log a message.
+[note These calls all return a boolean indicating whether the verification was successful or not, however usually simply calling them is enough because a failing verification will be logged to the test framework.]
 
-Note that each mock object verifies itself automatically upon destruction, which is usually sufficient for the most common use cases. <BR>
-However using mock functions or mock static methods means the associated underlying objects will not be destroyed before exiting the test application, thus it is strongly suggested to verify (and possibly [[#Reset]]) them at the end of each test case (for instance using a fixture) to ensure that each test runs in isolation.
+[note Each mock object verifies itself automatically upon destruction, which is usually sufficient for the most common use cases.]
+
+[warning Using [link turtle.reference.creation.function mock functions] or [link turtle.reference.creation.static_member_function mock static member functions] means the associated underlying objects will not be destroyed before exiting the test application, thus it is strongly suggested to verify (and possibly [link turtle.reference.reset reset]) them at the end of each test case (for instance using a fixture) to ensure that each test runs in isolation.]
 
 Example :
 
@@ -721,8 +707,8 @@ Example :
 Synopsis :
 
  MOCK_RESET( identifier );
- mock::reset( ''object'' );              // resets all expectations set for all methods of 'object' which must be an instance of a class created using MOCK_CLASS or MOCK_BASE_CLASS, or inherit mock::object
- mock::reset();                      // resets all existing mock objects, functions and functors
+ mock::reset( object );    // resets all expectations set for all methods of 'object' which must be an instance of a class created using MOCK_CLASS or MOCK_BASE_CLASS, or inherit mock::object
+ mock::reset();            // resets all existing mock objects, functions and functors
 
 Example :
 
