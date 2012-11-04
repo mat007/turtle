@@ -34,5 +34,7 @@ boostbook standalone
     <dependency>reference
     <xsl:param>boost.image.src=../images/boost.png
     <xsl:param>chunk.first.sections=1
+#    <xsl:param>toc.max.depth=3
+    <xsl:param>toc.section.depth=4
     <xsl:param>nav.layout=horizontal
 ;

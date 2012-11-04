@@ -1,0 +1,53 @@
+[section:rationale Rationale]
+
+This section explains some of the design and implementation choices.
+
+[section General design forces]
+
+The general idea behind the library design is to be able to write tests quickly and easily as well as to get the best possible diagnostic upon error (both compile and runtime errors).
+
+The chainable syntax has been chosen in order to be as intuitive as possible, with the most simple form covering the most general use cases.
+
+Several design choices follow the same motivation :
+
+* expectations are automatically verified upon destruction
+* both const and non-const versions of a method are mocked by default
+* the short-cuts for adding constraints cover 95% of the use cases
+* non-serializable types do not yield compilation errors but are logged as '?' by default
+* etc..
+
+At the same time customizing any aspect of the library should require minimum effort, for instance :
+
+* custom constraints can be any functors, including free functions
+* customizing the logging of a type is done by defining a serialization operator
+* integrating into a test framework is made possible by writing a simple custom policy
+* etc..
+
+[endsect]
+
+[section Exceptions thrown should not extend std::exception]
+
+By design the exceptions thrown upon error should not inherit from std::exception, for instance consider the following test case based on the example from the [link turtle.motivation motivation] section :
+
+ BOOST_AUTO_TEST_CASE( overflow_throws )
+ {
+    mock_view v;
+    calculator c( v );
+    BOOST_CHECK_THROW( c.add( std::numeric_limits< int >::max(), 1 ), std::exception );
+ }
+
+Any call to 'v' will be unexpected and yield an exception, which if it were an std::exception would erroneously make the test succeed whereas it is supposed to pass only if the operation overflows (thus not triggering 'v').
+
+[endsect]
+
+[section The library interface is based on many macros]
+
+Despite being often considered harmful they also provide a number of advantages :
+
+* they pack a lot of code and hide implementation details (MOCK_BASE_CLASS, MOCK_METHOD)
+* they make the interface homogeneous (MOCK_FUNCTOR, MOCK_CLASS)
+* line number and file can be added for logging purposes (MOCK_EXPECT)
+
+[endsect]
+
+[endsect]

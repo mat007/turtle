@@ -1,0 +1,132 @@
+[section Patterns]
+
+This section highlights not-so-obvious features of the library gathered from real use cases.
+
+[section Waiting for an asynchronous call]
+
+Problem :
+
+ namespace
+ {
+     class base_class
+     {
+     public:
+         virtual void method() = 0;
+     };
+ 
+     class my_class
+     {
+     public:
+         explicit my_class( base_class& );
+ 
+         void flush(); // repetitively calling this method will in turn call base_class::method at some point
+     };
+ }
+
+Solution :
+
+ #include <turtle/mock.hpp>
+ #include <boost/lambda/lambda.hpp>
+ #include <boost/thread.hpp>
+ 
+ namespace
+ {
+     template< typename F >
+     void wait( bool& condition, F flush, int timeout = 100, int sleep = 100 )
+     {
+         while( !condition && timeout > 0 )
+         {
+             --timeout;
+             boost::this_thread::sleep( boost::posix_time::milliseconds( sleep ) );
+             flush();
+         }
+     }
+     MOCK_BASE_CLASS( mock_base_class, base_class )
+     {
+         MOCK_METHOD( method, 0 )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( method_is_called )
+ {
+     mock_base_class mock;
+     my_class c( mock );
+     bool done = false;
+     MOCK_EXPECT( mock.method ).once().calls( boost::lambda::var( done ) = true ); // when method is called it will set done to true
+     wait( done, boost::bind( &my_class::flush, &c ) );                            // just wait on done flushing from time to time
+ }
+
+[endsect]
+
+[section Retrieving an argument to use in a later constraint]
+
+Problem :
+
+ namespace
+ {
+     class base_class
+     {
+     public:
+         virtual void method( int value ) = 0;
+     };
+ 
+     class my_class
+     {
+     public:
+         explicit my_class( base_class& );
+ 
+         void process(); // the processing will call 'method' two times with the same value, but we don't know what value beforehand
+     };
+ }
+
+Solution :
+
+ #include <turtle/mock.hpp>
+ 
+ namespace
+ {
+     MOCK_BASE_CLASS( mock_base_class, base_class )
+     {
+         MOCK_METHOD( method, 1 )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( method_is_called_two_times_with_the_same_value )
+ {
+     mock_base_class mock;
+     my_class c( mock );
+     int value;
+     MOCK_EXPECT( mock.method ).once().with( mock::retrieve( value ) ); // on first call retrieve the value, this expectation takes precedence because it can never fail
+     MOCK_EXPECT( mock.method ).once().with( boost::cref( value ) );    // on second call compare the previously retrieved value with the newly received one
+     c.process();
+ }
+
+[endsect]
+
+[section Invoking a functor received as parameter]
+
+ #include <turtle/mock.hpp>
+ #include <boost/function.hpp>
+ #include <boost/bind/apply.hpp>
+ #include <boost/bind.hpp>
+ 
+ namespace
+ {
+     MOCK_CLASS( mock_class )
+     {
+         MOCK_METHOD_EXT( method, 1, void( boost::function< void( int ) > ), method )
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( how_to_invoke_a_functor_passed_as_parameter_of_a_mock_method )
+ {
+     mock_class mock;
+     MOCK_EXPECT( mock.method ).calls( boost::bind( boost::apply< void >(), _1, 42 ) ); // whenever 'method' is called, invoke the functor with 42
+     MOCK_FUNCTOR( f, void( int ) );                                                    // create a mock functor to verify this
+     MOCK_EXPECT( f ).once().with( 42 );                                                // expect it to be called with 42
+     mock.method( f );                                                                  // call 'method' with the mock functor
+ }
+
+[endsect]
+
+[endsect]

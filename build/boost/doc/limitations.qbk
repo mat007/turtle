@@ -1,0 +1,225 @@
+[section Limitations]
+
+This section lists the library known limitations.
+
+[section No support for unicode logging]
+
+There is no support for unicode logging mainly because Boost.Test does not support it either.
+
+[endsect]
+
+[section Litteral 0 cannot be used as null pointer in constraints]
+
+Given :
+
+ class base
+ {
+ public:
+     virtual void method( int i* ) = 0;
+ };
+ 
+ MOCK_BASE_CLASS( mock_base, base )
+ {
+     MOCK_METHOD( method, 1 )
+ };
+
+The following code does not compile :
+
+ mock_base m;
+ MOCK_EXPECT( m.method ).with( mock::equal( 0 ) ); // this fails
+ MOCK_EXPECT( m.method ).with( 0 );                // this fails too !
+
+This is due to the fact that the library uses templates pretty heavily, and the litteral 0 is considered as an int when instantiating a template function.
+
+A workaround is :
+
+ MOCK_EXPECT( m.method ).with( mock::equal< int* >( 0 ) ); // this compiles
+
+However a somewhat better solution would be :
+
+ MOCK_EXPECT( m.method ).with( mock::negate );
+
+[endsect]
+
+[section Template methods cannot be mocked]
+
+Given the following client code :
+
+ class concept
+ {
+ public:
+     template< typename T >
+     void method( T t )
+     {}
+ };
+ 
+ template< typename T >
+ class client
+ {
+ public:
+     client( T t )             // T is supposed to model the previous concept
+     {
+         t.method( 42 );
+         t.method( "string" );
+     }
+ };
+
+Writing a mock object modeling 'concept' requires to list all the possible versions of 'method' :
+
+ MOCK_CLASS( mock_concept )
+ {
+    MOCK_METHOD_EXT( method, 1, void( int ), method_int )
+    MOCK_METHOD_EXT( method, 1, void( const char* ), method_string )
+ };
+
+While still somewhat possible, mocking a template method is indeed a bit cumbersome.
+
+[endsect]
+
+[section A private pure virtual method cannot be mocked using MOCK_METHOD]
+
+The following code does not compile :
+
+ class base
+ {
+ private:
+     virtual void method() = 0;
+ };
+ 
+ MOCK_BASE_CLASS( mock_base, base )
+ {
+     MOCK_METHOD( method, 0 )       // this fails to compile because 'method' is not visible
+ };
+
+The workaround would be to use MOCK_METHOD_EXT :
+
+ MOCK_BASE_CLASS( mock_base, base )
+ {
+     MOCK_METHOD_EXT( method, 0, void(), method )
+ };
+
+[endsect]
+
+[section Commas are not allowed in templates in MOCK_BASE_CLASS]
+
+The following code does not compile :
+
+ template< typename T1, typename T2 >
+ struct my_base_class
+ {};
+ 
+ MOCK_BASE_CLASS( my_mock, my_base_class< int, int > ) // this fails to compile because the pre-processor believes the macro to be called with 3 arguments
+ {};
+
+One workaround is :
+
+ typedef my_base_class< int, int > my_base_type;
+ 
+ MOCK_BASE_CLASS( my_mock, my_base_type )
+ {};
+
+Of course this is not always possible, as in :
+
+ template< typename T1, typename T2 >
+ MOCK_BASE_CLASS( my_mock, my_base_type< T1, T2 > )
+ {};
+
+Another workaround would make use of [@http://www.boost.org/libs/preprocessor Boost.Preprocessor] :
+
+ template< typename T1, typename T2 >
+ MOCK_BASE_CLASS( my_mock, my_base_type< T1 BOOST_PP_COMMA() T2 > )
+ {};
+
+Actually BOOST_PP_COMMA implementation is quite trivial, being only :
+
+ #define BOOST_PP_COMMA() ,
+
+Finally another workaround would be to not use the macro at all :
+
+ template< typename T1, typename T2 >
+ struct my_mock : my_base_type< T1, T2 >, mock::object
+ {};
+
+The extra features provided by MOCK_BASE_CLASS are not usable with template base classes anyway because there is no equivalent of MOCK_METHOD for them.
+
+[endsect]
+
+[section Warning C4505: '...' : unreferenced local function has been removed]
+
+Example :
+
+[teletype]
+
+ warning C4505: 'base::[thunk]: __thiscall base::`vcall'{0,{flat}}' }'' : unreferenced local function has been removed
+
+[c++]
+
+This seems to be a random bug with some versions of the Microsoft Visual Studio compiler, see https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=324427
+
+The only known workaround is to disable the warning with a pragma :
+
+ #pragma warning( disable: 4505 )
+
+[endsect]
+
+[section Warning C4301: '...': overriding virtual function only differs from '...' by const/volatile qualifier]
+
+Example :
+
+[teletype]
+
+ warning C4301: '`anonymous-namespace'::base::method': overriding virtual function only differs from '`anonymous-namespace'::base::method' by const/volatile qualifier
+
+[c++]
+
+The following code produces this warning with some versions of the Microsoft Visual Studio compiler :
+
+ class base
+ {
+ public:
+     virtual void method( const int ) = 0;
+ };
+ 
+ MOCK_BASE_CLASS( mock_base, base )
+ {
+     MOCK_METHOD( method, 1 )                                // this produces the warning
+     MOCK_METHOD_EXT( method, 1, void( const int ), method ) // this produces the warning too !
+ };
+
+The problem is that the 'const' is actually not part of the function signature and therefore cannot be introspected.
+
+The first workaround would be to remove the 'const' all together.
+
+This is more sensible than it first sounds, after all the 'const' is useless in this situation, indeed :
+
+ class derived : public base
+ {
+ public:
+     virtual void method( const int );
+ };
+ 
+ void derived::method( int )           // this compiles, links and is valid C++
+ {}
+
+Otherwise another workaround would be to provide a proxy method :
+
+ MOCK_BASE_CLASS( mock_base, base )
+ {
+     void method( const int i )
+     {
+         method_stub( i );
+     }
+     MOCK_METHOD_EXT( method_stub, 1, void( int ), method )
+ };
+
+[endsect]
+
+[section warning C4267: 'argument' : conversion from 'size_t' to 'unsigned int', possible loss of data]
+
+Compiling under Microsoft Visual Studio with the /Wp64 flag produces this warning at various locations in the library code.
+
+This is actually a bug in the compiler, for more information see [@http://connect.microsoft.com/VisualStudio/feedback/details/253172/incorrect-warning-c4267 incorrect-warning-c4267].
+
+[endsect]
+
+[endsect]

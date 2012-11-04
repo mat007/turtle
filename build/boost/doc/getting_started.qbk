@@ -1,0 +1,140 @@
+[section Getting Started]
+
+This section introduces most of the library features in a series of use cases built on the example from the [link turtle.motivation motivation] section.
+
+For all the code examples the following is assumed :
+
+ #define BOOST_AUTO_TEST_MAIN
+ #include <boost/test/auto_unit_test.hpp>
+ #include <turtle/mock.hpp>
+
+[section Create, expect, trigger, verify]
+
+A simple unit test with mock objects usually splits into several phases as illustrated by :
+
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+    mock_view v;                               // create mock objects
+    calculator c( v );                         // create object under test
+    MOCK_EXPECT( v.display ).once().with( 0 ); // configure mock objects
+    c.add( 0, 0 );                             // exercise object under test
+ }                                             // verify mock objects
+
+Triggering the object under test in turn calls methods on the mock objects, and any unexpected call raises an error.
+
+Mock objects are automatically verified during their destruction and an error is signalled if any unfulfilled expectation remains.
+
+More sophisticated tests sometimes require more complex use cases and in particular might need to verify or reset mock objects.
+
+Here is an example highlighting the different possibilities :
+
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+    mock_view v;
+    calculator c( v );
+    MOCK_EXPECT( v.display ).once().with( 0 );
+    c.add( 0, 0 );
+    MOCK_VERIFY( v.display );                  // verify all expectations are fulfilled for the 'display' method
+    mock::verify( v );                         // verify all expectations are fulfilled for all methods of 'v'
+    mock::verify();                            // verify all expectations are fulfilled for all existing mock objects
+    MOCK_RESET( v.display );                   // reset all expectations for the 'display' method
+    mock::reset( v );                          // reset all expectations for all methods of 'v'
+    mock::reset();                             // reset all expectations for all existing mock objects
+ }                                             // automatically verify all expectations are fulfilled for all mock objects going out of scope
+
+Note that all verifications upon destruction will be disabled if the mock objects are destroyed in the context of an exception being raised.
+
+[endsect]
+
+[section Expectation selection algorithm]
+
+A method can be configured with several expectations, for instance :
+
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+     mock_view v;
+     calculator c( v );
+     MOCK_EXPECT( v.display ).once().with( 0 ); // this call must occur once (and only once)
+     MOCK_EXPECT( v.display ).with( 1 );        // this call can occur any number of times (including never)
+     c.add( 0, 0 );
+ }
+
+Each method call is then handled by processing the expectations in the order they have been defined :
+
+# looking for a match with valid parameter constraints evaluated from left to right
+# checking that the invocation count for this match is not exhausted
+
+An error is raised if none can be found.
+
+By default the relative order of the calls does not matter. It can however be enforced :
+
+ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+     mock_view v;
+     calculator c( v );
+     mock::sequence s;
+     MOCK_EXPECT( v.display ).once().with( 0 ).in( s ); // add this expectation to the sequence
+     MOCK_EXPECT( v.display ).with( 1 ).in( s );        // add this expectation to the sequence after the previous one
+     c.add( 0, 0 );
+     c.add( 1, 0 );
+ }
+
+Therefore an error will be issued if the second expectation is matched before the first one has been exhausted.
+
+An expectation can be part of several sequences :
+
+  BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+ {
+     mock_view v;
+     calculator c( v );
+     mock::sequence s1, s2;
+     MOCK_EXPECT( v.display ).once().with( 0 ).in( s1 );
+     MOCK_EXPECT( v.display ).once().with( 1 ).in( s2 );
+     MOCK_EXPECT( v.display ).with( 2 ).in( s1 ).in( s2 ); // add this expectation to both sequences after the previous ones
+     c.add( 0, 0 );
+     c.add( 1, 0 );
+     c.add( 1, 1 );
+     c.add( 2, 0 );
+ }
+
+[endsect]
+
+[section Error diagnostic]
+
+During the execution of a test case, an error can happen for one of the following reasons :
+
+* unexpected call when no match can be found for the given arguments (typically logs an error and throws an exception)
+* sequence failure when an enforced call sequence has not been followed (typically logs an error and throws an exception)
+* verification failure if a remaining match has not been fulfilled upon manual verification (typically logs an error)
+* untriggered expectation if a remaining match has not been fulfilled when destroying the mock object (typically logs an error)
+* missing action if a method supposed to return something else than void has not been configured properly (typically logs an error and throws an exception)
+
+The exact type of the exception thrown depends on the [link turtle.customisation.test_framework_integration test framework integration] used.
+
+An error log typically looks like :
+
+ unknown location(0): error in "zero_plus_zero_is_zero": unexpected call: v.mock_view::display( 0 )
+ v once().with( 1 )
+ v once().with( 2 )
+ . once().with( 3 )
+
+On the first line is the description of what happened : here the display method of object v of class mock_view has been called with an actual value of 0.
+
+The following lines list the set expectations with the check (the v character) meaning the expectation has been exhausted.
+It therefore means that the two first expectations have been fulfilled by two calls, and then instead of 3 in the third call 0 has been erroneously passed on to the mock object.
+
+Another common error looks like :
+
+ src/tests/turtle_test/Tutorial.cpp(73): error in "zero_plus_zero_is_zero": untriggered expectation: v.mock_view::display
+ v once().with( 1 )
+ v once().with( 2 )
+ . once().with( 3 )
+
+The first line tells that a set expectation has not been fulfilled. The file and line number give the location where the corresponding expectation has been configured.
+
+The following lines once again list the set expectations.
+It means the two first calls correctly passed the expected values to the mock object, but then no third call happened.
+
+[endsect]
+
+[endsect]

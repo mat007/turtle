@@ -1,0 +1,242 @@
+[section Customisation]
+
+This section explains how to customise different aspects of the library.
+
+[section Logging]
+
+The library will perform logging lazily, e.g. only when actually needed, which is usually because an error happens but it depends on the [link turtle.customisation.test_framework_integration test framework integration] used.
+Parameters and [link turtle.customisation.constraints constraints] are serialized to report meaningful diagnostics of the failures.
+
+By default the library attempts to serialize to an std::ostream and if this is not possible will use a '?'.
+
+[note Any incomplete type is gracefully handled and yields a '?'.]
+
+If for some reason the serialization to an std::ostream shouldn't be used, it can be overridden by a serialization operator to a mock::stream, for instance to log user_type declared in user_namespace :
+
+ namespace user_namespace
+ {
+     inline mock::stream& operator<<( mock::stream& s, const user_type& t )
+     {
+         return s << ...
+     }
+ }
+
+The operator is found using [@http://en.wikipedia.org/wiki/Argument-dependent_name_lookup argument-dependent name lookup] which means it needs to be in the namespace of either one of its arguments.
+The easiest is to define it in the same namespace as the type being serialized. If this is not possible (for instance when serializing a type in namespace std because the C++ standard explicitly forbids adding definitions into the std namespace) a serialization operator to mock::stream can be in the mock namespace instead.
+
+The serialization operators detection doesn't attempt to do conversions when looking for a match (because this can sometimes yield an ambiguous resolution error).
+As conversions can prove convenient, for instance when dealing with a base class which is derived to a lot of sub-classes, they can be activated by defining MOCK_USE_CONVERSIONS prior to including the library :
+
+ #define MOCK_USE_CONVERSIONS
+ #include <turtle/mock.hpp>
+
+Be aware though that in this case the compiler can produce a compilation error when attempting to detect whether serialization operators exist or not.
+It is always possible however to define a serialization operator to a mock::stream in order to bypass the detection.
+
+In all custom operator implementations it is probably a good thing to rely on the same mechanism the library uses in order to log everything, for instance here is how std::pair is handled :
+
+ namespace mock
+ {
+     template< typename T1, typename T2 >
+     mock::stream& operator<<( mock::stream& s, const std::pair< T1, T2 >& p )
+     {
+         return s << '(' << mock::format( p.first ) << ',' << mock::format( p.second ) << ')';
+     }
+ }
+
+The interesting part is the call to mock::format which enables the whole can-be-serialized-or-? logics.
+
+[endsect]
+
+[section Constraints]
+
+A constraint provides a means to validate a parameter received in a call to a mock object.
+
+The library comes with a set of pre-defined [link turtle.reference.expectation.constraints]] matching the most widely used cases, however it is quite common to need to perform a custom validation.
+
+Creating a constraint can be as simple as writing a function, for instance :
+
+ bool custom_constraint( int actual )
+ {
+    return actual == 42;
+ }
+
+Any functor will actually do as long as its signature matches the requirement : take a type convertible from the actual type and return a boolean.
+
+Using the custom constraint is also pretty trivial, for instance :
+
+ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two )
+ {
+    mock_view v;
+    calculator c( v );
+    MOCK_EXPECT( v.display ).with( &custom_constraint );
+    c.add( 41, 1 );
+ }
+
+Simple enough, however this constraint isn't serializable and thus yields a rather uninformative '?' in the logs.
+
+Just like a parameter, a constraint can be displayed in a readable form using its serialization operator, see [link turtle.customisation.logging logging].
+
+Thus for a widely used constraint (for instance one shipped with the code of a library) it is likely better to define it like this :
+
+ struct custom_constraint
+ {
+     friend bool operator==( int actual, const custom_constraint& )
+     {
+         return actual == 42;
+     }
+ 
+     friend std::ostream& operator<<( std::ostream& s, const custom_constraint& )
+     {
+         return s << "_ == 42";
+     }
+ };
+
+And of course the constraint is to be used in a slightly different way :
+
+ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two )
+ {
+    mock_view v;
+    calculator c( v );
+    MOCK_EXPECT( v.display ).with( custom_constraint() );
+    c.add( 41, 1 );
+ }
+
+Actually real world use cases sometimes need several other features as well :
+
+* a state
+* (template) parameters
+* an operator with one or several (template) signatures
+
+Therefore a more realistic and complete example would be :
+
+ template< typename Expected >
+ struct near_constraint
+ {
+     near_constraint( Expected expected, Expected threshold )
+       : expected_( expected )
+       , threshold_( threshold )
+     {}
+ 
+     template< typename Actual >
+     bool operator()( Actual actual ) const
+     {
+         return std::abs( actual - boost::unwrap_ref( expected_ ) )
+             < boost::unwrap_ref( threshold_ );
+     }
+ 
+     friend std::ostream& operator<<( std::ostream& s, const near_constraint& c )
+     {
+         return s << "near( " << mock::format( c.expected_ )
+             << ", " << mock::format( c.threshold_ ) << " )";
+     }
+ 
+     Expected expected_, threshold_;
+ };
+ 
+ template< typename Expected >
+ mock::constraint< near_constraint< Expected > > near( Expected expected, Expected threshold )
+ {
+     return near_constraint< Expected >( expected, threshold );
+ }
+
+And it would be used like this :
+
+ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
+ {
+    mock_view v;
+    calculator c( v );
+    MOCK_EXPECT( v.display ).with( near( 42, 1 ) );
+    c.add( 41, 1 );
+ }
+
+The purpose of the 'near' template function is to :
+
+* remove the burden of specifying the template parameter when instantiating near_constraint
+* wrap the constraint in a mock::constraint so that it plays nicely with !, && and ||.
+
+The use of boost::unwrap_ref provides support for passing arguments as references with boost::ref and boost::cref and delaying their initialization, for instance :
+
+ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
+ {
+    mock_view v;
+    calculator c( v );
+    int expected, threshold;
+    MOCK_EXPECT( v.display ).with( near( boost::cref( expected ), boost::cref( threshold ) ) );
+    expected = 42;
+    threshold = 1;
+    c.add( 41, 1 );
+ }
+
+See [link turtle.reference.expectation.constraints constraints] for an explanation of how the library detects whether an argument is a functor or a value.
+
+For more information about the serialization operator and the use of mock::format, refer to [link turtle.customisation.logging loggin].
+
+[endsect]
+
+[section Number of arguments]
+
+The maximum number of arguments a mocked method can have is defined by MOCK_MAX_ARGS.
+By default this value is set to 9, but if needed it can be changed before including the library :
+
+ #define MOCK_MAX_ARGS 20
+ #include <turtle/mock.hpp>
+
+This means methods with up to 20 arguments will then be accepted.
+
+The mock object library uses several boost libraries and will adjust some of their constants if they haven't already been defined :
+
+* Boost.Function with BOOST_FUNCTION_MAX_ARGS required at MOCK_MAX_ARGS or higher
+* Boost.FunctionTypes with BOOST_FT_MAX_ARITY required at MOCK_MAX_ARGS + 1 or higher
+* Boost.Phoenix (when increasing MOCK_MAX_ARGS over 9 otherwise Boost.Bind is used) with PHOENIX_LIMIT required at MOCK_MAX_ARGS or higher
+
+A compilation error will happen if one of those constants is already defined too low.
+
+[endsect]
+
+[section Test framework integration]
+
+By default the library expects to be used in conjunction with Boost.Test e.g. :
+
+* logs using the logger from Boost.Test
+* throws mock::exception deriving from boost::execution_aborted via boost::enable_current_exception
+* adds Boost.Test checkpoints whenever possible
+* verifies and resets all remaining (static or leaked objects) with a global fixture
+
+However integrating with any given unit test framework can be done by defining a custom error policy implementing the following concept :
+
+ template< typename Result >
+ struct custom_policy
+ {
+    static Result abort()
+    {
+        // ...
+    }
+    template< typename Context >
+    static void fail( const char* message, const Context&, const char* file = "unknown location", int line = 0 )
+    {
+        // ...
+    }
+    template< typename Context >
+    static void call( const Context& context, const char* file, int line )
+    {
+        // ...
+    }
+    template< typename Context >
+    static void pass( const char* file, int line )
+    {
+        // ...
+    }
+ };
+
+The context, which stands for "something serializable to an std::ostream", is actually built only if an attempt to serialize it is made, thus enabling lazy serialization of all elements (e.g. constraints and parameters).
+File and line show were the expectation has been configured.
+
+The policy can then be activated by defining MOCK_ERROR_POLICY prior to including the library :
+
+ #define MOCK_ERROR_POLICY custom_policy
+ #include <turtle/mock.hpp>
+
+[endsect]
+
+[endsect]
