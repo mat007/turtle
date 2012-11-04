@@ -9,7 +9,6 @@
 #ifndef MOCK_IS_FUNCTOR_HPP_INCLUDED
 #define MOCK_IS_FUNCTOR_HPP_INCLUDED
 
-#include "yes_no_type.hpp"
 #include <boost/function_types/is_callable_builtin.hpp>
 #include <boost/mpl/has_xxx.hpp>
 #include <boost/mpl/bool.hpp>

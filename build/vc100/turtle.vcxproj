@@ -47,7 +47,6 @@
     <ClInclude Include="..\..\turtle\detail\signature.hpp" />
     <ClInclude Include="..\..\turtle\detail\type_name.hpp" />
     <ClInclude Include="..\..\turtle\detail\verifiable.hpp" />
-    <ClInclude Include="..\..\turtle\detail\yes_no_type.hpp" />
     <ClInclude Include="..\..\turtle\error.hpp" />
     <ClInclude Include="..\..\turtle\format.hpp" />
     <ClInclude Include="..\..\turtle\log.hpp" />
