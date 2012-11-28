@@ -38,3 +38,12 @@ boostbook standalone
     <xsl:param>toc.section.depth=4
     <xsl:param>nav.layout=horizontal
 ;
+
+project example
+  : requirements
+   <include>../../../../..
+;
+
+compile example/motivation.cpp ;
+compile example/getting_started.cpp ;
+compile example/customisation.cpp ;

@@ -1,79 +1,33 @@
 [section Motivation]
+[import example/motivation.cpp]
+[import example/calculator.hpp]
+[import example/mock_view.hpp]
+[import example/view.hpp]
 
 Consider a (very) simple calculator class :
 
- class calculator
- {
- public:
-     int add( int a, int b );
- };
+[simple_calculator]
 
 Obviously writing unit tests for such a class is trivial, one of them could be :
 
- BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
- {
-     calculator c;
-     BOOST_CHECK_EQUAL( 0, c.add( 0, 0 ) );
- }
+[simple_zero_plus_zero_is_zero]
 
 What now if the calculator class looks more like this :
 
- class view
- {
- public:
-     virtual void display( int result ) = 0;
- };
- 
- class calculator
- {
- public:
-     calculator( view& v );
- 
-     void add( int a, int b ); // the result will be sent to the view 'v'
- };
+[view]
+[calculator]
 
 Writing unit tests becomes a bit more tedious and requires some boiler-plate code, for instance :
 
- class my_view : public view
- {
- public:
-     my_view()
-         : called( false )
-     {}
-     virtual void display( int result )
-     {
-         called = true;
-         value = result;
-     }
-     bool called;
-     int value;
- };
- 
- BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
- {
-     my_view v;
-     calculator c( v );
-     c.add( 0, 0 );
-     BOOST_REQUIRE( v.called );
-     BOOST_CHECK_EQUAL( 0, v.value );
- }
+[my_view]
+[zero_plus_zero_is_zero_without_mock_object]
 
 Mock objects main purpose is to alleviate the user from the burden of writing all this boiler-plate code.
 
 Here is how the last test can be rewritten using a mock object :
 
- MOCK_BASE_CLASS( mock_view, view ) // declare a 'mock_view' class implementing 'view'
- {
-     MOCK_METHOD( display, 1 )      // implement the 'display' method from 'view' (taking 1 argument)
- };
- 
- BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
- {
-     mock_view v;
-     calculator c( v );
-     MOCK_EXPECT( v.display ).once().with( 0 ); // expect the 'display' method to be called once (and only once) with a parameter value equal to 0
-     c.add( 0, 0 );
- }
+[mock_view]
+[zero_plus_zero_is_zero_with_mock_object]
 
 and all the checks are automatically handled by the library.
 
