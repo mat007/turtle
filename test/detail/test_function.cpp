@@ -718,3 +718,12 @@ BOOST_FIXTURE_TEST_CASE( throwing_an_exception_disables_the_automatic_verificati
     catch( std::exception& )
     {}
 }
+
+BOOST_FIXTURE_TEST_CASE( adding_file_and_line_number_information, error_fixture )
+{
+    mock::detail::function< void() > f;
+    f.expect( "file name", 42 ).once();
+    CHECK_ERROR( f.verify(), "verification failed", 0, "?\n. once()" );
+    BOOST_CHECK_EQUAL( "file name", data().last_file );
+    BOOST_CHECK_EQUAL( 42, data().last_line );
+}

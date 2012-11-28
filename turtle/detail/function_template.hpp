@@ -61,7 +61,7 @@ namespace detail
         expectation_type& expect( const char* file, int line )
         {
             error_type::pass( file, line );
-            return impl_->expect();
+            return impl_->expect( file, line );
         }
         expectation_type& expect()
         {
