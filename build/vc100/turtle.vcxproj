@@ -48,6 +48,7 @@
     <ClInclude Include="..\..\turtle\detail\type_name.hpp" />
     <ClInclude Include="..\..\turtle\detail\verifiable.hpp" />
     <ClInclude Include="..\..\turtle\error.hpp" />
+    <ClInclude Include="..\..\turtle\exception.hpp" />
     <ClInclude Include="..\..\turtle\format.hpp" />
     <ClInclude Include="..\..\turtle\log.hpp" />
     <ClInclude Include="..\..\turtle\matcher.hpp" />
