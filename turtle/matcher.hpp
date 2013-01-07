@@ -66,7 +66,7 @@ namespace mock
     {
     public:
         explicit matcher( const constraint< Constraint >& c )
-            : c_( c.f_ )
+            : c_( c.c_ )
         {}
         virtual bool operator()( Actual actual )
         {
@@ -90,19 +90,19 @@ namespace mock
     {
     public:
         explicit matcher( const Functor& f )
-            : f_( f )
+            : c_( f )
         {}
         virtual bool operator()( Actual actual )
         {
-            return f_( actual );
+            return c_( actual );
         }
     private:
         virtual void serialize( std::ostream& s ) const
         {
-            s << mock::format( f_ );
+            s << mock::format( c_ );
         }
     private:
-        Functor f_;
+        Functor c_;
     };
 } // mock
 

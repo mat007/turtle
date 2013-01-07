@@ -30,8 +30,7 @@ namespace detail
         virtual bool invoked() const = 0;
         virtual bool exhausted() const = 0;
 
-        friend inline std::ostream& operator<<(
-            std::ostream& s, const invocation& i )
+        friend std::ostream& operator<<( std::ostream& s, const invocation& i )
         {
             return i.serialize( s );
         }

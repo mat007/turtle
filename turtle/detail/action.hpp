@@ -50,7 +50,7 @@ namespace detail
 
         void calls( const functor_type& f )
         {
-            if( !f )
+            if( ! f )
                 throw std::invalid_argument( "null functor" );
             f_ = f;
         }
@@ -92,7 +92,7 @@ namespace detail
 
         void calls( const functor_type& f )
         {
-            if( !f )
+            if( ! f )
                 throw std::invalid_argument( "null functor" );
             f_ = f;
         }
@@ -127,7 +127,7 @@ namespace detail
 
         void calls( const functor_type& f )
         {
-            if( !f )
+            if( ! f )
                 throw std::invalid_argument( "null functor" );
             f_ = f;
         }
@@ -173,7 +173,7 @@ namespace detail
 
         void calls( const functor_type& f )
         {
-            if( !f )
+            if( ! f )
                 throw std::invalid_argument( "null functor" );
             f_ = f;
         }

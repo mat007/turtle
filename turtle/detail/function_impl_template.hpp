@@ -70,7 +70,7 @@ namespace detail
         {
             for( expectations_cit it = expectations_.begin();
                 it != expectations_.end(); ++it )
-                if( !it->verify() )
+                if( ! it->verify() )
                 {
                     valid_ = false;
                     error_type::fail( "verification failed",
@@ -133,9 +133,9 @@ namespace detail
         }
 
         friend std::ostream& operator<<(
-            std::ostream& s, const function_impl& e )
+            std::ostream& s, const function_impl& impl )
         {
-            return s << lazy_context( &e ) << lazy_expectations( &e );
+            return s << lazy_context( &impl ) << lazy_expectations( &impl );
         }
 
         struct lazy_context

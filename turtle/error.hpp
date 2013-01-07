@@ -52,8 +52,7 @@ namespace mock
         }
 
         template< typename Context >
-        static void call( const Context& context,
-            const char* file, int line )
+        static void call( const Context& context, const char* file, int line )
         {
             boost::unit_test::framework::assertion_result( true );
             boost::unit_test::unit_test_log

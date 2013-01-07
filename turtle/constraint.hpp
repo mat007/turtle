@@ -18,9 +18,9 @@ namespace mock
     struct constraint
     {
         constraint( const Constraint& c )
-            : f_( c )
+            : c_( c )
         {}
-        Constraint f_;
+        Constraint c_;
     };
 
 namespace detail
@@ -75,20 +75,20 @@ namespace detail
     class not_
     {
     public:
-        explicit not_( const Constraint& f )
-            : f_( f )
+        explicit not_( const Constraint& c )
+            : c_( c )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return ! f_( actual );
+            return ! c_( actual );
         }
         friend std::ostream& operator<<( std::ostream& s, const not_& n )
         {
-            return s << "! " << mock::format( n.f_ );
+            return s << "! " << mock::format( n.c_ );
         }
     private:
-        Constraint f_;
+        Constraint c_;
     };
 }
 
@@ -97,7 +97,7 @@ namespace detail
         operator||( const constraint< Constraint1 >& lhs,
                     const constraint< Constraint2 >& rhs )
     {
-        return detail::or_< Constraint1, Constraint2 >( lhs.f_, rhs.f_ );
+        return detail::or_< Constraint1, Constraint2 >( lhs.c_, rhs.c_ );
     }
 
     template< typename Constraint1, typename Constraint2 >
@@ -105,14 +105,14 @@ namespace detail
         operator&&( const constraint< Constraint1 >& lhs,
                     const constraint< Constraint2 >& rhs )
     {
-        return detail::and_< Constraint1, Constraint2 >( lhs.f_, rhs.f_ );
+        return detail::and_< Constraint1, Constraint2 >( lhs.c_, rhs.c_ );
     }
 
     template< typename Constraint >
     const constraint< detail::not_< Constraint > >
         operator!( const constraint< Constraint >& c )
     {
-        return detail::not_< Constraint >( c.f_ );
+        return detail::not_< Constraint >( c.c_ );
     }
 } // mock
 
@@ -137,7 +137,7 @@ namespace detail
     { \
         constraint() \
         {} \
-        detail::N f_; \
+        detail::N c_; \
     }; \
     const constraint< detail::N > N;
 
