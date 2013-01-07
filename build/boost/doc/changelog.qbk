@@ -10,6 +10,7 @@ Not yet released
 * Changed C-string constraint short-cut behaviour to compare strings instead of pointers
 * Fixed potential conflict with macro max
 * Fixed missing file name and line number in logs
+* Moved mock::exception in its own header so that it can be included without the error policy
 
 [endsect]
 
