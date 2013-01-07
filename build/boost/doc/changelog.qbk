@@ -21,8 +21,8 @@ Released 25 May 2012
 * Changed MOCK_EXPECT syntax to MOCK_EXPECT( object.tag ) and MOCK_EXPECT( functor )
 * Changed MOCK_RESET syntax to MOCK_RESET( object.tag ) and MOCK_RESET( functor )
 * Changed MOCK_VERIFY syntax to MOCK_VERIFY( object.tag ) and MOCK_VERIFY( functor )
-* Replaced object.verify() with mock::verify( instance )
-* Replaced object.reset() with mock::reset( instance )
+* Replaced object.verify() with mock::verify( object )
+* Replaced object.reset() with mock::reset( object )
 * Added MOCK_FUNCTION, MOCK_STATIC_METHOD and MOCK_STATIC_METHOD_TPL
 * Removed all std::string to spare unnecessary memory allocations
 * Wrapped constraints parameters with boost::addressof where needed in order to support types with overloaded operator &
