@@ -47,3 +47,6 @@ project example
 compile example/motivation.cpp ;
 compile example/getting_started.cpp ;
 compile example/customisation.cpp ;
+compile example/async_call.cpp ;
+compile example/retrieve_cref.cpp ;
+compile example/invoke_functor.cpp ;
