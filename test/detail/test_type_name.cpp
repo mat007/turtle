@@ -8,6 +8,7 @@
 
 #include <turtle/detail/type_name.hpp>
 #include <boost/test/auto_unit_test.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/lexical_cast.hpp>
 
 namespace
@@ -15,7 +16,12 @@ namespace
     template< typename T >
     std::string to_string( const T& )
     {
-        return boost::lexical_cast< std::string >( mock::detail::type_name( BOOST_SP_TYPEID( T ) ) );
+        std::string result = boost::lexical_cast< std::string >( mock::detail::type_name( BOOST_SP_TYPEID( T ) ) );
+        boost::algorithm::replace_all( result, "& ", "&" );
+        boost::algorithm::replace_all( result, " &", "&" );
+        boost::algorithm::replace_all( result, "* ", "*" );
+        boost::algorithm::replace_all( result, " *", "*" );
+        return result;
     }
 }
 
@@ -127,12 +133,24 @@ BOOST_AUTO_TEST_CASE( name_of_template_type_in_anonymous_namespace_is_extracted 
 {
     BOOST_CHECK_EQUAL( "my_template_type<int>", to_string( my_template_type< int >() ) );
     BOOST_CHECK_EQUAL( "my_template_type<exception>", to_string( my_template_type< std::exception >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<int const&>", to_string( my_template_type< int const& >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<exception const&>", to_string( my_template_type< std::exception const& >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<int const*>", to_string( my_template_type< int const* >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<exception const*>", to_string( my_template_type< std::exception const* >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<int const*&>", to_string( my_template_type< int const*& >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<exception const*&>", to_string( my_template_type< std::exception const*& >() ) );
 }
 
 BOOST_AUTO_TEST_CASE( name_of_inner_type_from_template_type_in_anonymous_namespace_is_extracted )
 {
     BOOST_CHECK_EQUAL( "inner", to_string( my_template_type< int >::inner() ) );
     BOOST_CHECK_EQUAL( "inner", to_string( my_template_type< std::exception >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( my_template_type< int const& >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( my_template_type< std::exception const& >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( my_template_type< int const* >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( my_template_type< std::exception const* >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( my_template_type< int const*& >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( my_template_type< std::exception const*& >::inner() ) );
 }
 
 namespace nm
@@ -148,12 +166,24 @@ BOOST_AUTO_TEST_CASE( name_of_template_type_in_named_namespace_is_extracted )
 {
     BOOST_CHECK_EQUAL( "my_template_type<int>", to_string( nm::my_template_type< int >() ) );
     BOOST_CHECK_EQUAL( "my_template_type<exception>", to_string( nm::my_template_type< std::exception >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<int const&>", to_string( nm::my_template_type< int const& >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<exception const&>", to_string( nm::my_template_type< std::exception const& >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<int const*>", to_string( nm::my_template_type< int const* >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<exception const*>", to_string( nm::my_template_type< std::exception const* >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<int const*&>", to_string( nm::my_template_type< int const*& >() ) );
+    BOOST_CHECK_EQUAL( "my_template_type<exception const*&>", to_string( nm::my_template_type< std::exception const*& >() ) );
 }
 
 BOOST_AUTO_TEST_CASE( name_of_inner_type_from_template_type_in_named_namespace_is_extracted )
 {
     BOOST_CHECK_EQUAL( "inner", to_string( nm::my_template_type< int >::inner() ) );
     BOOST_CHECK_EQUAL( "inner", to_string( nm::my_template_type< std::exception >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( nm::my_template_type< int const& >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( nm::my_template_type< std::exception const& >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( nm::my_template_type< int const* >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( nm::my_template_type< std::exception const* >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( nm::my_template_type< int const*& >::inner() ) );
+    BOOST_CHECK_EQUAL( "inner", to_string( nm::my_template_type< std::exception const*& >::inner() ) );
 }
 
 namespace nm2
@@ -166,8 +196,22 @@ namespace nm2
     };
 }
 
-BOOST_AUTO_TEST_CASE( name_of_inner_type_from_template_type_in_named_namespace_is_extracted2 )
+BOOST_AUTO_TEST_CASE( name_of_template_inner_type_from_template_type_in_named_namespace_is_extracted )
 {
     BOOST_CHECK_EQUAL( "inner<int>", to_string( nm2::my_template_type< int >::inner< int >() ) );
     BOOST_CHECK_EQUAL( "inner<int>", to_string( nm2::my_template_type< std::exception >::inner< int >() ) );
+
+    BOOST_CHECK_EQUAL( "inner<int>", to_string( nm2::my_template_type< int const& >::inner< int >() ) );
+    BOOST_CHECK_EQUAL( "inner<int>", to_string( nm2::my_template_type< std::exception const& >::inner< int >() ) );
+    BOOST_CHECK_EQUAL( "inner<int>", to_string( nm2::my_template_type< int const* >::inner< int >() ) );
+    BOOST_CHECK_EQUAL( "inner<int>", to_string( nm2::my_template_type< std::exception const* >::inner< int >() ) );
+    BOOST_CHECK_EQUAL( "inner<int>", to_string( nm2::my_template_type< int const*& >::inner< int >() ) );
+    BOOST_CHECK_EQUAL( "inner<int>", to_string( nm2::my_template_type< std::exception const*& >::inner< int >() ) );
+
+    BOOST_CHECK_EQUAL( "inner<int const&>", to_string( nm2::my_template_type< int >::inner< int const& >() ) );
+    BOOST_CHECK_EQUAL( "inner<int const&>", to_string( nm2::my_template_type< std::exception >::inner< int const& >() ) );
+    BOOST_CHECK_EQUAL( "inner<int const*>", to_string( nm2::my_template_type< int >::inner< int const* >() ) );
+    BOOST_CHECK_EQUAL( "inner<int const*>", to_string( nm2::my_template_type< std::exception >::inner< int const* >() ) );
+    BOOST_CHECK_EQUAL( "inner<int const*&>", to_string( nm2::my_template_type< int >::inner< int const*& >() ) );
+    BOOST_CHECK_EQUAL( "inner<int const*&>", to_string( nm2::my_template_type< std::exception >::inner< int const*& >() ) );
 }
