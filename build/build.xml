@@ -129,6 +129,7 @@
     </copy>
     <copy todir="${boost.dir}/libs/mock/doc/html">
       <fileset dir="${env.BOOST_ROOT}/doc/src" includes="**/*.css,**/**.png"/>
+      <fileset dir="boost/doc" includes="images/*.png"/>
     </copy>
     <copy todir="${boost.dir}/libs/mock" overwrite="true">
       <fileset dir="${tests.dir}" includes="test/**"/>
