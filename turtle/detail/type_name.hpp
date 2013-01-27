@@ -10,7 +10,10 @@
 #define MOCK_TYPE_NAME_HPP_INCLUDED
 
 #include <boost/test/utils/basic_cstring/io.hpp>
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/erase.hpp>
 #include <boost/detail/sp_typeinfo.hpp>
+#include <boost/shared_ptr.hpp>
 #include <stdexcept>
 #include <typeinfo>
 #include <ostream>
@@ -35,77 +38,67 @@ namespace detail
             return s;
         }
     private:
-        typedef boost::unit_test::const_string const_string;
-        typedef const_string::size_type size_type;
-
         void serialize( std::ostream& s,
             const boost::detail::sp_typeinfo& info ) const
         {
             const char* name = info.name();
 #ifdef __GNUC__
             int status = 0;
-            char* result = abi::__cxa_demangle( name, 0, 0, &status );
-            struct guard
-            {
-                explicit guard( char* p )
-                    : p_( p )
-                {}
-                ~guard()
-                {
-                    std::free( p_ );
-                }
-            private:
-                char* p_;
-            } g( result );
-            if( ! status && result )
-                serialize( s, result );
+            boost::shared_ptr< char > demangled(
+                abi::__cxa_demangle( name, 0, 0, &status ),
+                &std::free );
+            if( ! status && demangled )
+                serialize( s, demangled.get() );
             else
 #endif
                 serialize( s, name );
         }
-        void serialize( std::ostream& s, const_string name ) const
+
+        typedef std::string::size_type size_type;
+
+        void serialize( std::ostream& s, const std::string& name ) const
         {
             const size_type tpl_end = name.rfind( ">" );
             const size_type nm = name.rfind( "::" );
-            if( tpl_end == const_string::npos || tpl_end <= nm )
+            if( tpl_end == std::string::npos || tpl_end < nm )
             {
-                s << remove_prefix( remove_namespace( name ) );
+                s << clean( name );
                 return;
             }
             const size_type tpl_start = find_template_start( name );
-            s << remove_namespace( name.substr( 0, tpl_start ) ) << '<';
-            serialize( s, name.substr( tpl_start + 1, tpl_end ) );
+            s << strip_namespace( name.substr( 0, tpl_start ) ) << '<';
+            serialize( s,
+                name.substr( tpl_start + 1, tpl_end - tpl_start - 1 ) );
             s << '>';
         }
-        const_string remove_prefix( const_string name ) const
+        std::string clean( std::string name ) const
         {
-            name = remove_prefix( name, "class " );
-            name = remove_prefix( name, "struct " );
+            name = strip_namespace( name );
+            boost::algorithm::erase_all( name, "class " );
+            boost::algorithm::erase_all( name, "struct " );
+            boost::algorithm::erase_all( name, "__ptr64" );
+            boost::algorithm::replace_all( name, " &", "&" );
+            boost::algorithm::replace_all( name, "& ", "&" );
+            boost::algorithm::replace_all( name, " *", "*" );
+            boost::algorithm::replace_all( name, "* ", "*" );
             return name;
         }
-        const_string remove_prefix( const_string name,
-            const_string prefix ) const
-        {
-            if( name.substr( 0, prefix.size() ) == prefix )
-                return name.substr( prefix.size() );
-            return name;
-        }
-        size_type find_template_start( const_string name ) const
+        size_type find_template_start( const std::string& name ) const
         {
             size_type count = 0;
-            for( size_type i = name.size(); i > 0; --i )
+            for( size_type i = name.size() - 1; i > 0; --i )
             {
                 if( name[ i ] == '>' )
                     ++count;
                 if( name[ i ] == '<' && --count == 0 )
                     return i;
             }
-            return static_cast< size_type >( const_string::npos );
+            return std::string::npos;
         }
-        const_string remove_namespace( const_string name ) const
+        std::string strip_namespace( const std::string& name ) const
         {
-            size_type p = name.rfind( "::" );
-            if( p == const_string::npos )
+            const size_type p = name.rfind( "::" );
+            if( p == std::string::npos )
                 return name;
             return name.substr( p + 2 );
         }

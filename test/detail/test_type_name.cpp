@@ -8,7 +8,6 @@
 
 #include <turtle/detail/type_name.hpp>
 #include <boost/test/auto_unit_test.hpp>
-#include <boost/algorithm/string/replace.hpp>
 #include <boost/lexical_cast.hpp>
 
 namespace
@@ -16,12 +15,7 @@ namespace
     template< typename T >
     std::string to_string( const T& )
     {
-        std::string result = boost::lexical_cast< std::string >( mock::detail::type_name( BOOST_SP_TYPEID( T ) ) );
-        boost::algorithm::replace_all( result, "& ", "&" );
-        boost::algorithm::replace_all( result, " &", "&" );
-        boost::algorithm::replace_all( result, "* ", "*" );
-        boost::algorithm::replace_all( result, " *", "*" );
-        return result;
+        return boost::lexical_cast< std::string >( mock::detail::type_name( BOOST_SP_TYPEID( T ) ) );
     }
 }
 
