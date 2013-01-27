@@ -214,7 +214,7 @@ Otherwise another workaround would be to provide a proxy method :
 
 [endsect]
 
-[section warning C4267: 'argument' : conversion from 'size_t' to 'unsigned int', possible loss of data]
+[section Warning C4267: 'argument' : conversion from 'size_t' to 'unsigned int', possible loss of data]
 
 Compiling under Microsoft Visual Studio with the /Wp64 flag produces this warning at various locations in the library code.
 
