@@ -46,7 +46,7 @@ The interesting part is the call to mock::format which enables the whole can-be-
 
 A constraint provides a means to validate a parameter received in a call to a mock object.
 
-The library comes with a set of pre-defined [link turtle.reference.expectation.constraints]] matching the most widely used cases, however it is quite common to need to perform a custom validation.
+The library comes with a set of pre-defined [link turtle.reference.expectation.constraints constraints] matching the most widely used cases, however it is quite common to need to perform a custom validation.
 
 Creating a constraint can be as simple as writing a function, for instance :
 
