@@ -1,7 +1,7 @@
 [section Changelog]
 
-[section trunk]
-Not yet released
+[section 1.2.1]
+Released 24 January 2013
 
 * Fixed boost::lambda_functor forward declaration
 * Added test for whether BOOST_RESULT_OF_NUM_ARGS is large enough
