@@ -209,3 +209,17 @@ BOOST_AUTO_TEST_CASE( name_of_template_inner_type_from_template_type_in_named_na
     BOOST_CHECK_EQUAL( "inner<int const*&>", to_string( nm2::my_template_type< int >::inner< int const*& >() ) );
     BOOST_CHECK_EQUAL( "inner<int const*&>", to_string( nm2::my_template_type< std::exception >::inner< int const*& >() ) );
 }
+
+namespace
+{
+    template< typename T1, typename T2, typename T3 >
+    struct my_tpl
+    {};
+}
+
+BOOST_AUTO_TEST_CASE( name_of_nested_template_with_multiple_arguments_is_extracted )
+{
+    BOOST_CHECK_EQUAL( "vector<int, allocator<int>>", to_string( std::vector< int >() ) );
+    BOOST_CHECK_EQUAL( "vector<vector<int, allocator<int>>, allocator<vector<int, allocator<int>>>>", to_string( std::vector< std::vector< int > >() ) );
+    BOOST_CHECK_EQUAL( "my_tpl<my_tpl<int, int, int>, my_tpl<int, int, int>, my_tpl<int, int, int>>", to_string( my_tpl< my_tpl< int, int, int >, my_tpl< int, int, int >, my_tpl< int, int, int > >() ) );
+}

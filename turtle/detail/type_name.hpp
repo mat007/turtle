@@ -56,24 +56,29 @@ namespace detail
 
         typedef std::string::size_type size_type;
 
-        void serialize( std::ostream& s, const std::string& name ) const
+        void serialize( std::ostream& s, std::string name ) const
         {
-            const size_type tpl_end = name.rfind( ">" );
-            const size_type nm = name.rfind( "::" );
-            if( tpl_end == std::string::npos || tpl_end < nm )
-            {
-                s << clean( name );
+            const size_type nm = rfind( name, ':' ) + 1;
+            const size_type tpl = name.find( '<', nm );
+            s << clean( name.substr( nm, tpl - nm ) );
+            if( tpl == std::string::npos )
                 return;
-            }
-            const size_type tpl_start = find_template_start( name );
-            s << strip_namespace( name.substr( 0, tpl_start ) ) << '<';
-            serialize( s,
-                name.substr( tpl_start + 1, tpl_end - tpl_start - 1 ) );
+            s << '<';
+            list( s, name.substr( tpl + 1, name.rfind( '>' ) - tpl - 1 ) );
             s << '>';
+        }
+        void list( std::ostream& s, const std::string& name ) const
+        {
+            const size_type comma = rfind( name, ',' );
+            if( comma != std::string::npos )
+            {
+                list( s, name.substr( 0, comma ) );
+                s << ", ";
+            }
+            serialize( s, name.substr( comma + 1 ) );
         }
         std::string clean( std::string name ) const
         {
-            name = strip_namespace( name );
             boost::algorithm::erase_all( name, "class " );
             boost::algorithm::erase_all( name, "struct " );
             boost::algorithm::erase_all( name, "__ptr64" );
@@ -83,24 +88,19 @@ namespace detail
             boost::algorithm::replace_all( name, "* ", "*" );
             return name;
         }
-        size_type find_template_start( const std::string& name ) const
+        size_type rfind( const std::string& name, char c ) const
         {
             size_type count = 0;
             for( size_type i = name.size() - 1; i > 0; --i )
             {
                 if( name[ i ] == '>' )
                     ++count;
-                if( name[ i ] == '<' && --count == 0 )
+                else if( name[ i ] == '<' )
+                    --count;
+                if( name[ i ] == c && count == 0 )
                     return i;
             }
             return std::string::npos;
-        }
-        std::string strip_namespace( const std::string& name ) const
-        {
-            const size_type p = name.rfind( "::" );
-            if( p == std::string::npos )
-                return name;
-            return name.substr( p + 2 );
         }
 
         const boost::detail::sp_typeinfo* info_;
