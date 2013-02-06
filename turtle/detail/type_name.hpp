@@ -12,6 +12,7 @@
 #include <boost/test/utils/basic_cstring/io.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/erase.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/detail/sp_typeinfo.hpp>
 #include <boost/shared_ptr.hpp>
 #include <stdexcept>
@@ -79,6 +80,7 @@ namespace detail
         }
         std::string clean( std::string name ) const
         {
+            boost::algorithm::trim( name );
             boost::algorithm::erase_all( name, "class " );
             boost::algorithm::erase_all( name, "struct " );
             boost::algorithm::erase_all( name, "__ptr64" );
