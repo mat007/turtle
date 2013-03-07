@@ -21,7 +21,12 @@
 #include "detail/cleanup.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
+#include <boost/utility/identity_type.hpp>
 #include <boost/mpl/assert.hpp>
+
+#define MOCK_FUNCTION_TYPE(S) \
+    BOOST_DEDUCED_TYPENAME boost::remove_pointer< \
+        BOOST_DEDUCED_TYPENAME BOOST_IDENTITY_TYPE((S)) >::type
 
 #define MOCK_CLASS(T) \
     struct T : mock::object
@@ -31,14 +36,14 @@
 #define MOCK_BASE_CLASS(T, I) \
     struct T : I, mock::object, mock::detail::base< I >
 #define MOCK_FUNCTOR(f, S) \
-    mock::detail::functor< S > f, f##_mock
+    mock::detail::functor< MOCK_FUNCTION_TYPE(S) > f, f##_mock
 
 #else // BOOST_NO_VARIADIC_MACROS
 
 #define MOCK_BASE_CLASS(T, ...) \
     struct T : __VA_ARGS__, mock::object, mock::detail::base< __VA_ARGS__ >
 #define MOCK_FUNCTOR(f, ...) \
-    mock::detail::functor< __VA_ARGS__ > f, f##_mock
+    mock::detail::functor< MOCK_FUNCTION_TYPE((__VA_ARGS__)) > f, f##_mock
 
 #endif // BOOST_NO_VARIADIC_MACROS
 
@@ -48,8 +53,8 @@
     t##_mock( mock::detail::root, "?." )
 
 #define MOCK_METHOD_HELPER(S, t) \
-    mutable mock::detail::function< S > t##_mock_; \
-    mock::detail::function< S >& t##_mock( \
+    mutable mock::detail::function< MOCK_FUNCTION_TYPE(S) > t##_mock_; \
+    mock::detail::function< MOCK_FUNCTION_TYPE(S) >& t##_mock( \
         const mock::detail::context&, \
         boost::unit_test::const_string instance ) const \
     { \
@@ -63,16 +68,19 @@
 #define MOCK_PARAM(z, n, d) \
     BOOST_PP_COMMA_IF(n) d, n >::type p##n
 #define MOCK_PARAMS(n, S, tpn) \
-    BOOST_PP_REPEAT(n, MOCK_PARAM, tpn mock::detail::parameter< S)
+    BOOST_PP_REPEAT(n, MOCK_PARAM, \
+        tpn mock::detail::parameter< MOCK_FUNCTION_TYPE(S))
 #define MOCK_DECL(M, n, S, c, tpn) \
-    tpn boost::function_types::result_type< S >::type M( \
-        MOCK_PARAMS(n, S, tpn) ) c
+    tpn boost::function_types::result_type< \
+        MOCK_FUNCTION_TYPE(S) >::type M( \
+            MOCK_PARAMS(n, S, tpn) ) c
 
 #define MOCK_METHOD_AUX(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
     { \
         BOOST_MPL_ASSERT_RELATION( n, ==, \
-            boost::function_types::function_arity< S >::value ); \
+            boost::function_types::function_arity< \
+                MOCK_FUNCTION_TYPE(S) >::value ); \
         return MOCK_ANONYMOUS_HELPER(t)( \
             BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
@@ -111,11 +119,11 @@
     MOCK_METHOD_HELPER(T(), t)
 
 #define MOCK_FUNCTION_HELPER(S, t, s) \
-    s mock::detail::function< S >& t##_mock( \
+    s mock::detail::function< MOCK_FUNCTION_TYPE(S) >& t##_mock( \
         mock::detail::context& context, \
         boost::unit_test::const_string instance ) \
     { \
-        static mock::detail::function< S > f; \
+        static mock::detail::function< MOCK_FUNCTION_TYPE(S) > f; \
         return f( context, instance ); \
     }
 
@@ -140,7 +148,8 @@
     s MOCK_DECL(F, n, S,,tpn) \
     { \
         BOOST_MPL_ASSERT_RELATION( n, ==, \
-            boost::function_types::function_arity< S >::value ); \
+            boost::function_types::function_arity< \
+                MOCK_FUNCTION_TYPE(S) >::value ); \
         return MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 

@@ -291,6 +291,17 @@ BOOST_AUTO_TEST_CASE( mock_static_function_is_named )
     BOOST_CHECK_EQUAL( "static_function_class::f", to_string( MOCK_HELPER( static_function_class::f ) ) );
 }
 
+namespace
+{
+    MOCK_CLASS( round_parenthesized_signature )
+    {
+        MOCK_METHOD_EXT( m0, 0, (std::map< int, int >()), m0 )
+        MOCK_STATIC_METHOD( m1, 0, (std::map< int, int >()), m1 )
+        MOCK_FUNCTOR( f0, (std::map< int, int >()) );
+    };
+    MOCK_FUNCTION( fun0, 0, (std::map< int, int >()), fun0 )
+}
+
 #ifndef BOOST_NO_VARIADIC_MACROS
 
 namespace
@@ -315,9 +326,6 @@ namespace
         MOCK_STATIC_METHOD( m9, 0, void(), m9 )
     };
 
-    MOCK_BASE_CLASS( comma_base, std::map< int, int > )
-    {};
-
     template< typename T >
     MOCK_CLASS( variadic_tpl )
     {
@@ -331,8 +339,12 @@ namespace
         MOCK_STATIC_METHOD_TPL( m9, 0, T(), m9 )
     };
 
+    MOCK_BASE_CLASS( comma_base, std::map< int, int > )
+    {};
+
     MOCK_FUNCTION( fun1, 0, void() )
     MOCK_FUNCTION( fun2, 0, void(), fun2 )
+    MOCK_FUNCTION( fun3, 0, (std::map< int, int >()) )
 
     MOCK_FUNCTOR( f_variadic, std::map< int, int >() );
 }
