@@ -290,3 +290,46 @@ BOOST_AUTO_TEST_CASE( mock_static_function_is_named )
 {
     BOOST_CHECK_EQUAL( "static_function_class::f", to_string( MOCK_HELPER( static_function_class::f ) ) );
 }
+
+#ifndef BOOST_NO_VARIADIC_MACROS
+
+namespace
+{
+    struct base
+    {
+        virtual ~base()
+        {}
+        virtual void m1() = 0;
+    };
+
+    MOCK_BASE_CLASS( variadic, base )
+    {
+        MOCK_METHOD( m1, 0 )
+        MOCK_METHOD( m2, 0, void() )
+        MOCK_METHOD( m3, 0, void(), m3 )
+        MOCK_CONST_METHOD( m4, 0, void() )
+        MOCK_CONST_METHOD( m5, 0, void(), m5 )
+        MOCK_NON_CONST_METHOD( m6, 0, void() )
+        MOCK_NON_CONST_METHOD( m7, 0, void(), m7 )
+        MOCK_STATIC_METHOD( m8, 0, void() )
+        MOCK_STATIC_METHOD( m9, 0, void(), m9 )
+    };
+
+    template< typename T >
+    MOCK_CLASS( variadic_tpl )
+    {
+        MOCK_METHOD_TPL( m2, 0, T() )
+        MOCK_METHOD_TPL( m3, 0, T(), m3 )
+        MOCK_CONST_METHOD_TPL( m4, 0, T() )
+        MOCK_CONST_METHOD_TPL( m5, 0, T(), m5 )
+        MOCK_NON_CONST_METHOD_TPL( m6, 0, T() )
+        MOCK_NON_CONST_METHOD_TPL( m7, 0, T(), m7 )
+        MOCK_STATIC_METHOD_TPL( m8, 0, T() )
+        MOCK_STATIC_METHOD_TPL( m9, 0, T(), m9 )
+    };
+
+    MOCK_FUNCTION( fun1, 0, void() )
+    MOCK_FUNCTION( fun2, 0, void(), fun2 )
+}
+
+#endif //BOOST_NO_VARIADIC_MACROS

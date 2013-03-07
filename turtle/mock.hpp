@@ -75,8 +75,6 @@
 #define MOCK_NON_CONST_METHOD_EXT(M, n, S, t) \
     MOCK_METHOD_AUX(M, n, S, t,,) \
     MOCK_METHOD_HELPER(S, t)
-#define MOCK_METHOD(M, n) \
-    MOCK_METHOD_EXT(M, n, MOCK_SIGNATURE(M), M)
 
 #define MOCK_METHOD_EXT_TPL(M, n, S, t) \
     MOCK_METHOD_AUX(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
@@ -133,12 +131,70 @@
             boost::function_types::function_arity< S >::value ); \
         return MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
+
+#ifdef BOOST_NO_VARIADIC_MACROS
+
+#define MOCK_METHOD(M, n) \
+    MOCK_METHOD_EXT(M, n, MOCK_SIGNATURE(M), M)
+
 #define MOCK_FUNCTION(F, n, S, t) \
     MOCK_FUNCTION_AUX(F, n, S, t,,)
+
 #define MOCK_STATIC_METHOD(F, n, S, t) \
     MOCK_FUNCTION_AUX(F, n, S, t, static,)
 #define MOCK_STATIC_METHOD_TPL(F, n, S, t) \
     MOCK_FUNCTION_AUX(F, n, S, t, static, BOOST_DEDUCED_TYPENAME)
+
+#else // BOOST_NO_VARIADIC_MACROS
+
+#define MOCK_VARIADIC_ELEM_0(e0, ...) e0
+#define MOCK_VARIADIC_ELEM_1(e0, e1, ...) e1
+#define MOCK_VARIADIC_ELEM_2(e0, e1, e2, ...) e2
+
+#define MOCK_METHOD(M, ... ) \
+    MOCK_METHOD_EXT(M, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__ ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M)), \
+        MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M))
+#define MOCK_CONST_METHOD(M, n, ... ) \
+    MOCK_CONST_METHOD_EXT(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+#define MOCK_NON_CONST_METHOD(M, n, ... ) \
+    MOCK_NON_CONST_METHOD_EXT(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+
+#define MOCK_METHOD_TPL(M, n, ... ) \
+    MOCK_METHOD_EXT_TPL(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+#define MOCK_CONST_METHOD_TPL(M, n, ... ) \
+    MOCK_CONST_METHOD_EXT_TPL(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+#define MOCK_NON_CONST_METHOD_TPL(M, n, ... ) \
+    MOCK_NON_CONST_METHOD_EXT_TPL(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+
+#define MOCK_FUNCTION(F, n, ...) \
+    MOCK_FUNCTION_AUX(F, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F),,)
+
+#define MOCK_STATIC_METHOD(F, n, ...) \
+    MOCK_FUNCTION_AUX(F, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), static,)
+
+#define MOCK_STATIC_METHOD_TPL(F, n, ...) \
+    MOCK_FUNCTION_AUX(F, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
+        static, BOOST_DEDUCED_TYPENAME)
+
+#endif // BOOST_NO_VARIADIC_MACROS
 
 #define MOCK_EXPECT(t) MOCK_HELPER(t).expect( __FILE__, __LINE__ )
 #define MOCK_RESET(t) MOCK_HELPER(t).reset( __FILE__, __LINE__ )
