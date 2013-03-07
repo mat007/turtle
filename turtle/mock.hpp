@@ -23,12 +23,24 @@
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/mpl/assert.hpp>
 
-#define MOCK_BASE_CLASS(T, I) \
-    struct T : I, mock::object, mock::detail::base< I >
 #define MOCK_CLASS(T) \
     struct T : mock::object
+
+#ifdef BOOST_NO_VARIADIC_MACROS
+
+#define MOCK_BASE_CLASS(T, I) \
+    struct T : I, mock::object, mock::detail::base< I >
 #define MOCK_FUNCTOR(f, S) \
     mock::detail::functor< S > f, f##_mock
+
+#else // BOOST_NO_VARIADIC_MACROS
+
+#define MOCK_BASE_CLASS(T, ...) \
+    struct T : __VA_ARGS__, mock::object, mock::detail::base< __VA_ARGS__ >
+#define MOCK_FUNCTOR(f, ...) \
+    mock::detail::functor< __VA_ARGS__ > f, f##_mock
+
+#endif // BOOST_NO_VARIADIC_MACROS
 
 #define MOCK_HELPER(t) \
     t##_mock( mock::detail::root, BOOST_PP_STRINGIZE(t) )

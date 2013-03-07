@@ -315,6 +315,9 @@ namespace
         MOCK_STATIC_METHOD( m9, 0, void(), m9 )
     };
 
+    MOCK_BASE_CLASS( comma_base, std::map< int, int > )
+    {};
+
     template< typename T >
     MOCK_CLASS( variadic_tpl )
     {
@@ -330,6 +333,8 @@ namespace
 
     MOCK_FUNCTION( fun1, 0, void() )
     MOCK_FUNCTION( fun2, 0, void(), fun2 )
+
+    MOCK_FUNCTOR( f_variadic, std::map< int, int >() );
 }
 
 #endif //BOOST_NO_VARIADIC_MACROS
