@@ -48,6 +48,13 @@ Despite being often considered harmful they also provide a number of advantages 
 * they make the interface homogeneous (MOCK_FUNCTOR, MOCK_CLASS)
 * line number and file name can be added for logging purposes (MOCK_EXPECT)
 
+Variadic macros are available for fairly recent compilers and provide a smoother user interface :
+
+* they help seemlessly support arguments containing commas (MOCK_BASE_CLASS)
+* they make some of the parameters optional (MOCK_METHOD)
+
+An alternate more portable set of macros is provided for maximum portability if needed.
+
 [endsect]
 
 [endsect]

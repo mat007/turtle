@@ -139,15 +139,14 @@ Example :
 
 Synopsis :
 
- MOCK_METHOD( name, arity )                                          // only works in the context of a derived MOCK_BASE_CLASS or base_type typedef and generates both const and non-const methods
+ MOCK_METHOD( name, arity )                                          // generates both const and non-const methods, only works in the context of a derived MOCK_BASE_CLASS or base_type typedef
+ MOCK_METHOD( name, arity, signature[, identifier] )                 // generates both const and non-const methods, if 'identifier' is omitted it will default to 'name'
+ MOCK_CONST_METHOD( name, arity, signature[, identifier] )           // generates only the const version of the method, if 'identifier' is omitted it will default to 'name'
+ MOCK_NON_CONST_METHOD( name, arity, signature[, identifier] )       // generates only the non-const version of the method, if 'identifier' is omitted it will default to 'name'
  
- MOCK_METHOD_EXT( name, arity, signature, identifier )               // generates both const and non-const methods
- MOCK_CONST_METHOD_EXT( name, arity, signature, identifier )         // generates only the const version of the method
- MOCK_NON_CONST_METHOD_EXT( name, arity, signature, identifier )     // generates only the non-const version of the method
- 
- MOCK_METHOD_EXT_TPL( name, arity, signature, identifier )           // must be used if the signature uses a template parameter of the class
- MOCK_CONST_METHOD_EXT_TPL( name, arity, signature, identifier )     // must be used if the signature uses a template parameter of the class
- MOCK_NON_CONST_METHOD_EXT_TPL( name, arity, signature, identifier ) // must be used if the signature uses a template parameter of the class
+ MOCK_METHOD_TPL( name, arity, signature[, identifier] )             // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
+ MOCK_CONST_METHOD_TPL( name, arity, signature[, identifier] )       // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
+ MOCK_NON_CONST_METHOD_TPL( name, arity, signature[, identifier] )   // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
 
 [note [link turtle.reference.creation.constructor Constructors], [link turtle.reference.creation.destructor destructors] and [link turtle.reference.creation.conversion_operator conversion operators] require special care]
 
@@ -173,9 +172,11 @@ Example :
  
  MOCK_BASE_CLASS( mock_class, base_class )
  {
-     MOCK_METHOD_EXT( method, 2, void( int, const std::string& ), identifier_1 ) // MOCK_METHOD cannot be used because of overloading
-     MOCK_METHOD_EXT( method, 1, void( float ), identifier_2 )                   // the identifier must differ from the previous one in order to fully disambiguate methods
+     MOCK_METHOD( method, 2, void( int, const std::string& ), identifier_1 ) // MOCK_METHOD cannot be used because of overloading
+     MOCK_METHOD( method, 1, void( float ), identifier_2 )                   // the identifier must differ from the previous one in order to fully disambiguate methods
  };
+
+[note For a compiler not supporting variadic macros MOCK_METHOD_EXT must be used instead]
 
 Example :
 
@@ -200,8 +201,8 @@ Example :
  
  MOCK_BASE_CLASS( mock_class, base_class )
  {
-     MOCK_CONST_METHOD_EXT( method, 1, void( float ), identifier_1 )     // this generates only the const version
-     MOCK_NON_CONST_METHOD_EXT( method, 1, void( float ), identifier_2 ) // this generates only the non-const version, with a different identifier
+     MOCK_CONST_METHOD( method, 1, void( float ), identifier_1 )     // this generates only the const version
+     MOCK_NON_CONST_METHOD( method, 1, void( float ), identifier_2 ) // this generates only the non-const version, with a different identifier
  };
 
 Example :
@@ -222,7 +223,7 @@ Example :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_NON_CONST_METHOD_EXT( operator=, 1, mock_class&( const mock_class& ), assignment ) // operators need a custom identifier
+     MOCK_NON_CONST_METHOD( operator=, 1, mock_class&( const mock_class& ), assignment ) // operators need a custom identifier
  };
 
 Example :
@@ -230,7 +231,14 @@ Example :
  template< typename T >
  MOCK_CLASS( mock_class )
  {
-     MOCK_METHOD_EXT_TPL( method, 1, void( const T& ), method ) // the _TPL variants must be used if the signature includes a template parameter of the class
+     MOCK_METHOD_TPL( method, 1, void( const T& ) ) // the _TPL variants must be used if the signature includes a template parameter of the class
+ };
+
+If 'signature' has a return type which contains a comma, for instance std::map< int, int >(), then 'signature' must be surrounded with round parenthesis, for instance :
+
+ struct mock_class
+ {
+     MOCK_METHOD( method, 0, (std::map< int, int >()) )
  };
 
 [endsect]
@@ -239,14 +247,14 @@ Example :
 
 Synopsis :
 
- MOCK_STATIC_METHOD( name, arity, signature, identifier )
- MOCK_STATIC_METHOD_TPL( name, arity, signature, identifier ) // must be used if the signature uses a template parameter of the class
+ MOCK_STATIC_METHOD( name, arity, signature[, identifier] )     // if 'identifier' is omitted it will default to 'name'
+ MOCK_STATIC_METHOD_TPL( name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
 
 Example :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_STATIC_METHOD( method, 1, float( int ), method )
+     MOCK_STATIC_METHOD( method, 1, float( int ) )
  };
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test]
@@ -334,13 +342,13 @@ Example :
 
 Synopsis :
 
- MOCK_FUNCTION( name, arity, signature, identifier )
+ MOCK_FUNCTION( name, arity, signature[, identifier] ) // if 'identifier' is omitted it will default to 'name'
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock free function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test]
 
 Example :
 
- MOCK_FUNCTION( mock_function, 1, float( int ), mock_function )
+ MOCK_FUNCTION( mock_function, 1, float( int ) )
 
 [endsect]
 
@@ -360,8 +368,8 @@ Example :
 
  MOCK_CLASS( mock_class )
  {
-    MOCK_METHOD_EXT( method, 0, int( int ), method )
-    MOCK_METHOD_EXT( method, 0, void( const std::string&, float ), method2 )
+    MOCK_METHOD( method, 0, int( int ), method )
+    MOCK_METHOD( method, 0, void( const std::string&, float ), method2 )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_configuring_mock_objects )
@@ -389,7 +397,7 @@ Example :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_METHOD_EXT( method, 2, void( int, const std::string& ), method )
+     MOCK_METHOD( method, 2, void( int, const std::string& ) )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_setting_up_invocations_on_a_mock_method )
@@ -409,7 +417,7 @@ Example :
 
 Example :
 
- MOCK_FUNCTION( free_function, 1, float( int ), free_function )
+ MOCK_FUNCTION( free_function, 1, float( int ) )
  
  BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_function )
  {
@@ -420,7 +428,7 @@ Example :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_STATIC_METHOD( method, 1, float( int ), method )
+     MOCK_STATIC_METHOD( method, 1, float( int ) )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_static_method )
@@ -483,7 +491,7 @@ Example :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_METHOD_EXT( method, 2, void( int, const std::string& ), method )
+     MOCK_METHOD( method, 2, void( int, const std::string& ) )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_adding_builtin_constraints )
@@ -571,11 +579,11 @@ Example :
 
  MOCK_CLASS( mock_class_1 )
  {
-     MOCK_METHOD_EXT( method_1, 0, void(), method_1 )
+     MOCK_METHOD( method_1, 0, void() )
  };
  MOCK_CLASS( mock_class_2 )
  {
-     MOCK_METHOD_EXT( method_2, 0, void(), method_2 )
+     MOCK_METHOD( method_2, 0, void() )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_enforcing_expectations_order )
@@ -591,7 +599,7 @@ Example of setting several sequences by chaining calls to ['in] :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_METHOD_EXT( method, 0, void(), method )
+     MOCK_METHOD( method, 0, void() )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_enforcing_several_expectations_orders )
@@ -615,7 +623,7 @@ Example :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_METHOD_EXT( method, 0, int( int ), method )
+     MOCK_METHOD( method, 0, int( int ) )
  };
  
  int function( int i )
@@ -655,7 +663,7 @@ Example :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_METHOD_EXT( method, 0, void(), method )
+     MOCK_METHOD( method, 0, void() )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_verifying_a_mock_method )
@@ -678,7 +686,7 @@ Example :
 
 Example :
 
- MOCK_FUNCTION( f, 1, void( int ), f )
+ MOCK_FUNCTION( f, 1, void( int ) )
  
  BOOST_AUTO_TEST_CASE( demonstrates_verifying_a_mock_function )
  {
@@ -690,7 +698,7 @@ Example :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_STATIC_METHOD( method, 0, void(), method )
+     MOCK_STATIC_METHOD( method, 0, void() )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_verifying_a_static_mock_method )
@@ -714,7 +722,7 @@ Example :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_METHOD_EXT( method, 0, void(), method )
+     MOCK_METHOD( method, 0, void() )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_resetting_a_mock_method )
@@ -736,7 +744,7 @@ Example :
 
 Example :
 
- MOCK_FUNCTION( f, 1, void( int ), f )
+ MOCK_FUNCTION( f, 1, void( int ) )
  
  BOOST_AUTO_TEST_CASE( demonstrates_resetting_a_mock_function )
  {
@@ -748,7 +756,7 @@ Example :
 
  MOCK_CLASS( mock_class )
  {
-     MOCK_STATIC_METHOD( method, 0, void(), method )
+     MOCK_STATIC_METHOD( method, 0, void() )
  };
  
  BOOST_AUTO_TEST_CASE( demonstrates_resetting_a_static_mock_method )

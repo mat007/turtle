@@ -68,15 +68,15 @@ Writing a mock object modeling 'concept' requires to list all the possible versi
 
  MOCK_CLASS( mock_concept )
  {
-    MOCK_METHOD_EXT( method, 1, void( int ), method_int )
-    MOCK_METHOD_EXT( method, 1, void( const char* ), method_string )
+    MOCK_METHOD( method, 1, void( int ), method_int )
+    MOCK_METHOD( method, 1, void( const char* ), method_string )
  };
 
 While still somewhat possible, mocking a template method is indeed a bit cumbersome.
 
 [endsect]
 
-[section A private pure virtual method cannot be mocked using MOCK_METHOD]
+[section Private virtual methods cannot be mocked without spelling out the signature]
 
 The following code does not compile :
 
@@ -91,18 +91,57 @@ The following code does not compile :
      MOCK_METHOD( method, 0 )       // this fails to compile because 'method' is not visible
  };
 
-The workaround would be to use MOCK_METHOD_EXT :
+The workaround would be to add the signature to MOCK_METHOD :
 
  MOCK_BASE_CLASS( mock_base, base )
  {
-     MOCK_METHOD_EXT( method, 0, void(), method )
+     MOCK_METHOD_EXT( method, 0, void() )
  };
 
 [endsect]
 
-[section Commas are not allowed in templates in MOCK_BASE_CLASS]
+[section Compilers without support for variadic macros cannot rely solely on MOCK_METHOD]
 
-The following code does not compile :
+ MOCK_CLASS( my_mock )
+ {
+     MOCK_METHOD( method_1, 0, void() )           // this fails to compile with compilers without variadic macros
+     MOCK_METHOD( method_2, 0, void(), method_2 ) // this too fails with compilers without variadic macros
+ };
+
+The workaround would be to use the MOCK_METHOD_EXT macro :
+
+ MOCK_CLASS( my_mock )
+ {
+     MOCK_METHOD_EXT( method_1, 0, void(), method_1 ) // the last argument must be specified
+     MOCK_METHOD_EXT( method_2, 0, void(), method_2 )
+ };
+
+The last 'identifier' argument must also always be specified for all other macros.
+
+Synopsis :
+ 
+ MOCK_METHOD_EXT( name, arity, signature, identifier )               // generates both const and non-const methods, compatible with compilers not supporting variadic macros
+ MOCK_CONST_METHOD_EXT( name, arity, signature, identifier )         // generates only the const version of the method, for compilers not supporting variadic macros
+ MOCK_NON_CONST_METHOD_EXT( name, arity, signature, identifier )     // generates only the non-const version of the method, for compilers not supporting variadic macros
+ 
+ MOCK_METHOD_EXT_TPL( name, arity, signature, identifier )           // must be used if the signature uses a template parameter of the class, for compilers not supporting variadic macros
+ MOCK_CONST_METHOD_EXT_TPL( name, arity, signature, identifier )     // must be used if the signature uses a template parameter of the class, for compilers not supporting variadic macros
+ MOCK_NON_CONST_METHOD_EXT_TPL( name, arity, signature, identifier ) // must be used if the signature uses a template parameter of the class, for compilers not supporting variadic macros
+ 
+ MOCK_STATIC_METHOD( name, arity, signature, identifier )
+ MOCK_STATIC_METHOD_TPL( name, arity, signature, identifier )        // must be used if the signature uses a template parameter of the class, 'identifier' cannot be omitted, for compilers not supporting variadic macros
+ 
+ MOCK_FUNCTION( name, arity, signature, identifier )                 // 'identifier' cannot be omitted, for compilers not supporting variadic macros
+
+The other parts of the user interface remain unchanged.
+
+Of course those macros are also available for compilers which support variadic macros.
+
+[endsect]
+
+[section Compilers without support for variadic macros fail on commas in MOCK_BASE_CLASS]
+
+For compilers without support for variadic macros the following code does not compile :
 
  template< typename T1, typename T2 >
  struct my_base_class
@@ -140,7 +179,7 @@ Finally another workaround would be to not use the macro at all :
  struct my_mock : my_base_type< T1, T2 >, mock::object
  {};
 
-The extra features provided by MOCK_BASE_CLASS are not usable with template base classes anyway because there is no equivalent of MOCK_METHOD for them.
+Note that [@www.boost.org/libs/utility/identity_type/doc/html/index.html Boost.IdentityType] is of little help here because the type is by essence very often abstract, which doesn't work well for some compilers (e.g. gcc)].
 
 [endsect]
 
@@ -182,8 +221,8 @@ The following code produces this warning with some versions of the Microsoft Vis
  
  MOCK_BASE_CLASS( mock_base, base )
  {
-     MOCK_METHOD( method, 1 )                                // this produces the warning
-     MOCK_METHOD_EXT( method, 1, void( const int ), method ) // this produces the warning too !
+     MOCK_METHOD( method, 1 )                    // this produces the warning
+     MOCK_METHOD( method, 1, void( const int ) ) // forcing the signature will not help, this produces the warning too !
  };
 
 The problem is that the 'const' is actually not part of the function signature and therefore cannot be introspected.
@@ -209,7 +248,7 @@ Otherwise another workaround would be to provide a proxy method :
      {
          method_stub( i );
      }
-     MOCK_METHOD_EXT( method_stub, 1, void( int ), method )
+     MOCK_METHOD( method_stub, 1, void( int ), method )
  };
 
 [endsect]
