@@ -24,12 +24,11 @@
 #include <boost/utility/identity_type.hpp>
 #include <boost/mpl/assert.hpp>
 
-#define MOCK_FUNCTION_TYPE(S, tpn) \
-    BOOST_DEDUCED_TYPENAME boost::remove_pointer< \
-        tpn BOOST_IDENTITY_TYPE((S)) >::type
-
 #define MOCK_CLASS(T) \
     struct T : mock::object
+
+#define MOCK_FUNCTION_TYPE(S, tpn) \
+    tpn boost::remove_pointer< tpn BOOST_IDENTITY_TYPE((S)) >::type
 
 #ifdef BOOST_NO_VARIADIC_MACROS
 
