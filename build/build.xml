@@ -14,7 +14,7 @@
   <presetdef name="build-turtle-test">
     <build-test input="test" depends="boost" mode="all" excludes="bench_*,fail_*">
       <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
-      <compilerarg value="/wd4505" if="is-vc80"/>
+      <compilerarg value="/wd4505" if="is-msvc"/>
     </build-test>
   </presetdef>
 
