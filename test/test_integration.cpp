@@ -217,16 +217,16 @@ namespace
     class my_observer : boost::noncopyable
     {
     public:
-        virtual ~my_observer() {}
-
+        virtual ~my_observer()
+        {}
         virtual void notify( int value ) = 0;
     };
 
     class my_manager : boost::noncopyable
     {
     public:
-        virtual ~my_manager() {}
-
+        virtual ~my_manager()
+        {}
         virtual my_observer& get_observer() const = 0;
     };
 
