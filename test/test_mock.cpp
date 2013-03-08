@@ -67,7 +67,7 @@ namespace
     template< typename T >
     MOCK_CLASS( mock_template_class_with_conversion_operator )
     {
-        MOCK_CONVERSION_OPERATOR( T, conversion )
+        MOCK_CONVERSION_OPERATOR_TPL( T, conversion )
     };
 }
 
@@ -108,6 +108,38 @@ BOOST_AUTO_TEST_CASE( mock_non_const_conversion_operator )
     MOCK_EXPECT( m.conversion ).once().returns( 42 );
     int i = m;
     BOOST_CHECK_EQUAL( 42, i );
+}
+
+namespace
+{
+    template< typename T >
+    MOCK_CLASS( mock_template_class_with_const_conversion_operator )
+    {
+        MOCK_CONST_CONVERSION_OPERATOR_TPL( T, conversion )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mock_template_const_conversion_operator )
+{
+    mock_template_class_with_const_conversion_operator< int > m;
+    MOCK_EXPECT( m.conversion ).once().returns( 42 );
+    BOOST_CHECK_EQUAL( 42, static_cast< int >( m ) );
+}
+
+namespace
+{
+    template< typename T >
+    MOCK_CLASS( mock_template_class_with_non_const_conversion_operator )
+    {
+        MOCK_NON_CONST_CONVERSION_OPERATOR_TPL( T, conversion )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mock_template_non_const_conversion_operator )
+{
+    mock_template_class_with_non_const_conversion_operator< int > m;
+    MOCK_EXPECT( m.conversion ).once().returns( 42 );
+    BOOST_CHECK_EQUAL( 42, static_cast< int >( m ) );
 }
 
 namespace
