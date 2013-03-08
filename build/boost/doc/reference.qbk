@@ -312,6 +312,10 @@ Synopsis :
  MOCK_CONVERSION_OPERATOR( type, identifier )           // this generates both const and non-const operators
  MOCK_CONST_CONVERSION_OPERATOR( type, identifier )
  MOCK_NON_CONST_CONVERSION_OPERATOR( type, identifier )
+ 
+ MOCK_CONVERSION_OPERATOR_TPL( type, identifier )           // must be used if the signature uses a template parameter of the class
+ MOCK_CONST_CONVERSION_OPERATOR_TPL( type, identifier )     // must be used if the signature uses a template parameter of the class
+ MOCK_NON_CONST_CONVERSION_OPERATOR_TPL( type, identifier ) // must be used if the signature uses a template parameter of the class
 
 Example :
 
@@ -319,6 +323,16 @@ Example :
  {
      MOCK_CONVERSION_OPERATOR( int, conversion_to_int )
      MOCK_CONST_CONVERSION_OPERATOR( const std::string&, conversion_to_string )
+ };
+
+Example :
+
+ template< typename T >
+ MOCK_CLASS( mock_class )
+ {
+     MOCK_CONVERSION_OPERATOR_TPL( T, conversion_to_T )                                   // the _TPL variants must be used if the signature includes a template parameter of the class
+     MOCK_CONST_CONVERSION_OPERATOR( const std::string&, const_conversion_to_string )
+     MOCK_NON_CONST_CONVERSION_OPERATOR( const std::string&, const_conversion_to_string )
  };
 
 [endsect]
