@@ -189,22 +189,6 @@ BOOST_AUTO_TEST_CASE( mocking_a_template_class_method_is_supported )
 namespace
 {
     template< typename T >
-    struct my_template_converter_mock
-    {
-        MOCK_CONVERSION_OPERATOR( T, to_t )
-    };
-}
-
-BOOST_AUTO_TEST_CASE( mocking_a_template_class_conversion_operator_is_supported )
-{
-    my_template_converter_mock< int > m;
-    MOCK_EXPECT( m.to_t ).returns( 42 );
-    BOOST_CHECK_EQUAL( 42, m );
-}
-
-namespace
-{
-    template< typename T >
     struct my_template_base_class
     {
         virtual ~my_template_base_class()
