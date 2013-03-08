@@ -280,6 +280,15 @@ BOOST_AUTO_TEST_CASE( mock_functor )
     MOCK_FUNCTOR( f2, int( const std::string& ) );
 }
 
+namespace
+{
+    template< typename T >
+    struct tpl_functor_class
+    {
+        MOCK_FUNCTOR_TPL( f, void( T ) );
+    };
+}
+
 BOOST_AUTO_TEST_CASE( mock_functor_reset )
 {
     MOCK_FUNCTOR( f, void() );

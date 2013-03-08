@@ -3,13 +3,14 @@
 [section trunk]
 Not yet released
 
-* Added variadic macro support for MOCK_FUNCTION and the MOCK_METHOD family
-* Added variadic macro support for MOCK_BASE_CLASS and MOCK_FUNCTOR
+* Added variadic macro support for MOCK_BASE_CLASS
+* Added variadic macro support for MOCK_FUNCTION, MOCK_FUNCTOR and the MOCK_METHOD family
 * Added round parenthesis support for signatures for MOCK_FUNCTION, MOCK_FUNCTOR and the MOCK_METHOD family
 * Added MOCK_CONVERSION_OPERATOR_TPL, MOCK_CONST_CONVERSION_OPERATOR_TPL and MOCK_NON_CONST_CONVERSION_OPERATOR_TPL
-	
-[endsect]	
-	
+* Added MOCK_FUNCTOR_TPL
+
+[endsect]
+
 [section 1.2.1]
 Released 24 January 2013
 

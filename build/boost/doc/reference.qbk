@@ -342,12 +342,31 @@ Example :
 Synopsis :
 
  MOCK_FUNCTOR( name, signature );
+ 
+ MOCK_FUNCTOR_TPL( name, signature ); // must be used if the signature uses a template parameter
 
 Example :
 
  BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_functor )
  {
     MOCK_FUNCTOR( f, void( int ) );
+ }
+
+Example :
+
+ namespace
+ {
+     template< typename T >
+     struct template_class
+     {
+         MOCK_FUNCTOR_TPL( f, void( T ) );
+     };
+ }
+ 
+ BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_template_functor )
+ {
+     template_class< int > c;
+     c.f( 3 );
  }
 
 [endsect]
