@@ -1,7 +1,7 @@
 [section Changelog]
 
-[section trunk]
-Not yet released
+[section 1.2.2]
+Released 9 March 2013
 
 * Added variadic macro support for MOCK_BASE_CLASS
 * Added variadic macro support for MOCK_FUNCTION, MOCK_FUNCTOR and the MOCK_METHOD family
