@@ -146,7 +146,11 @@
             <xsl:with-param name="target" select="'http://sourceforge.net/projects/turtle/files'"/>
          </xsl:call-template>
       </xsl:variable>
-
+      <xsl:variable name="news_link">
+         <xsl:call-template name="href.target.relative">
+            <xsl:with-param name="target" select="'http://sourceforge.net/p/turtle/news'"/>
+         </xsl:call-template>
+      </xsl:variable>
       <xsl:variable name="support_link">
          <xsl:if test = "boolean($boost.libraries)">
             <xsl:call-template name="href.target.relative">
@@ -163,10 +167,12 @@
       <xsl:choose>
          <xsl:when test = "$nav.border = 'Boost'">
             <td align = "center" class = "boost-headtd"><a href = "{$download_link}" class = "boost-headelem">Download</a></td>
+            <td align = "center" class = "boost-headtd"><a href = "{$news_link}" class = "boost-headelem">News</a></td>
             <td align = "center" class = "boost-headtd"><a href = "{$support_link}" class = "boost-headelem">Support</a></td>
             <td align = "center" class = "boost-headtd"><a href = "{$project_link}" class = "boost-headelem">Project</a></td>
          </xsl:when><xsl:otherwise>
             <td align = "center"><a href = "{$download_link}">Download</a></td>
+            <td align = "center"><a href = "{$news_link}">News</a></td>
             <td align = "center"><a href = "{$support_link}">Support</a></td>
             <td align = "center"><a href = "{$project_link}">Project</a></td>
          </xsl:otherwise>
@@ -179,7 +185,11 @@
             <xsl:with-param name="target" select="'http://sourceforge.net/projects/turtle/files'"/>
          </xsl:call-template>
       </xsl:variable>
-
+      <xsl:variable name="news_link">
+         <xsl:call-template name="href.target.relative">
+            <xsl:with-param name="target" select="'http://sourceforge.net/p/turtle/news'"/>
+         </xsl:call-template>
+      </xsl:variable>
       <xsl:variable name="support_link">
          <xsl:call-template name="href.target.relative">
             <xsl:with-param name="target" select="'http://sourceforge.net/projects/turtle/support'"/>
@@ -196,6 +206,7 @@
             <xsl:attribute name = "class">boost-toc</xsl:attribute>
          </xsl:if>
          <div><a href = "{$download_link}">Download</a></div>
+         <div><a href = "{$news_link}">News</a></div>
          <div><a href = "{$support_link}">Support</a></div>
          <div><a href = "{$project_link}">Project</a></div>
       </div></td>
