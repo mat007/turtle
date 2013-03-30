@@ -431,8 +431,15 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_value, error_
 
 namespace
 {
-    struct A {};
-    struct B : A {};
+    struct A
+    {
+        virtual void f() = 0;
+    };
+    struct B : A
+    {
+        virtual void f()
+        {}
+    };
 }
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_value, error_fixture )
@@ -488,6 +495,24 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_valu
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
+    {
+        mock::detail::function< A&() > f;
+        B b;
+        f.expect().returns( boost::ref( b ) );
+        BOOST_CHECK_NO_THROW( f() );
+        CHECK_CALLS( 1 );
+    }
+    {
+        mock::detail::function< A&() > f;
+        B b;
+        f.expect().returns( b );
+        BOOST_CHECK_NO_THROW( f() );
+        CHECK_CALLS( 1 );
+    }
+    //{
+    //    mock::detail::function< A&() > f;
+    //    f.expect().returns( 3 );
+    //}
 }
 
 namespace
