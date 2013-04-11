@@ -12,14 +12,14 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/lexical_cast.hpp>
-#ifdef _MSC_VER
+#ifdef BOOST_MSVC
 #pragma warning( push, 0 )
 #endif
 #include <boost/spirit/home/phoenix.hpp>
 #include <boost/spirit/home/phoenix/bind.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
-#ifdef _MSC_VER
+#ifdef BOOST_MSVC
 #pragma warning( pop )
 #endif
 #include <boost/bind.hpp>

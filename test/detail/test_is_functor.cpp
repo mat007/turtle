@@ -8,12 +8,12 @@
 
 #include <turtle/detail/is_functor.hpp>
 #include <boost/test/auto_unit_test.hpp>
-#ifdef _MSC_VER
+#ifdef BOOST_MSVC
 #pragma warning( push, 0 )
 #endif
 #include <boost/lambda/lambda.hpp>
 #include <boost/spirit/home/phoenix.hpp>
-#ifdef _MSC_VER
+#ifdef BOOST_MSVC
 #pragma warning( pop )
 #endif
 #include <boost/function.hpp>
