@@ -1,5 +1,11 @@
 [section Changelog]
 
+[section trunk]
+Not yet released
+
+* Added support for C++11 lambdas as constraints
+* Return actions now accept by copy types derived from abstract base types
+
 [section 1.2.2]
 Released 9 March 2013
 
