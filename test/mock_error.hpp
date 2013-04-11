@@ -87,31 +87,6 @@ namespace
                 boost::lexical_cast< std::string >( context ), file, line );
         }
     };
-
-    struct error_fixture
-    {
-        error_fixture()
-        {
-            data().reset();
-        }
-        ~error_fixture()
-        {
-            BOOST_CHECK( data().verify() );
-            BOOST_CHECK_EQUAL( 0, data().call_count );
-        }
-    };
 }
-
-#define CHECK_CALLS( calls ) \
-    BOOST_CHECK_EQUAL( calls, data().call_count ); \
-    data().call_count = 0;
-#define CHECK_ERROR( expr, error, calls, context ) \
-    BOOST_CHECK( data().verify() ); \
-    try { expr; } catch( ... ) {} \
-    BOOST_CHECK_EQUAL( 1, data().error_count ); \
-    BOOST_CHECK_EQUAL( error, data().last_message ); \
-    BOOST_CHECK_EQUAL( context, data().last_context ); \
-    CHECK_CALLS( calls ); \
-    data().reset();
 
 #endif // MOCK_TEST_MOCK_ERROR_HPP_INCLUDED
