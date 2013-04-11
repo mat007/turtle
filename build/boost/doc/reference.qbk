@@ -671,6 +671,7 @@ Example :
     MOCK_EXPECT( c.method ).throws( std::runtime_error( "error !" ) );
     MOCK_EXPECT( c.method ).calls( &function );                        // forwards 'method' parameter to 'function'
     MOCK_EXPECT( c.method ).calls( boost::bind( &function, 42 ) );     // drops 'method' parameter and binds 42 as parameter to 'function'
+    MOCK_EXPECT( c.method ).calls( []( int i ) { return i; } );        // uses a C++11 lambda
  }
 
 [endsect]
