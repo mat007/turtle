@@ -11,8 +11,6 @@
 #include <turtle/detail/function.hpp>
 #include <turtle/constraints.hpp>
 #include <boost/test/auto_unit_test.hpp>
-#define BOOST_LIB_NAME boost_unit_test_framework
-#include <boost/config/auto_link.hpp>
 #include <boost/utility/result_of.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/function.hpp>
