@@ -26,7 +26,7 @@ namespace detail
 
 #ifdef MOCK_DECLTYPE
 
-    template< typename T, typename P >
+    template< typename F, typename P >
     struct is_callable
     {
         typedef boost::type_traits::yes_type yes_type;
@@ -39,7 +39,7 @@ namespace detail
         static no_type check( ... );
 
         typedef boost::mpl::bool_<
-            sizeof( check< T >( 0 ) ) == sizeof( yes_type ) > type;
+            sizeof( check< F >( 0 ) ) == sizeof( yes_type ) > type;
     };
 
 #endif // MOCK_DECLTYPE
