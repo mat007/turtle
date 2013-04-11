@@ -9,6 +9,7 @@
 #ifndef MOCK_CONFIG_HPP_INCLUDED
 #define MOCK_CONFIG_HPP_INCLUDED
 
+#include <boost/config.hpp>
 #include <boost/preprocessor/arithmetic/inc.hpp>
 #include <boost/preprocessor/comparison/less.hpp>
 
@@ -46,6 +47,10 @@
 #   elif BOOST_PP_LESS(PHOENIX_LIMIT, MOCK_MAX_ARGS)
 #       error PHOENIX_LIMIT must be set to MOCK_MAX_ARGS or higher
 #   endif
+#endif
+
+#if !defined(BOOST_NO_CXX11_DECLTYPE) && !defined(BOOST_NO_DECLTYPE)
+#   define MOCK_DECLTYPE
 #endif
 
 #endif // MOCK_CONFIG_HPP_INCLUDED

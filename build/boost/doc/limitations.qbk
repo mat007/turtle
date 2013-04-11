@@ -261,4 +261,10 @@ This is actually a bug in the compiler, for more information see [@http://connec
 
 [endsect]
 
+[section Using C++11 lambda as constraints requires decltype compiler support]
+
+The technique used in order to detect whether a constraint is a C++11 lambda or not is based on decltype, which means the library can fail to detect a lambda in case the compiler does not support it.
+
+[endsect]
+
 [endsect]

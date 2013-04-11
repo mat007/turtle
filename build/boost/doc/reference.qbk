@@ -590,6 +590,14 @@ Example using [@http://www.boost.org/libs/phoenix Boost.Phoenix] :
     MOCK_EXPECT( c.method ).with( boost::phoenix::arg_names::_1 == 42 );
  }
 
+Example using C++11 lambdas :
+
+ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_constraint_with_cxx11_lambda )
+ {
+     mock_class c;
+     MOCK_EXPECT( c.method ).with( []( int actual ) { return 42 == actual; } );
+ }
+
 Example using &&, || and ! :
 
  BOOST_AUTO_TEST_CASE( demonstrates_combining_constraints )
