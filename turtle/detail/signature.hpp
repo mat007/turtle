@@ -9,6 +9,7 @@
 #ifndef MOCK_SIGNATURE_HPP_INCLUDED
 #define MOCK_SIGNATURE_HPP_INCLUDED
 
+#include "../config.hpp"
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_type.hpp>
 #include <boost/function_types/result_type.hpp>

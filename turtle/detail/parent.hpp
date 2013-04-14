@@ -9,6 +9,7 @@
 #ifndef MOCK_PARENT_HPP_INCLUDED
 #define MOCK_PARENT_HPP_INCLUDED
 
+#include "../config.hpp"
 #include "type_name.hpp"
 #include <boost/test/utils/basic_cstring/io.hpp>
 #include <boost/optional.hpp>

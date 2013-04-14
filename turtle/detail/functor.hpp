@@ -9,6 +9,7 @@
 #ifndef MOCK_FUNCTOR_HPP_INCLUDED
 #define MOCK_FUNCTOR_HPP_INCLUDED
 
+#include "../config.hpp"
 #include "function.hpp"
 
 namespace mock

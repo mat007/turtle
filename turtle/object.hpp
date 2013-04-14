@@ -9,6 +9,7 @@
 #ifndef MOCK_OBJECT_HPP_INCLUDED
 #define MOCK_OBJECT_HPP_INCLUDED
 
+#include "config.hpp"
 #include "detail/root.hpp"
 #include "detail/type_name.hpp"
 #include "detail/object_impl.hpp"

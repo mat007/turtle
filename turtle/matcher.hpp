@@ -9,6 +9,7 @@
 #ifndef MOCK_MATCHER_HPP_INCLUDED
 #define MOCK_MATCHER_HPP_INCLUDED
 
+#include "config.hpp"
 #include "log.hpp"
 #include "constraint.hpp"
 #include "detail/is_functor.hpp"

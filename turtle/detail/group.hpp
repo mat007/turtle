@@ -9,6 +9,7 @@
 #ifndef MOCK_GROUP_HPP_INCLUDED
 #define MOCK_GROUP_HPP_INCLUDED
 
+#include "../config.hpp"
 #include "verifiable.hpp"
 #include <functional>
 #include <algorithm>

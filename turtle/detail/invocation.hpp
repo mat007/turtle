@@ -9,6 +9,7 @@
 #ifndef MOCK_INVOCATION_HPP_INCLUDED
 #define MOCK_INVOCATION_HPP_INCLUDED
 
+#include "../config.hpp"
 #include <boost/noncopyable.hpp>
 #include <stdexcept>
 #include <ostream>

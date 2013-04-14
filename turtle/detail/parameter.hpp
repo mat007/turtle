@@ -9,6 +9,7 @@
 #ifndef MOCK_PARAMETER_HPP_INCLUDED
 #define MOCK_PARAMETER_HPP_INCLUDED
 
+#include "../config.hpp"
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_arity.hpp>
 #include <boost/mpl/at.hpp>

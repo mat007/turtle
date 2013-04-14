@@ -9,6 +9,7 @@
 #ifndef MOCK_SEQUENCE_HPP_INCLUDED
 #define MOCK_SEQUENCE_HPP_INCLUDED
 
+#include "config.hpp"
 #include "detail/sequence_impl.hpp"
 #include <boost/shared_ptr.hpp>
 

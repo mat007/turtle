@@ -9,6 +9,7 @@
 #ifndef MOCK_RESET_HPP_INCLUDED
 #define MOCK_RESET_HPP_INCLUDED
 
+#include "config.hpp"
 #include "object.hpp"
 #include "detail/root.hpp"
 #include "detail/functor.hpp"

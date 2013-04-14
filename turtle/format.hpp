@@ -9,6 +9,7 @@
 #ifndef MOCK_FORMAT_HPP_INCLUDED
 #define MOCK_FORMAT_HPP_INCLUDED
 
+#include "config.hpp"
 #include "detail/formatter.hpp"
 
 namespace mock

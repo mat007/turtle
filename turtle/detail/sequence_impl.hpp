@@ -9,6 +9,7 @@
 #ifndef MOCK_SEQUENCE_IMPL_HPP_INCLUDED
 #define MOCK_SEQUENCE_IMPL_HPP_INCLUDED
 
+#include "../config.hpp"
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <algorithm>

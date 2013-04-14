@@ -9,6 +9,7 @@
 #ifndef MOCK_LOG_HPP_INCLUDED
 #define MOCK_LOG_HPP_INCLUDED
 
+#include "config.hpp"
 #include "stream.hpp"
 #include "format.hpp"
 #include <boost/utility/enable_if.hpp>

@@ -9,6 +9,7 @@
 #ifndef MOCK_ROOT_HPP_INCLUDED
 #define MOCK_ROOT_HPP_INCLUDED
 
+#include "../config.hpp"
 #include "parent.hpp"
 #include "group.hpp"
 #include "context.hpp"

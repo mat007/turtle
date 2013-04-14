@@ -9,6 +9,7 @@
 #ifndef MOCK_STREAM_HPP_INCLUDED
 #define MOCK_STREAM_HPP_INCLUDED
 
+#include "config.hpp"
 #include <boost/utility/addressof.hpp>
 #include <ostream>
 

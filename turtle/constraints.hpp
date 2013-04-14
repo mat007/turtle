@@ -9,6 +9,7 @@
 #ifndef MOCK_CONSTRAINTS_HPP_INCLUDED
 #define MOCK_CONSTRAINTS_HPP_INCLUDED
 
+#include "config.hpp"
 #include "constraint.hpp"
 #include <boost/ref.hpp>
 #include <boost/utility/enable_if.hpp>

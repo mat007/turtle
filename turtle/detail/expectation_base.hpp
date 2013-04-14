@@ -9,6 +9,7 @@
 #ifndef MOCK_EXPECTATION_BASE_HPP_INCLUDED
 #define MOCK_EXPECTATION_BASE_HPP_INCLUDED
 
+#include "../config.hpp"
 #include "invocation.hpp"
 #include "../sequence.hpp"
 #include <boost/shared_ptr.hpp>

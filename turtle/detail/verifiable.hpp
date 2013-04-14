@@ -9,6 +9,7 @@
 #ifndef MOCK_VERIFIABLE_HPP_INCLUDED
 #define MOCK_VERIFIABLE_HPP_INCLUDED
 
+#include "../config.hpp"
 #include <boost/noncopyable.hpp>
 
 namespace mock

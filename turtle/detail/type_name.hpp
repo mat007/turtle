@@ -9,6 +9,7 @@
 #ifndef MOCK_TYPE_NAME_HPP_INCLUDED
 #define MOCK_TYPE_NAME_HPP_INCLUDED
 
+#include "../config.hpp"
 #include <boost/test/utils/basic_cstring/io.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/erase.hpp>

@@ -9,6 +9,7 @@
 #ifndef MOCK_MATCHER_BASE_HPP_INCLUDED
 #define MOCK_MATCHER_BASE_HPP_INCLUDED
 
+#include "../config.hpp"
 #include <boost/noncopyable.hpp>
 #include <iosfwd>
 
