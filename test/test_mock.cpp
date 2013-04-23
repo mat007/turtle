@@ -21,14 +21,14 @@ namespace
     }
     MOCK_CLASS( mock_class )
     {
-        MOCK_METHOD_EXT( my_method, 1, void( const std::string& ), my_method )
+        MOCK_METHOD_EXT( my_method, 1, void( const std::string& ), my_tag )
     };
 }
 
 BOOST_AUTO_TEST_CASE( mock_object_for_static_polymorphism )
 {
     const mock_class m;
-    MOCK_EXPECT( m.my_method ).once().with( "some parameter" );
+    MOCK_EXPECT( m.my_tag ).once().with( "some parameter" );
     my_function( m );
 }
 
@@ -238,40 +238,40 @@ namespace
 {
     struct my_custom_mock
     {
-        MOCK_METHOD_EXT( my_method, 0, void(), my_method )
-        MOCK_METHOD_EXT( my_method_2, 0, void(), my_method_2 )
+        MOCK_METHOD_EXT( my_method, 0, void(), my_tag )
+        MOCK_METHOD_EXT( my_method_2, 0, void(), my_tag_2 )
     };
 }
 
 BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_and_without_inheriting_from_object_is_named )
 {
     my_custom_mock m;
-    BOOST_CHECK_EQUAL( "?.my_custom_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "?.my_custom_mock::my_method_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_method_2 ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_method_2 ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock::my_tag", to_string( MOCK_ANONYMOUS_HELPER( m.my_tag ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock::my_tag_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_tag_2 ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_tag", to_string( MOCK_HELPER( m.my_tag ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_tag_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_tag_2 ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_tag", to_string( MOCK_ANONYMOUS_HELPER( m.my_tag ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock::my_tag", to_string( MOCK_HELPER( m.my_tag ) ) );
 }
 
 namespace
 {
     struct my_custom_mock_object : mock::object
     {
-        MOCK_METHOD_EXT( my_method, 0, void(), my_method )
-        MOCK_METHOD_EXT( my_method_2, 0, void(), my_method_2 )
+        MOCK_METHOD_EXT( my_method, 0, void(), my_tag )
+        MOCK_METHOD_EXT( my_method_2, 0, void(), my_tag_2 )
     };
 }
 
 BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_is_named )
 {
     my_custom_mock_object m;
-    BOOST_CHECK_EQUAL( "?.my_custom_mock_object::my_method", to_string( MOCK_ANONYMOUS_HELPER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "?.my_custom_mock_object::my_method_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_method_2 ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_method_2 ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_ANONYMOUS_HELPER( m.my_method ) ) );
-    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock_object::my_tag", to_string( MOCK_ANONYMOUS_HELPER( m.my_tag ) ) );
+    BOOST_CHECK_EQUAL( "?.my_custom_mock_object::my_tag_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_tag_2 ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_tag", to_string( MOCK_HELPER( m.my_tag ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_tag_2", to_string( MOCK_ANONYMOUS_HELPER( m.my_tag_2 ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_tag", to_string( MOCK_ANONYMOUS_HELPER( m.my_tag ) ) );
+    BOOST_CHECK_EQUAL( "m.my_custom_mock_object::my_tag", to_string( MOCK_HELPER( m.my_tag ) ) );
 }
 
 BOOST_AUTO_TEST_CASE( mock_functor )

@@ -18,14 +18,14 @@ namespace
 {
     struct my_custom_mock
     {
-        MOCK_METHOD_EXT( my_method, 0, void(), my_method )
+        MOCK_METHOD_EXT( my_method, 0, void(), my_tag )
     };
 }
 
 BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_and_without_inheriting_from_object )
 {
     my_custom_mock m;
-    MOCK_EXPECT( m.my_method ).once();
+    MOCK_EXPECT( m.my_tag ).once();
     m.my_method();
 }
 
@@ -33,14 +33,14 @@ namespace
 {
     struct my_custom_mock_object
     {
-        MOCK_METHOD_EXT( my_method, 0, void(), my_method )
+        MOCK_METHOD_EXT( my_method, 0, void(), my_tag )
     };
 }
 
 BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros )
 {
     my_custom_mock_object m;
-    MOCK_EXPECT( m.my_method ).once();
+    MOCK_EXPECT( m.my_tag ).once();
     m.my_method();
 }
 
@@ -48,7 +48,7 @@ namespace
 {
     MOCK_CLASS( my_mock )
     {
-        MOCK_METHOD_EXT( my_method, 1, int( int ), my_method )
+        MOCK_METHOD_EXT( my_method, 1, int( int ), my_tag )
     };
 }
 
@@ -56,19 +56,19 @@ BOOST_AUTO_TEST_CASE( basic_mock_object_usage )
 {
     my_mock m;
     {
-        MOCK_EXPECT( m.my_method ).once().returns( 0 );
+        MOCK_EXPECT( m.my_tag ).once().returns( 0 );
         BOOST_CHECK_EQUAL( 0, m.my_method( 13 ) );
     }
     mock::verify();
     mock::reset();
     {
-        MOCK_EXPECT( m.my_method ).once().with( 42 ).returns( 7 );
+        MOCK_EXPECT( m.my_tag ).once().with( 42 ).returns( 7 );
         BOOST_CHECK_EQUAL( 7, m.my_method( 42 ) );
     }
     mock::verify();
     mock::reset();
     {
-        MOCK_EXPECT( m.my_method ).once().returns( 51 );
+        MOCK_EXPECT( m.my_tag ).once().returns( 51 );
         BOOST_CHECK_EQUAL( 51, m.my_method( 27 ) );
     }
 }
@@ -86,15 +86,15 @@ namespace
 
     MOCK_BASE_CLASS( my_ambiguited_mock, my_ambiguited_interface )
     {
-        MOCK_METHOD_EXT( my_method, 0, void(), tag1 )
-        MOCK_METHOD_EXT( my_method, 1, void( int ), tag2 )
+        MOCK_METHOD_EXT( my_method, 0, void(), my_tag1 )
+        MOCK_METHOD_EXT( my_method, 1, void( int ), my_tag_2 )
     };
 }
 
 BOOST_AUTO_TEST_CASE( mock_object_method_disambiguation )
 {
     my_ambiguited_mock m;
-    MOCK_EXPECT( m.tag1 );
+    MOCK_EXPECT( m.my_tag1 );
     BOOST_CHECK_NO_THROW( m.my_method() );
     BOOST_CHECK_THROW( m.my_method( 12 ), std::exception );
 }
@@ -113,7 +113,7 @@ namespace
     MOCK_BASE_CLASS( my_const_ambiguited_mock, my_const_ambiguited_interface )
     {
         MOCK_NON_CONST_METHOD_EXT( my_method, 0, void(), tag1 )
-        MOCK_CONST_METHOD_EXT( my_method, 0, void(), tag2 )
+        MOCK_CONST_METHOD_EXT( my_method, 0, void(), tag_2 )
     };
 }
 
@@ -132,14 +132,14 @@ namespace
 
     MOCK_CLASS( my_declared_but_undefined_mock )
     {
-        MOCK_METHOD_EXT( m, 1, void( my_declared_but_undefined_type& ), m )
+        MOCK_METHOD_EXT( m, 1, void( my_declared_but_undefined_type& ), t )
     };
 }
 
 BOOST_AUTO_TEST_CASE( mock_object_method_with_declared_but_not_defined_parameter_is_valid )
 {
     my_declared_but_undefined_mock mock;
-    MOCK_EXPECT( mock.m );
+    MOCK_EXPECT( mock.t );
 }
 
 BOOST_AUTO_TEST_CASE( mock_functor_in_function_is_supported )
@@ -172,18 +172,18 @@ namespace
     template< typename T >
     struct my_template_mock
     {
-        MOCK_METHOD_EXT( my_method, 0, void(), my_method )
-        MOCK_METHOD_EXT_TPL( my_method, 2, void( T, std::string ), my_method_t )
-        MOCK_METHOD_EXT_TPL( my_other_method, 0, void(), my_other_method )
+        MOCK_METHOD_EXT( my_method, 0, void(), my_tag )
+        MOCK_METHOD_EXT_TPL( my_method, 2, void( T, std::string ), my_tpl_tag )
+        MOCK_METHOD_EXT_TPL( my_other_method, 0, void(), my_other_tag )
     };
 }
 
 BOOST_AUTO_TEST_CASE( mocking_a_template_class_method_is_supported )
 {
     my_template_mock< int > m;
-    MOCK_EXPECT( m.my_method_t ).with( 3, "" );
+    MOCK_EXPECT( m.my_tpl_tag ).with( 3, "" );
     m.my_method( 3, "" );
-    BOOST_CHECK( MOCK_VERIFY( m.my_method_t ) );
+    BOOST_CHECK( MOCK_VERIFY( m.my_tpl_tag ) );
 }
 
 namespace
@@ -339,7 +339,7 @@ BOOST_AUTO_TEST_CASE( failed_sequence_in_mocked_destructor_does_not_throw )
     {
         my_destroyed_class c;
         MOCK_EXPECT( c.destructor ).once().in( s );
-        MOCK_EXPECT( m.my_method ).once().in( s );
+        MOCK_EXPECT( m.my_tag ).once().in( s );
         m.my_method();
     }
 }
@@ -348,7 +348,7 @@ namespace
 {
     MOCK_CLASS( boost_optional )
     {
-        MOCK_METHOD_EXT( method, 0, boost::optional< my_observer& >(), method )
+        MOCK_METHOD_EXT( method, 0, boost::optional< my_observer& >(), tag )
     };
 }
 
@@ -356,7 +356,7 @@ BOOST_AUTO_TEST_CASE( boost_optional_on_base_class_reference_as_return_type_is_s
 {
     boost_optional b;
     my_mock_observer o;
-    MOCK_EXPECT( b.method ).once().returns( boost::ref( o ) );
+    MOCK_EXPECT( b.tag ).once().returns( boost::ref( o ) );
     b.method();
 }
 
@@ -548,7 +548,7 @@ namespace
 {
     MOCK_CLASS( mock_class )
     {
-        MOCK_METHOD_EXT( m, 0, void(), m );
+        MOCK_METHOD_EXT( m, 0, void(), t );
     };
 }
 
@@ -558,7 +558,7 @@ BOOST_AUTO_TEST_CASE( resetting_referenced_mock_class_does_not_crash )
     {
         mock_class c;
         MOCK_EXPECT( f ).returns( c );
-        MOCK_EXPECT( c.m );
+        MOCK_EXPECT( c.t );
     }
     mock::reset();
 }
@@ -567,7 +567,7 @@ namespace
 {
     MOCK_CLASS( mock_class2 )
     {
-        MOCK_METHOD_EXT( m, 0, mock_class2(), m );
+        MOCK_METHOD_EXT( m, 0, mock_class2(), t );
     };
 }
 
@@ -575,7 +575,7 @@ BOOST_AUTO_TEST_CASE( resetting_self_referenced_mock_class_does_not_crash )
 {
     {
         mock_class2 c;
-        MOCK_EXPECT( c.m ).returns( c );
+        MOCK_EXPECT( c.t ).returns( c );
     }
     mock::reset();
 }
