@@ -154,6 +154,11 @@ namespace detail
             template< typename Actual > \
             bool operator()( const Actual& actual ) const \
             { \
+                return test( actual, boost::unwrap_ref( expected_ ) ); \
+            } \
+            template< typename Actual, typename T > \
+            bool test( const Actual& actual, const T& expected ) const \
+            { \
                 return Expr; \
             } \
             friend std::ostream& operator<<( std::ostream& s, const N& n ) \
