@@ -810,4 +810,42 @@ Example :
 
 [endsect]
 
+[section Helpers]
+
+This section presents macros used to help with defining custom constraints.
+
+[section MOCK_UNARY_CONSTRAINT]
+
+Synopsis :
+
+ MOCK_UNARY_CONSTRAINT( name, expression ) // defines a constraint 'name' based on the given 'expression'
+
+The expression manipulates the received parameter 'actual' in order to implement the constraint.
+
+Example :
+
+ MOCK_UNARY_CONSTRAINT( any, true )               // this is (almost) how mock::any is defined
+ MOCK_UNARY_CONSTRAINT( forty_two, actual == 42 ) // this defines a 'forty_two' constraint
+
+[endsect]
+
+[section MOCK_BINARY_CONSTRAINT]
+
+Synopsis :
+
+ MOCK_BINARY_CONSTRAINT( name, expression ) // defines a constraint 'name' based on the given 'expression'
+
+The expression manipulates the received parameter 'actual' as well as the passed argument 'expected' in order to implement the constraint.
+
+[note The type of expected must be copy-constructible and assignable]
+
+Example :
+
+ MOCK_BINARY_CONSTRAINT( equal, actual == expected )                  // this is how mock::equal is defined
+ MOCK_BINARY_CONSTRAINT( near, std::abs( actual - expected ) < 0.01 ) // this defines a 'near' constraint which can be used as 'near( 42 )'
+
+[endsect]
+
+[endsect]
+
 [endsect]
