@@ -68,7 +68,7 @@ namespace conversion
     {
         template< typename T >
         any( const T& t )
-            : h_( new holder_imp< T >( t ) )
+            : h_( boost::make_shared< holder_imp< T > >( t ) )
         {}
         ~any()
         {

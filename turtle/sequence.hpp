@@ -11,7 +11,7 @@
 
 #include "config.hpp"
 #include "detail/sequence_impl.hpp"
-#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 namespace mock
 {
@@ -19,7 +19,7 @@ namespace mock
     {
     public:
         sequence()
-            : impl_( new detail::sequence_impl() )
+            : impl_( boost::make_shared< detail::sequence_impl >() )
         {}
 
         boost::shared_ptr< detail::sequence_impl > impl_;

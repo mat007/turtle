@@ -11,10 +11,12 @@
 
 #define MOCK_EXPECTATION_INITIALIZE(z, n, d) \
     BOOST_PP_COMMA_IF(n) c##n##_( \
-        new matcher< arg##n##_type, constraint< any > >( mock::any ) )
+        boost::make_shared< \
+            matcher< arg##n##_type, constraint< any > > >( mock::any ) )
 
 #define MOCK_EXPECTATION_WITH(z, n, d) \
-    c##n##_.reset( new matcher< arg##n##_type, Constraint_##n >( c##n ) );
+    c##n##_ = boost::make_shared< \
+        matcher< arg##n##_type, Constraint_##n > >( c##n );
 
 #define MOCK_EXPECTATION_MEMBER(z, n, d) \
     boost::shared_ptr< matcher_base< arg##n##_type > > c##n##_;
@@ -73,32 +75,32 @@ namespace detail
         }
         expectation& once()
         {
-            expect( new detail::once() );
+            i_ = boost::make_shared< detail::once >();
             return *this;
         }
         expectation& never()
         {
-            expect( new detail::never() );
+            i_ = boost::make_shared< detail::never >();
             return *this;
         }
         expectation& exactly( std::size_t count )
         {
-            expect( new detail::exactly( count ) );
+            i_ = boost::make_shared< detail::exactly >( count );
             return *this;
         }
         expectation& at_least( std::size_t min )
         {
-            expect( new detail::at_least( min ) );
+            i_ = boost::make_shared< detail::exactly >( min );
             return *this;
         }
         expectation& at_most( std::size_t max )
         {
-            expect( new detail::at_most( max ) );
+            i_ = boost::make_shared< detail::exactly >( max );
             return *this;
         }
         expectation& between( std::size_t min, std::size_t max )
         {
-            expect( new detail::between( min, max ) );
+            i_ = boost::make_shared< detail::between >( min, max );
             return *this;
         }
 
@@ -116,7 +118,8 @@ namespace detail
                 ;
         }
     private:
-        BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_EXPECTATION_MEMBER, BOOST_PP_EMPTY)
+        BOOST_PP_REPEAT(
+            MOCK_NUM_ARGS, MOCK_EXPECTATION_MEMBER, BOOST_PP_EMPTY)
     };
 }
 } // mock

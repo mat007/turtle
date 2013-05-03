@@ -36,7 +36,7 @@ namespace detail
 
     public:
         function()
-            : impl_( new impl_type() )
+            : impl_( boost::make_shared< impl_type >() )
         {}
 
         bool verify() const

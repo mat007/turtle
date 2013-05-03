@@ -12,7 +12,7 @@
 #include "../config.hpp"
 #include "invocation.hpp"
 #include "../sequence.hpp"
-#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <vector>
 
 namespace mock
@@ -23,7 +23,7 @@ namespace detail
     {
     public:
         expectation_base()
-            : i_( new unlimited() )
+            : i_( boost::make_shared< unlimited >() )
             , file_( "unknown location" )
             , line_( 0 )
         {}
@@ -71,11 +71,6 @@ namespace detail
             for( sequences_cit it = sequences_.begin();
                 it != sequences_.end(); ++it )
                 (*it)->remove( this );
-        }
-
-        void expect( invocation* i )
-        {
-            i_.reset( i );
         }
 
         void add( boost::shared_ptr< sequence_impl > s )

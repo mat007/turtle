@@ -16,7 +16,7 @@
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/optional.hpp>
 
 namespace mock
@@ -48,7 +48,7 @@ namespace detail
     {
     public:
         object()
-            : impl_( new detail::object_impl() )
+            : impl_( boost::make_shared< detail::object_impl >() )
         {}
     protected:
         ~object()
