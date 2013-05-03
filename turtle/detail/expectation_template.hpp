@@ -52,33 +52,33 @@ namespace detail
         , public action< R, R (BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS,T)) >
     {
         BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-            MOCK_EXPECTATION_TYPEDEF, BOOST_PP_EMPTY)
+            MOCK_EXPECTATION_TYPEDEF, _)
     public:
 #ifndef MOCK_NUM_ARGS_0
         expectation()
             : BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                MOCK_EXPECTATION_INITIALIZE, BOOST_PP_EMPTY)
+                MOCK_EXPECTATION_INITIALIZE, _)
         {}
         template< BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_) >
         expectation& with(
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
         {
             BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                MOCK_EXPECTATION_WITH, BOOST_PP_EMPTY)
+                MOCK_EXPECTATION_WITH, _)
             return *this;
         }
 #endif
         bool is_valid(
             BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                MOCK_EXPECTATION_ARGS, BOOST_PP_EMPTY) ) const
+                MOCK_EXPECTATION_ARGS, _) ) const
         {
             return ! i_->exhausted()
                 BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                    MOCK_EXPECTATION_IS_VALID, BOOST_PP_EMPTY);
+                    MOCK_EXPECTATION_IS_VALID, _);
         }
 
         BOOST_PP_REPEAT(MOCK_MAX_SEQUENCES,
-            MOCK_EXPECTATION_IN, BOOST_PP_EMPTY)
+            MOCK_EXPECTATION_IN, _)
 
         expectation& once()
         {
@@ -119,14 +119,14 @@ namespace detail
 #ifndef MOCK_NUM_ARGS_0
                 << ".with( "
                 << BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                    MOCK_EXPECTATION_SERIALIZE, BOOST_PP_EMPTY)
+                    MOCK_EXPECTATION_SERIALIZE, _)
                 << " )"
 #endif
                 ;
         }
     private:
         BOOST_PP_REPEAT(
-            MOCK_NUM_ARGS, MOCK_EXPECTATION_MEMBER, BOOST_PP_EMPTY)
+            MOCK_NUM_ARGS, MOCK_EXPECTATION_MEMBER, _)
     };
 }
 } // mock
