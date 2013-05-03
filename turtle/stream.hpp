@@ -11,6 +11,7 @@
 
 #include "config.hpp"
 #include <boost/utility/addressof.hpp>
+#include <boost/noncopyable.hpp>
 #include <ostream>
 
 namespace mock
