@@ -2,6 +2,7 @@
 [import example/async_call.cpp]
 [import example/retrieve_cref.cpp]
 [import example/invoke_functor.cpp]
+[import example/quick_constraint.cpp]
 
 This section highlights not-so-obvious features of the library gathered from real use cases.
 
@@ -38,6 +39,18 @@ Problem :
 Solution :
 
 [invoke_functor_solution]
+
+[endsect]
+
+[section Quickly writing a custom constraint for a serializable type]
+
+Problem :
+
+[quick_constraint_problem]
+
+Solution :
+
+[quick_constraint_solution]
 
 [endsect]
 
