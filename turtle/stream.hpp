@@ -41,7 +41,7 @@ namespace conversion
         return s << '?';
     }
 
-    struct holder
+    struct holder : boost::noncopyable
     {
         virtual ~holder()
         {}
@@ -64,11 +64,11 @@ namespace conversion
         const T* t_;
     };
 
-    struct any
+    struct any : boost::noncopyable
     {
         template< typename T >
         any( const T& t )
-            : h_( boost::make_shared< holder_imp< T > >( t ) )
+            : h_( new holder_imp< T >( t ) )
         {}
         ~any()
         {
