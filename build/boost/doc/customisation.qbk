@@ -97,7 +97,7 @@ See [link turtle.reference.expectation.constraints constraints] for an explanati
 
 For more information about the serialization operator and the use of mock::format, refer to [link turtle.customisation.logging loggin].
 
-[note The [link turtle.reference.helpers.MOCK_UNARY_CONSTRAINT MOCK_UNARY_CONSTRAINT] and [link turtle.reference.helpers.MOCK_BINARY_CONSTRAINT MOCK_BINARY_CONSTRAINT] macros replace the need to write the constraints explicitly for the most trivial cases]
+[note The [link turtle.reference.helpers.mock_unary_constraint MOCK_UNARY_CONSTRAINT] and [link turtle.reference.helpers.mock_binary_constraint MOCK_BINARY_CONSTRAINT] macros replace the need to write the constraints explicitly for the most trivial cases]
 
 [endsect]
 
