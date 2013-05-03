@@ -62,7 +62,7 @@ Simple enough, however this constraint isn't serializable and thus yields a rath
 
 Just like a parameter, a constraint can be displayed in a readable form using its serialization operator, see [link turtle.customisation.logging logging].
 
-Thus for a widely used constraint (for instance one shipped with the code of a library) it is likely better to define it like this :
+Thus a widely used constraint (for instance one shipped with the code of a library) is likely better to be defined like this :
 
 [custom_constraint_functor]
 
