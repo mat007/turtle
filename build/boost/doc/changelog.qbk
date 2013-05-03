@@ -6,6 +6,7 @@ Not yet released
 * Added support for C++11 lambdas as constraints
 * Return actions now accept by copy types derived from abstract base types
 * Officially documented MOCK_UNARY_CONSTRAINT and MOCK_BINARY_CONSTRAINT
+* Added support for several sequences in 'in'
 
 [endsect]
 

@@ -30,6 +30,15 @@
 #define MOCK_EXPECTATION_SERIALIZE(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) *m.c##n##_
 
+#define MOCK_EXPECTATION_IN_ADD(z, n, d ) \
+    add( s##n.impl_ );
+#define MOCK_EXPECTATION_IN(z, n, d) \
+    expectation& in( BOOST_PP_ENUM_PARAMS(n, sequence& s) ) \
+    { \
+        BOOST_PP_REPEAT(n, MOCK_EXPECTATION_IN_ADD, _ ) \
+        return *this; \
+    }
+
 namespace mock
 {
 namespace detail
@@ -68,11 +77,9 @@ namespace detail
                     MOCK_EXPECTATION_IS_VALID, BOOST_PP_EMPTY);
         }
 
-        expectation& in( sequence& s )
-        {
-            add( s.impl_ );
-            return *this;
-        }
+        BOOST_PP_REPEAT(MOCK_MAX_SEQUENCES,
+            MOCK_EXPECTATION_IN, BOOST_PP_EMPTY)
+
         expectation& once()
         {
             i_ = boost::make_shared< detail::once >();
@@ -131,3 +138,5 @@ namespace detail
 #undef MOCK_EXPECTATION_ARGS
 #undef MOCK_EXPECTATION_IS_VALID
 #undef MOCK_EXPECTATION_SERIALIZE
+#undef MOCK_EXPECTATION_IN
+#undef MOCK_EXPECTATION_IN_ADD

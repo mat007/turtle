@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE( an_expectation_can_be_used_in_several_sequences )
 {
     mock::sequence s1, s2;
     mock::detail::function< void() > e;
-    e.expect().once().in( s1 ).in( s2 );
+    e.expect().once().in( s1, s2 );
     BOOST_CHECK_NO_THROW( e() );
     BOOST_CHECK( e.verify() );
 }

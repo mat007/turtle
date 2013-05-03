@@ -393,7 +393,7 @@ An expectation is a statement of configuration for a mock object.
 
 Synopsis :
 
- MOCK_EXPECT( identifier ).``[link turtle.reference.expectation.invocation invocation]``( arguments ).with( ``[link turtle.reference.expectation.constraints constraints]`` ).in( ``[link turtle.reference.expectation.sequence sequence]`` ).``[link turtle.reference.expectation.actions action]``( value );
+ MOCK_EXPECT( identifier ).``[link turtle.reference.expectation.invocation invocation]``( arguments ).with( ``[link turtle.reference.expectation.constraints constraints]`` ).in( ``[link turtle.reference.expectation.sequence sequences]`` ).``[link turtle.reference.expectation.actions action]``( value );
 
 [note The identifier refers to the one specified when [link turtle.reference.creation creating] a mock object]
 
@@ -612,9 +612,9 @@ Example using &&, || and ! :
 
 Synopsis :
 
- mock::sequence s;
- MOCK_EXPECT( identifier_1 ).in( s );
- MOCK_EXPECT( identifier_2 ).in( s );
+ mock::sequence s_1, s_2;
+ MOCK_EXPECT( identifier_1 ).in( s_1 );
+ MOCK_EXPECT( identifier_2 ).in( s_1, s_2 );
 
 Example :
 
@@ -636,19 +636,24 @@ Example :
     MOCK_EXPECT( c_2.method_2 ).in( s );
  }
 
-Example of setting several sequences by chaining calls to ['in] :
+Example of setting several sequences :
 
  MOCK_CLASS( mock_class )
  {
      MOCK_METHOD( method, 0, void() )
  };
  
- BOOST_AUTO_TEST_CASE( demonstrates_enforcing_several_expectations_orders )
+ BOOST_AUTO_TEST_CASE( demonstrates_enforcing_several_expectation_orders )
  {
     mock_class c;
     mock::sequence s_1, s_2;
-    MOCK_EXPECT( c.method ).in( s_1 ).in( s_2 );
+    MOCK_EXPECT( c.method ).in( s_1, s_2 );
  }
+
+The maximum number of sequences that can be passed to ['in] is MOCK_MAX_SEQUENCES which defaults to 5. If needed the value can be increased before including the library :
+
+ #define MOCK_MAX_SEQUENCES 7
+ #include <mock/turtle.hpp>
 
 [endsect]
 

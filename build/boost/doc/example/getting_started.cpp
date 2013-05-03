@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
     calculator c( v );
     mock::sequence s;
     MOCK_EXPECT( v.display ).once().with( 0 ).in( s ); // add this expectation to the sequence
-    MOCK_EXPECT( v.display ).with( 1 ).in( s );        // add this expectation to the sequence after the previous one
+    MOCK_EXPECT( v.display ).with( 1 ).in( s );        // add this expectation to the sequence after the previous call
     c.add( 0, 0 );
     c.add( 1, 0 );
 }
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
     mock::sequence s1, s2;
     MOCK_EXPECT( v.display ).once().with( 0 ).in( s1 );
     MOCK_EXPECT( v.display ).once().with( 1 ).in( s2 );
-    MOCK_EXPECT( v.display ).with( 2 ).in( s1 ).in( s2 ); // add this expectation to both sequences after the previous ones
+    MOCK_EXPECT( v.display ).with( 2 ).in( s1, s2 );    // add this expectation to both sequences after the previous calls
     c.add( 0, 0 );
     c.add( 1, 0 );
     c.add( 1, 1 );
