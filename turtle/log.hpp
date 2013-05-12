@@ -137,6 +137,13 @@ namespace detail
     {
         return s << '?';
     }
+#if !defined(BOOST_NO_CXX11_NULLPTR) && !defined(BOOST_NO_NULLPTR)
+    inline stream& operator<<( stream& s, std::nullptr_t )
+    {
+        return s << "nullptr";
+    }
+#endif
+
     template< typename T >
     BOOST_DEDUCED_TYPENAME boost::enable_if<
         boost::function_types::is_callable_builtin< T >,

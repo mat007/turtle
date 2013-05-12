@@ -11,6 +11,7 @@
 
 #include "config.hpp"
 #include "constraint.hpp"
+#include "detail/addressof.hpp"
 #include <boost/ref.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/utility/addressof.hpp>
@@ -35,12 +36,12 @@ namespace detail
     struct same
     {
         explicit same( const Expected& expected )
-            : expected_( boost::addressof( boost::unwrap_ref( expected ) ) )
+            : expected_( detail::addressof( boost::unwrap_ref( expected ) ) )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return boost::addressof( actual ) == expected_;
+            return detail::addressof( actual ) == expected_;
         }
         friend std::ostream& operator<<( std::ostream& os, const same& s )
         {
@@ -54,7 +55,7 @@ namespace detail
     struct retrieve
     {
         explicit retrieve( Expected& expected )
-            : expected_( boost::addressof( boost::unwrap_ref( expected ) ) )
+            : expected_( detail::addressof( boost::unwrap_ref( expected ) ) )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual,
@@ -78,7 +79,7 @@ namespace detail
                 >
             >::type* = 0 ) const
         {
-            *expected_ = boost::addressof( actual );
+            *expected_ = detail::addressof( actual );
             return true;
         }
         friend std::ostream& operator<<( std::ostream& s, const retrieve& r )

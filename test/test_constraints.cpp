@@ -78,6 +78,12 @@ BOOST_AUTO_TEST_CASE( same )
         BOOST_CHECK( ! c.c_( j ) );
         BOOST_CHECK( c.c_( i ) );
     }
+#if !defined(BOOST_NO_CXX11_NULLPTR) && !defined(BOOST_NO_NULLPTR)
+    {
+        std::nullptr_t p;
+        BOOST_CHECK( mock::same( p ).c_( p ) );
+    }
+#endif
 }
 
 BOOST_AUTO_TEST_CASE( assign )
@@ -205,6 +211,14 @@ BOOST_AUTO_TEST_CASE( retrieve )
         BOOST_CHECK( mock::retrieve( boost::ref( i ) ).c_( j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
+#if !defined(BOOST_NO_CXX11_NULLPTR) && !defined(BOOST_NO_NULLPTR)
+    {
+        std::nullptr_t* i = 0;
+        std::nullptr_t j;
+        BOOST_CHECK( mock::retrieve( i ).c_( j ) );
+        BOOST_CHECK_EQUAL( i, &j );
+    }
+#endif
 }
 
 namespace

@@ -39,6 +39,10 @@ However a somewhat better solution would be :
 
  MOCK_EXPECT( m.method ).with( mock::negate );
 
+or with C++11 nullptr support :
+
+ MOCK_EXPECT( m.method ).with( nullptr );
+
 [endsect]
 
 [section Template methods cannot be mocked]

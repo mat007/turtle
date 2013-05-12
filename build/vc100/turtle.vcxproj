@@ -23,6 +23,7 @@
     <ClInclude Include="..\..\turtle\constraint.hpp" />
     <ClInclude Include="..\..\turtle\constraints.hpp" />
     <ClInclude Include="..\..\turtle\detail\action.hpp" />
+    <ClInclude Include="..\..\turtle\detail\addressof.hpp" />
     <ClInclude Include="..\..\turtle\detail\child.hpp" />
     <ClInclude Include="..\..\turtle\detail\cleanup.hpp" />
     <ClInclude Include="..\..\turtle\detail\context.hpp" />

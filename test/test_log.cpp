@@ -630,3 +630,12 @@ BOOST_AUTO_TEST_CASE( boost_lambda_functor_yields_question_mark_when_serialized 
     BOOST_CHECK_EQUAL( "?", to_string( boost::lambda::bind( &some_function ) ) );
     BOOST_CHECK_EQUAL( "?", to_string( boost::lambda::_1 < 42 ) );
 }
+
+#if !defined(BOOST_NO_CXX11_NULLPTR) && !defined(BOOST_NO_NULLPTR)
+
+BOOST_AUTO_TEST_CASE( nullptr_is_serialized )
+{
+    BOOST_CHECK_EQUAL( "nullptr", to_string( nullptr ) );
+}
+
+#endif
