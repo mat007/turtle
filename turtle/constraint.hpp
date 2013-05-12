@@ -18,6 +18,8 @@ namespace mock
     template< typename Constraint >
     struct constraint
     {
+        constraint()
+        {}
         constraint( const Constraint& c )
             : c_( c )
         {}
@@ -133,14 +135,7 @@ namespace detail
             } \
         }; \
     } \
-    template<> \
-    struct constraint< detail::N > \
-    { \
-        constraint() \
-        {} \
-        detail::N c_; \
-    }; \
-    const constraint< detail::N > N;
+    const mock::constraint< detail::N > N;
 
 #define MOCK_BINARY_CONSTRAINT(N,Expr) \
     namespace detail \
@@ -170,7 +165,7 @@ namespace detail
         }; \
     } \
     template< typename T > \
-    constraint< detail::N< T > > N( T t ) \
+    mock::constraint< detail::N< T > > N( T t ) \
     { \
         return detail::N< T >( t ); \
     }
