@@ -12,6 +12,8 @@ By default the library attempts to serialize to an std::ostream and if this is n
 
 [note Any incomplete type is gracefully handled and yields a '?'.]
 
+[warning Serializing a type inconsistently (including across several translation units) violates the [@http://en.wikipedia.org/wiki/One_Definition_Rule One Definition Rule].]
+
 If for some reason the serialization to an std::ostream shouldn't be used, it can be overridden by a serialization operator to a mock::stream, for instance to log user_type declared in user_namespace :
 
 [mock_stream_user_type]
