@@ -31,16 +31,16 @@ namespace
 
 namespace mock // it could also be in the namespace of 'my_class'
 {
-    bool operator==( const my_class& actual, const std::string& expected ) // the trick is to compare to a string
+    bool operator==( const my_class& actual, const std::string& expected ) // the first part of trick is to compare to a string
     {
         return boost::lexical_cast< std::string >( actual ) == expected;
     }
-}
+} // mock
 
 BOOST_AUTO_TEST_CASE( method_is_called )
 {
     my_mock mock;
-    MOCK_EXPECT( mock.method ).once().with( "my_class( 42 )" ); // the constraint is given as a string
+    MOCK_EXPECT( mock.method ).once().with( "my_class( 42 )" ); // the second part of the trick is to express the constraint as a string
     mock.method( my_class( 42 ) );
 }
 //]
