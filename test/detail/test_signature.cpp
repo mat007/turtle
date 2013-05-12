@@ -17,9 +17,11 @@ namespace
         void method_1();
         float method_2( int ) const;
     };
-
     typedef base base_type;
+}
 
+BOOST_AUTO_TEST_CASE( mock_signature_generates_signature )
+{
     BOOST_MPL_ASSERT((
         boost::is_same< void(), MOCK_SIGNATURE( method_1 ) > ));
     BOOST_MPL_ASSERT((
