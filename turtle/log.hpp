@@ -113,27 +113,27 @@ namespace detail
         return s;
     }
     template< typename T >
-    stream& operator<<( stream& s, boost::reference_wrapper< T > t )
+    stream& operator<<( stream& s, const boost::reference_wrapper< T >& t )
     {
         return s << mock::format( t.get() );
     }
     template< typename T >
-    stream& operator<<( stream& s, boost::shared_ptr< T > t )
+    stream& operator<<( stream& s, const boost::shared_ptr< T >& t )
     {
         return s << mock::format( t.get() );
     }
     template< typename T >
-    stream& operator<<( stream& s, boost::weak_ptr< T > t )
+    stream& operator<<( stream& s, const boost::weak_ptr< T >& t )
     {
         return s << mock::format( t.lock() );
     }
     template< typename T >
-    stream& operator<<( stream& s, boost::lambda::lambda_functor< T > )
+    stream& operator<<( stream& s, const boost::lambda::lambda_functor< T >& )
     {
         return s << '?';
     }
     template< typename T >
-    stream& operator<<( stream& s, boost::phoenix::actor< T > )
+    stream& operator<<( stream& s, const boost::phoenix::actor< T >& )
     {
         return s << '?';
     }
