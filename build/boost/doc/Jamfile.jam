@@ -47,7 +47,7 @@ project example
 compile example/motivation.cpp ;
 compile example/getting_started.cpp ;
 compile example/customisation.cpp ;
-compile example/async_call.cpp ;
-compile example/retrieve_cref.cpp ;
-compile example/invoke_functor.cpp ;
-compile example/quick_constraint.cpp ;
+compile example/patterns_async_call.cpp ;
+compile example/patterns_retrieve_cref.cpp ;
+compile example/patterns_invoke_functor.cpp ;
+compile example/patterns_quick_constraint.cpp ;

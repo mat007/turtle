@@ -1,8 +1,8 @@
 [section Patterns]
-[import example/async_call.cpp]
-[import example/retrieve_cref.cpp]
-[import example/invoke_functor.cpp]
-[import example/quick_constraint.cpp]
+[import example/patterns_async_call.cpp]
+[import example/patterns_retrieve_cref.cpp]
+[import example/patterns_invoke_functor.cpp]
+[import example/patterns_quick_constraint.cpp]
 
 This section highlights not-so-obvious features of the library gathered from real use cases.
 
