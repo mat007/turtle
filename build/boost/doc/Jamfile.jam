@@ -13,19 +13,19 @@ using doxygen ;
 
 xml mock : mock.qbk ;
 
-doxygen reference
-  :
-    [ glob ../../../boost/mock/*.hpp ]
-  :
-    <doxygen:param>EXPAND_ONLY_PREDEF=YES
-    <doxygen:param>HIDE_UNDOC_MEMBERS=NO
-    <doxygen:param>QUIET=YES
-    <doxygen:param>WARN_IF_UNDOCUMENTED=NO
-    <doxygen:param>EXTRACT_PRIVATE=NO
-    <doxygen:param>ENABLE_PREPROCESSING=YES
-    <doxygen:param>MACRO_EXPANSION=YES
-    <doxygen:param>SEARCH_INCLUDES=NO
-;
+#doxygen reference
+#  :
+#    [ glob ../../../boost/mock/*.hpp ]
+#  :
+#    <doxygen:param>EXPAND_ONLY_PREDEF=YES
+#    <doxygen:param>HIDE_UNDOC_MEMBERS=NO
+#    <doxygen:param>QUIET=YES
+#    <doxygen:param>WARN_IF_UNDOCUMENTED=NO
+#    <doxygen:param>EXTRACT_PRIVATE=NO
+#    <doxygen:param>ENABLE_PREPROCESSING=YES
+#    <doxygen:param>MACRO_EXPANSION=YES
+#    <doxygen:param>SEARCH_INCLUDES=NO
+#;
 
 boostbook standalone
   :
@@ -51,3 +51,4 @@ compile example/patterns_async_call.cpp ;
 compile example/patterns_retrieve_cref.cpp ;
 compile example/patterns_invoke_functor.cpp ;
 compile example/patterns_quick_constraint.cpp ;
+compile example/reference.cpp ;

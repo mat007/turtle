@@ -1,12 +1,11 @@
 [section Reference]
+[import example/reference.cpp]
 
 This section describes the library syntax exhaustively.
 
 All source code snippets assume the following prerequisite :
 
- #define BOOST_AUTO_TEST_MAIN
- #include <boost/test/auto_unit_test.hpp>
- #include <turtle/mock.hpp>
+[prerequisite]
 
 [section Creation]
 
@@ -31,107 +30,49 @@ Most of the time the identifier will be identical to the object name, but in cas
 
 [section Class]
 
-The prefered form for defining a mock class is with using MOCK_CLASS and MOCK_BASE_CLASS, however equivalent alternatives exist without the macros.
-
 Synopsis :
 
- MOCK_CLASS( name )
- {
- };
- 
- template< typename T >
- MOCK_CLASS( name )
- {
- };
- 
- MOCK_BASE_CLASS( name, base )
- {
- };
- 
- template< typename T >
- MOCK_BASE_CLASS( name, base< T > )
- {
- };
- 
- struct name : mock::object // equivalent to using MOCK_CLASS
- {
- };
- 
- template< typename T >
- struct name : mock::object // equivalent to using MOCK_CLASS
- {
- };
- 
- struct name : base, mock::object // equivalent to using MOCK_BASE_CLASS
- {
-     typedef base base_type;
- };
- 
- template< typename T >
- struct mock : base< T >, mock::object
- {
-     typedef typename base< T > base_type;
- };
+ MOCK_CLASS( name )            // defines a class
+ MOCK_BASE_CLASS( name, base ) // defines a class deriving from a base class
+
+Example :
+
+[class_example_1]
+
+Example :
+
+[class_example_2]
+
+Example :
+
+[class_example_3]
+
+Example :
+
+[class_example_4]
+
+The preferred form for defining a mock class is with using MOCK_CLASS and MOCK_BASE_CLASS, however equivalent alternatives exist without the macros.
+
+Example :
+
+[class_example_5]
+
+Example :
+
+[class_example_6]
+
+Example :
+
+[class_example_7]
+
+Example :
+
+[class_example_8]
 
 Deriving from mock::object is optional but provides the additional following benefits :
 
 * the object acts as a composite to [link turtle.reference.verification verify] and [link turtle.reference.reset reset] all the expectations for all its methods at once
 * logs involving the object are enhanced because configuring an expectation for a method will set the class name for all the other methods as well
-
-Example :
-
- MOCK_CLASS( mock_class )
- {
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_class )
- {
-     mock_class c;
- }
-
-Example :
-
- template< typename T >
- MOCK_CLASS( mock_class )
- {
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_template_mock_class )
- {
-     mock_class< int > c;
- }
-
-Example :
-
- class base_class
- {
- };
- 
- MOCK_BASE_CLASS( mock_class, base_class )
- {
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_derived_mock_class )
- {
-     mock_class c;
- }
-
-Example :
-
- template< typename T >
- class base_class
- {
- };
- 
- template< typename T >
- MOCK_BASE_CLASS( mock_class, base_class< T > )
- {
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_template_derived_mock_class )
- {
-     mock_class< int > c;
- }
 
 [endsect]
 
@@ -139,107 +80,48 @@ Example :
 
 Synopsis :
 
- MOCK_METHOD( name, arity )                                          // generates both const and non-const methods, only works in the context of a derived MOCK_BASE_CLASS or base_type typedef
- MOCK_METHOD( name, arity, signature[, identifier] )                 // generates both const and non-const methods, if 'identifier' is omitted it will default to 'name'
- MOCK_CONST_METHOD( name, arity, signature[, identifier] )           // generates only the const version of the method, if 'identifier' is omitted it will default to 'name'
- MOCK_NON_CONST_METHOD( name, arity, signature[, identifier] )       // generates only the non-const version of the method, if 'identifier' is omitted it will default to 'name'
+ MOCK_METHOD( name, arity )                                        // generates both const and non-const methods, only works in the context of a derived MOCK_BASE_CLASS or base_type typedef
+ MOCK_METHOD( name, arity, signature[, identifier] )               // generates both const and non-const methods, if 'identifier' is omitted it will default to 'name'
+ MOCK_CONST_METHOD( name, arity, signature[, identifier] )         // generates only the const version of the method, if 'identifier' is omitted it will default to 'name'
+ MOCK_NON_CONST_METHOD( name, arity, signature[, identifier] )     // generates only the non-const version of the method, if 'identifier' is omitted it will default to 'name'
  
- MOCK_METHOD_TPL( name, arity, signature[, identifier] )             // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
- MOCK_CONST_METHOD_TPL( name, arity, signature[, identifier] )       // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
- MOCK_NON_CONST_METHOD_TPL( name, arity, signature[, identifier] )   // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
+ MOCK_METHOD_TPL( name, arity, signature[, identifier] )           // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
+ MOCK_CONST_METHOD_TPL( name, arity, signature[, identifier] )     // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
+ MOCK_NON_CONST_METHOD_TPL( name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
 
 [note [link turtle.reference.creation.constructor Constructors], [link turtle.reference.creation.destructor destructors] and [link turtle.reference.creation.conversion_operator conversion operators] require special care]
 
-Example :
-
- class base_class
- {
-     virtual void method( int ) = 0;
- };
- 
- MOCK_BASE_CLASS( mock_class, base_class )
- {
-     MOCK_METHOD( method, 1 )              // only possible when referring unambiguously to a base class method
- };
+[note The signature must be surrounded with round parenthesis if the return type contains a comma]
 
 Example :
 
- class base_class
- {
-     virtual void method( int, const std::string& ) = 0;
-     virtual void method( float ) = 0;
- };
- 
- MOCK_BASE_CLASS( mock_class, base_class )
- {
-     MOCK_METHOD( method, 2, void( int, const std::string& ), identifier_1 ) // MOCK_METHOD cannot be used because of overloading
-     MOCK_METHOD( method, 1, void( float ), identifier_2 )                   // the identifier must differ from the previous one in order to fully disambiguate methods
- };
+[member_function_example_1]
+
+Example :
+
+[member_function_example_2]
 
 [note For a compiler not supporting variadic macros MOCK_METHOD_EXT must be used instead]
 
 Example :
 
- class base_class
- {
-     virtual void method( float ) = 0;
-     virtual void method( float ) const = 0;
- };
- 
- MOCK_BASE_CLASS( mock_class, base_class )
- {
-     MOCK_METHOD( method, 1 )              // this generates both const and non-const versions
- };
+[member_function_example_3]
 
 Example :
 
- class base_class
- {
-     virtual void method( float ) = 0;
-     virtual void method( float ) const = 0;
- };
- 
- MOCK_BASE_CLASS( mock_class, base_class )
- {
-     MOCK_CONST_METHOD( method, 1, void( float ), identifier_1 )     // this generates only the const version
-     MOCK_NON_CONST_METHOD( method, 1, void( float ), identifier_2 ) // this generates only the non-const version, with a different identifier
- };
+[member_function_example_4]
 
 Example :
 
- class base_class
- {
-     virtual void method( float ) = 0;
- };
- 
- struct mock_class : base_class
- {
-     typedef base_class base_type; // this is required for MOCK_METHOD to work when not using MOCK_BASE_CLASS
- 
-     MOCK_METHOD( method, 1 )
- };
+[member_function_example_6]
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_NON_CONST_METHOD( operator=, 1, mock_class&( const mock_class& ), assignment ) // operators need a custom identifier
- };
+[member_function_example_7]
 
 Example :
 
- template< typename T >
- MOCK_CLASS( mock_class )
- {
-     MOCK_METHOD_TPL( method, 1, void( const T& ) ) // the _TPL variants must be used if the signature includes a template parameter of the class
- };
-
-If 'signature' has a return type which contains a comma, for instance std::map< int, int >(), then 'signature' must be surrounded with round parenthesis, for instance :
-
- struct mock_class
- {
-     MOCK_METHOD( method, 0, (std::map< int, int >()) )
- };
+[member_function_example_8]
 
 [endsect]
 
@@ -248,16 +130,18 @@ If 'signature' has a return type which contains a comma, for instance std::map< 
 Synopsis :
 
  MOCK_STATIC_METHOD( name, arity, signature[, identifier] )     // if 'identifier' is omitted it will default to 'name'
+ 
  MOCK_STATIC_METHOD_TPL( name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
+
+[note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test]
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_STATIC_METHOD( method, 1, float( int ) )
- };
+[static_member_function_example_1]
 
-[note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test]
+Example :
+
+[static_member_function_example_2]
 
 [endsect]
 
@@ -266,25 +150,18 @@ Example :
 Synopsis :
 
  MOCK_CONSTRUCTOR( name, arity, parameters, identifier )
+ 
  MOCK_CONSTRUCTOR_TPL( name, arity, parameters, identifier ) // must be used if the signature uses a template parameter of the class
 
 [note As constructors do not have a return type, the usual signature gets restricted here to just the parameters]
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_CONSTRUCTOR( mock_class, 2, ( int, const std::string& ), identifier )
- };
+[constructor_example_1]
 
 Example :
 
- template< typename T >
- MOCK_CLASS( mock_class )
- {
-     MOCK_CONSTRUCTOR( mock_class, 2, ( int, const std::string& ), identifier )
-     MOCK_CONSTRUCTOR_TPL( mock_class, 2, ( T, const std::string& ), identifier )
- };
+[constructor_example_2]
 
 [endsect]
 
@@ -294,14 +171,11 @@ Synopsis :
 
  MOCK_DESTRUCTOR( name, identifier )
 
+[note When mocking a destructor it is strongly suggested to manually [link turtle.reference.verification verify] the expectation at the end of the test, because the automatic verification will not be triggered if the mock object is not destroyed]
+
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_DESTRUCTOR( mock_class, destructor )
- };
-
-[note When mocking a destructor it is strongly suggested to manually [link turtle.reference.verification verify] the expectation at the end of the test, because the automatic verification will not be triggered if the mock object is not destroyed]
+[destructor_example_1]
 
 [endsect]
 
@@ -309,9 +183,9 @@ Example :
 
 Synopsis :
 
- MOCK_CONVERSION_OPERATOR( type, identifier )           // this generates both const and non-const operators
- MOCK_CONST_CONVERSION_OPERATOR( type, identifier )
- MOCK_NON_CONST_CONVERSION_OPERATOR( type, identifier )
+ MOCK_CONVERSION_OPERATOR( type, identifier )               // generates both const and non-const operators
+ MOCK_CONST_CONVERSION_OPERATOR( type, identifier )         // generates only a const operator
+ MOCK_NON_CONST_CONVERSION_OPERATOR( type, identifier )     // generates only a non-const operator
  
  MOCK_CONVERSION_OPERATOR_TPL( type, identifier )           // must be used if the signature uses a template parameter of the class
  MOCK_CONST_CONVERSION_OPERATOR_TPL( type, identifier )     // must be used if the signature uses a template parameter of the class
@@ -319,21 +193,11 @@ Synopsis :
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_CONVERSION_OPERATOR( int, conversion_to_int )
-     MOCK_CONST_CONVERSION_OPERATOR( const std::string&, conversion_to_string )
- };
+[conversion_operator_example_1]
 
 Example :
 
- template< typename T >
- MOCK_CLASS( mock_class )
- {
-     MOCK_CONVERSION_OPERATOR_TPL( T, conversion_to_T )                                   // the _TPL variants must be used if the signature includes a template parameter of the class
-     MOCK_CONST_CONVERSION_OPERATOR( const std::string&, const_conversion_to_string )
-     MOCK_NON_CONST_CONVERSION_OPERATOR( const std::string&, const_conversion_to_string )
- };
+[conversion_operator_example_2]
 
 [endsect]
 
@@ -347,27 +211,11 @@ Synopsis :
 
 Example :
 
- BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_functor )
- {
-    MOCK_FUNCTOR( f, void( int ) );
- }
+[functor_example_1]
 
 Example :
 
- namespace
- {
-     template< typename T >
-     struct template_class
-     {
-         MOCK_FUNCTOR_TPL( f, void( T ) );
-     };
- }
- 
- BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_template_functor )
- {
-     template_class< int > c;
-     c.f( 3 );
- }
+[functor_example_2]
 
 [endsect]
 
@@ -377,11 +225,11 @@ Synopsis :
 
  MOCK_FUNCTION( name, arity, signature[, identifier] ) // if 'identifier' is omitted it will default to 'name'
 
-[note A static object is used behind the scene in order to keep track of the expectations of a mock free function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test]
+[note A static object is used behind the scene in order to keep track of the expectations of a mock function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test]
 
 Example :
 
- MOCK_FUNCTION( mock_function, 1, float( int ) )
+[function_example_1]
 
 [endsect]
 
@@ -399,22 +247,11 @@ Synopsis :
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-    MOCK_METHOD( method, 0, int( int ), method )
-    MOCK_METHOD( method, 0, void( const std::string&, float ), method2 )
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_configuring_mock_objects )
- {
-    mock_class c;
-    mock::sequence s;
-    MOCK_EXPECT( c.method ).once().with( 0 ).in( s ).returns( 42 );
-    MOCK_EXPECT( c.method2 ).never().with( "ok", mock::any );
-    MOCK_EXPECT( c.method2 ).at_least( 2 ).in( s ).throws( std::runtime_error() );
- }
+[expectation_example_1]
 
 [section Invocation]
+
+An invocation defines how many times a mock object is to be exercised.
 
 Synopsis :
 
@@ -428,50 +265,25 @@ Synopsis :
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_METHOD( method, 2, void( int, const std::string& ) )
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_setting_up_invocations_on_a_mock_method )
- {
-    mock_class c;
-    MOCK_EXPECT( c.method ).once(); // can only be called once
-    MOCK_EXPECT( c.method );        // can be called an unlimited number of times
- }
+[invocation_example_1]
 
 Example :
 
- BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_functor )
- {
-    MOCK_FUNCTOR( f, void( int, const std::string& ) );
-    MOCK_EXPECT( f );
- }
+[invocation_example_2]
 
 Example :
 
- MOCK_FUNCTION( free_function, 1, float( int ) )
- 
- BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_function )
- {
-     MOCK_EXPECT( free_function ).once();
- }
+[invocation_example_3]
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_STATIC_METHOD( method, 1, float( int ) )
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_static_method )
- {
-     MOCK_EXPECT( mock_class::method ).once();
- }
+[invocation_example_4]
 
 [endsect]
 
 [section Constraints]
+
+A constraint validates the actual parameter value of a call to a mock object.
 
 Synopsis :
 
@@ -522,170 +334,72 @@ Constraints :
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_METHOD( method, 2, void( int, const std::string& ) )
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_adding_builtin_constraints )
- {
-    mock_class c;
-    MOCK_EXPECT( c.method ).with( mock::equal( 3 ), mock::equal( "some string" ) );
-    MOCK_EXPECT( c.method ).with( 3, "some string" );                               // equivalent to the previous one using short-cuts
- }
+[constraints_example_1]
 
 Example using a function pointer :
 
- bool custom_constraint( int actual )
- {
-    return actual == 42;
- }
- 
- BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_a_free_function )
- {
-    mock_class c;
-    MOCK_EXPECT( c.method ).with( &custom_constraint );
- }
+[constraints_example_2]
 
 Example using a standard library functor :
 
- bool custom_constraint( int expected, int actual )
- {
-    return expected == actual;
- }
- 
- BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_a_standard_library_functor )
- {
-    mock_class c;
-    MOCK_EXPECT( c.method ).with( std::bind1st( std::ptr_fun( &custom_constraint ), 42 ) ); // std::ptr_fun creates an std::unary_function
- }
+[constraints_example_3]
 
 Example using [@http://www.boost.org/libs/bind Boost.Bind] :
 
- bool custom_constraint( int expected, int actual )
- {
-    return expected == actual;
- }
- 
- BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_bind )
- {
-    mock_class c;
-    MOCK_EXPECT( c.method ).with( boost::bind( &custom_constraint, 42, _1 ) ) );
- }
+[constraints_example_4]
 
 Example using [@http://www.boost.org/libs/lambda Boost.Lambda] :
 
- BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_lambda )
- {
-    mock_class c;
-    MOCK_EXPECT( c.method ).with( boost::lambda::_1 == 42 );
- }
+[constraints_example_5]
 
 Example using [@http://www.boost.org/libs/phoenix Boost.Phoenix] :
 
- BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_phoenix )
- {
-    mock_class c;
-    MOCK_EXPECT( c.method ).with( boost::phoenix::arg_names::arg1 == 42 );
-    MOCK_EXPECT( c.method ).with( boost::phoenix::arg_names::_1 == 42 );
- }
+[constraints_example_6]
 
 Example using C++11 lambdas :
 
- BOOST_AUTO_TEST_CASE( demonstrates_adding_a_constraint_with_cxx11_lambda )
- {
-     mock_class c;
-     MOCK_EXPECT( c.method ).with( []( int actual ) { return 42 == actual; } );
- }
+[constraints_example_7]
 
 Example using &&, || and ! :
 
- BOOST_AUTO_TEST_CASE( demonstrates_combining_constraints )
- {
-    mock_class c;
-    MOCK_EXPECT( c.method ).with( mock::less( 4 ) && mock::greater( 2 ), ! mock::equal( "" ) );
- }
+[constraints_example_8]
 
 [endsect]
 
 [section Sequence]
 
+A sequence enforces a given order between two or more expectations.
+
 Synopsis :
 
- mock::sequence s_1, s_2;
- MOCK_EXPECT( identifier_1 ).in( s_1 );
- MOCK_EXPECT( identifier_2 ).in( s_1, s_2 );
+ MOCK_EXPECT( identifier_1 ).in( sequence_1 [, sequence_2 [, ...]] );
+
+Each sequence is an instance of mock::sequence.
+
+The maximum number of sequences that can be set is MOCK_MAX_SEQUENCES which defaults to 10. If needed the value can be increased before including the library :
+
+ #define MOCK_MAX_SEQUENCES 12
+ #include <turtle/mock.hpp>
 
 Example :
 
- MOCK_CLASS( mock_class_1 )
- {
-     MOCK_METHOD( method_1, 0, void() )
- };
- MOCK_CLASS( mock_class_2 )
- {
-     MOCK_METHOD( method_2, 0, void() )
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_enforcing_expectations_order )
- {
-    mock_class_1 c_1;
-    mock_class_2 c_2;
-    mock::sequence s;
-    MOCK_EXPECT( c_1.method_1 ).in( s );
-    MOCK_EXPECT( c_2.method_2 ).in( s );
- }
-
-Example of setting several sequences :
-
- MOCK_CLASS( mock_class )
- {
-     MOCK_METHOD( method, 0, void() )
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_enforcing_several_expectation_orders )
- {
-    mock_class c;
-    mock::sequence s_1, s_2;
-    MOCK_EXPECT( c.method ).in( s_1, s_2 );
- }
-
-The maximum number of sequences that can be passed to ['in] is MOCK_MAX_SEQUENCES which defaults to 5. If needed the value can be increased before including the library :
-
- #define MOCK_MAX_SEQUENCES 7
- #include <mock/turtle.hpp>
+[sequence_example_1]
 
 [endsect]
 
 [section Actions]
 
+An action performs additional treatments after an expectation has been deemed valid.
+
 Synopsis :
 
  MOCK_EXPECT( identifier ).returns( value );
  MOCK_EXPECT( identifier ).throws( exception );
- MOCK_EXPECT( identifier ).calls( functor );    // throws std::invalid_argument if ! ['functor]
+ MOCK_EXPECT( identifier ).calls( functor );    // gets assigned to a boost::function and throws std::invalid_argument if empty
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_METHOD( method, 0, int( int ) )
- };
- 
- int function( int i )
- {
-     return i;
- }
- 
- BOOST_AUTO_TEST_CASE( demonstrates_configuring_actions )
- {
-    mock_class c;
-    MOCK_EXPECT( c.method ).returns( 42 );
-    MOCK_EXPECT( c.method ).throws( std::runtime_error( "error !" ) );
-    MOCK_EXPECT( c.method ).calls( &function );                        // forwards 'method' parameter to 'function'
-    MOCK_EXPECT( c.method ).calls( boost::bind( &function, 42 ) );     // drops 'method' parameter and binds 42 as parameter to 'function'
-    MOCK_EXPECT( c.method ).calls( []( int i ) { return i; } );        // uses a C++11 lambda
- }
+[action_example_1]
 
 [endsect]
 
@@ -696,9 +410,9 @@ Example :
 Synopsis :
 
  MOCK_VERIFY( identifier );
- mock::verify( object );   // verifies all expectations set for all methods of 'object' which must be an instance of a class created using MOCK_CLASS or MOCK_BASE_CLASS, or inherit mock::object
- mock::verify( functor );  // verifies all expectations set for 'functor' which must be an instance of a functor created using MOCK_FUNCTOR
- mock::verify();           // verifies all existing mock objects, functions and functors
+ mock::verify( object );   // verifies all expectations for all methods of 'object' which must be an instance of a class created using MOCK_CLASS or MOCK_BASE_CLASS, or inherit mock::object
+ mock::verify( functor );  // verifies all expectations for 'functor' which must be an instance of a functor created using MOCK_FUNCTOR
+ mock::verify();           // verifies all expectations for all mock objects, functions and functors
 
 [note These calls all return a boolean indicating whether the verification was successful or not, however usually simply calling them is enough because a failing verification will be logged to the test framework.]
 
@@ -708,52 +422,19 @@ Synopsis :
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_METHOD( method, 0, void() )
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_verifying_a_mock_method )
- {
-    mock_class c;
-    MOCK_VERIFY( c.method ); // logs an error and returns false if not all expectations are met
-    mock::verify( c );       // verifies all expectations set for all methods of 'c'
-    mock::verify();          // verifies all existing mock objects, functions and functors
- }
+[verification_example_1]
 
 Example :
 
- BOOST_AUTO_TEST_CASE( demonstrates_verifying_a_mock_functor )
- {
-    MOCK_FUNCTOR( f, void( int ) );
-    MOCK_VERIFY( f );               // logs an error and returns false if not all expectations are met
-    mock::verify( f );              // behaves the same as MOCK_VERIFY
-    mock::verify();                 // verifies all existing mock objects, functions and functors
- }
+[verification_example_2]
 
 Example :
 
- MOCK_FUNCTION( f, 1, void( int ) )
- 
- BOOST_AUTO_TEST_CASE( demonstrates_verifying_a_mock_function )
- {
-    MOCK_VERIFY( f ); // logs an error and returns false if not all expectations are met
-    mock::verify();   // verifies all existing mock objects, functions and functors
- }
+[verification_example_3]
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_STATIC_METHOD( method, 0, void() )
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_verifying_a_static_mock_method )
- {
-    mock_class c;
-    MOCK_VERIFY( c::method ); // logs an error and returns false if not all expectations are met
-    mock::verify();           // verifies all existing mock objects, functions and functors
- }
+[verification_example_4]
 
 [endsect]
 
@@ -762,56 +443,25 @@ Example :
 Synopsis :
 
  MOCK_RESET( identifier );
- mock::reset( object );    // resets all expectations set for all methods of 'object' which must be an instance of a class created using MOCK_CLASS or MOCK_BASE_CLASS, or inherit mock::object
- mock::reset();            // resets all existing mock objects, functions and functors
+ mock::reset( object );    // resets all expectations for all methods of 'object' which must be an instance of a class created using MOCK_CLASS or MOCK_BASE_CLASS, or inherit mock::object
+ mock::reset( functor );   // resets all expectations for 'functor' which must be an instance of a functor created using MOCK_FUNCTOR
+ mock::reset();            // resets all expectations for all mock objects, functions and functors
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_METHOD( method, 0, void() )
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_resetting_a_mock_method )
- {
-    mock_class c;
-    MOCK_RESET( c.method ); // resets all expectations set for 'c.method'
-    mock::reset( c );       // resets all expectations set on 'c'
-    mock::reset();          // resets all existing mock objects, functions and functors
- }
+[reset_example_1]
 
 Example :
 
- BOOST_AUTO_TEST_CASE( demonstrates_resetting_a_mock_functor )
- {
-    MOCK_FUNCTOR( f, void( int ) );
-    MOCK_RESET( f );                // resets all expectations set for 'f'
-    mock::reset();                  // resets all existing mock objects, functions and functors
- }
+[reset_example_2]
 
 Example :
 
- MOCK_FUNCTION( f, 1, void( int ) )
- 
- BOOST_AUTO_TEST_CASE( demonstrates_resetting_a_mock_function )
- {
-    MOCK_RESET( f ); // resets all expectations set for 'f'
-    mock::reset();   // resets all existing mock objects, functions and functors
- }
+[reset_example_3]
 
 Example :
 
- MOCK_CLASS( mock_class )
- {
-     MOCK_STATIC_METHOD( method, 0, void() )
- };
- 
- BOOST_AUTO_TEST_CASE( demonstrates_resetting_a_static_mock_method )
- {
-    mock_class c;
-    MOCK_RESET( c::method ); // resets all expectations set for 'c::method'
-    mock::reset();           // resets all existing mock objects, functions and functors
- }
+[reset_example_4]
 
 [endsect]
 
@@ -829,8 +479,7 @@ The expression manipulates the received parameter 'actual' in order to implement
 
 Example :
 
- MOCK_UNARY_CONSTRAINT( any, true )               // this is (almost) how mock::any is defined
- MOCK_UNARY_CONSTRAINT( forty_two, actual == 42 ) // this defines a 'forty_two' constraint
+[helpers_example_1]
 
 [endsect]
 
@@ -846,8 +495,7 @@ The expression manipulates the received parameter 'actual' as well as the passed
 
 Example :
 
- MOCK_BINARY_CONSTRAINT( equal, actual == expected )                  // this is how mock::equal is defined
- MOCK_BINARY_CONSTRAINT( near, std::abs( actual - expected ) < 0.01 ) // this defines a 'near' constraint which can be used as 'near( 42 )'
+[helpers_example_2]
 
 [endsect]
 

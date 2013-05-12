@@ -179,7 +179,7 @@ Finally another workaround would be to not use the macro at all :
  struct my_mock : my_base_type< T1, T2 >, mock::object
  {};
 
-Note that [@www.boost.org/libs/utility/identity_type/doc/html/index.html Boost.IdentityType] is of little help here because the type is by essence very often abstract, which doesn't work well for some compilers (e.g. gcc)].
+Note that [@www.boost.org/libs/utility/identity_type/doc/html/index.html Boost.IdentityType] is of little help here because the type is by essence very often abstract, which doesn't work well for some compilers (e.g. gcc).
 
 [endsect]
 
