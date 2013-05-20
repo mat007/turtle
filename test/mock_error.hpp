@@ -10,7 +10,6 @@
 #define MOCK_TEST_MOCK_ERROR_HPP_INCLUDED
 
 #define MOCK_ERROR_POLICY mock_error
-#include <boost/test/test_tools.hpp>
 #include <boost/lexical_cast.hpp>
 #include <stdexcept>
 
