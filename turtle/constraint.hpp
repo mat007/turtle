@@ -33,50 +33,50 @@ namespace mock
 
 namespace detail
 {
-    template< typename Constraint1, typename Constraint2 >
+    template< typename Lhs, typename Rhs >
     class and_
     {
     public:
-        and_( const Constraint1& c1, const Constraint2& c2 )
-            : c1_( c1 )
-            , c2_( c2 )
+        and_( const Lhs& lhs, const Rhs& rhs )
+            : lhs_( lhs )
+            , rhs_( rhs )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return c1_( actual ) && c2_( actual );
+            return lhs_( actual ) && rhs_( actual );
         }
         friend std::ostream& operator<<( std::ostream& s, const and_& a )
         {
-            return s << "( " << mock::format( a.c1_ )
-                << " && " << mock::format( a.c2_ ) << " )";
+            return s << "( " << mock::format( a.lhs_ )
+                << " && " << mock::format( a.rhs_ ) << " )";
         }
     private:
-        Constraint1 c1_;
-        Constraint2 c2_;
+        Lhs lhs_;
+        Rhs rhs_;
     };
 
-    template< typename Constraint1, typename Constraint2 >
+    template< typename Lhs, typename Rhs >
     class or_
     {
     public:
-        or_( const Constraint1& c1, const Constraint2& c2 )
-            : c1_( c1 )
-            , c2_( c2 )
+        or_( const Lhs& lhs, const Rhs& rhs )
+            : lhs_( lhs )
+            , rhs_( rhs )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return c1_( actual ) || c2_( actual );
+            return lhs_( actual ) || rhs_( actual );
         }
         friend std::ostream& operator<<( std::ostream& s, const or_& o )
         {
-            return s << "( " << mock::format( o.c1_ )
-                << " || " << mock::format( o.c2_ )<< " )";
+            return s << "( " << mock::format( o.lhs_ )
+                << " || " << mock::format( o.rhs_ )<< " )";
         }
     private:
-        Constraint1 c1_;
-        Constraint2 c2_;
+        Lhs lhs_;
+        Rhs rhs_;
     };
 
     template< typename Constraint >
@@ -100,20 +100,20 @@ namespace detail
     };
 }
 
-    template< typename Constraint1, typename Constraint2 >
-    const constraint< detail::or_< Constraint1, Constraint2 > >
-        operator||( const constraint< Constraint1 >& lhs,
-                    const constraint< Constraint2 >& rhs )
+    template< typename Lhs, typename Rhs >
+    const constraint< detail::or_< Lhs, Rhs > >
+        operator||( const constraint< Lhs >& lhs,
+                    const constraint< Rhs >& rhs )
     {
-        return detail::or_< Constraint1, Constraint2 >( lhs.c_, rhs.c_ );
+        return detail::or_< Lhs, Rhs >( lhs.c_, rhs.c_ );
     }
 
-    template< typename Constraint1, typename Constraint2 >
-    const constraint< detail::and_< Constraint1, Constraint2 > >
-        operator&&( const constraint< Constraint1 >& lhs,
-                    const constraint< Constraint2 >& rhs )
+    template< typename Lhs, typename Rhs >
+    const constraint< detail::and_< Lhs, Rhs > >
+        operator&&( const constraint< Lhs >& lhs,
+                    const constraint< Rhs >& rhs )
     {
-        return detail::and_< Constraint1, Constraint2 >( lhs.c_, rhs.c_ );
+        return detail::and_< Lhs, Rhs >( lhs.c_, rhs.c_ );
     }
 
     template< typename Constraint >
