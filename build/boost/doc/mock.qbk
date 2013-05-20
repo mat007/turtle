@@ -14,10 +14,6 @@
 [/
 [section:introduction Introduction]
 
-Turtle is a C++ [@http://en.wikipedia.org/wiki/Mock_object Mock object] library written for [@http://www.boost.org Boost] with a focus on usability, simplicity and flexibility.
-
-[note Boost.Mock is not an official Boost library]
-
 [endsect]
 ]
 

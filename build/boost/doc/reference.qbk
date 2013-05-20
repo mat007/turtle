@@ -26,7 +26,7 @@ Creating a mock object involves two parts under the hood :
 
 Most of the time the identifier will be identical to the object name, but in case of ambiguity (for instance overloaded methods) a different identifier will have to be specified.
 
-[warning Creating a mock object creates a new object and does not magically replace existing ones, for instance creating a mock function will not replace an already existing function with the same name and signature]
+[warning Creating a mock object creates a new object and does not magically replace existing ones, for instance creating a mock function will not replace an already existing function with the same name and signature.]
 
 [section Class]
 
@@ -148,7 +148,7 @@ Synopsis :
  
  MOCK_STATIC_METHOD_TPL( name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
 
-[note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test]
+[note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test.]
 
 [warning With a compiler without support for variadic macros the identifier cannot be ommitted and must be given explicitly.]
 
@@ -170,7 +170,7 @@ Synopsis :
  
  MOCK_CONSTRUCTOR_TPL( name, arity, parameters, identifier ) // must be used if the signature uses a template parameter of the class
 
-[note As constructors do not have a return type, the usual signature gets restricted here to just the parameters]
+[note As constructors do not have a return type, the usual signature gets restricted here to just the parameters.]
 
 Example :
 
@@ -188,7 +188,7 @@ Synopsis :
 
  MOCK_DESTRUCTOR( name, identifier )
 
-[note When mocking a destructor it is strongly suggested to manually [link turtle.reference.verification verify] the expectation at the end of the test, because the automatic verification will not be triggered if the mock object is not destroyed]
+[note When mocking a destructor it is strongly suggested to manually [link turtle.reference.verification verify] the expectation at the end of the test, because the automatic verification will not be triggered if the mock object is not destroyed.]
 
 Example :
 
@@ -242,7 +242,7 @@ Synopsis :
 
  MOCK_FUNCTION( name, arity, signature[, identifier] ) // if 'identifier' is omitted it will default to 'name'
 
-[note A static object is used behind the scene in order to keep track of the expectations of a mock function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test]
+[note A static object is used behind the scene in order to keep track of the expectations of a mock function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test.]
 
 [warning With a compiler without support for variadic macros the identifier cannot be ommitted and must be given explicitly.]
 
@@ -262,7 +262,7 @@ Synopsis :
 
  MOCK_EXPECT( identifier ).``[link turtle.reference.expectation.invocation invocation]``( arguments ).with( ``[link turtle.reference.expectation.constraints constraints]`` ).in( ``[link turtle.reference.expectation.sequence sequences]`` ).``[link turtle.reference.expectation.actions action]``( value );
 
-[note The identifier refers to the one specified when [link turtle.reference.creation creating] a mock object]
+[note The identifier refers to the one specified when [link turtle.reference.creation creating] a mock object.]
 
 Example :
 
@@ -510,7 +510,7 @@ Synopsis :
 
 The expression manipulates the received parameter 'actual' as well as the passed argument 'expected' in order to implement the constraint.
 
-[note The type of expected must be copy-constructible and assignable]
+[note The type of expected must be copy-constructible and assignable.]
 
 Example :
 
