@@ -104,45 +104,6 @@ The workaround would be to add the signature to MOCK_METHOD :
 
 [endsect]
 
-[section Compilers without support for variadic macros cannot rely solely on MOCK_METHOD]
-
- MOCK_CLASS( my_mock )
- {
-     MOCK_METHOD( method_1, 0, void() )           // this fails to compile with compilers without variadic macros
-     MOCK_METHOD( method_2, 0, void(), method_2 ) // this too fails with compilers without variadic macros
- };
-
-The workaround would be to use the MOCK_METHOD_EXT macro :
-
- MOCK_CLASS( my_mock )
- {
-     MOCK_METHOD_EXT( method_1, 0, void(), method_1 ) // the last argument must be specified
-     MOCK_METHOD_EXT( method_2, 0, void(), method_2 )
- };
-
-The last 'identifier' argument must also always be specified for all other macros.
-
-Synopsis :
- 
- MOCK_METHOD_EXT( name, arity, signature, identifier )               // generates both const and non-const methods, compatible with compilers not supporting variadic macros
- MOCK_CONST_METHOD_EXT( name, arity, signature, identifier )         // generates only the const version of the method, for compilers not supporting variadic macros
- MOCK_NON_CONST_METHOD_EXT( name, arity, signature, identifier )     // generates only the non-const version of the method, for compilers not supporting variadic macros
- 
- MOCK_METHOD_EXT_TPL( name, arity, signature, identifier )           // must be used if the signature uses a template parameter of the class, for compilers not supporting variadic macros
- MOCK_CONST_METHOD_EXT_TPL( name, arity, signature, identifier )     // must be used if the signature uses a template parameter of the class, for compilers not supporting variadic macros
- MOCK_NON_CONST_METHOD_EXT_TPL( name, arity, signature, identifier ) // must be used if the signature uses a template parameter of the class, for compilers not supporting variadic macros
- 
- MOCK_STATIC_METHOD( name, arity, signature, identifier )
- MOCK_STATIC_METHOD_TPL( name, arity, signature, identifier )        // must be used if the signature uses a template parameter of the class, 'identifier' cannot be omitted, for compilers not supporting variadic macros
- 
- MOCK_FUNCTION( name, arity, signature, identifier )                 // 'identifier' cannot be omitted, for compilers not supporting variadic macros
-
-The other parts of the user interface remain unchanged.
-
-Of course those macros are also available for compilers which support variadic macros.
-
-[endsect]
-
 [section Compilers without support for variadic macros fail on commas in MOCK_BASE_CLASS]
 
 For compilers without support for variadic macros the following code does not compile :

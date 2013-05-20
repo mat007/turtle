@@ -138,7 +138,7 @@ struct base_class
 
 MOCK_BASE_CLASS( mock_class, base_class )
 {
-    MOCK_METHOD( method, 2, void( int, const std::string& ), identifier_1 ) // MOCK_METHOD cannot be used because of overloading
+    MOCK_METHOD( method, 2, void( int, const std::string& ), identifier_1 ) // both the signature and identifier must be specified because of ambiguity due to overloading
     MOCK_METHOD( method, 1, void( float ), identifier_2 )                   // the identifier must differ from the previous one in order to fully disambiguate methods
 };
 //]

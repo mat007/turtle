@@ -80,18 +80,35 @@ Deriving from mock::object is optional but provides the additional following ben
 
 Synopsis :
 
- MOCK_METHOD( name, arity )                                        // generates both const and non-const methods, only works in the context of a derived MOCK_BASE_CLASS or base_type typedef
- MOCK_METHOD( name, arity, signature[, identifier] )               // generates both const and non-const methods, if 'identifier' is omitted it will default to 'name'
- MOCK_CONST_METHOD( name, arity, signature[, identifier] )         // generates only the const version of the method, if 'identifier' is omitted it will default to 'name'
- MOCK_NON_CONST_METHOD( name, arity, signature[, identifier] )     // generates only the non-const version of the method, if 'identifier' is omitted it will default to 'name'
+ MOCK_METHOD( name, arity[, signature[, identifier]] )               // generates both const and non-const methods
+ MOCK_CONST_METHOD( name, arity[, signature[, identifier]] )         // generates only the const version of the method
+ MOCK_NON_CONST_METHOD( name, arity[, signature[, identifier]] )     // generates only the non-const version of the method
  
- MOCK_METHOD_TPL( name, arity, signature[, identifier] )           // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
- MOCK_CONST_METHOD_TPL( name, arity, signature[, identifier] )     // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
- MOCK_NON_CONST_METHOD_TPL( name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
+ MOCK_METHOD_TPL( name, arity[, signature[, identifier]] )           // must be used if the signature uses a template parameter of the class, generates both const and non-const methods
+ MOCK_CONST_METHOD_TPL( name, arity[, signature[, identifier]] )     // must be used if the signature uses a template parameter of the class, generates only the const version of the method
+ MOCK_NON_CONST_METHOD_TPL( name, arity[, signature[, identifier]] ) // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method
 
-[note [link turtle.reference.creation.constructor Constructors], [link turtle.reference.creation.destructor destructors] and [link turtle.reference.creation.conversion_operator conversion operators] require special care]
+[note If the identifier is omitted it will default to the method name.]
 
-[note The signature must be surrounded with round parenthesis if the return type contains a comma]
+[note If the method name is not ambiguous both the signature and the identifier can be ommitted in the context of a derived MOCK_BASE_CLASS or base_type typedef.]
+
+[note The signature must be surrounded with round parenthesis if the return type contains a comma.]
+
+[note [link turtle.reference.creation.constructor Constructors], [link turtle.reference.creation.destructor destructors] and [link turtle.reference.creation.conversion_operator conversion operators] require special care.]
+
+With a compiler without support for variadic macros the signature and the identifier cannot be specified, thus in case of ambiguity another set of macros must be used.
+
+Synopsis :
+ 
+ MOCK_METHOD_EXT( name, arity, signature, identifier )               // generates both const and non-const methods
+ MOCK_CONST_METHOD_EXT( name, arity, signature, identifier )         // generates only the const version of the method
+ MOCK_NON_CONST_METHOD_EXT( name, arity, signature, identifier )     // generates only the non-const version of the method
+ 
+ MOCK_METHOD_EXT_TPL( name, arity, signature, identifier )           // must be used if the signature uses a template parameter of the class, generates both const and non-const methods
+ MOCK_CONST_METHOD_EXT_TPL( name, arity, signature, identifier )     // must be used if the signature uses a template parameter of the class, generates only the const version of the method
+ MOCK_NON_CONST_METHOD_EXT_TPL( name, arity, signature, identifier ) // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method
+
+Of course those macros are also available for compilers which support variadic macros.
 
 Example :
 
@@ -100,8 +117,6 @@ Example :
 Example :
 
 [member_function_example_2]
-
-[note For a compiler not supporting variadic macros MOCK_METHOD_EXT must be used instead]
 
 Example :
 
@@ -134,6 +149,8 @@ Synopsis :
  MOCK_STATIC_METHOD_TPL( name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test]
+
+[warning With a compiler without support for variadic macros the identifier cannot be ommitted and must be given explicitly.]
 
 Example :
 
@@ -226,6 +243,8 @@ Synopsis :
  MOCK_FUNCTION( name, arity, signature[, identifier] ) // if 'identifier' is omitted it will default to 'name'
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test]
+
+[warning With a compiler without support for variadic macros the identifier cannot be ommitted and must be given explicitly.]
 
 Example :
 
