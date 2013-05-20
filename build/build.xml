@@ -121,7 +121,7 @@
   <property name="boost.dir" value="${out.dir}/../boost"/>
 
   <presetdef name="bjam">
-    <exec taskname="bjam" failonerror="true" executable="bjam">
+    <exec taskname="bjam" failonerror="true" executable="${env.BOOST_ROOT}/bjam">
       <arg value="-q"/>
     </exec>
   </presetdef>
