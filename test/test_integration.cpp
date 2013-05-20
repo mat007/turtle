@@ -397,51 +397,6 @@ BOOST_AUTO_TEST_CASE( constraints_and_arguments_are_serialized_lazily )
 
 namespace
 {
-    template< typename Expected >
-    struct near_constraint
-    {
-        near_constraint( Expected expected, Expected threshold )
-          : expected_( expected )
-          , threshold_( threshold )
-        {}
-
-        template< typename Actual >
-        bool operator()( Actual actual ) const
-        {
-            return std::abs( actual - boost::unwrap_ref( expected_ ) )
-                < boost::unwrap_ref( threshold_ );
-        }
-
-        friend std::ostream& operator<<( std::ostream& s, const near_constraint& c )
-        {
-            return s << "near( " << mock::format( c.expected_ )
-                << ", " << mock::format( c.threshold_ ) << " )";
-        }
-
-        Expected expected_;
-        Expected threshold_;
-    };
-    template< typename Expected >
-    mock::constraint< near_constraint< Expected > > near( Expected expected, Expected threshold )
-    {
-        return near_constraint< Expected >( expected, threshold );
-    }
-}
-
-BOOST_AUTO_TEST_CASE( using_custom_constraint )
-{
-    MOCK_FUNCTOR( f, void( float ) );
-    MOCK_EXPECT( f ).with( near( 3.f, 0.01f ) );
-    f( 3.f );
-    const std::string expected = "f\n"
-                                 ". unlimited().with( near( 3, 0.01 ) )";
-    std::stringstream s;
-    s << f;
-    BOOST_CHECK_EQUAL( expected, s.str() );
-}
-
-namespace
-{
     struct custom_constraint_with_non_const_operator
     {
         template< typename Actual >
