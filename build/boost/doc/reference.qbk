@@ -518,6 +518,22 @@ Example :
 
 [endsect]
 
+[section MOCK_TERNARY_CONSTRAINT]
+
+Synopsis :
+
+ MOCK_TERNARY_CONSTRAINT( name, expression ) // defines a constraint 'name' based on the given 'expression'
+
+The expression manipulates the received parameter 'actual' as well as the passed arguments 'expected' and 'arg' in order to implement the constraint.
+
+[note The types of expected and arg must be copy-constructible and assignable.]
+
+Example :
+
+[helpers_example_3]
+
+[endsect]
+
 [endsect]
 
 [endsect]

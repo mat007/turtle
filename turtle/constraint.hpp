@@ -119,7 +119,7 @@ namespace detail
     }
 } // mock
 
-#define MOCK_UNARY_CONSTRAINT(N,Expr) \
+#define MOCK_UNARY_CONSTRAINT(N, Expr) \
     namespace detail \
     { \
         struct N \
@@ -137,7 +137,7 @@ namespace detail
     } \
     const mock::constraint< detail::N > N;
 
-#define MOCK_BINARY_CONSTRAINT(N,Expr) \
+#define MOCK_BINARY_CONSTRAINT(N, Expr) \
     namespace detail \
     { \
         template< typename Expected > \
@@ -164,10 +164,49 @@ namespace detail
             Expected expected_; \
         }; \
     } \
-    template< typename T > \
-    mock::constraint< detail::N< T > > N( T t ) \
+    template< typename Expected > \
+    mock::constraint< detail::N< Expected > > N( Expected expected ) \
     { \
-        return detail::N< T >( t ); \
+        return detail::N< Expected >( expected ); \
+    }
+
+#define MOCK_TERNARY_CONSTRAINT(N, Expr) \
+    namespace detail \
+    { \
+        template< typename Expected, typename Arg > \
+        struct N \
+        { \
+            explicit N( const Expected& expected, const Arg& arg ) \
+                : expected_( expected ) \
+                , arg_( arg ) \
+            {} \
+            template< typename Actual > \
+            bool operator()( const Actual& actual ) const \
+            { \
+                return test( actual, boost::unwrap_ref( expected_ ), \
+                    boost::unwrap_ref( arg_ ) ); \
+            } \
+            template< typename Actual, typename T1, typename T2 > \
+            bool test( const Actual& actual, \
+                const T1& expected, const T2& arg ) const \
+            { \
+                return Expr; \
+            } \
+            friend std::ostream& operator<<( std::ostream& s, const N& n ) \
+            { \
+                return s << BOOST_STRINGIZE(N) \
+                    << "( " << mock::format( n.expected_ ) \
+                    << ", " << mock::format( n.arg_ ) << " )"; \
+            } \
+            Expected expected_; \
+            Arg arg_; \
+        }; \
+    } \
+    template< typename Expected, typename Arg > \
+    mock::constraint< detail::N< Expected, Arg > > N( \
+        Expected expected, Arg arg ) \
+    { \
+        return detail::N< Expected, Arg >( expected, arg ); \
     }
 
 #endif // MOCK_CONSTRAINT_HPP_INCLUDED

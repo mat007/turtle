@@ -771,3 +771,10 @@ MOCK_BINARY_CONSTRAINT( equal, actual == expected )                  // this is 
 MOCK_BINARY_CONSTRAINT( near, std::abs( actual - expected ) < 0.01 ) // this defines a 'near' constraint which can be used as 'near( 42 )'
 //]
 }
+
+namespace helpers_example_3
+{
+//[ helpers_example_3
+MOCK_TERNARY_CONSTRAINT( near, std::abs( actual - expected ) < arg ) // this defines a 'near' constraint which can be used as 'near( 42, 0.01 )'
+//]
+}
