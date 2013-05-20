@@ -199,6 +199,9 @@
     <replaceregexp match="Turtle" replace="Boost.Mock" flags="g">
       <fileset dir="${boost.dir}/libs/mock" includes="**/*.qbk"/>
     </replaceregexp>
+    <replaceregexp match="\[include changelog.qbk\]" replace="" flags="g">
+      <fileset dir="${boost.dir}/libs/mock" includes="**/mock.qbk"/>
+    </replaceregexp>
     <copy todir="${boost.dir}/libs/mock/doc" overwrite="true">
       <fileset dir="${env.BOOST_ROOT}/tools/boostbook" includes="xsl/navbar.xsl"/>
     </copy>
