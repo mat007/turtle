@@ -12,6 +12,11 @@
 #include "config.hpp"
 #include "log.hpp"
 #include <boost/preprocessor/stringize.hpp>
+#include <boost/preprocessor/control/if.hpp>
+#include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/preprocessor/repetition/enum_params.hpp>
+#include <boost/preprocessor/repetition/enum.hpp>
+#include <boost/preprocessor/repetition/repeat.hpp>
 
 namespace mock
 {
@@ -119,94 +124,79 @@ namespace detail
     }
 } // mock
 
-#define MOCK_UNARY_CONSTRAINT(N, Expr) \
+#define MOCK_UNARY_CONSTRAINT(n, Name, Expr) \
     namespace detail \
     { \
-        struct N \
+        struct Name \
         { \
             template< typename Actual > \
             bool operator()( const Actual& actual ) const \
             { \
                 return Expr; \
             } \
-            friend std::ostream& operator<<( std::ostream& s, const N& ) \
+            friend std::ostream& operator<<( std::ostream& s, const Name& ) \
             { \
-                return s << BOOST_STRINGIZE(N); \
+                return s << BOOST_STRINGIZE(Name); \
             } \
         }; \
     } \
-    const mock::constraint< detail::N > N;
+    const mock::constraint< detail::Name > Name;
 
-#define MOCK_BINARY_CONSTRAINT(N, Expr) \
+#define MOCK_CONSTRAINT_ASSIGN(z, n, d) \
+    expected##n( e##n )
+
+#define MOCK_CONSTRAINT_UNWRAP_REF(z, n, d) \
+    boost::unwrap_ref( expected##n )
+
+#define MOCK_CONSTRAINT_FORMAT(z, n, d) \
+    BOOST_PP_IF(n, << ", " <<,) mock::format( c.expected##n )
+
+#define MOCK_CONSTRAINT_MEMBER(z, n, d) \
+    Expected_##n expected##n;
+
+#define MOCK_NARY_CONSTRAINT(n, Name, Expr) \
     namespace detail \
     { \
-        template< typename Expected > \
-        struct N \
+        template< BOOST_PP_ENUM_PARAMS(n, typename Expected_) > \
+        struct Name \
         { \
-            explicit N( const Expected& expected ) \
-                : expected_( expected ) \
+            explicit Name( \
+                BOOST_PP_ENUM_BINARY_PARAMS(n, const Expected_, & e ) ) \
+                : BOOST_PP_ENUM(n, MOCK_CONSTRAINT_ASSIGN, _) \
             {} \
             template< typename Actual > \
             bool operator()( const Actual& actual ) const \
             { \
-                return test( actual, boost::unwrap_ref( expected_ ) ); \
+                return test( actual, \
+                    BOOST_PP_ENUM(n, MOCK_CONSTRAINT_UNWRAP_REF, _ ) ); \
             } \
-            template< typename Actual, typename T > \
-            bool test( const Actual& actual, const T& expected ) const \
-            { \
-                return Expr; \
-            } \
-            friend std::ostream& operator<<( std::ostream& s, const N& n ) \
-            { \
-                return s << BOOST_STRINGIZE(N) \
-                    << "( " << mock::format( n.expected_ ) << " )"; \
-            } \
-            Expected expected_; \
-        }; \
-    } \
-    template< typename Expected > \
-    mock::constraint< detail::N< Expected > > N( Expected expected ) \
-    { \
-        return detail::N< Expected >( expected ); \
-    }
-
-#define MOCK_TERNARY_CONSTRAINT(N, Expr) \
-    namespace detail \
-    { \
-        template< typename Expected, typename Arg > \
-        struct N \
-        { \
-            explicit N( const Expected& expected, const Arg& arg ) \
-                : expected_( expected ) \
-                , arg_( arg ) \
-            {} \
-            template< typename Actual > \
-            bool operator()( const Actual& actual ) const \
-            { \
-                return test( actual, boost::unwrap_ref( expected_ ), \
-                    boost::unwrap_ref( arg_ ) ); \
-            } \
-            template< typename Actual, typename T1, typename T2 > \
+            template< typename Actual, BOOST_PP_ENUM_PARAMS(n, typename T) > \
             bool test( const Actual& actual, \
-                const T1& expected, const T2& arg ) const \
+                BOOST_PP_ENUM_BINARY_PARAMS(n, const T, & expected_ ) ) const \
             { \
                 return Expr; \
             } \
-            friend std::ostream& operator<<( std::ostream& s, const N& n ) \
+            friend std::ostream& operator<<( std::ostream& s, const Name& c ) \
             { \
-                return s << BOOST_STRINGIZE(N) \
-                    << "( " << mock::format( n.expected_ ) \
-                    << ", " << mock::format( n.arg_ ) << " )"; \
+                return s << BOOST_STRINGIZE(Name) << "( " \
+                    << BOOST_PP_REPEAT(n, MOCK_CONSTRAINT_FORMAT, _) \
+                    << " )"; \
             } \
-            Expected expected_; \
-            Arg arg_; \
+            BOOST_PP_REPEAT(n, MOCK_CONSTRAINT_MEMBER, _) \
         }; \
     } \
-    template< typename Expected, typename Arg > \
-    mock::constraint< detail::N< Expected, Arg > > N( \
-        Expected expected, Arg arg ) \
+    template< BOOST_PP_ENUM_PARAMS(n, typename Expected_) > \
+    mock::constraint< detail::Name< \
+        BOOST_PP_ENUM_PARAMS(n, Expected_) > \
+    > Name( BOOST_PP_ENUM_BINARY_PARAMS(n, Expected_, expected_ ) ) \
     { \
-        return detail::N< Expected, Arg >( expected, arg ); \
+        return detail::Name< BOOST_PP_ENUM_PARAMS(n, Expected_) >( \
+            BOOST_PP_ENUM_PARAMS(n, expected_ ) ); \
     }
+
+#define MOCK_CONSTRAINT(n, Name, Expr) \
+    BOOST_PP_IF(n, \
+        MOCK_NARY_CONSTRAINT, \
+        MOCK_UNARY_CONSTRAINT)(n, Name, Expr)
 
 #endif // MOCK_CONSTRAINT_HPP_INCLUDED

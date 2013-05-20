@@ -759,22 +759,42 @@ BOOST_AUTO_TEST_CASE( demonstrates_resetting_a_static_mock_method )
 namespace helpers_example_1
 {
 //[ helpers_example_1
-MOCK_UNARY_CONSTRAINT( any, true )               // this is (almost) how mock::any is defined
-MOCK_UNARY_CONSTRAINT( forty_two, actual == 42 ) // this defines a 'forty_two' constraint
+MOCK_CONSTRAINT( 0, any, true )               // this is (almost) how mock::any is defined
+MOCK_CONSTRAINT( 0, forty_two, actual == 42 ) // this defines a 'forty_two' constraint
+
+BOOST_AUTO_TEST_CASE( mock_constraint_0_arity )
+{
+    MOCK_FUNCTOR( f, void( int ) );
+    MOCK_EXPECT( f ).with( forty_two );
+    MOCK_EXPECT( f ).with( any );
+}
 //]
 }
 
 namespace helpers_example_2
 {
 //[ helpers_example_2
-MOCK_BINARY_CONSTRAINT( equal, actual == expected )                  // this is how mock::equal is defined
-MOCK_BINARY_CONSTRAINT( near, std::abs( actual - expected ) < 0.01 ) // this defines a 'near' constraint which can be used as 'near( 42 )'
+MOCK_CONSTRAINT( 1, equal, actual == expected_0 )                  // this is how mock::equal is defined
+MOCK_CONSTRAINT( 1, near, std::abs( actual - expected_0 ) < 0.01 ) // this defines a 'near' constraint which can be used as 'near( 42 )'
+
+BOOST_AUTO_TEST_CASE( mock_constraint_1_arity )
+{
+    MOCK_FUNCTOR( f, void( int ) );
+    MOCK_EXPECT( f ).with( near( 42 ) );
+    MOCK_EXPECT( f ).with( equal( 42 ) );
+}
 //]
 }
 
 namespace helpers_example_3
 {
 //[ helpers_example_3
-MOCK_TERNARY_CONSTRAINT( near, std::abs( actual - expected ) < arg ) // this defines a 'near' constraint which can be used as 'near( 42, 0.01 )'
+MOCK_CONSTRAINT( 2, near, std::abs( actual - expected_0 ) < expected_1 ) // this is how mock::near is defined
+
+BOOST_AUTO_TEST_CASE( mock_constraint_2_arity )
+{
+    MOCK_FUNCTOR( f, void( int ) );
+    MOCK_EXPECT( f ).with( near( 42, 0.001 ) );
+}
 //]
 }

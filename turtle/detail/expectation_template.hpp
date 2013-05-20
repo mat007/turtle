@@ -32,6 +32,7 @@
 
 #define MOCK_EXPECTATION_IN_ADD(z, n, d ) \
     add( s##n.impl_ );
+
 #define MOCK_EXPECTATION_IN(z, n, d) \
     expectation& in( BOOST_PP_ENUM_PARAMS(n, sequence& s) ) \
     { \

@@ -14,37 +14,33 @@
 #include "detail/addressof.hpp"
 #include <boost/ref.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <boost/utility/addressof.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 
 namespace mock
 {
-    MOCK_UNARY_CONSTRAINT( any, true && &actual )
-    MOCK_UNARY_CONSTRAINT( affirm, !! actual )
-    MOCK_UNARY_CONSTRAINT( negate, ! actual )
-    MOCK_UNARY_CONSTRAINT( evaluate, actual() )
+    MOCK_CONSTRAINT( 0, any, true && &actual )
+    MOCK_CONSTRAINT( 0, affirm, !! actual )
+    MOCK_CONSTRAINT( 0, negate, ! actual )
+    MOCK_CONSTRAINT( 0, evaluate, actual() )
 
-    MOCK_BINARY_CONSTRAINT( equal, actual == expected )
-    MOCK_BINARY_CONSTRAINT( less, actual < expected )
-    MOCK_BINARY_CONSTRAINT( greater, actual > expected )
-    MOCK_BINARY_CONSTRAINT( less_equal, actual <= expected )
-    MOCK_BINARY_CONSTRAINT( greater_equal, actual >= expected )
+    MOCK_CONSTRAINT( 1, equal, actual == expected_0 )
+    MOCK_CONSTRAINT( 1, less, actual < expected_0 )
+    MOCK_CONSTRAINT( 1, greater, actual > expected_0 )
+    MOCK_CONSTRAINT( 1, less_equal, actual <= expected_0 )
+    MOCK_CONSTRAINT( 1, greater_equal, actual >= expected_0 )
 
-    MOCK_BINARY_CONSTRAINT( small, \
-        ( boost::test_tools::check_is_small( actual, expected ) ) );
-
-    MOCK_TERNARY_CONSTRAINT( close, \
+    MOCK_CONSTRAINT( 1, small, \
+        ( boost::test_tools::check_is_small( actual, expected_0 ) ) )
+    MOCK_CONSTRAINT( 2, close, \
         ( boost::test_tools::check_is_close( \
-            actual, expected, \
-            boost::test_tools::percent_tolerance( arg ) ) ) );
-
-    MOCK_TERNARY_CONSTRAINT( close_fraction, \
+            actual, expected_0, \
+            boost::test_tools::percent_tolerance( expected_1 ) ) ) )
+    MOCK_CONSTRAINT( 2, close_fraction, \
         ( boost::test_tools::check_is_close( \
-            actual, expected, \
-            boost::test_tools::fraction_tolerance( arg ) ) ) );
-
-    MOCK_TERNARY_CONSTRAINT( near, std::abs( actual - expected ) < arg );
+            actual, expected_0, \
+            boost::test_tools::fraction_tolerance( expected_1 ) ) ) )
+    MOCK_CONSTRAINT( 2, near, std::abs( actual - expected_0 ) < expected_1 )
 
 namespace detail
 {
