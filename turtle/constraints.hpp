@@ -16,6 +16,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/utility/addressof.hpp>
 #include <boost/type_traits/is_convertible.hpp>
+#include <boost/test/floating_point_comparison.hpp>
 
 namespace mock
 {
@@ -29,6 +30,21 @@ namespace mock
     MOCK_BINARY_CONSTRAINT( greater, actual > expected )
     MOCK_BINARY_CONSTRAINT( less_equal, actual <= expected )
     MOCK_BINARY_CONSTRAINT( greater_equal, actual >= expected )
+
+    MOCK_BINARY_CONSTRAINT( small, \
+        ( boost::test_tools::check_is_small( actual, expected ) ) );
+
+    MOCK_TERNARY_CONSTRAINT( close, \
+        ( boost::test_tools::check_is_close( \
+            actual, expected, \
+            boost::test_tools::percent_tolerance( arg ) ) ) );
+
+    MOCK_TERNARY_CONSTRAINT( close_fraction, \
+        ( boost::test_tools::check_is_close( \
+            actual, expected, \
+            boost::test_tools::fraction_tolerance( arg ) ) ) );
+
+    MOCK_TERNARY_CONSTRAINT( near, std::abs( actual - expected ) < arg );
 
 namespace detail
 {

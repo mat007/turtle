@@ -8,6 +8,7 @@ Not yet released
 * Officially documented MOCK_UNARY_CONSTRAINT and MOCK_BINARY_CONSTRAINT
 * Added support for several sequences in 'in'
 * Added support for nullptr as constraint
+* Added mock::close, mock::close_fraction, mock::small and mock::near constraints
 
 [endsect]
 

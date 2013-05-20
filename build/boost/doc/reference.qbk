@@ -323,6 +323,10 @@ Constraints :
  [[mock::greater( ['expected] )]       [['actual] > ['expected]]    [compares ['actual] to ['expected] using operator >]]
  [[mock::less_equal( ['expected] )]    [['actual] <= ['expected]]   [compares ['actual] to ['expected] using operator <=]]
  [[mock::greater_equal( ['expected] )] [['actual] >= ['expected]]   [compares ['actual] to ['expected] using operator >=]]
+ [[mock::near]                         [std::abs( ['actual] - ['expected] ) < ['arg]]                                        [checks whether ['actual] is near ['expected]]]
+ [[mock::close]                        [boost::test_tools::check_is_close( ['actual], ['expected], boost::test_tools::percent_tolerance( ['arg] ) )]   [checks whether ['actual] is close to ['expected], see [@http://www.boost.org/libs/test/doc/html/utf/testing-tools/floating_point_comparison.html Floating-point comparison algorithms] ]]
+ [[mock::close_fraction]               [boost::test_tools::check_is_close( ['actual], ['expected], boost::test_tools::fraction_tolerance( ['arg] ) )]  [checks whether ['actual] is close to ['expected], see [@http://www.boost.org/libs/test/doc/html/utf/testing-tools/floating_point_comparison.html Floating-point comparison algorithms] ]]
+ [[mock::small]                        [boost::test_tools::check_is_small( ['actual], ['expected] ) )] [checks whether ['actual] is small with a tolerance of ['expected], see [@http://www.boost.org/libs/test/doc/html/utf/testing-tools/floating_point_comparison.html Floating-point comparison algorithms] ]]
  [[mock::call( ['expected] )]          [['expected]( ['actual] )]   [calls ['expected] as a functor returning a ['bool] and accepting ['actual] as parameter]]
  [[mock::same( ['expected] )]          [&['actual] == &['expected]] [compares ['actual] to ['expected] by comparing their pointers]]
  [[mock::assign( ['expected] )]        [['actual] = ['expected], true

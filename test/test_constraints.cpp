@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE( constraints_can_be_combined_using_the_and_operator )
     mock::less( 0 ) && mock::greater( 0 );
 }
 
-BOOST_AUTO_TEST_CASE( equal )
+BOOST_AUTO_TEST_CASE( equal_constraint )
 {
     BOOST_CHECK( mock::equal( std::string( "string" ) ).c_( "string" ) );
     BOOST_CHECK( ! mock::equal( std::string( "string" ) ).c_( "not string" ) );
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE( equal )
     }
 }
 
-BOOST_AUTO_TEST_CASE( same )
+BOOST_AUTO_TEST_CASE( same_constraint )
 {
     {
         int i = 0;
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE( same )
 #endif
 }
 
-BOOST_AUTO_TEST_CASE( assign )
+BOOST_AUTO_TEST_CASE( assign_constraint )
 {
     {
         int i = 0;
@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE( assign )
     }
 }
 
-BOOST_AUTO_TEST_CASE( retrieve )
+BOOST_AUTO_TEST_CASE( retrieve_constraint )
 {
     {
         int i = 0;
@@ -235,14 +235,14 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( retrieve_uses_assignment_operator )
+BOOST_AUTO_TEST_CASE( retrieve_constraint_uses_assignment_operator )
 {
     B b;
     const A a = A();
     mock::retrieve( b ).c_( a );
 }
 
-BOOST_AUTO_TEST_CASE( affirm )
+BOOST_AUTO_TEST_CASE( affirm_constraint )
 {
     int* i = 0;
     int j;
@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE( affirm )
     BOOST_CHECK( mock::affirm.c_( &j ) );
 }
 
-BOOST_AUTO_TEST_CASE( negate )
+BOOST_AUTO_TEST_CASE( negate_constraint )
 {
     int* i = 0;
     int j;
@@ -270,19 +270,19 @@ namespace
     }
 }
 
-BOOST_AUTO_TEST_CASE( call )
+BOOST_AUTO_TEST_CASE( call_constraint )
 {
     BOOST_CHECK( mock::call( &return_true ).c_() );
     BOOST_CHECK( ! mock::call( &return_false ).c_() );
 }
 
-BOOST_AUTO_TEST_CASE( evaluate )
+BOOST_AUTO_TEST_CASE( evaluate_constraint )
 {
     BOOST_CHECK( mock::evaluate.c_( &return_true ) );
     BOOST_CHECK( ! mock::evaluate.c_( &return_false ) );
 }
 
-BOOST_AUTO_TEST_CASE( contain_with_const_char_ptr )
+BOOST_AUTO_TEST_CASE( contain_constraint_with_const_char_ptr )
 {
     BOOST_CHECK( mock::contain( "string" ).c_( "this is a string" ) );
     BOOST_CHECK( mock::contain( "string" ).c_( std::string( "this is a string" ) ) );
@@ -304,7 +304,7 @@ BOOST_AUTO_TEST_CASE( contain_with_const_char_ptr )
     }
 }
 
-BOOST_AUTO_TEST_CASE( contain_with_strings )
+BOOST_AUTO_TEST_CASE( contain_constraint_with_strings )
 {
     BOOST_CHECK( mock::contain( std::string( "string" ) ).c_( "this is a string" ) );
     BOOST_CHECK( mock::contain( std::string( "string" ) ).c_( std::string( "this is a string" ) ) );
@@ -342,4 +342,28 @@ BOOST_AUTO_TEST_CASE( type_with_overloaded_address_operator_can_be_used_in_const
     mock::retrieve( t ).c_( t );
     type_with_overloaded_address_operator* pt;
     mock::retrieve( pt ).c_( t );
+}
+
+BOOST_AUTO_TEST_CASE( close_constraint )
+{
+    BOOST_CHECK( mock::close( 12.0, 0.0001 ).c_( 12 ) );
+    BOOST_CHECK( ! mock::close( 12.0, 0.0001 ).c_( 13 ) );
+}
+
+BOOST_AUTO_TEST_CASE( close_fraction_constraint )
+{
+    BOOST_CHECK( mock::close_fraction( 12.0, 0.0001 ).c_( 12 ) );
+    BOOST_CHECK( ! mock::close_fraction( 12.0, 0.0001 ).c_( 13 ) );
+}
+
+BOOST_AUTO_TEST_CASE( small_constraint )
+{
+    BOOST_CHECK( mock::small( 0.0001 ).c_( 0. ) );
+    BOOST_CHECK( ! mock::small( 0.0001 ).c_( 12. ) );
+}
+
+BOOST_AUTO_TEST_CASE( near_constraint )
+{
+    BOOST_CHECK( mock::near( 12.0, 0.0001 ).c_( 12 ) );
+    BOOST_CHECK( ! mock::near( 12.0, 0.0001 ).c_( 13 ) );
 }
