@@ -62,7 +62,7 @@ During the execution of a test case, an error can happen for one of the followin
 * untriggered expectation if a remaining match has not been fulfilled when destroying the mock object (typically logs an error)
 * missing action if a method supposed to return something else than void has not been configured properly (typically logs an error and throws an exception)
 
-The exact type of the exception thrown depends on the [link turtle.customisation.test_framework_integration test framework integration] used.
+The exact type of the exception thrown depends on the [link turtle.customization.test_framework_integration test framework integration] used.
 
 An error log typically looks like :
 

@@ -1,12 +1,12 @@
-[section Customisation]
-[import example/customisation.cpp]
+[section Customization]
+[import example/customization.cpp]
 
-This section explains how to customise different aspects of the library.
+This section explains how to customize different aspects of the library.
 
 [section Logging]
 
-The library will perform logging lazily, e.g. only when actually needed, which is usually because an error happens but it depends on the [link turtle.customisation.test_framework_integration test framework integration] used.
-Parameters and [link turtle.customisation.constraints constraints] are serialized to report meaningful diagnostics of the failures.
+The library will perform logging lazily, e.g. only when actually needed, which is usually because an error happens but it depends on the [link turtle.customization.test_framework_integration test framework integration] used.
+Parameters and [link turtle.customization.constraints constraints] are serialized to report meaningful diagnostics of the failures.
 
 By default the library attempts to serialize to an std::ostream and if this is not possible will use a '?'.
 
@@ -62,7 +62,7 @@ Using the custom constraint is also pretty trivial, for instance :
 
 Simple enough, however this constraint isn't serializable and thus yields a rather uninformative '?' in the logs.
 
-Just like a parameter, a constraint can be displayed in a readable form using its serialization operator, see [link turtle.customisation.logging logging].
+Just like a parameter, a constraint can be displayed in a readable form using its serialization operator, see [link turtle.customization.logging logging].
 
 Thus a widely used constraint (for instance one shipped with the code of a library) is likely better to be defined like this :
 
@@ -97,7 +97,7 @@ The use of boost::unwrap_ref provides support for passing arguments as reference
 
 See [link turtle.reference.expectation.constraints constraints] for an explanation of how the library detects whether an argument is a functor or a value.
 
-For more information about the serialization operator and the use of mock::format, refer to [link turtle.customisation.logging loggin].
+For more information about the serialization operator and the use of mock::format, refer to [link turtle.customization.logging loggin].
 
 [note The [link turtle.reference.helpers.mock_unary_constraint MOCK_UNARY_CONSTRAINT] and [link turtle.reference.helpers.mock_binary_constraint MOCK_BINARY_CONSTRAINT] macros replace the need to write the constraints explicitly for the most trivial cases]
 

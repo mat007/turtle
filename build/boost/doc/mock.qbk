@@ -23,7 +23,7 @@ Turtle is a C++ [@http://en.wikipedia.org/wiki/Mock_object Mock object] library 
 
 [include motivation.qbk]
 [include getting_started.qbk]
-[include customisation.qbk]
+[include customization.qbk]
 [/ [xinclude reference.xml] ]
 [include reference.qbk]
 [include patterns.qbk]

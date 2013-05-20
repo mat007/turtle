@@ -82,7 +82,7 @@ Released 23 March 2011
 * Fixed a bug preventing to increase the maximum number of arguments of a mocked method using MOCK_MAX_ARGS
 * Changed the default value for MOCK_MAX_ARGS to 9 instead of 10
 * Renamed mock::constraint to mock::call
-* Added custom constraints logging customisation in the same way as parameters
+* Added custom constraints logging customization in the same way as parameters
 * Changed the way the default logging of constraints and parameters can be overridden to use a serialization operator to a mock::stream
 * Enhanced logging by lazily serializing constraints and parameters
 * Added the possibility to perform conversions when logging constraints and parameters by defining MOCK_USE_CONVERSIONS
