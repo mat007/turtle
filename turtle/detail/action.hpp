@@ -13,9 +13,9 @@
 #include "lambda.hpp"
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/type_traits/remove_const.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/function.hpp>
 #include <boost/ref.hpp>
+#include <boost/any.hpp>
 
 namespace mock
 {
@@ -37,14 +37,16 @@ namespace detail
         template< typename Value >
         void returns( Value v )
         {
-            r_ = boost::make_shared< Value >( v );
-            f_ = lambda_type::make_val( boost::ref( *r_ ) );
+            r_ = v;
+            f_ = lambda_type::make_val(
+                boost::ref( boost::any_cast< Value& >( r_ ) ) );
         }
         template< typename Value >
         void returns( Value* v )
         {
-            r_ = boost::make_shared< result_type >( v );
-            f_ = lambda_type::make_val( boost::ref( *r_ ) );
+            r_ = result_type( v );
+            f_ = lambda_type::make_val(
+                boost::ref( boost::any_cast< result_type& >( r_ ) ) );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
@@ -71,7 +73,7 @@ namespace detail
         }
 
     private:
-        boost::shared_ptr< result_type > r_;
+        boost::any r_;
         functor_type f_;
     };
 

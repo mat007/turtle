@@ -39,7 +39,7 @@ namespace detail
             return detail::bind( &do_identity< T >, t );
         }
         template< typename T >
-        static functor_type make_val( boost::reference_wrapper< T > t )
+        static functor_type make_val( const boost::reference_wrapper< T >& t )
         {
             return detail::bind(
                 &do_ref_identity< T >, t.get_pointer() );

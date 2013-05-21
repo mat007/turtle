@@ -466,6 +466,12 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_value, error_
         BOOST_CHECK_EQUAL( 0, f() );
         CHECK_CALLS( 1 );
     }
+    {
+        mock::detail::function< unsigned int() > f;
+        f.expect().returns( 0 );
+        BOOST_CHECK_EQUAL( 0u, f() );
+        CHECK_CALLS( 1 );
+    }
 }
 
 namespace
