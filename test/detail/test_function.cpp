@@ -8,6 +8,7 @@
 
 #define BOOST_AUTO_TEST_MAIN
 #include "../mock_error.hpp"
+#include "../undefined.hpp"
 #include <turtle/detail/function.hpp>
 #include <turtle/constraints.hpp>
 #include <boost/test/auto_unit_test.hpp>
@@ -533,6 +534,20 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_valu
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
+}
+
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_shared_ptr_value, error_fixture )
+{
+    {
+        mock::detail::function< boost::shared_ptr< A >() > f;
+        f.expect().returns( new B );
+        BOOST_CHECK_NO_THROW( f() );
+        CHECK_CALLS( 1 );
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_by_reference, error_fixture )
+{
     {
         mock::detail::function< A&() > f;
         B b;
@@ -546,6 +561,11 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_valu
         f.expect().returns( b );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
+    }
+    {
+        mock::detail::function< undefined&() > f;
+        f.expect().returns( boost::ref( get_undefined() ) );
+        f.reset();
     }
 }
 

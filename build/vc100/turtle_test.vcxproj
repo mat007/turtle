@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\test\mock_error.hpp" />
+    <ClInclude Include="..\..\test\undefined.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\test\detail\test_function.cpp" />
@@ -36,6 +37,7 @@
     <ClCompile Include="..\..\test\test_mock.cpp" />
     <ClCompile Include="..\..\test\test_object.cpp" />
     <ClCompile Include="..\..\test\test_sequence.cpp" />
+    <ClCompile Include="..\..\test\undefined.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{74810A2A-33D8-47D6-9A50-71261F1683F5}</ProjectGuid>

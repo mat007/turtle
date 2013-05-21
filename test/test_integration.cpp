@@ -7,6 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "mock_error.hpp"
+#include "undefined.hpp"
 #include <turtle/mock.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/noncopyable.hpp>
@@ -128,17 +129,15 @@ BOOST_AUTO_TEST_CASE( mock_object_method_const_disambiguation )
 
 namespace
 {
-    struct my_declared_but_undefined_type;
-
-    MOCK_CLASS( my_declared_but_undefined_mock )
+    MOCK_CLASS( my_undefined_mock )
     {
-        MOCK_METHOD_EXT( m, 1, void( my_declared_but_undefined_type& ), t )
+        MOCK_METHOD_EXT( m, 1, void( undefined& ), t )
     };
 }
 
 BOOST_AUTO_TEST_CASE( mock_object_method_with_declared_but_not_defined_parameter_is_valid )
 {
-    my_declared_but_undefined_mock mock;
+    my_undefined_mock mock;
     MOCK_EXPECT( mock.t );
 }
 
