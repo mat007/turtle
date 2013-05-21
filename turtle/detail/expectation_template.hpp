@@ -98,12 +98,12 @@ namespace detail
         }
         expectation& at_least( std::size_t min )
         {
-            i_ = boost::make_shared< detail::exactly >( min );
+            i_ = boost::make_shared< detail::at_least >( min );
             return *this;
         }
         expectation& at_most( std::size_t max )
         {
-            i_ = boost::make_shared< detail::exactly >( max );
+            i_ = boost::make_shared< detail::at_most >( max );
             return *this;
         }
         expectation& between( std::size_t min, std::size_t max )
