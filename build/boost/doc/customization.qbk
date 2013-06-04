@@ -99,7 +99,7 @@ See [link turtle.reference.expectation.constraints constraints] for an explanati
 
 For more information about the serialization operator and the use of mock::format, refer to [link turtle.customization.logging loggin].
 
-[note The [link turtle.reference.helpers.mock_constraint MOCK_CONSTRAINT] macro takes care of everything for simple cases.]
+[note The [link turtle.reference.constraint constraint helper macro] takes care of everything for simple cases.]
 
 [endsect]
 

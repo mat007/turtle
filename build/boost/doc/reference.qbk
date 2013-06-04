@@ -96,7 +96,7 @@ Synopsis :
 
 [note [link turtle.reference.creation.constructor Constructors], [link turtle.reference.creation.destructor destructors] and [link turtle.reference.creation.conversion_operator conversion operators] require special care.]
 
-With a compiler without support for variadic macros the signature and the identifier cannot be specified, thus in case of ambiguity another set of macros must be used.
+For compilers without support for variadic macros the signature and the identifier cannot be specified, thus in case of ambiguity another set of macros must be used.
 
 Synopsis :
  
@@ -150,7 +150,7 @@ Synopsis :
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test.]
 
-[warning With a compiler without support for variadic macros the identifier cannot be ommitted and must be given explicitly.]
+[warning For compilers without support for variadic macros the identifier cannot be ommitted and must be given explicitly.]
 
 Example :
 
@@ -244,7 +244,7 @@ Synopsis :
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test.]
 
-[warning With a compiler without support for variadic macros the identifier cannot be ommitted and must be given explicitly.]
+[warning For compilers without support for variadic macros the identifier cannot be ommitted and must be given explicitly.]
 
 Example :
 
@@ -307,6 +307,8 @@ A constraint validates the actual parameter value of a call to a mock object.
 Synopsis :
 
  MOCK_EXPECT( identifier ).with( constraint_1, constraint_2, ... );
+
+The number of constraints must match the number of mocked parameters.
 
 Constraints :
 
@@ -395,7 +397,7 @@ A sequence enforces a given order between two or more expectations.
 
 Synopsis :
 
- MOCK_EXPECT( identifier_1 ).in( sequence_1 [, sequence_2 [, ...]] );
+ MOCK_EXPECT( identifier_1 ).in( sequence_1, sequence_2, ... );
 
 Each sequence is an instance of mock::sequence.
 
@@ -488,33 +490,47 @@ Example :
 
 [endsect]
 
-[section Helpers]
+[section Constraint]
 
-This section presents various useful tools.
-
-[section MOCK_CONSTRAINT]
+This section presents a simple means of creating a new constraint.
 
 Synopsis :
 
- MOCK_CONSTRAINT( arity, name, expression ) // defines a constraint 'name' based on the given 'expression'
+ MOCK_CONSTRAINT( name, expected_1, expected_2, ..., expression ) // defines a constraint 'name' based on the given 'expression'
 
-The expression manipulates the received parameter ['actual] in order to implement the constraint, as well as ['arity] extra expected arguments ['expected_0], ['expected_1], etc...
+The expression manipulates a received parameter ['actual] in order to implement the constraint, as well as extra optional arguments named ['expected_1], ['expected_2], ...
 
-[note The type of all expected arguments must be copy-constructible and assignable.]
+For compilers without supporting variadic macros the alternate following macro must be used.
+
+Synopsis :
+
+ MOCK_CONSTRAINT_EXT( name, arity, ( expected_1, expected_2, ... ), expression ) // defines a constraint 'name' based on the given 'expression'
+
+Of course this macro is also available for compilers which support variadic macros.
 
 Example without any extra argument :
 
 [helpers_example_1]
 
+or with the alternate more portable macro :
+
+[helpers_example_4]
+
 Example with one extra argument :
 
 [helpers_example_2]
+
+or with the alternate more portable macro :
+
+[helpers_example_5]
 
 Example with two extra arguments :
 
 [helpers_example_3]
 
-[endsect]
+or with the alternate more portable macro :
+
+[helpers_example_6]
 
 [endsect]
 

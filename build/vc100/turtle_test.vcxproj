@@ -28,6 +28,7 @@
     <ClCompile Include="..\..\test\detail\test_is_functor.cpp" />
     <ClCompile Include="..\..\test\detail\test_signature.cpp" />
     <ClCompile Include="..\..\test\detail\test_type_name.cpp" />
+    <ClCompile Include="..\..\test\test_constraint.cpp" />
     <ClCompile Include="..\..\test\test_constraints.cpp" />
     <ClCompile Include="..\..\test\test_error.cpp" />
     <ClCompile Include="..\..\test\test_integration.cpp" />

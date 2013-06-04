@@ -18,6 +18,7 @@ rule run-test ( name )
 }
 
 alias mock_tests :
+    [ run-test test_constraint ]
     [ run-test test_constraints ]
     [ run-test test_error ]
     [ run-test test_integration ]

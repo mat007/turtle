@@ -11,12 +11,14 @@
 
 #include "config.hpp"
 #include "log.hpp"
+#include <boost/ref.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/preprocessor/control/if.hpp>
+#include <boost/preprocessor/variadic/to_array.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
-#include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/preprocessor/array.hpp>
 
 namespace mock
 {
@@ -124,7 +126,7 @@ namespace detail
     }
 } // mock
 
-#define MOCK_UNARY_CONSTRAINT(n, Name, Expr) \
+#define MOCK_UNARY_CONSTRAINT(Name, n, Args, Expr) \
     namespace detail \
     { \
         struct Name \
@@ -154,25 +156,34 @@ namespace detail
 #define MOCK_CONSTRAINT_MEMBER(z, n, d) \
     Expected_##n expected##n;
 
-#define MOCK_NARY_CONSTRAINT(n, Name, Expr) \
+#define MOCK_CONSTRAINT_CREF_PARAM(z, n, Args) \
+    BOOST_DEDUCED_TYPENAME \
+        boost::unwrap_reference< Expected_##n >::type \
+            BOOST_PP_ARRAY_ELEM(n, Args)
+
+#define MOCK_CONSTRAINT_PARAM(z, n, Args) \
+    T##n BOOST_PP_ARRAY_ELEM(n, Args)
+
+#define MOCK_NARY_CONSTRAINT(Name, n, Args, Expr) \
     namespace detail \
     { \
         template< BOOST_PP_ENUM_PARAMS(n, typename Expected_) > \
         struct Name \
         { \
             explicit Name( \
-                BOOST_PP_ENUM_BINARY_PARAMS(n, const Expected_, & e ) ) \
+                BOOST_PP_ENUM_BINARY_PARAMS(n, const Expected_, & e) ) \
                 : BOOST_PP_ENUM(n, MOCK_CONSTRAINT_ASSIGN, _) \
             {} \
             template< typename Actual > \
             bool operator()( const Actual& actual ) const \
             { \
                 return test( actual, \
-                    BOOST_PP_ENUM(n, MOCK_CONSTRAINT_UNWRAP_REF, _ ) ); \
+                    BOOST_PP_ENUM(n, MOCK_CONSTRAINT_UNWRAP_REF, _) ); \
             } \
-            template< typename Actual, BOOST_PP_ENUM_PARAMS(n, typename T) > \
+            template< typename Actual > \
             bool test( const Actual& actual, \
-                BOOST_PP_ENUM_BINARY_PARAMS(n, const T, & expected_ ) ) const \
+                BOOST_PP_ENUM(n, \
+                    MOCK_CONSTRAINT_CREF_PARAM, (n, Args)) ) const \
             { \
                 return Expr; \
             } \
@@ -185,18 +196,52 @@ namespace detail
             BOOST_PP_REPEAT(n, MOCK_CONSTRAINT_MEMBER, _) \
         }; \
     } \
-    template< BOOST_PP_ENUM_PARAMS(n, typename Expected_) > \
-    mock::constraint< detail::Name< \
-        BOOST_PP_ENUM_PARAMS(n, Expected_) > \
-    > Name( BOOST_PP_ENUM_BINARY_PARAMS(n, Expected_, expected_ ) ) \
+    template< BOOST_PP_ENUM_PARAMS(n, typename T) > \
+    mock::constraint< \
+        detail::Name< BOOST_PP_ENUM_PARAMS(n, T) > \
+    > Name( BOOST_PP_ENUM(n, MOCK_CONSTRAINT_PARAM, (n, Args)) ) \
     { \
-        return detail::Name< BOOST_PP_ENUM_PARAMS(n, Expected_) >( \
-            BOOST_PP_ENUM_PARAMS(n, expected_ ) ); \
+        return detail::Name< BOOST_PP_ENUM_PARAMS(n, T) > Args; \
     }
 
-#define MOCK_CONSTRAINT(n, Name, Expr) \
+#define MOCK_CONSTRAINT_EXT(Name, n, Args, Expr) \
     BOOST_PP_IF(n, \
         MOCK_NARY_CONSTRAINT, \
-        MOCK_UNARY_CONSTRAINT)(n, Name, Expr)
+        MOCK_UNARY_CONSTRAINT)(Name, n, Args, Expr)
+
+#ifndef BOOST_NO_VARIADIC_MACROS
+
+#if BOOST_MSVC
+#   define MOCK_VARIADIC_SIZE(...) \
+        BOOST_PP_CAT(MOCK_VARIADIC_SIZE_I(__VA_ARGS__, \
+            32, 31, 30, 29, 28, 27, 26, 25, 24, 23, \
+            22, 21, 20, 19, 18, 17, 16, 15, 14, 13, \
+            12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,),)
+#else // BOOST_MSVC
+#   define MOCK_VARIADIC_SIZE(...) \
+        MOCK_VARIADIC_SIZE_I(__VA_ARGS__, \
+            32, 31, 30, 29, 28, 27, 26, 25, 24, 23, \
+            22, 21, 20, 19, 18, 17, 16, 15, 14, 13, \
+            12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,)
+#endif // BOOST_MSVC
+#define MOCK_VARIADIC_SIZE_I( \
+    e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, \
+    e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, \
+    e25, e26, e27, e28, e29, e30, e31, size, ...) size
+
+#define MOCK_CONSTRAINT_AUX_AUX(Name, n, Array) \
+    MOCK_CONSTRAINT_EXT( \
+        Name, n, \
+        BOOST_PP_ARRAY_TO_TUPLE(BOOST_PP_ARRAY_POP_BACK(Array)), \
+        BOOST_PP_ARRAY_ELEM(n, Array))
+
+#define MOCK_CONSTRAINT_AUX(Name, Size, Tuple) \
+    MOCK_CONSTRAINT_AUX_AUX(Name, BOOST_PP_DEC(Size), (Size,Tuple))
+
+#define MOCK_CONSTRAINT(Name, ...) \
+    MOCK_CONSTRAINT_AUX( \
+        Name, MOCK_VARIADIC_SIZE(__VA_ARGS__), (__VA_ARGS__))
+
+#endif // BOOST_NO_VARIADIC_MACROS
 
 #endif // MOCK_CONSTRAINT_HPP_INCLUDED

@@ -1,5 +1,12 @@
 [section Changelog]
 
+[section trunk]
+Not yet released
+
+* Reworked MOCK_CONSTRAINT to be able to provide names to parameters
+
+[endsect]
+
 [section 1.2.3]
 Released 20 May 2013
 
