@@ -30,18 +30,7 @@
 #define MOCK_FUNCTION_TYPE(S, tpn) \
     tpn boost::remove_pointer< tpn BOOST_IDENTITY_TYPE((S)) >::type
 
-#ifdef BOOST_NO_VARIADIC_MACROS
-
-#define MOCK_BASE_CLASS(T, I) \
-    struct T : I, mock::object, mock::detail::base< I >
-
-#define MOCK_FUNCTOR(f, S) \
-    mock::detail::functor< MOCK_FUNCTION_TYPE(S,) > f, f##_mock
-#define MOCK_FUNCTOR_TPL(f, S) \
-    mock::detail::functor< \
-        MOCK_FUNCTION_TYPE(S, BOOST_DEDUCED_TYPENAME) > f, f##_mock
-
-#else // BOOST_NO_VARIADIC_MACROS
+#ifdef MOCK_VARIADIC_MACROS
 
 #define MOCK_BASE_CLASS(T, ...) \
     struct T : __VA_ARGS__, mock::object, mock::detail::base< __VA_ARGS__ >
@@ -52,7 +41,18 @@
     mock::detail::functor< \
         MOCK_FUNCTION_TYPE((__VA_ARGS__), BOOST_DEDUCED_TYPENAME) > f, f##_mock
 
-#endif // BOOST_NO_VARIADIC_MACROS
+#else // MOCK_VARIADIC_MACROS
+
+#define MOCK_BASE_CLASS(T, I) \
+    struct T : I, mock::object, mock::detail::base< I >
+
+#define MOCK_FUNCTOR(f, S) \
+    mock::detail::functor< MOCK_FUNCTION_TYPE(S,) > f, f##_mock
+#define MOCK_FUNCTOR_TPL(f, S) \
+    mock::detail::functor< \
+        MOCK_FUNCTION_TYPE(S, BOOST_DEDUCED_TYPENAME) > f, f##_mock
+
+#endif // MOCK_VARIADIC_MACROS
 
 #define MOCK_HELPER(t) \
     t##_mock( mock::detail::root, BOOST_PP_STRINGIZE(t) )
@@ -171,20 +171,7 @@
         return MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 
-#ifdef BOOST_NO_VARIADIC_MACROS
-
-#define MOCK_METHOD(M, n) \
-    MOCK_METHOD_EXT(M, n, MOCK_SIGNATURE(M), M)
-
-#define MOCK_FUNCTION(F, n, S, t) \
-    MOCK_FUNCTION_AUX(F, n, S, t,,)
-
-#define MOCK_STATIC_METHOD(F, n, S, t) \
-    MOCK_FUNCTION_AUX(F, n, S, t, static,)
-#define MOCK_STATIC_METHOD_TPL(F, n, S, t) \
-    MOCK_FUNCTION_AUX(F, n, S, t, static, BOOST_DEDUCED_TYPENAME)
-
-#else // BOOST_NO_VARIADIC_MACROS
+#ifdef MOCK_VARIADIC_MACROS
 
 #define MOCK_VARIADIC_ELEM_0(e0, ...) e0
 #define MOCK_VARIADIC_ELEM_1(e0, e1, ...) e1
@@ -233,7 +220,20 @@
         MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
         static, BOOST_DEDUCED_TYPENAME)
 
-#endif // BOOST_NO_VARIADIC_MACROS
+#else // MOCK_VARIADIC_MACROS
+
+#define MOCK_METHOD(M, n) \
+    MOCK_METHOD_EXT(M, n, MOCK_SIGNATURE(M), M)
+
+#define MOCK_FUNCTION(F, n, S, t) \
+    MOCK_FUNCTION_AUX(F, n, S, t,,)
+
+#define MOCK_STATIC_METHOD(F, n, S, t) \
+    MOCK_FUNCTION_AUX(F, n, S, t, static,)
+#define MOCK_STATIC_METHOD_TPL(F, n, S, t) \
+    MOCK_FUNCTION_AUX(F, n, S, t, static, BOOST_DEDUCED_TYPENAME)
+
+#endif // MOCK_VARIADIC_MACROS
 
 #define MOCK_EXPECT(t) MOCK_HELPER(t).expect( __FILE__, __LINE__ )
 #define MOCK_RESET(t) MOCK_HELPER(t).reset( __FILE__, __LINE__ )

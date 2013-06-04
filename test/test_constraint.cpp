@@ -9,7 +9,7 @@
 #include <turtle/constraint.hpp>
 #include <boost/test/auto_unit_test.hpp>
 
-#ifndef BOOST_NO_VARIADIC_MACROS
+#ifdef MOCK_VARIADIC_MACROS
 
 namespace
 {
@@ -25,4 +25,4 @@ BOOST_AUTO_TEST_CASE( mock_constraint_is_supported_by_compilers_with_variadic_ma
     BOOST_CHECK( constraint_2( 0, 0 ).c_( 0 ) );
 }
 
-#endif // BOOST_NO_VARIADIC_MACROS
+#endif // MOCK_VARIADIC_MACROS

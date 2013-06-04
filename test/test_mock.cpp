@@ -343,7 +343,7 @@ namespace
     MOCK_FUNCTION( fun0, 0, (std::map< int, int >()), fun0 )
 }
 
-#ifndef BOOST_NO_VARIADIC_MACROS
+#ifdef MOCK_VARIADIC_MACROS
 
 namespace
 {
@@ -390,4 +390,4 @@ namespace
     MOCK_FUNCTOR( f_variadic, std::map< int, int >() );
 }
 
-#endif //BOOST_NO_VARIADIC_MACROS
+#endif //MOCK_VARIADIC_MACROS
