@@ -40,7 +40,8 @@ namespace mock
         ( boost::test_tools::check_is_close( \
             actual, expected, \
             boost::test_tools::fraction_tolerance( tolerance ) ) ) )
-    MOCK_CONSTRAINT_EXT( near, 2, ( expected, tolerance ), std::abs( actual - expected ) < tolerance )
+    MOCK_CONSTRAINT_EXT( near, 2, ( expected, tolerance ), \
+        std::abs( actual - expected ) < tolerance )
 
 namespace detail
 {
