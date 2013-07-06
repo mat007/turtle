@@ -95,12 +95,56 @@ The following code does not compile :
      MOCK_METHOD( method, 0 )       // this fails to compile because 'method' is not visible
  };
 
-The workaround would be to add the signature to MOCK_METHOD :
+A workaround would be to add the signature to MOCK_METHOD :
 
  MOCK_BASE_CLASS( mock_base, base )
  {
      MOCK_METHOD_EXT( method, 0, void() )
  };
+
+[endsect]
+
+[section Methods with a throw specifier cannot be mocked]
+
+The following code does not compile :
+
+ namespace
+ {
+     struct base_class
+     {
+         virtual ~base_class()
+         {}
+ 
+         virtual void method() throw;
+     };
+ 
+     MOCK_BASE_CLASS( mock_class, base_class )
+     {
+         MOCK_METHOD( method, 0 )              // this fails to compile because of the throw specifier
+     };
+ }
+
+A workaround would be to write a proxy member function :
+
+ namespace
+ {
+     struct base_class
+     {
+         virtual ~base_class()
+         {}
+ 
+         virtual void method() throw;
+     };
+ 
+     MOCK_BASE_CLASS( mock_class, base_class )
+     {
+         void method() throw
+         {
+             method_proxy();
+         }
+         MOCK_METHOD( method_proxy, 0, void(), method )
+     };
+ }
 
 [endsect]
 
