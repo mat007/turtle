@@ -1,4 +1,10 @@
 [section Limitations]
+[import example/limitations_literal_zero.cpp]
+[import example/limitations_throw_specifier.cpp]
+[import example/limitations_template_method.cpp]
+[import example/limitations_private_method.cpp]
+[import example/limitations_comma_in_macro.cpp]
+[import example/limitations_const_parameter_warning.cpp]
 
 This section lists the library known limitations.
 
@@ -8,73 +14,46 @@ There is no support for unicode logging mainly because Boost.Test does not suppo
 
 [endsect]
 
-[section Litteral 0 cannot be used as null pointer in constraints]
+[section Literal 0 cannot be used as null pointer in constraints]
 
 Given :
 
- class base
- {
- public:
-     virtual void method( int i* ) = 0;
- };
- 
- MOCK_BASE_CLASS( mock_base, base )
- {
-     MOCK_METHOD( method, 1 )
- };
+[limitations_literal_zero_problem]
 
 The following code does not compile :
 
- mock_base m;
- MOCK_EXPECT( m.method ).with( mock::equal( 0 ) ); // this fails
- MOCK_EXPECT( m.method ).with( 0 );                // this fails too !
+ BOOST_AUTO_TEST_CASE( literal_zero )
+ {
+     mock_base m;
+     MOCK_EXPECT( m.method ).with( mock::equal( 0 ) ); // this fails
+     MOCK_EXPECT( m.method ).with( 0 );                // this fails too !
+ }
 
-This is due to the fact that the library uses templates pretty heavily, and the litteral 0 is considered as an int when instantiating a template function.
+This is due to the fact that the library uses templates pretty heavily, and literal 0 is considered as an int when instantiating a template function.
 
 A workaround is :
 
- MOCK_EXPECT( m.method ).with( mock::equal< int* >( 0 ) ); // this compiles
+[limitations_literal_zero_solution_1]
 
 However a somewhat better solution would be :
 
- MOCK_EXPECT( m.method ).with( mock::negate );
+[limitations_literal_zero_solution_2]
 
 or with C++11 nullptr support :
 
- MOCK_EXPECT( m.method ).with( nullptr );
+[limitations_literal_zero_solution_3]
 
 [endsect]
 
 [section Template methods cannot be mocked]
 
-Given the following client code :
+Given :
 
- class concept
- {
- public:
-     template< typename T >
-     void method( T t )
-     {}
- };
- 
- template< typename T >
- class client
- {
- public:
-     client( T t )             // T is supposed to model the previous concept
-     {
-         t.method( 42 );
-         t.method( "string" );
-     }
- };
+[limitations_template_method_problem]
 
-Writing a mock object modeling 'concept' requires to list all the possible versions of 'method' :
+writing a mock object modeling 'concept' requires to list all the possible versions of 'method' :
 
- MOCK_CLASS( mock_concept )
- {
-    MOCK_METHOD( method, 1, void( int ), method_int )
-    MOCK_METHOD( method, 1, void( const char* ), method_string )
- };
+[limitations_template_method_solution]
 
 While still somewhat possible, mocking a template method is indeed a bit cumbersome.
 
@@ -82,89 +61,56 @@ While still somewhat possible, mocking a template method is indeed a bit cumbers
 
 [section Private virtual methods cannot be mocked without spelling out the signature]
 
-The following code does not compile :
+Given :
 
- class base
- {
- private:
-     virtual void method() = 0;
- };
- 
+[limitations_private_method_problem]
+
+the following code does not compile :
+
  MOCK_BASE_CLASS( mock_base, base )
  {
-     MOCK_METHOD( method, 0 )       // this fails to compile because 'method' is not visible
+     MOCK_METHOD( method, 0 )       // this fails because 'method' is not visible
  };
 
 A workaround would be to add the signature to MOCK_METHOD :
 
- MOCK_BASE_CLASS( mock_base, base )
- {
-     MOCK_METHOD_EXT( method, 0, void() )
- };
+[limitations_private_method_solution]
 
 [endsect]
 
 [section Methods with a throw specifier cannot be mocked]
 
-The following code does not compile :
+Given :
 
- namespace
+[limitations_throw_specifier_problem]
+
+the following code does not compile :
+
+ MOCK_BASE_CLASS( mock_class, base_class )
  {
-     struct base_class
-     {
-         virtual ~base_class()
-         {}
- 
-         virtual void method() throw;
-     };
- 
-     MOCK_BASE_CLASS( mock_class, base_class )
-     {
-         MOCK_METHOD( method, 0 )              // this fails to compile because of the throw specifier
-     };
- }
+     MOCK_METHOD( method, 0 )              // this fails because of the throw specifier
+ };
 
 A workaround would be to write a proxy member function :
 
- namespace
- {
-     struct base_class
-     {
-         virtual ~base_class()
-         {}
- 
-         virtual void method() throw;
-     };
- 
-     MOCK_BASE_CLASS( mock_class, base_class )
-     {
-         void method() throw
-         {
-             method_proxy();
-         }
-         MOCK_METHOD( method_proxy, 0, void(), method )
-     };
- }
+[limitations_throw_specifier_solution]
 
 [endsect]
 
 [section Compilers without support for variadic macros fail on commas in MOCK_BASE_CLASS]
 
-For compilers without support for variadic macros the following code does not compile :
+For compilers without support for variadic macros given :
 
- template< typename T1, typename T2 >
- struct my_base_class
- {};
- 
- MOCK_BASE_CLASS( my_mock, my_base_class< int, int > ) // this fails to compile because the pre-processor believes the macro to be called with 3 arguments
+[limitations_comma_in_macro_problem]
+
+the following code does not compile : 
+
+ MOCK_BASE_CLASS( my_mock, my_base_class< int, int > ) // this fails because the pre-processor believes the macro to be called with 3 arguments
  {};
 
 One workaround is :
 
- typedef my_base_class< int, int > my_base_type;
- 
- MOCK_BASE_CLASS( my_mock, my_base_type )
- {};
+[limitations_comma_in_macro_solution_1]
 
 Of course this is not always possible, as in :
 
@@ -174,9 +120,7 @@ Of course this is not always possible, as in :
 
 Another workaround would make use of [@http://www.boost.org/libs/preprocessor Boost.Preprocessor] :
 
- template< typename T1, typename T2 >
- MOCK_BASE_CLASS( my_mock, my_base_type< T1 BOOST_PP_COMMA() T2 > )
- {};
+[limitations_comma_in_macro_solution_2]
 
 Actually BOOST_PP_COMMA implementation is quite trivial, being only :
 
@@ -184,9 +128,7 @@ Actually BOOST_PP_COMMA implementation is quite trivial, being only :
 
 Finally another workaround would be to not use the macro at all :
 
- template< typename T1, typename T2 >
- struct my_mock : my_base_type< T1, T2 >, mock::object
- {};
+[limitations_comma_in_macro_solution_3]
 
 Note that [@www.boost.org/libs/utility/identity_type/doc/html/index.html Boost.IdentityType] is of little help here because the type is by essence very often abstract, which doesn't work well for some compilers (e.g. gcc).
 
@@ -220,14 +162,12 @@ Example :
 
 [c++]
 
-The following code produces this warning with some versions of the Microsoft Visual Studio compiler :
+Given :
 
- class base
- {
- public:
-     virtual void method( const int ) = 0;
- };
- 
+[limitations_const_parameter_warning_problem]
+
+the following code produces this warning with some versions of the Microsoft Visual Studio compiler :
+
  MOCK_BASE_CLASS( mock_base, base )
  {
      MOCK_METHOD( method, 1 )                    // this produces the warning
@@ -238,27 +178,13 @@ The problem is that the 'const' is actually not part of the function signature a
 
 The first workaround would be to remove the 'const' all together.
 
-This is more sensible than it first sounds, after all the 'const' is useless in this situation, indeed :
+This is more sensible than it first sounds, after all the 'const' is useless in this situation, indeed the following compiles, links and is valid C++ :
 
- class derived : public base
- {
- public:
-     virtual void method( const int );
- };
- 
- void derived::method( int )           // this compiles, links and is valid C++
- {}
+[limitations_const_parameter_warning_explanation]
 
 Otherwise another workaround would be to provide a proxy method :
 
- MOCK_BASE_CLASS( mock_base, base )
- {
-     void method( const int i )
-     {
-         method_stub( i );
-     }
-     MOCK_METHOD( method_stub, 1, void( int ), method )
- };
+[limitations_const_parameter_warning_solution]
 
 [endsect]
 
