@@ -137,7 +137,7 @@ namespace detail
     {
         return s << '?';
     }
-#if !defined(BOOST_NO_CXX11_NULLPTR) && !defined(BOOST_NO_NULLPTR)
+#ifdef MOCK_NULLPTR
     inline stream& operator<<( stream& s, std::nullptr_t )
     {
         return s << "nullptr";

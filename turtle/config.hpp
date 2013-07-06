@@ -53,6 +53,12 @@
 #   endif
 #endif
 
+#if !defined(BOOST_NO_CXX11_NULLPTR) && !defined(BOOST_NO_NULLPTR)
+#   ifndef MOCK_NO_NULLPTR
+#       define MOCK_NULLPTR
+#   endif
+#endif
+
 #if !defined(BOOST_NO_CXX11_DECLTYPE) && !defined(BOOST_NO_DECLTYPE)
 #   ifndef MOCK_NO_DECLTYPE
 #       define MOCK_DECLTYPE

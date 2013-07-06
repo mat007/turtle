@@ -349,7 +349,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_failing_custom_constrain
 //   CHECK_CALLS( 1 );
 //}
 
-#if !defined(BOOST_NO_CXX11_NULLPTR) && !defined(BOOST_NO_NULLPTR)
+#ifdef MOCK_NULLPTR
 
 BOOST_FIXTURE_TEST_CASE( nullptr_can_be_used_in_place_of_null_pointers_in_constraints, error_fixture )
 {

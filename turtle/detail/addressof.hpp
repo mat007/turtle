@@ -9,6 +9,7 @@
 #ifndef MOCK_ADDRESSOF_HPP_INCLUDED
 #define MOCK_ADDRESSOF_HPP_INCLUDED
 
+#include "../config.hpp"
 #include <boost/utility/addressof.hpp>
 
 namespace mock
@@ -17,7 +18,7 @@ namespace detail
 {
     using boost::addressof;
 
-#if !defined(BOOST_NO_CXX11_NULLPTR) && !defined(BOOST_NO_NULLPTR)
+#ifdef MOCK_NULLPTR
 
     inline const std::nullptr_t* addressof( const std::nullptr_t& p )
     {
