@@ -544,12 +544,10 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_valu
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_shared_ptr_value, error_fixture )
 {
-    {
-        mock::detail::function< boost::shared_ptr< A >() > f;
-        f.expect().returns( new B );
-        BOOST_CHECK_NO_THROW( f() );
-        CHECK_CALLS( 1 );
-    }
+    mock::detail::function< boost::shared_ptr< A >() > f;
+    f.expect().returns( new B );
+    BOOST_CHECK_NO_THROW( f() );
+    CHECK_CALLS( 1 );
 }
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_by_reference, error_fixture )

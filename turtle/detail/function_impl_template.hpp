@@ -12,14 +12,14 @@
 #   error no error policy has been set
 #endif
 
-#define MOCK_FORMAT(z, n, N) \
+#define MOCK_FUNCTION_FORMAT(z, n, N) \
     << ' ' << mock::format( t##n ) \
     << BOOST_PP_IF(BOOST_PP_EQUAL(N,n), ' ', ',')
 
-#define MOCK_CONTEXT \
+#define MOCK_FUNCTION_CONTEXT \
     boost::unit_test::lazy_ostream::instance() \
         << lazy_context( this ) \
-        << '(' BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FORMAT, \
+        << '(' BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FUNCTION_FORMAT, \
             BOOST_PP_DEC(MOCK_NUM_ARGS)) \
         << ')' \
         << lazy_expectations( this )
@@ -113,22 +113,22 @@ namespace detail
                     if( ! it->invoke() )
                     {
                         error_type::fail( "sequence failed",
-                            MOCK_CONTEXT, it->file(), it->line() );
+                            MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
                         return error_type::abort();
                     }
                     if( ! it->functor() )
                     {
                         error_type::fail( "missing action",
-                            MOCK_CONTEXT, it->file(), it->line() );
+                            MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
                         return error_type::abort();
                     }
                     valid_ = true;
                     error_type::call(
-                        MOCK_CONTEXT, it->file(), it->line() );
+                        MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
                     return it->functor()(
                         BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) );
                 }
-            error_type::fail( "unexpected call", MOCK_CONTEXT );
+            error_type::fail( "unexpected call", MOCK_FUNCTION_CONTEXT );
             return error_type::abort();
         }
 
@@ -182,6 +182,5 @@ namespace detail
 }
 } // mock
 
-#undef MOCK_FORMAT
-#undef MOCK_OPERATOR
-#undef MOCK_CONTEXT
+#undef MOCK_FUNCTION_FORMAT
+#undef MOCK_FUNCTION_CONTEXT
