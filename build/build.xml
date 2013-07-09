@@ -231,7 +231,7 @@
 
   <target name="documentation" depends="boost.generate,boost.doc" description="generate documentation"/>
 
-  <target name="boost" depends="boost.generate,boost.convert,boost.doc,boost.test" description="convert to boost with documentation and tests"/>
+  <target name="boost" depends="boost.generate,boost.convert,boost.test,boost.doc" description="convert to boost with documentation and tests"/>
 
   <target name="all" depends="configure,test,bench,reports,export,package" description="configure, build and run tests and benchmark, export and package distribution"/>
 

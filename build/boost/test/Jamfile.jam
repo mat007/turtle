@@ -12,11 +12,11 @@ project : requirements <define>BOOST_AUTO_TEST_MAIN <define>BOOST_ALL_NO_LIB ;
 
 rule run-test ( name )
 {
-  run $(name).cpp /boost//unit_test_framework : : : : $(name) ;
-  run $(name).cpp /boost//unit_test_framework : : : <define>MOCK_MAX_ARGS=21 : $(name)_max_args ;
-  run $(name).cpp /boost//unit_test_framework : : : <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
-  run $(name).cpp /boost//unit_test_framework : : : <define>MOCK_NO_DECLTYPE : $(name)_no_decltype ;
-  run $(name).cpp /boost//unit_test_framework : : : <define>MOCK_NO_VARIADIC_MACROS : $(name)_no_variadic_macros ;
+  run $(name).cpp undefined.cpp /boost//unit_test_framework : : : : $(name) ;
+  run $(name).cpp undefined.cpp /boost//unit_test_framework : : : <define>MOCK_MAX_ARGS=21 : $(name)_max_args ;
+  run $(name).cpp undefined.cpp /boost//unit_test_framework : : : <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
+  run $(name).cpp undefined.cpp /boost//unit_test_framework : : : <define>MOCK_NO_DECLTYPE : $(name)_no_decltype ;
+  run $(name).cpp undefined.cpp /boost//unit_test_framework : : : <define>MOCK_NO_VARIADIC_MACROS : $(name)_no_variadic_macros ;
 }
 
 alias mock_tests :
