@@ -127,6 +127,25 @@ namespace detail
     {
         return s << mock::format( t.lock() );
     }
+
+#ifdef MOCK_SMART_PTR
+    template< typename T >
+    stream& operator<<( stream& s, const std::shared_ptr< T >& t )
+    {
+        return s << mock::format( t.get() );
+    }
+    template< typename T >
+    stream& operator<<( stream& s, const std::weak_ptr< T >& t )
+    {
+        return s << mock::format( t.lock() );
+    }
+    template< typename T, typename Deleter >
+    inline stream& operator<<( stream& s, const std::unique_ptr< T, Deleter >& p )
+    {
+        return s << mock::format( p.get() );
+    }
+#endif
+
     template< typename T >
     stream& operator<<( stream& s, const boost::lambda::lambda_functor< T >& )
     {
@@ -137,6 +156,7 @@ namespace detail
     {
         return s << '?';
     }
+
 #ifdef MOCK_NULLPTR
     inline stream& operator<<( stream& s, std::nullptr_t )
     {

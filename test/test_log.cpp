@@ -402,6 +402,28 @@ BOOST_AUTO_TEST_CASE( boost_weak_ptr_are_serialized )
     BOOST_CHECK_NE( "?", to_string( boost::weak_ptr< int >( boost::shared_ptr< int >( new int( 42 ) ) ) ) );
 }
 
+#ifdef MOCK_SMART_PTR
+
+BOOST_AUTO_TEST_CASE( std_shared_ptr_are_serialized )
+{
+    BOOST_CHECK_NE( "?", to_string( std::shared_ptr< int >() ) );
+    BOOST_CHECK_NE( "?", to_string( std::shared_ptr< int >( new int( 42 ) ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( std_weak_ptr_are_serialized )
+{
+    BOOST_CHECK_NE( "?", to_string( std::weak_ptr< int >( std::shared_ptr< int >() ) ) );
+    BOOST_CHECK_NE( "?", to_string( std::weak_ptr< int >( std::shared_ptr< int >( new int( 42 ) ) ) ) );
+}
+
+BOOST_AUTO_TEST_CASE( std_unique_ptr_are_serialized )
+{
+    BOOST_CHECK_NE( "?", to_string( std::unique_ptr< int >() ) );
+    BOOST_CHECK_NE( "?", to_string( std::unique_ptr< int >( new int( 42 ) ) ) );
+}
+
+#endif
+
 BOOST_AUTO_TEST_CASE( std_deques_are_serialized )
 {
     std::deque< int > d;
