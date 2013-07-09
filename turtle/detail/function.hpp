@@ -28,6 +28,7 @@
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/test/utils/lazy_ostream.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/call_traits.hpp>
 #include <boost/optional.hpp>
 #include <ostream>
 #include <vector>

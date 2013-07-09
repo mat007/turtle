@@ -361,6 +361,19 @@ BOOST_FIXTURE_TEST_CASE( nullptr_can_be_used_in_place_of_null_pointers_in_constr
 
 #endif
 
+#ifdef MOCK_SMART_PTR
+
+BOOST_FIXTURE_TEST_CASE( unique_ptr_is_supported_as_parameter, error_fixture )
+{
+    mock::detail::function< void( std::unique_ptr< int > ) > f;
+    f.expect();
+    std::unique_ptr< int > p( new int );
+    f( std::move( p ) );
+    CHECK_CALLS( 1 );
+}
+
+#endif // MOCK_SMART_PTR
+
 // result handling
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_no_return_set_calls_missing_action, error_fixture )

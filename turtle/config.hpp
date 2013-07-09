@@ -71,4 +71,10 @@
 #   endif
 #endif
 
+#if !defined(BOOST_NO_CXX11_SMART_PTR) && !defined(BOOST_NO_SMART_PTR)
+#   ifndef MOCK_NO_SMART_PTR
+#      define MOCK_SMART_PTR
+#   endif
+#endif
+
 #endif // MOCK_CONFIG_HPP_INCLUDED

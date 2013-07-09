@@ -5,6 +5,7 @@ Not yet released
 
 * Reworked MOCK_CONSTRAINT to be able to provide names to parameters
 * Added MOCK_NO_VARIADIC_MACROS to deactivate variadic macros support
+* Added support for movable only types as parameters
 
 [endsect]
 
