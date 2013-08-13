@@ -73,18 +73,18 @@ namespace detail
         template< typename Value >
         void returns( const Value& v )
         {
-            f_ = lambda_type::make_val( boost::ref( v_.store( v ) ) );
+            f_ = lambda_type::make_ref( boost::ref( v_.store( v ) ) );
         }
         template< typename Value >
         void returns( Value* v )
         {
-            f_ = lambda_type::make_val(
+            f_ = lambda_type::make_ref(
                 boost::ref( v_.store( result_type( v ) ) ) );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            f_ = lambda_type::make_val( r );
+            f_ = lambda_type::make_ref( r );
         }
 
         template< typename Value >
@@ -132,7 +132,7 @@ namespace detail
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            f_ = lambda_type::make_val( r );
+            f_ = lambda_type::make_ref( r );
         }
 
         void calls( const functor_type& f )
@@ -206,7 +206,7 @@ namespace detail
         action( const action& rhs )
             : v_( const_cast< action& >( rhs ).v_.release() )
             , f_( v_.get()
-                ? lambda_type::make_val( boost::ref( v_ ) )
+                ? lambda_type::make_ref( boost::ref( v_ ) )
                 : rhs.f_ )
         {}
 
@@ -239,18 +239,18 @@ namespace detail
         void set( std::auto_ptr< Y > r )
         {
             v_ = r;
-            f_ = lambda_type::make_val( boost::ref( v_ ) );
+            f_ = lambda_type::make_ref( boost::ref( v_ ) );
         }
         template< typename Y >
         void set( const boost::reference_wrapper< Y >& r )
         {
-            f_ = lambda_type::make_val( r );
+            f_ = lambda_type::make_ref( r );
         }
         template< typename Y >
         void set( Y* r )
         {
             v_.reset( r );
-            f_ = lambda_type::make_val( boost::ref( v_ ) );
+            f_ = lambda_type::make_ref( boost::ref( v_ ) );
         }
 
         std::auto_ptr< Result > v_;
