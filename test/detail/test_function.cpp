@@ -491,6 +491,8 @@ namespace
 {
     struct A
     {
+        virtual ~A()
+        {}
         virtual void f() = 0;
     };
     struct B : A
