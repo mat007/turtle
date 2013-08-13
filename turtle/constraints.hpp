@@ -19,28 +19,28 @@
 
 namespace mock
 {
-    MOCK_CONSTRAINT_EXT( any, 0,, true && &actual )
-    MOCK_CONSTRAINT_EXT( affirm, 0,, !! actual )
-    MOCK_CONSTRAINT_EXT( negate, 0,, ! actual )
-    MOCK_CONSTRAINT_EXT( evaluate, 0,, actual() )
+    MOCK_UNARY_CONSTRAINT( any, 0,, true && &actual )
+    MOCK_UNARY_CONSTRAINT( affirm, 0,, !! actual )
+    MOCK_UNARY_CONSTRAINT( negate, 0,, ! actual )
+    MOCK_UNARY_CONSTRAINT( evaluate, 0,, actual() )
 
-    MOCK_CONSTRAINT_EXT( equal, 1, ( expected ), actual == expected )
-    MOCK_CONSTRAINT_EXT( less, 1, ( expected ), actual < expected )
-    MOCK_CONSTRAINT_EXT( greater, 1, ( expected ), actual > expected )
-    MOCK_CONSTRAINT_EXT( less_equal, 1, ( expected ), actual <= expected )
-    MOCK_CONSTRAINT_EXT( greater_equal, 1, ( expected ), actual >= expected )
+    MOCK_NARY_CONSTRAINT( equal, 1, ( expected ), actual == expected )
+    MOCK_NARY_CONSTRAINT( less, 1, ( expected ), actual < expected )
+    MOCK_NARY_CONSTRAINT( greater, 1, ( expected ), actual > expected )
+    MOCK_NARY_CONSTRAINT( less_equal, 1, ( expected ), actual <= expected )
+    MOCK_NARY_CONSTRAINT( greater_equal, 1, ( expected ), actual >= expected )
 
-    MOCK_CONSTRAINT_EXT( small, 1, ( expected ), \
+    MOCK_NARY_CONSTRAINT( small, 1, ( expected ), \
         ( boost::test_tools::check_is_small( actual, expected ) ) )
-    MOCK_CONSTRAINT_EXT( close, 2, ( expected, tolerance ), \
+    MOCK_NARY_CONSTRAINT( close, 2, ( expected, tolerance ), \
         ( boost::test_tools::check_is_close( \
             actual, expected, \
             boost::test_tools::percent_tolerance( tolerance ) ) ) )
-    MOCK_CONSTRAINT_EXT( close_fraction, 2, ( expected, tolerance ), \
+    MOCK_NARY_CONSTRAINT( close_fraction, 2, ( expected, tolerance ), \
         ( boost::test_tools::check_is_close( \
             actual, expected, \
             boost::test_tools::fraction_tolerance( tolerance ) ) ) )
-    MOCK_CONSTRAINT_EXT( near, 2, ( expected, tolerance ), \
+    MOCK_NARY_CONSTRAINT( near, 2, ( expected, tolerance ), \
         std::abs( actual - expected ) < tolerance )
 
 namespace detail
