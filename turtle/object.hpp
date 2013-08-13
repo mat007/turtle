@@ -60,14 +60,23 @@ namespace detail
         friend E& detail::configure( const object& o, E& e,
             boost::unit_test::const_string instance,
             boost::optional< detail::type_name > type,
-            boost::unit_test::const_string name )
-        {
-            e.configure( *o.impl_, o.impl_.get(), instance, type, name );
-            return e;
-        }
+            boost::unit_test::const_string name );
     private:
         boost::shared_ptr< detail::object_impl > impl_;
     };
+
+namespace detail
+{
+    template< typename E >
+    E& configure( const object& o, E& e,
+                 boost::unit_test::const_string instance,
+                 boost::optional< type_name > type,
+                 boost::unit_test::const_string name )
+    {
+        e.configure( *o.impl_, o.impl_.get(), instance, type, name );
+        return e;
+    }
+}
 } // mock
 
 #endif // MOCK_OBJECT_HPP_INCLUDED
