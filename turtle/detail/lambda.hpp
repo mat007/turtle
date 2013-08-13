@@ -15,6 +15,7 @@
 #else
 #include <boost/bind.hpp>
 #endif
+#include <boost/move/move.hpp>
 #include <boost/function.hpp>
 
 namespace mock
@@ -45,6 +46,11 @@ namespace detail
                 &do_ref_identity< T >, t.get_pointer() );
         }
         template< typename T >
+        static functor_type make_move( T& t )
+        {
+            return detail::bind( &do_move< T >, boost::ref( t ) );
+        }
+        template< typename T >
         static functor_type make_throw( T t )
         {
             return detail::bind( &do_throw< T >, t );
@@ -58,6 +64,11 @@ namespace detail
         static T do_identity( T t )
         {
             return t;
+        }
+        template< typename T >
+        static T do_move( T& t )
+        {
+            return boost::move( t );
         }
         template< typename T >
         static T& do_ref_identity( T* t )

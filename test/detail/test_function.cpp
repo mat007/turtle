@@ -555,6 +555,57 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_valu
     }
 }
 
+#ifdef MOCK_RVALUE_REFERENCES
+
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_lvalue, error_fixture )
+{
+    mock::detail::function< int() > f;
+    int i = 3;
+    f.expect().moves( i );
+    BOOST_CHECK_NO_THROW( f() );
+    CHECK_CALLS( 1 );
+}
+
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_const_lvalue, error_fixture )
+{
+    mock::detail::function< int() > f;
+    const int i = 3;
+    f.expect().moves( i );
+    BOOST_CHECK_NO_THROW( f() );
+    CHECK_CALLS( 1 );
+}
+
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_rvalue, error_fixture )
+{
+    mock::detail::function< int() > f;
+    f.expect().moves( 3 );
+    BOOST_CHECK_NO_THROW( f() );
+    CHECK_CALLS( 1 );
+}
+
+#endif
+
+#ifdef MOCK_SMART_PTR
+
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_unique_ptr_lvalue, error_fixture )
+{
+    mock::detail::function< std::unique_ptr< int >() > f;
+    std::unique_ptr< int > p( new int );
+    f.expect().moves( std::move( p ) );
+    BOOST_CHECK_NO_THROW( f() );
+    CHECK_CALLS( 1 );
+}
+
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_unique_ptr_rvalue, error_fixture )
+{
+    mock::detail::function< std::unique_ptr< int >() > f;
+    f.expect().moves( std::unique_ptr< int >( new int ) );
+    BOOST_CHECK_NO_THROW( f() );
+    CHECK_CALLS( 1 );
+}
+
+#endif // MOCK_SMART_PTR
+
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_shared_ptr_value, error_fixture )
 {
     mock::detail::function< boost::shared_ptr< A >() > f;

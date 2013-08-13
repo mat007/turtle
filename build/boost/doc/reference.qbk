@@ -419,6 +419,7 @@ An action performs additional treatments after an expectation has been deemed va
 Synopsis :
 
  MOCK_EXPECT( identifier ).returns( value );
+ MOCK_EXPECT( identifier ).moves( value );
  MOCK_EXPECT( identifier ).throws( exception );
  MOCK_EXPECT( identifier ).calls( functor );    // gets assigned to a boost::function and throws std::invalid_argument if empty
 

@@ -13,14 +13,50 @@
 #include "lambda.hpp"
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/type_traits/remove_const.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/move/move.hpp>
 #include <boost/function.hpp>
 #include <boost/ref.hpp>
-#include <boost/any.hpp>
 
 namespace mock
 {
 namespace detail
 {
+    struct holder : boost::noncopyable
+    {
+        virtual ~holder()
+        {}
+    };
+    template< typename T >
+    struct holder_imp : holder
+    {
+        holder_imp( BOOST_RV_REF( T ) t )
+            : t_( boost::move( t ) )
+        {}
+        holder_imp( const T& t )
+            : t_( t )
+        {}
+        T t_;
+    };
+
+    struct value
+    {
+        template< typename T >
+        T& store( BOOST_RV_REF( T ) t )
+        {
+            h_.reset( new holder_imp< T >( boost::move( t ) ) );
+            return static_cast< holder_imp< T >* >( h_.get() )->t_;
+        }
+        template< typename T >
+        T& store( const T& t )
+        {
+            h_.reset( new holder_imp< T >( t ) );
+            return static_cast< holder_imp< T >* >( h_.get() )->t_;
+        }
+        boost::shared_ptr< holder > h_;
+    };
+
     template< typename Result, typename Signature >
     class action
     {
@@ -35,23 +71,26 @@ namespace detail
 
     public:
         template< typename Value >
-        void returns( Value v )
+        void returns( const Value& v )
         {
-            r_ = v;
-            f_ = lambda_type::make_val(
-                boost::ref( boost::any_cast< Value& >( r_ ) ) );
+            f_ = lambda_type::make_val( boost::ref( v_.store( v ) ) );
         }
         template< typename Value >
         void returns( Value* v )
         {
-            r_ = result_type( v );
             f_ = lambda_type::make_val(
-                boost::ref( boost::any_cast< result_type& >( r_ ) ) );
+                boost::ref( v_.store( result_type( v ) ) ) );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
             f_ = lambda_type::make_val( r );
+        }
+
+        template< typename Value >
+        void moves( BOOST_RV_REF( Value ) v )
+        {
+            f_ = lambda_type::make_move( v_.store( boost::move( v ) ) );
         }
 
         void calls( const functor_type& f )
@@ -73,7 +112,7 @@ namespace detail
         }
 
     private:
-        boost::any r_;
+        value v_;
         functor_type f_;
     };
 
@@ -165,9 +204,9 @@ namespace detail
         action()
         {}
         action( const action& rhs )
-            : r_( const_cast< action& >( rhs ).r_.release() )
-            , f_( r_.get()
-                ? lambda_type::make_val( boost::ref( r_ ) )
+            : v_( const_cast< action& >( rhs ).v_.release() )
+            , f_( v_.get()
+                ? lambda_type::make_val( boost::ref( v_ ) )
                 : rhs.f_ )
         {}
 
@@ -188,7 +227,6 @@ namespace detail
         void throws( Exception e )
         {
             f_ = lambda_type::make_throw( e );
-            r_.reset();
         }
 
         const functor_type& functor() const
@@ -200,23 +238,22 @@ namespace detail
         template< typename Y >
         void set( std::auto_ptr< Y > r )
         {
-            r_ = r;
-            f_ = lambda_type::make_val( boost::ref( r_ ) );
+            v_ = r;
+            f_ = lambda_type::make_val( boost::ref( v_ ) );
         }
         template< typename Y >
         void set( const boost::reference_wrapper< Y >& r )
         {
             f_ = lambda_type::make_val( r );
-            r_.reset();
         }
         template< typename Y >
         void set( Y* r )
         {
-            r_.reset( r );
-            f_ = lambda_type::make_val( boost::ref( r_ ) );
+            v_.reset( r );
+            f_ = lambda_type::make_val( boost::ref( v_ ) );
         }
 
-        std::auto_ptr< Result > r_;
+        std::auto_ptr< Result > v_;
         functor_type f_;
     };
 }

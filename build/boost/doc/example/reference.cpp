@@ -624,6 +624,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_configuring_actions )
 {
    mock_class c;
    MOCK_EXPECT( c.method ).returns( 42 );
+   MOCK_EXPECT( c.method ).moves( 42 );                               // returns by moving the value
    MOCK_EXPECT( c.method ).throws( std::runtime_error( "error !" ) );
    MOCK_EXPECT( c.method ).calls( &function );                        // forwards 'method' parameter to 'function'
    MOCK_EXPECT( c.method ).calls( boost::bind( &function, 42 ) );     // drops 'method' parameter and binds 42 as parameter to 'function'
