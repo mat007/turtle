@@ -10,8 +10,8 @@
 #define MOCK_EXPECTATION_BASE_HPP_INCLUDED
 
 #include "../config.hpp"
-#include "invocation.hpp"
 #include "../sequence.hpp"
+#include "invocation.hpp"
 #include <boost/make_shared.hpp>
 #include <vector>
 
@@ -22,11 +22,6 @@ namespace detail
     class expectation_base
     {
     public:
-        expectation_base()
-            : i_( boost::make_shared< unlimited >() )
-            , file_( "unknown location" )
-            , line_( 0 )
-        {}
         void set_location( const char* file, int line )
         {
             file_ = file;
@@ -66,6 +61,11 @@ namespace detail
         }
 
     protected:
+        expectation_base()
+            : i_( boost::make_shared< unlimited >() )
+            , file_( "unknown location" )
+            , line_( 0 )
+        {}
         ~expectation_base()
         {
             for( sequences_cit it = sequences_.begin();

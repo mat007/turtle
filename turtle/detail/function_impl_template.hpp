@@ -39,8 +39,9 @@ namespace detail
     public:
         typedef MOCK_ERROR_POLICY< R > error_type;
 
-        typedef expectation< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-            > expectation_type;
+        typedef expectation<
+                    R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
+                > expectation_type;
 
     public:
         function_impl()
