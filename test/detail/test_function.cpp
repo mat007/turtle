@@ -489,13 +489,13 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_value, error_
 
 namespace
 {
-    struct A
+    struct base
     {
-        virtual ~A()
+        virtual ~base()
         {}
         virtual void f() = 0;
     };
-    struct B : A
+    struct derived : base
     {
         virtual void f()
         {}
@@ -538,20 +538,20 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_valu
         CHECK_CALLS( 2 );
     }
     {
-        mock::detail::function< std::auto_ptr< A >() > f;
-        f.expect().returns( new B );
+        mock::detail::function< std::auto_ptr< base >() > f;
+        f.expect().returns( new derived );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
     {
-        mock::detail::function< std::auto_ptr< A >() > f;
-        f.expect().returns( std::auto_ptr< A >( new B ) );
+        mock::detail::function< std::auto_ptr< base >() > f;
+        f.expect().returns( std::auto_ptr< base >( new derived ) );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
     {
-        mock::detail::function< std::auto_ptr< A >() > f;
-        f.expect().returns( std::auto_ptr< B >( new B ) );
+        mock::detail::function< std::auto_ptr< base >() > f;
+        f.expect().returns( std::auto_ptr< derived >( new derived ) );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
@@ -610,8 +610,8 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_unique_ptr_rval
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_shared_ptr_value, error_fixture )
 {
-    mock::detail::function< boost::shared_ptr< A >() > f;
-    f.expect().returns( new B );
+    mock::detail::function< boost::shared_ptr< base >() > f;
+    f.expect().returns( new derived );
     BOOST_CHECK_NO_THROW( f() );
     CHECK_CALLS( 1 );
 }
@@ -619,15 +619,15 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_shared_ptr_va
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_by_reference, error_fixture )
 {
     {
-        mock::detail::function< A&() > f;
-        B b;
+        mock::detail::function< base&() > f;
+        derived b;
         f.expect().returns( boost::ref( b ) );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
     {
-        mock::detail::function< A&() > f;
-        B b;
+        mock::detail::function< base&() > f;
+        derived b;
         f.expect().returns( b );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
