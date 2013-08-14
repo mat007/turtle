@@ -30,8 +30,16 @@ namespace mock
     MOCK_NARY_CONSTRAINT( less_equal, 1, ( expected ), actual <= expected )
     MOCK_NARY_CONSTRAINT( greater_equal, 1, ( expected ), actual >= expected )
 
+#ifdef BOOST_MSVC
+#   pragma push_macro( "small" )
+#   undef small
+#endif
     MOCK_NARY_CONSTRAINT( small, 1, ( expected ), \
         ( boost::test_tools::check_is_small( actual, expected ) ) )
+#ifdef BOOST_MSVC
+#   pragma pop_macro( "small" )
+#endif
+
     MOCK_NARY_CONSTRAINT( close, 2, ( expected, tolerance ), \
         ( boost::test_tools::check_is_close( \
             actual, expected, \
@@ -40,8 +48,16 @@ namespace mock
         ( boost::test_tools::check_is_close( \
             actual, expected, \
             boost::test_tools::fraction_tolerance( tolerance ) ) ) )
+
+#ifdef BOOST_MSVC
+#   pragma push_macro( "near" )
+#   undef near
+#endif
     MOCK_NARY_CONSTRAINT( near, 2, ( expected, tolerance ), \
         std::abs( actual - expected ) < tolerance )
+#ifdef BOOST_MSVC
+#   pragma pop_macro( "near" )
+#endif
 
 namespace detail
 {
