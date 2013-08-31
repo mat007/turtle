@@ -53,15 +53,7 @@ namespace detail
     protected:
         ~object()
         {}
-    private:
-        friend void reset( const object& o );
-        friend bool verify( const object& o );
-        template< typename E >
-        friend E& detail::configure( const object& o, E& e,
-            boost::unit_test::const_string instance,
-            boost::optional< detail::type_name > type,
-            boost::unit_test::const_string name );
-    private:
+    public:
         boost::shared_ptr< detail::object_impl > impl_;
     };
 
