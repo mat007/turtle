@@ -46,11 +46,6 @@ namespace detail
             return result;
         }
 
-        bool invoked() const
-        {
-            return i_->invoked();
-        }
-
         const char* file() const
         {
             return file_;

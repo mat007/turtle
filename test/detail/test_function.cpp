@@ -167,14 +167,12 @@ BOOST_FIXTURE_TEST_CASE( verifying_an_unlimited_expectation_succeeds, error_fixt
         BOOST_CHECK( f.verify() );
         CHECK_CALLS( 0 );
     }
-    CHECK_CALLS( 1 );
     {
         mock::detail::function< int( int, const std::string& ) > f;
         f.expect();
         BOOST_CHECK( f.verify() );
         CHECK_CALLS( 0 );
     }
-    CHECK_CALLS( 1 );
 }
 
 BOOST_FIXTURE_TEST_CASE( verifying_a_once_expectation_after_one_call_succeeds, error_fixture )

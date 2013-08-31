@@ -53,16 +53,10 @@ namespace detail
             if( valid_ && ! std::uncaught_exception() )
                 for( expectations_cit it = expectations_.begin();
                     it != expectations_.end(); ++it )
-                {
                     if( ! it->verify() )
                         error_type::fail( "untriggered expectation",
                             boost::unit_test::lazy_ostream::instance()
                                 << *this, it->file(), it->line() );
-                    else if( ! it->invoked() )
-                        error_type::call(
-                            boost::unit_test::lazy_ostream::instance()
-                                << *this, it->file(), it->line() );
-                }
             if( context_ )
                 context_->remove( *this );
         }
