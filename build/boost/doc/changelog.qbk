@@ -1,7 +1,7 @@
 [section Changelog]
 
-[section trunk]
-Not yet released
+[section 1.2.4]
+Released 14 August 2013
 
 * Reworked MOCK_CONSTRAINT to be able to provide names to parameters
 * Added MOCK_NO_VARIADIC_MACROS to deactivate variadic macros support
