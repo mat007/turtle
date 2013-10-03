@@ -48,6 +48,6 @@ BOOST_AUTO_TEST_CASE( method_is_called )
     my_class c( mock );
     bool done = false;
     MOCK_EXPECT( mock.method ).once().calls( boost::lambda::var( done ) = true ); // when method is called it will set done to true
-    wait( done, boost::bind( &my_class::flush, &c ) );                            // just wait on done flushing from time to time
+    wait( done, boost::bind( &my_class::flush, &c ) );                            // just wait on done, flushing from time to time
 }
 //]

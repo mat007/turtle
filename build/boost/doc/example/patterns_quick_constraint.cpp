@@ -31,7 +31,7 @@ namespace
 
 namespace mock // it could also be in the namespace of 'my_class'
 {
-    bool operator==( const my_class& actual, const std::string& expected ) // the first part of trick is to compare to a string
+    bool operator==( const my_class& actual, const std::string& expected ) // the first part of the trick is to compare to a string
     {
         return boost::lexical_cast< std::string >( actual ) == expected;
     }
