@@ -1,6 +1,7 @@
 [section Limitations]
 [import example/limitations_literal_zero.cpp]
 [import example/limitations_throw_specifier.cpp]
+[import example/limitations_non_virtual_method.cpp]
 [import example/limitations_template_method.cpp]
 [import example/limitations_private_method.cpp]
 [import example/limitations_comma_in_macro.cpp]
@@ -56,6 +57,22 @@ writing a mock object modeling 'concept' requires to list all the possible versi
 [limitations_template_method_solution]
 
 While still somewhat possible, mocking a template method is indeed a bit cumbersome.
+
+[endsect]
+
+[section Non-virtual methods cannot be mocked]
+
+Given :
+
+[limitations_non_virtual_method_problem]
+
+the following code compiles but will not work as expected :
+
+[limitations_non_virtual_method_problem_2]
+
+The mock object will never be exercised because the library relies on polymorphism to hook the calls.
+
+There is no other solution than to refactor the production code, the most simple being to change the method to virtual.
 
 [endsect]
 
