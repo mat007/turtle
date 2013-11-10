@@ -33,7 +33,7 @@
 #ifdef MOCK_VARIADIC_MACROS
 
 #define MOCK_BASE_CLASS(T, ...) \
-    struct T : __VA_ARGS__, mock::object, mock::detail::base< __VA_ARGS__ >
+    struct T : __VA_ARGS__, virtual mock::object, mock::detail::base< __VA_ARGS__ >
 
 #define MOCK_FUNCTOR(f, ...) \
     mock::detail::functor< MOCK_FUNCTION_TYPE((__VA_ARGS__),) > f, f##_mock
@@ -44,7 +44,7 @@
 #else // MOCK_VARIADIC_MACROS
 
 #define MOCK_BASE_CLASS(T, I) \
-    struct T : I, mock::object, mock::detail::base< I >
+    struct T : I, virtual mock::object, mock::detail::base< I >
 
 #define MOCK_FUNCTOR(f, S) \
     mock::detail::functor< MOCK_FUNCTION_TYPE(S,) > f, f##_mock

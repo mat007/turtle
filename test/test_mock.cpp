@@ -391,3 +391,36 @@ namespace
 }
 
 #endif //MOCK_VARIADIC_MACROS
+
+namespace
+{
+    struct base_1
+    {
+        virtual ~base_1()
+        {}
+        virtual void f_1() = 0;
+    };
+    struct base_2
+    {
+        virtual ~base_2()
+        {}
+        virtual void f_2() = 0;
+    };
+    MOCK_BASE_CLASS( mock_1, base_1 )
+    {
+        MOCK_METHOD( f_1, 0 )
+    };
+    MOCK_BASE_CLASS( mock_2, base_2 ), mock_1
+    {
+        MOCK_METHOD( f_2, 0 )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mock_object_can_inherit_from_another_mock_object )
+{
+    mock_2 m;
+    MOCK_EXPECT( m.f_1 ).once();
+    //MOCK_EXPECT( m.f_2 ).once();
+    //m.f_1();
+    //m.f_2();
+}
