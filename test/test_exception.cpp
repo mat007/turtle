@@ -6,7 +6,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <turtle/error.hpp>
+#define MOCK_USE_BOOST_TEST
+#include <turtle/exception.hpp>
 #include <boost/test/auto_unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE( a_mock_exception_is_not_an_std_exception_to_not_mess_with_user_exceptions )

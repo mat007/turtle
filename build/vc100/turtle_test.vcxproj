@@ -30,7 +30,7 @@
     <ClCompile Include="..\..\test\detail\test_type_name.cpp" />
     <ClCompile Include="..\..\test\test_constraint.cpp" />
     <ClCompile Include="..\..\test\test_constraints.cpp" />
-    <ClCompile Include="..\..\test\test_error.cpp" />
+    <ClCompile Include="..\..\test\test_exception.cpp" />
     <ClCompile Include="..\..\test\test_integration.cpp" />
     <ClCompile Include="..\..\test\test_log.cpp" />
     <ClCompile Include="..\..\test\test_matcher.cpp" />

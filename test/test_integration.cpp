@@ -23,11 +23,12 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros_and_without_inheriting_from_object )
+BOOST_FIXTURE_TEST_CASE( custom_mock_object_without_macros_and_without_inheriting_from_object, mock_error_fixture )
 {
     my_custom_mock m;
     MOCK_EXPECT( m.my_tag ).once();
     m.my_method();
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -38,11 +39,12 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( custom_mock_object_without_macros )
+BOOST_FIXTURE_TEST_CASE( custom_mock_object_without_macros, mock_error_fixture )
 {
     my_custom_mock_object m;
     MOCK_EXPECT( m.my_tag ).once();
     m.my_method();
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -53,24 +55,27 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( basic_mock_object_usage )
+BOOST_FIXTURE_TEST_CASE( basic_mock_object_usage, mock_error_fixture )
 {
     my_mock m;
     {
         MOCK_EXPECT( m.my_tag ).once().returns( 0 );
         BOOST_CHECK_EQUAL( 0, m.my_method( 13 ) );
+        CHECK_CALLS( 1 );
     }
     mock::verify();
     mock::reset();
     {
         MOCK_EXPECT( m.my_tag ).once().with( 42 ).returns( 7 );
         BOOST_CHECK_EQUAL( 7, m.my_method( 42 ) );
+        CHECK_CALLS( 1 );
     }
     mock::verify();
     mock::reset();
     {
         MOCK_EXPECT( m.my_tag ).once().returns( 51 );
         BOOST_CHECK_EQUAL( 51, m.my_method( 27 ) );
+        CHECK_CALLS( 1 );
     }
 }
 
@@ -92,12 +97,12 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( mock_object_method_disambiguation )
+BOOST_FIXTURE_TEST_CASE( mock_object_method_disambiguation, mock_error_fixture )
 {
     my_ambiguited_mock m;
     MOCK_EXPECT( m.my_tag1 );
-    BOOST_CHECK_NO_THROW( m.my_method() );
-    BOOST_CHECK_THROW( m.my_method( 12 ), std::exception );
+    m.my_method();
+    CHECK_ERROR( m.my_method( 12 ), "unexpected call", 1, "?.my_ambiguited_mock::my_tag_2( 12 )" );
 }
 
 namespace
@@ -118,13 +123,13 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( mock_object_method_const_disambiguation )
+BOOST_FIXTURE_TEST_CASE( mock_object_method_const_disambiguation, mock_error_fixture )
 {
     my_const_ambiguited_mock mock;
     MOCK_EXPECT( mock.tag1 );
     BOOST_CHECK_NO_THROW( mock.my_method() );
     const my_const_ambiguited_mock const_mock;
-    BOOST_CHECK_THROW( const_mock.my_method(), std::exception );
+    CHECK_ERROR( const_mock.my_method(), "unexpected call", 1, "?.my_const_ambiguited_mock::tag_2()" );
 }
 
 namespace
@@ -135,13 +140,13 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( mock_object_method_with_declared_but_not_defined_parameter_is_valid )
+BOOST_FIXTURE_TEST_CASE( mock_object_method_with_declared_but_not_defined_parameter_is_valid, mock_error_fixture )
 {
     my_undefined_mock mock;
     MOCK_EXPECT( mock.t );
 }
 
-BOOST_AUTO_TEST_CASE( mock_functor_in_function_is_supported )
+BOOST_FIXTURE_TEST_CASE( mock_functor_in_function_is_supported, mock_error_fixture )
 {
     boost::function< int( float, const std::string& ) > func;
     {
@@ -150,11 +155,12 @@ BOOST_AUTO_TEST_CASE( mock_functor_in_function_is_supported )
         func = f;
     }
     BOOST_CHECK_EQUAL( 42, func( 3, "op" ) );
+    CHECK_CALLS( 1 );
 }
 
 namespace
 {
-    struct functor_fixture
+    struct functor_fixture : mock_error_fixture
     {
         MOCK_FUNCTOR( f, int( float, const std::string& ) );
     };
@@ -164,6 +170,7 @@ BOOST_FIXTURE_TEST_CASE( mock_functor_in_fixture_is_supported, functor_fixture )
 {
     MOCK_EXPECT( f ).once().with( 3, "op" ).returns( 42 );
     BOOST_CHECK_EQUAL( 42, f( 3.f, "op" ) );
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -177,12 +184,13 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( mocking_a_template_class_method_is_supported )
+BOOST_FIXTURE_TEST_CASE( mocking_a_template_class_method_is_supported, mock_error_fixture )
 {
     my_template_mock< int > m;
     MOCK_EXPECT( m.my_tpl_tag ).with( 3, "" );
     m.my_method( 3, "" );
     BOOST_CHECK( MOCK_VERIFY( m.my_tpl_tag ) );
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -203,12 +211,13 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( mocking_a_template_base_class_method_is_supported )
+BOOST_FIXTURE_TEST_CASE( mocking_a_template_base_class_method_is_supported, mock_error_fixture )
 {
     my_template_base_class_mock< int > m;
     MOCK_EXPECT( m.my_method ).once().with( 3 );
     m.my_method( 3 );
     BOOST_CHECK( MOCK_VERIFY( m.my_method ) );
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -255,7 +264,7 @@ namespace
         MOCK_METHOD( get_observer, 0 )
     };
 
-    struct fixture
+    struct fixture : mock_error_fixture
     {
         my_mock_manager manager;
         my_mock_observer observer;
@@ -272,6 +281,7 @@ BOOST_FIXTURE_TEST_CASE( basic_mock_object_collaboration_usage, fixture )
     subject.increment();
     MOCK_EXPECT( observer.notify ).once().with( 3 );
     subject.increment();
+    CHECK_CALLS( 4 );
 }
 
 namespace
@@ -282,11 +292,12 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( mocking_a_constructor )
+BOOST_FIXTURE_TEST_CASE( mocking_a_constructor, mock_error_fixture )
 {
     MOCK_EXPECT( my_constructed_class::constructor ).with( 42, "some text" ).once();
     my_constructed_class( 42, "some text" );
     BOOST_CHECK( MOCK_VERIFY( my_constructed_class::constructor ) );
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -298,11 +309,12 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( mocking_a_template_class_constructor )
+BOOST_FIXTURE_TEST_CASE( mocking_a_template_class_constructor, mock_error_fixture )
 {
     MOCK_EXPECT( my_constructed_template_class< int >::constructor ).with( 42, "some text" ).once();
     my_constructed_template_class< int >( 42, "some text" );
     BOOST_CHECK( MOCK_VERIFY( my_constructed_template_class< int >::constructor ) );
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -313,34 +325,41 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( mocking_a_destructor )
+BOOST_FIXTURE_TEST_CASE( mocking_a_destructor, mock_error_fixture )
 {
-    my_destroyed_class c;
-    MOCK_EXPECT( c.destructor ).once();
-}
-
-BOOST_AUTO_TEST_CASE( failed_expectation_in_mocked_destructor_does_not_throw )
-{
-    try
     {
         my_destroyed_class c;
-        throw std::runtime_error( "should not crash" );
+        MOCK_EXPECT( c.destructor ).once();
     }
-    catch( std::runtime_error& )
-    {
-    }
+    CHECK_CALLS( 1 );
 }
 
-BOOST_AUTO_TEST_CASE( failed_sequence_in_mocked_destructor_does_not_throw )
+BOOST_FIXTURE_TEST_CASE( failed_expectation_in_mocked_destructor_does_not_throw, mock_error_fixture )
+{
+    CHECK_ERROR(
+        try
+        {
+            my_destroyed_class c;
+            throw std::runtime_error( "should not crash" );
+        }
+        catch( std::runtime_error& )
+        {
+        },
+        "unexpected call", 0, "?.my_destroyed_class::destructor()" );
+}
+
+BOOST_FIXTURE_TEST_CASE( failed_sequence_in_mocked_destructor_does_not_throw, mock_error_fixture )
 {
     mock::sequence s;
     my_custom_mock m;
-    {
-        my_destroyed_class c;
-        MOCK_EXPECT( c.destructor ).once().in( s );
-        MOCK_EXPECT( m.my_tag ).once().in( s );
-        m.my_method();
-    }
+    CHECK_ERROR(
+        {
+            my_destroyed_class c;
+            MOCK_EXPECT( c.destructor ).once().in( s );
+            MOCK_EXPECT( m.my_tag ).once().in( s );
+            m.my_method();
+        },
+        "sequence failed", 1, "c.my_destroyed_class::destructor()\n. once()" );
 }
 
 namespace
@@ -351,12 +370,13 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( boost_optional_on_base_class_reference_as_return_type_is_supported )
+BOOST_FIXTURE_TEST_CASE( boost_optional_on_base_class_reference_as_return_type_is_supported, mock_error_fixture )
 {
     boost_optional b;
     my_mock_observer o;
     MOCK_EXPECT( b.tag ).once().returns( boost::ref( o ) );
     b.method();
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -386,12 +406,13 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( constraints_and_arguments_are_serialized_lazily )
+BOOST_FIXTURE_TEST_CASE( constraints_and_arguments_are_serialized_lazily, mock_error_fixture )
 {
     MOCK_FUNCTOR( f, void( const custom_argument& ) );
     MOCK_EXPECT( f ).with( custom_constraint() );
     f( custom_argument() );
     BOOST_CHECK( ! serialized );
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -406,20 +427,22 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( custom_constraint_function_operator_does_not_need_to_be_const )
+BOOST_FIXTURE_TEST_CASE( custom_constraint_function_operator_does_not_need_to_be_const, mock_error_fixture )
 {
     MOCK_FUNCTOR( f, void( float ) );
     MOCK_EXPECT( f ).with( mock::constraint< custom_constraint_with_non_const_operator >( custom_constraint_with_non_const_operator() ) );
     f( 42 );
+    CHECK_CALLS( 1 );
 }
 
-BOOST_AUTO_TEST_CASE( boost_reference_wrapper_is_supported_in_value_constraint )
+BOOST_FIXTURE_TEST_CASE( boost_reference_wrapper_is_supported_in_value_constraint, mock_error_fixture )
 {
     MOCK_FUNCTOR( f, void( const std::string& ) );
     std::string s;
     MOCK_EXPECT( f ).once().with( boost::cref( s ) );
     s = "string";
     f( "string" );
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -434,7 +457,7 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( member_pointer_on_mock_method_is_valid )
+BOOST_FIXTURE_TEST_CASE( member_pointer_on_mock_method_is_valid, mock_error_fixture )
 {
     nothing( &member_pointer_mock_class::my_method );
 }
@@ -444,11 +467,14 @@ namespace
     MOCK_FUNCTION( free_function, 1, void( int ), free_function )
 }
 
-BOOST_AUTO_TEST_CASE( a_free_function_can_be_mocked )
+BOOST_FIXTURE_TEST_CASE( a_free_function_can_be_mocked, mock_error_fixture )
 {
     MOCK_EXPECT( free_function ).once();
-    BOOST_CHECK( ! MOCK_VERIFY( free_function ) );
+    CHECK_ERROR(
+        BOOST_CHECK( ! MOCK_VERIFY( free_function ) ),
+        "verification failed", 0, "free_function\n. once().with( any )" );
     free_function( 42 );
+    CHECK_CALLS( 1 );
     BOOST_CHECK( MOCK_VERIFY( free_function ) );
     MOCK_RESET( free_function );
 }
@@ -461,21 +487,26 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( a_static_method_can_be_mocked )
+BOOST_FIXTURE_TEST_CASE( a_static_method_can_be_mocked, mock_error_fixture )
 {
     MOCK_EXPECT( some_class::some_static_method ).once();
-    BOOST_CHECK( ! MOCK_VERIFY( some_class::some_static_method ) );
+    CHECK_ERROR(
+        BOOST_CHECK( ! MOCK_VERIFY( some_class::some_static_method ) ),
+        "verification failed", 0, "some_class::some_static_method\n. once().with( any )" );
     some_class::some_static_method( 42 );
+    CHECK_CALLS( 1 );
     BOOST_CHECK( MOCK_VERIFY( some_class::some_static_method ) );
     MOCK_RESET( some_class::some_static_method );
 }
 
-BOOST_AUTO_TEST_CASE( a_static_method_is_not_reset_when_resetting_an_instance_of_the_class )
+BOOST_FIXTURE_TEST_CASE( a_static_method_is_not_reset_when_resetting_an_instance_of_the_class, mock_error_fixture )
 {
     MOCK_EXPECT( some_class::some_static_method ).once();
     some_class c;
     mock::reset( c );
-    BOOST_CHECK( ! MOCK_VERIFY( some_class::some_static_method ) );
+    CHECK_ERROR(
+        BOOST_CHECK( ! MOCK_VERIFY( some_class::some_static_method ) ),
+        "verification failed", 0, "some_class::some_static_method\n. once().with( any )" );
     MOCK_RESET( some_class::some_static_method );
 }
 
@@ -488,14 +519,17 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( a_static_method_in_a_template_class_can_be_mocked )
+BOOST_FIXTURE_TEST_CASE( a_static_method_in_a_template_class_can_be_mocked, mock_error_fixture )
 {
     MOCK_EXPECT( some_template_class< int >::some_static_method ).once();
-    BOOST_CHECK( ! MOCK_VERIFY( some_template_class< int >::some_static_method ) );
+    CHECK_ERROR(
+        BOOST_CHECK( ! MOCK_VERIFY( some_template_class< int >::some_static_method ) ),
+        "verification failed", 0, "some_template_class< int >::some_static_method\n. once().with( any )" );
     some_template_class< int >::some_static_method( 42 );
     BOOST_CHECK( mock::verify() );
     BOOST_CHECK( MOCK_VERIFY( some_template_class< int >::some_static_method ) );
     MOCK_RESET( some_template_class< int >::some_static_method );
+    CHECK_CALLS( 1 );
 }
 
 namespace
@@ -506,7 +540,7 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( resetting_referenced_mock_class_does_not_crash )
+BOOST_FIXTURE_TEST_CASE( resetting_referenced_mock_class_does_not_crash, mock_error_fixture )
 {
     MOCK_FUNCTOR( f, mock_class() );
     {
@@ -525,7 +559,7 @@ namespace
     };
 }
 
-BOOST_AUTO_TEST_CASE( resetting_self_referenced_mock_class_does_not_crash )
+BOOST_FIXTURE_TEST_CASE( resetting_self_referenced_mock_class_does_not_crash, mock_error_fixture )
 {
     {
         mock_class2 c;
