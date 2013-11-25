@@ -3,6 +3,8 @@
   <property environment="env"/>
   <import file="${env.PONEY_HOME}/poney.xml"/>
 
+  <property name="boost.dir" value="${out.dir}/../boost"/>
+
   <target name="clean" description="clean intermediate build artifacts">
     <delete dir="${out.dir}"/>
   </target>
@@ -124,10 +126,8 @@
     </tar>
   </target>
 
-  <property name="boost.dir" value="${out.dir}/../boost"/>
-
-  <presetdef name="bjam">
-    <exec taskname="bjam" failonerror="true" executable="${env.BOOST_ROOT}/bjam">
+  <presetdef name="b2">
+    <exec taskname="b2" failonerror="true" executable="${env.BOOST_ROOT}/b2">
       <arg value="-q"/>
     </exec>
   </presetdef>
@@ -214,24 +214,33 @@
   </target>
 
   <target name="boost.test" description="run boost.mock tests in ${boost.dir}">
-    <bjam dir="${boost.dir}/libs/mock/test"/>
+    <b2 dir="${boost.dir}/libs/mock/test"/>
   </target>
 
   <target name="boost.doc" description="generate boost.mock documentation in ${boost.dir}">
-    <bjam dir="${boost.dir}/libs/mock/doc"/>
+    <b2 dir="${boost.dir}/libs/mock/doc"/>
   </target>
 
   <target name="boost.package" description="package boost.mock">
     <zip destfile="${out.dir}/boost-mock.zip">
-        <fileset dir="${boost.dir}" includes="boost/mock/**"/>
-        <fileset dir="${boost.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
-        <fileset dir="${boost.dir}" includes="LICENSE_1_0.txt,Jamroot.jam,Jamfile.v2"/>
+      <fileset dir="${boost.dir}" includes="boost/mock/**"/>
+      <fileset dir="${boost.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
+      <fileset dir="${boost.dir}" includes="LICENSE_1_0.txt,Jamroot.jam,Jamfile.v2"/>
     </zip>
   </target>
 
   <target name="documentation" depends="boost.generate,boost.doc" description="generate documentation"/>
 
   <target name="boost" depends="boost.generate,boost.convert,boost.test,boost.doc" description="convert to boost with documentation and tests"/>
+
+  <target name="release" depends="documentation,package">
+    <fail unless="version" message="missing version property"/>
+    <zip file="${dist.dir}/${ant.project.name}-${version}.zip">
+      <fileset dir="${dist.dir}" includes="include/**"/>
+      <fileset dir="${root.dir}" includes="*.txt"/>
+      <zipfileset dir="${boost.dir}/libs/mock/doc/html" prefix="doc"/>
+    </zip>
+  </target>
 
   <target name="all" depends="configure,test,bench,reports,export,package" description="configure, build and run tests and benchmark, export and package distribution"/>
 
