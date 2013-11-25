@@ -30,8 +30,8 @@ namespace detail
 {
     template< typename Signature > class function_impl;
 
-    template< typename R BOOST_PP_COMMA_IF(MOCK_NUM_ARGS)
-        BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T) >
+    template< typename R
+        BOOST_PP_ENUM_TRAILING_PARAMS(MOCK_NUM_ARGS, typename T) >
     class function_impl< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
         : public verifiable, public boost::enable_shared_from_this<
             function_impl< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )> >
