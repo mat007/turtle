@@ -118,11 +118,9 @@
     <mkdir dir="${dist.dir}"/>
     <zip destfile="${dist.dir}/${ant.project.name}.zip">
       <fileset dir="${dist.dir}" includes="include/**"/>
-      <fileset dir="${root.dir}" includes="*.txt"/>
     </zip>
     <tar destfile="${dist.dir}/${ant.project.name}.tar.bz2" compression="bzip2">
       <fileset dir="${dist.dir}" includes="include/**"/>
-      <fileset dir="${root.dir}" includes="*.txt"/>
     </tar>
   </target>
 
@@ -235,11 +233,21 @@
 
   <target name="release" depends="documentation,package">
     <fail unless="version" message="missing version property"/>
-    <zip file="${dist.dir}/${ant.project.name}-${version}.zip">
+    <copy file="version.hpp" tofile="${out.dir}/version.hpp">
+      <filterset>
+        <filter token="MOCK_VERSION" value="${version}"/>
+      </filterset>
+    </copy>
+    <zip destfile="${dist.dir}/${ant.project.name}-${version}.zip">
       <fileset dir="${dist.dir}" includes="include/**"/>
-      <fileset dir="${root.dir}" includes="*.txt"/>
       <zipfileset dir="${boost.dir}/libs/mock/doc/html" prefix="doc"/>
+      <zipfileset dir="${out.dir}" includes="version.hpp" prefix="include/turtle"/>
     </zip>
+    <tar destfile="${dist.dir}/${ant.project.name}-${version}.tar.bz2" compression="bzip2">
+      <fileset dir="${dist.dir}" includes="include/**"/>
+      <zipfileset dir="${boost.dir}/libs/mock/doc/html" prefix="doc"/>
+      <zipfileset dir="${out.dir}" includes="version.hpp" prefix="include/turtle"/>
+    </tar>
   </target>
 
   <target name="all" depends="configure,test,bench,reports,export,package" description="configure, build and run tests and benchmark, export and package distribution"/>
