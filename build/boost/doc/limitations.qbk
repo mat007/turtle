@@ -56,7 +56,15 @@ writing a mock object modeling 'concept' requires to list all the possible versi
 
 [limitations_template_method_solution]
 
-While still somewhat possible, mocking a template method is indeed a bit cumbersome.
+However if one or more template parameters must be explicitly specified as in :
+
+[limitations_template_method_problem_2]
+
+delegate methods must be manually added :
+
+[limitations_template_method_solution_2]
+
+While still somewhat possible, mocking a template method can indeed prove a bit cumbersome.
 
 [endsect]
 
