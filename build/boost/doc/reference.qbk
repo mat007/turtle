@@ -501,7 +501,7 @@ Synopsis :
 
 The expression manipulates a received parameter ['actual] in order to implement the constraint, as well as extra optional arguments named ['expected_1], ['expected_2], ...
 
-For compilers without supporting variadic macros the alternate following macro must be used.
+For compilers without support for variadic macros the alternate following macro must be used.
 
 Synopsis :
 
