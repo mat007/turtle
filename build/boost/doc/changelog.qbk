@@ -1,5 +1,14 @@
 [section Changelog]
 
+[section 1.2.5]
+Released ?
+
+* Added support for using non default calling conventions
+* Changed MOCK_DESTRUCTOR which now requires '~' to preceed the class name
+* Changed MOCK_[[NON_]CONST_]CONVERSION_OPERATOR[_TPL] which now requires an extra first argument 'operator'
+
+[endsect]
+
 [section 1.2.4]
 Released 14 August 2013
 
