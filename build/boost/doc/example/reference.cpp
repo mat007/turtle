@@ -157,7 +157,7 @@ struct base_class
 
 MOCK_BASE_CLASS( mock_class, base_class )
 {
-  MOCK_METHOD( method, 1, void( float ), method ) // this generates both const and non-const versions
+    MOCK_METHOD( method, 1, void( float ) ) // this generates both const and non-const versions
 };
 //]
 }
@@ -231,6 +231,28 @@ MOCK_CLASS( mock_class )
 //]
 }
 
+#ifdef BOOST_MSVC
+namespace member_function_example_9
+{
+//[ member_function_example_9
+MOCK_CLASS( mock_class )
+{
+    MOCK_METHOD( __stdcall method, 0, void(), method ) // all parameters must be provided when specifying a different calling convention
+};
+//]
+}
+#elif defined( BOOST_GCC )
+namespace member_function_example_10
+{
+//[ member_function_example_10
+MOCK_CLASS( mock_class )
+{
+    MOCK_METHOD( __attribute((stdcall)) method, 0, void(), method ) // all parameters must be provided when specifying a different calling convention
+};
+//]
+}
+#endif
+
 namespace static_member_function_example_1
 {
 //[ static_member_function_example_1
@@ -251,6 +273,28 @@ MOCK_CLASS( mock_class )
 };
 //]
 }
+
+#ifdef BOOST_MSVC
+namespace static_member_function_example_3
+{
+//[ static_member_function_example_3
+MOCK_CLASS( mock_class )
+{
+    MOCK_STATIC_METHOD( __stdcall method, 0, void(), method ) // all parameters must be provided when specifying a different calling convention
+};
+//]
+}
+#elif defined( BOOST_GCC )
+namespace static_member_function_example_4
+{
+//[ static_member_function_example_4
+MOCK_CLASS( mock_class )
+{
+    MOCK_STATIC_METHOD( __attribute((stdcall)) method, 0, void(), method ) // all parameters must be provided when specifying a different calling convention
+};
+//]
+}
+#endif
 
 namespace constructor_example_1
 {
@@ -274,23 +318,67 @@ MOCK_CLASS( mock_class )
 //]
 }
 
+#ifdef BOOST_MSVC
+namespace constructor_example_3
+{
+//[ constructor_example_3
+MOCK_CLASS( mock_class )
+{
+    MOCK_CONSTRUCTOR( __stdcall mock_class, 0, (), constructor )
+};
+//]
+}
+#elif defined( BOOST_GCC )
+namespace constructor_example_4
+{
+//[ constructor_example_4
+MOCK_CLASS( mock_class )
+{
+    MOCK_CONSTRUCTOR( __attribute((stdcall)) mock_class, 0, (), constructor )
+};
+//]
+}
+#endif
+
 namespace destructor_example_1
 {
 //[ destructor_example_1
 MOCK_CLASS( mock_class )
 {
-    MOCK_DESTRUCTOR( mock_class, destructor )
+    MOCK_DESTRUCTOR( ~mock_class, destructor )
 };
 //]
 }
+
+#ifdef BOOST_MSVC
+namespace destructor_example_2
+{
+//[ destructor_example_2
+MOCK_CLASS( mock_class )
+{
+    MOCK_DESTRUCTOR( __stdcall ~mock_class, destructor )
+};
+//]
+}
+#elif defined( BOOST_GCC )
+namespace destructor_example_3
+{
+//[ destructor_example_3
+MOCK_CLASS( mock_class )
+{
+    MOCK_DESTRUCTOR( __attribute((stdcall)) ~mock_class, destructor )
+};
+//]
+}
+#endif
 
 namespace conversion_operator_example_1
 {
 //[ conversion_operator_example_1
 MOCK_CLASS( mock_class )
 {
-    MOCK_CONVERSION_OPERATOR( int, conversion_to_int )
-    MOCK_CONST_CONVERSION_OPERATOR( const std::string&, conversion_to_string )
+    MOCK_CONVERSION_OPERATOR( operator, int, conversion_to_int )
+    MOCK_CONST_CONVERSION_OPERATOR( operator, const std::string&, conversion_to_string )
 };
 //]
 }
@@ -301,12 +389,65 @@ namespace conversion_operator_example_2
 template< typename T >
 MOCK_CLASS( mock_class )
 {
-    MOCK_CONVERSION_OPERATOR_TPL( T, conversion_to_T )                                       // the _TPL variants must be used if the signature includes a template parameter of the class
-    MOCK_CONST_CONVERSION_OPERATOR( const std::string&, const_conversion_to_string )
-    MOCK_NON_CONST_CONVERSION_OPERATOR( const std::string&, non_const_conversion_to_string )
+    MOCK_CONVERSION_OPERATOR_TPL( operator, T, conversion_to_T )                                       // the _TPL variants must be used if the signature includes a template parameter of the class
+    MOCK_CONST_CONVERSION_OPERATOR( operator, const std::string&, const_conversion_to_string )
+    MOCK_NON_CONST_CONVERSION_OPERATOR( operator, const std::string&, non_const_conversion_to_string )
 };
 //]
 }
+
+#ifdef BOOST_MSVC
+namespace conversion_operator_example_3
+{
+//[ conversion_operator_example_3
+MOCK_CLASS( mock_class )
+{
+    MOCK_CONVERSION_OPERATOR( __stdcall operator, int, conversion_to_int )
+};
+//]
+}
+#elif defined( BOOST_GCC )
+namespace conversion_operator_example_4
+{
+//[ conversion_operator_example_4
+MOCK_CLASS( mock_class )
+{
+    MOCK_CONVERSION_OPERATOR( __attribute((stdcall)) operator, int, conversion_to_int )
+};
+//]
+}
+#endif
+
+namespace function_example_1
+{
+//[ function_example_1
+MOCK_FUNCTION( f, 1, float( int ) )
+
+BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_function )
+{
+    f( 3 );
+}
+//]
+}
+
+#ifdef BOOST_MSVC
+namespace function_example_2
+{
+//[ function_example_2
+  MOCK_FUNCTION( __stdcall f, 0, void(), f ) // all parameters must be provided when specifying a different calling convention
+//]
+}
+#elif defined( BOOST_GCC )
+namespace function_example_3
+{
+//[ function_example_3
+MOCK_CLASS( mock_class )
+{
+    MOCK_FUNCTION( __attribute((stdcall)) f, 0, void() )
+};
+//]
+}
+#endif
 
 namespace functor_example_1
 {
@@ -332,18 +473,6 @@ BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_functor )
 {
     mock_class< int > c;
     c.f( 3 );
-}
-//]
-}
-
-namespace function_example_1
-{
-//[ function_example_1
-MOCK_FUNCTION( f, 1, float( int ) )
-
-BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_function )
-{
-    f( 3 );
 }
 //]
 }

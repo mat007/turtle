@@ -54,7 +54,7 @@ namespace
 {
     MOCK_CLASS( mock_class_with_conversion_operator )
     {
-        MOCK_CONVERSION_OPERATOR( int, conversion )
+        MOCK_CONVERSION_OPERATOR( operator, int, conversion )
     };
 }
 
@@ -71,7 +71,7 @@ namespace
     template< typename T >
     MOCK_CLASS( mock_template_class_with_conversion_operator )
     {
-        MOCK_CONVERSION_OPERATOR_TPL( T, conversion )
+        MOCK_CONVERSION_OPERATOR_TPL( operator, T, conversion )
     };
 }
 
@@ -87,7 +87,7 @@ namespace
 {
     MOCK_CLASS( mock_class_with_const_conversion_operator )
     {
-        MOCK_CONST_CONVERSION_OPERATOR( int, conversion )
+        MOCK_CONST_CONVERSION_OPERATOR( operator, int, conversion )
     };
 }
 
@@ -104,7 +104,7 @@ namespace
 {
     MOCK_CLASS( mock_class_with_non_const_conversion_operator )
     {
-        MOCK_CONST_CONVERSION_OPERATOR( int, conversion )
+        MOCK_CONST_CONVERSION_OPERATOR( operator, int, conversion )
     };
 }
 
@@ -122,7 +122,7 @@ namespace
     template< typename T >
     MOCK_CLASS( mock_template_class_with_const_conversion_operator )
     {
-        MOCK_CONST_CONVERSION_OPERATOR_TPL( T, conversion )
+        MOCK_CONST_CONVERSION_OPERATOR_TPL( operator, T, conversion )
     };
 }
 
@@ -139,7 +139,7 @@ namespace
     template< typename T >
     MOCK_CLASS( mock_template_class_with_non_const_conversion_operator )
     {
-        MOCK_NON_CONST_CONVERSION_OPERATOR_TPL( T, conversion )
+        MOCK_NON_CONST_CONVERSION_OPERATOR_TPL( operator, T, conversion )
     };
 }
 
@@ -401,3 +401,35 @@ namespace
 }
 
 #endif // MOCK_VARIADIC_MACROS
+
+#ifdef BOOST_MSVC
+#   define MOCK_STDCALL __stdcall
+#elif defined( BOOST_GCC )
+#   define MOCK_STDCALL __attribute((stdcall))
+#else
+#   define MOCK_STDCALL
+#endif // BOOST_GCC
+
+namespace stdcall
+{
+    struct base
+    {
+        virtual void MOCK_STDCALL m1() = 0;
+    };
+
+    MOCK_BASE_CLASS( derived, base )
+    {
+        MOCK_CONSTRUCTOR( MOCK_STDCALL derived, 0, (), derived )
+        MOCK_DESTRUCTOR( MOCK_STDCALL ~derived, derived )
+        MOCK_CONVERSION_OPERATOR( MOCK_STDCALL operator, int, to_int )
+        MOCK_METHOD_EXT( MOCK_STDCALL m1, 0, void(), m1 )
+        MOCK_METHOD_EXT( MOCK_STDCALL m2, 0, void(), m2 )
+#ifdef MOCK_VARIADIC_MACROS
+        MOCK_METHOD( MOCK_STDCALL m3, 0, void(), m3 )
+#endif
+        MOCK_STATIC_METHOD( MOCK_STDCALL m4, 0, void(), m4 )
+    };
+
+    MOCK_FUNCTOR( MOCK_STDCALL f, void() )
+    MOCK_FUNCTION( MOCK_STDCALL f, 0, void(), f )
+}

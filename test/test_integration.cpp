@@ -321,7 +321,7 @@ namespace
 {
     MOCK_CLASS( my_destroyed_class )
     {
-        MOCK_DESTRUCTOR( my_destroyed_class, destructor )
+        MOCK_DESTRUCTOR( ~my_destroyed_class, destructor )
     };
 }
 

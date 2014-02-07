@@ -114,26 +114,26 @@
     MOCK_METHOD_AUX(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
     MOCK_METHOD_HELPER(S, t, BOOST_DEDUCED_TYPENAME)
 
-#define MOCK_CONST_CONVERSION_OPERATOR(T, t) \
-    operator T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
+#define MOCK_CONVERSION_OPERATOR(M, T, t) \
+    M T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
+    M T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
     MOCK_METHOD_HELPER(T(), t,)
-#define MOCK_NON_CONST_CONVERSION_OPERATOR(T, t) \
-    operator T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
+#define MOCK_CONST_CONVERSION_OPERATOR(M, T, t) \
+    M T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
     MOCK_METHOD_HELPER(T(), t,)
-#define MOCK_CONVERSION_OPERATOR(T, t) \
-    operator T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
-    operator T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
+#define MOCK_NON_CONST_CONVERSION_OPERATOR(M, T, t) \
+    M T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
     MOCK_METHOD_HELPER(T(), t,)
 
-#define MOCK_CONST_CONVERSION_OPERATOR_TPL(T, t) \
-    operator T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
+#define MOCK_CONVERSION_OPERATOR_TPL(M, T, t) \
+    M T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
+    M T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
     MOCK_METHOD_HELPER(T(), t, BOOST_DEDUCED_TYPENAME)
-#define MOCK_NON_CONST_CONVERSION_OPERATOR_TPL(T, t) \
-    operator T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
+#define MOCK_CONST_CONVERSION_OPERATOR_TPL(M, T, t) \
+    M T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
     MOCK_METHOD_HELPER(T(), t, BOOST_DEDUCED_TYPENAME)
-#define MOCK_CONVERSION_OPERATOR_TPL(T, t) \
-    operator T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
-    operator T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
+#define MOCK_NON_CONST_CONVERSION_OPERATOR_TPL(M, T, t) \
+    M T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
     MOCK_METHOD_HELPER(T(), t, BOOST_DEDUCED_TYPENAME)
 
 #define MOCK_FUNCTION_HELPER(S, t, s, tpn) \
@@ -146,11 +146,11 @@
     }
 
 #define MOCK_CONSTRUCTOR_AUX(T, n, A, t, tpn) \
-    MOCK_FUNCTION_HELPER(void A, t, static, tpn) \
     T( MOCK_PARAMS(n, void A, tpn) ) \
     { \
         MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
-    }
+    } \
+    MOCK_FUNCTION_HELPER(void A, t, static, tpn)
 
 #define MOCK_CONSTRUCTOR(T, n, A, t) \
     MOCK_CONSTRUCTOR_AUX(T, n, A, t,)
@@ -158,7 +158,7 @@
     MOCK_CONSTRUCTOR_AUX(T, n, A, t, BOOST_DEDUCED_TYPENAME)
 
 #define MOCK_DESTRUCTOR(T, t) \
-    ~T() { try { MOCK_ANONYMOUS_HELPER(t)(); } catch( ... ) {} } \
+    T() { try { MOCK_ANONYMOUS_HELPER(t)(); } catch( ... ) {} } \
     MOCK_METHOD_HELPER(void(), t,)
 
 #define MOCK_FUNCTION_AUX(F, n, S, t, s, tpn) \
