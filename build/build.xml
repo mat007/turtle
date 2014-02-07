@@ -3,6 +3,7 @@
   <property environment="env"/>
   <import file="${env.PONEY_HOME}/poney.xml"/>
 
+  <property name="boost.root" value="${env.BOOST_ROOT}"/>
   <property name="boost.dir" value="${out.dir}/../boost"/>
 
   <target name="clean" description="clean intermediate build artifacts">
@@ -125,7 +126,7 @@
   </target>
 
   <presetdef name="b2">
-    <exec taskname="b2" failonerror="true" executable="${env.BOOST_ROOT}/b2">
+    <exec taskname="b2" failonerror="true" executable="${boost.root}/b2">
       <arg value="-q"/>
     </exec>
   </presetdef>
@@ -137,10 +138,10 @@
       <fileset dir="${libraries.dir}/turtle" includes="**"/>
     </copy>
     <copy todir="${boost.dir}/libs/mock/doc">
-      <fileset dir="${env.BOOST_ROOT}/tools/boostbook" includes="xsl/**,dtd/**"/>
+      <fileset dir="${boost.root}/tools/boostbook" includes="xsl/**,dtd/**"/>
     </copy>
     <copy todir="${boost.dir}/libs/mock/doc/html">
-      <fileset dir="${env.BOOST_ROOT}/doc/src" includes="**/*.css,**/**.png"/>
+      <fileset dir="${boost.root}/doc/src" includes="**/*.css,**/**.png"/>
       <fileset dir="boost/doc" includes="images/*.png"/>
     </copy>
     <copy todir="${boost.dir}/libs/mock" overwrite="true">
@@ -207,7 +208,7 @@
       <fileset dir="${boost.dir}/libs/mock" includes="**/mock.qbk"/>
     </replaceregexp>
     <copy todir="${boost.dir}/libs/mock/doc" overwrite="true">
-      <fileset dir="${env.BOOST_ROOT}/tools/boostbook" includes="xsl/navbar.xsl"/>
+      <fileset dir="${boost.root}/tools/boostbook" includes="xsl/navbar.xsl"/>
     </copy>
   </target>
 
