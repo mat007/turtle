@@ -90,7 +90,7 @@ Synopsis :
 
 [note If the identifier is omitted it will default to the method name.]
 
-[note If the method name is not ambiguous both the signature and the identifier can be ommitted in the context of a derived MOCK_BASE_CLASS or base_type typedef.]
+[note If the method name is not ambiguous both the signature and the identifier can be omitted in the context of a derived MOCK_BASE_CLASS or base_type typedef.]
 
 [note The signature must be surrounded with round parenthesis if the return type contains a comma.]
 
@@ -150,7 +150,7 @@ Synopsis :
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test.]
 
-[warning For compilers without support for variadic macros the identifier cannot be ommitted and must be given explicitly.]
+[warning For compilers without support for variadic macros the identifier cannot be omitted and must be given explicitly.]
 
 Example :
 
@@ -244,7 +244,7 @@ Synopsis :
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test.]
 
-[warning For compilers without support for variadic macros the identifier cannot be ommitted and must be given explicitly.]
+[warning For compilers without support for variadic macros the identifier cannot be omitted and must be given explicitly.]
 
 Example :
 
