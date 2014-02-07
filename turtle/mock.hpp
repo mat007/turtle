@@ -158,8 +158,8 @@
     MOCK_CONSTRUCTOR_AUX(T, n, A, t, BOOST_DEDUCED_TYPENAME)
 
 #define MOCK_DESTRUCTOR(T, t) \
-    MOCK_METHOD_HELPER(void(), t,) \
-    ~T() { try { MOCK_ANONYMOUS_HELPER(t)(); } catch( ... ) {} }
+    ~T() { try { MOCK_ANONYMOUS_HELPER(t)(); } catch( ... ) {} } \
+    MOCK_METHOD_HELPER(void(), t,)
 
 #define MOCK_FUNCTION_AUX(F, n, S, t, s, tpn) \
     MOCK_FUNCTION_HELPER(S, t, s, tpn) \
