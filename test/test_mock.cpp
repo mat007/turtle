@@ -430,6 +430,5 @@ namespace stdcall
         MOCK_STATIC_METHOD( MOCK_STDCALL m4, 0, void(), m4 )
     };
 
-    MOCK_FUNCTOR( MOCK_STDCALL f, void() )
     MOCK_FUNCTION( MOCK_STDCALL f, 0, void(), f )
 }
