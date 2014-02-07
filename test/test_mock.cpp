@@ -400,4 +400,4 @@ namespace
     MOCK_FUNCTOR( f_variadic, std::map< int, int >() );
 }
 
-#endif //MOCK_VARIADIC_MACROS
+#endif // MOCK_VARIADIC_MACROS
