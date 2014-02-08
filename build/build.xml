@@ -125,8 +125,11 @@
     </tar>
   </target>
 
+  <condition property="b2" value="b2.exe" else="b2">
+    <os family="windows"/>
+  </condition>
   <presetdef name="b2">
-    <exec taskname="b2" failonerror="true" executable="${boost.root}/b2">
+    <exec taskname="b2" failonerror="true" executable="${boost.root}/${b2}">
       <arg value="-q"/>
     </exec>
   </presetdef>
