@@ -235,7 +235,7 @@
 
   <target name="boost" depends="boost.generate,boost.convert,boost.test,boost.doc" description="convert to boost with documentation and tests"/>
 
-  <target name="release" depends="documentation,package">
+  <target name="release" depends="documentation,package" description="produce release packages">
     <fail unless="version" message="missing version property"/>
     <copy file="version.hpp" tofile="${out.dir}/version.hpp">
       <filterset>
