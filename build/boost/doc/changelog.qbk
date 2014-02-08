@@ -1,11 +1,13 @@
 [section Changelog]
 
 [section 1.2.5]
-Released ?
+Released 10 February 2014
 
+* Added workaround for when msvc defines small and near macros
 * Added support for using non default calling conventions
 * Changed MOCK_DESTRUCTOR which now requires '~' to preceed the class name
-* Changed MOCK_[[NON_]CONST_]CONVERSION_OPERATOR[_TPL] which now requires an extra first argument 'operator'
+* Changed MOCK_\*CONVERSION_OPERATOR\* which now require an extra first argument 'operator'
+* Added version.hpp with the library version number
 
 [endsect]
 
