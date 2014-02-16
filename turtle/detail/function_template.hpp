@@ -92,8 +92,7 @@ namespace detail
         {
             if( ! impl_->context_ )
                 c.add( *impl_ );
-            c.add( impl_.get(), *impl_, instance,
-                boost::optional< type_name >(), "" );
+            c.add( impl_.get(), *impl_, instance, boost::none, "" );
             impl_->context_ = &c;
             return *this;
         }
