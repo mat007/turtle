@@ -434,17 +434,14 @@ BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_function )
 namespace function_example_2
 {
 //[ function_example_2
-  MOCK_FUNCTION( __stdcall f, 0, void(), f ) // all parameters must be provided when specifying a different calling convention
+MOCK_FUNCTION( __stdcall f, 0, void(), f ) // all parameters must be provided when specifying a different calling convention
 //]
 }
 #elif defined( BOOST_GCC )
 namespace function_example_3
 {
 //[ function_example_3
-MOCK_CLASS( mock_class )
-{
-    MOCK_FUNCTION( __attribute((stdcall)) f, 0, void() )
-};
+MOCK_FUNCTION( __attribute((stdcall)) f, 0, void(), f ) // all parameters must be provided when specifying a different calling convention
 //]
 }
 #endif
