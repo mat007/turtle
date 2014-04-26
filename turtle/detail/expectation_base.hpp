@@ -68,7 +68,7 @@ namespace detail
                 (*it)->remove( this );
         }
 
-        void add( boost::shared_ptr< sequence_impl > s )
+        void add( const boost::shared_ptr< sequence_impl >& s )
         {
             s->add( this );
             sequences_.push_back( s );
