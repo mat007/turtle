@@ -150,7 +150,7 @@ struct custom_policy
         // ...
     }
     template< typename Context >
-    static void fail( const char* message, const Context&, const char* file = "unknown location", int line = 0 )
+    static void fail( const char* message, const Context& context, const char* file = "unknown location", int line = 0 )
     {
         // ...
     }
@@ -159,7 +159,6 @@ struct custom_policy
     {
         // ...
     }
-    template< typename Context >
     static void pass( const char* file, int line )
     {
         // ...
