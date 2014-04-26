@@ -89,10 +89,7 @@ namespace detail
         function& operator()( context& c,
             boost::unit_test::const_string instance )
         {
-            if( ! impl_->context_ )
-                c.add( *impl_ );
-            c.add( impl_.get(), *impl_, instance, boost::none, "" );
-            impl_->context_ = &c;
+            impl_->add( c, impl_.get(), instance, boost::none, "" );
             return *this;
         }
 
@@ -101,10 +98,7 @@ namespace detail
             boost::optional< type_name > type,
             boost::unit_test::const_string name ) const
         {
-            if( ! impl_->context_ )
-                c.add( *impl_ );
-            c.add( p, *impl_, instance, type, name );
-            impl_->context_ = &c;
+            impl_->add( c, p, instance, type, name );
         }
 
     private:

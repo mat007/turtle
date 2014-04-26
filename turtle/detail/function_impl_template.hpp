@@ -127,6 +127,17 @@ namespace detail
             return error_type::abort();
         }
 
+        void add( context& c, const void* p,
+            boost::unit_test::const_string instance,
+            boost::optional< type_name > type,
+            boost::unit_test::const_string name )
+        {
+            if( ! context_ )
+                c.add( *this );
+            c.add( p, *this, instance, type, name );
+            context_ = &c;
+        }
+
         friend std::ostream& operator<<(
             std::ostream& s, const function_impl& impl )
         {
