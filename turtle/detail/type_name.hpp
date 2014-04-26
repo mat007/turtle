@@ -24,6 +24,8 @@
 #include <cstdlib>
 #endif
 
+#define MOCK_TYPE_NAME( T ) mock::detail::type_name( BOOST_SP_TYPEID(T) )
+
 namespace mock
 {
 namespace detail
