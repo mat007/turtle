@@ -92,7 +92,8 @@ namespace detail
         template< typename Value >
         void moves( BOOST_RV_REF( Value ) v )
         {
-            this->set( lambda_type::make_move( v_.store( boost::move( v ) ) ) );
+            this->set(
+                lambda_type::make_move( v_.store( boost::move( v ) ) ) );
         }
 
     private:
