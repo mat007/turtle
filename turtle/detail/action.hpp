@@ -78,8 +78,7 @@ namespace detail
         template< typename Value >
         void returns( Value* v )
         {
-            f_ = lambda_type::make_ref(
-                boost::ref( v_.store( result_type( v ) ) ) );
+            returns( result_type( v ) );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
