@@ -85,9 +85,9 @@ namespace detail
 
         expectation_type& expect( const char* file, int line )
         {
-            expectation_type& e = expect();
-            e.set_location( file, line );
-            return e;
+            expectations_.push_back( expectation_type( file, line ) );
+            valid_ = true;
+            return expectations_.back();
         }
         expectation_type& expect()
         {

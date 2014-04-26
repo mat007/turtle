@@ -53,6 +53,7 @@ namespace detail
     {
         BOOST_PP_REPEAT(MOCK_NUM_ARGS,
             MOCK_EXPECTATION_TYPEDEF, _)
+
     public:
         expectation()
             : BOOST_PP_REPEAT(MOCK_NUM_ARGS,
@@ -61,6 +62,14 @@ namespace detail
                 i_( boost::make_shared< unlimited >() )
             , file_( "unknown location" )
             , line_( 0 )
+        {}
+        expectation( const char* file, int line )
+            : BOOST_PP_REPEAT(MOCK_NUM_ARGS,
+                MOCK_EXPECTATION_INITIALIZE, _)
+            BOOST_PP_COMMA_IF(MOCK_NUM_ARGS)
+                i_( boost::make_shared< unlimited >() )
+            , file_( file )
+            , line_( line )
         {}
 
         ~expectation()
@@ -116,12 +125,6 @@ namespace detail
 
         BOOST_PP_REPEAT(MOCK_MAX_SEQUENCES,
             MOCK_EXPECTATION_IN, _)
-
-        void set_location( const char* file, int line )
-        {
-            file_ = file;
-            line_ = line;
-        }
 
         bool verify() const
         {
