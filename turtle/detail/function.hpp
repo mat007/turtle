@@ -13,13 +13,13 @@
 #include "../error.hpp"
 #include "../log.hpp"
 #include "../constraints.hpp"
+#include "../sequence.hpp"
 #include "../matcher.hpp"
 #include "action.hpp"
 #include "verifiable.hpp"
+#include "invocation.hpp"
 #include "type_name.hpp"
 #include "context.hpp"
-#include "invocation.hpp"
-#include "expectation_base.hpp"
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
@@ -28,6 +28,7 @@
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/test/utils/lazy_ostream.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/call_traits.hpp>
 #include <boost/optional.hpp>
 #include <ostream>

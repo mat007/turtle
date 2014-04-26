@@ -76,9 +76,6 @@
     <ClInclude Include="..\..\turtle\detail\function_template.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\expectation_base.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\turtle\detail\invocation.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>

@@ -31,7 +31,7 @@
     BOOST_PP_IF(n, << ", " <<,) *m.c##n##_
 
 #define MOCK_EXPECTATION_IN_ADD(z, n, d ) \
-    add( s##n.impl_ );
+    s##n.impl_->add( this ); sequences_.push_back( s##n.impl_ );
 
 #define MOCK_EXPECTATION_IN(z, n, d) \
     expectation& in( BOOST_PP_ENUM_PARAMS(n, sequence& s) ) \
@@ -49,37 +49,26 @@ namespace detail
     template< typename R
         BOOST_PP_ENUM_TRAILING_PARAMS(MOCK_NUM_ARGS, typename T) >
     class expectation< R (BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS,T)) >
-        : public expectation_base
-        , public action< R, R (BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS,T)) >
+        : public action< R, R (BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS,T)) >
     {
         BOOST_PP_REPEAT(MOCK_NUM_ARGS,
             MOCK_EXPECTATION_TYPEDEF, _)
     public:
-#ifndef MOCK_NUM_ARGS_0
         expectation()
             : BOOST_PP_REPEAT(MOCK_NUM_ARGS,
                 MOCK_EXPECTATION_INITIALIZE, _)
+            BOOST_PP_COMMA_IF(MOCK_NUM_ARGS)
+                i_( boost::make_shared< unlimited >() )
+            , file_( "unknown location" )
+            , line_( 0 )
         {}
-        template< BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_) >
-        expectation& with(
-            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
-        {
-            BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                MOCK_EXPECTATION_WITH, _)
-            return *this;
-        }
-#endif
-        bool is_valid(
-            BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                MOCK_EXPECTATION_ARGS, _) ) const
-        {
-            return ! i_->exhausted()
-                BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                    MOCK_EXPECTATION_IS_VALID, _);
-        }
 
-        BOOST_PP_REPEAT(MOCK_MAX_SEQUENCES,
-            MOCK_EXPECTATION_IN, _)
+        ~expectation()
+        {
+            for( sequences_cit it = sequences_.begin();
+                it != sequences_.end(); ++it )
+                (*it)->remove( this );
+        }
 
         expectation& once()
         {
@@ -112,6 +101,64 @@ namespace detail
             return *this;
         }
 
+#ifndef MOCK_NUM_ARGS_0
+        template<
+            BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_)
+        >
+        expectation& with(
+            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
+        {
+            BOOST_PP_REPEAT(MOCK_NUM_ARGS,
+                MOCK_EXPECTATION_WITH, _)
+            return *this;
+        }
+#endif
+
+        BOOST_PP_REPEAT(MOCK_MAX_SEQUENCES,
+            MOCK_EXPECTATION_IN, _)
+
+        void set_location( const char* file, int line )
+        {
+            file_ = file;
+            line_ = line;
+        }
+
+        bool verify() const
+        {
+            return i_->verify();
+        }
+
+        bool is_valid(
+            BOOST_PP_REPEAT(MOCK_NUM_ARGS,
+                MOCK_EXPECTATION_ARGS, _) ) const
+        {
+            return ! i_->exhausted()
+                BOOST_PP_REPEAT(MOCK_NUM_ARGS,
+                    MOCK_EXPECTATION_IS_VALID, _);
+        }
+
+        bool invoke() const
+        {
+            for( sequences_cit it = sequences_.begin();
+                it != sequences_.end(); ++it )
+                if( ! (*it)->is_valid( this ) )
+                    return false;
+            bool result = i_->invoke();
+            for( sequences_cit it = sequences_.begin();
+                it != sequences_.end(); ++it )
+                (*it)->invalidate( this );
+            return result;
+        }
+
+        const char* file() const
+        {
+            return file_;
+        }
+        int line() const
+        {
+            return line_;
+        }
+
         friend std::ostream& operator<<(
             std::ostream& s, const expectation& m )
         {
@@ -125,9 +172,19 @@ namespace detail
 #endif
                 ;
         }
+
     private:
+        typedef std::vector<
+            boost::shared_ptr< sequence_impl >
+        > sequences_type;
+        typedef sequences_type::const_iterator sequences_cit;
+
         BOOST_PP_REPEAT(
             MOCK_NUM_ARGS, MOCK_EXPECTATION_MEMBER, _)
+        boost::shared_ptr< invocation > i_;
+        sequences_type sequences_;
+        const char* file_;
+        int line_;
     };
 }
 } // mock
