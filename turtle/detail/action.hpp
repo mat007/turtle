@@ -86,13 +86,13 @@ namespace detail
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            set( r );
+            this->set( r );
         }
 
         template< typename Value >
         void moves( BOOST_RV_REF( Value ) v )
         {
-            set( lambda_type::make_move( v_.store( boost::move( v ) ) ) );
+            this->set( lambda_type::make_move( v_.store( boost::move( v ) ) ) );
         }
 
     private:
@@ -142,12 +142,12 @@ namespace detail
     public:
         void returns( Result* r )
         {
-            set( lambda_type::make_val( r ) );
+            this->set( lambda_type::make_val( r ) );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            set( r );
+            this->set( r );
         }
     };
 
@@ -159,7 +159,7 @@ namespace detail
     public:
         action()
         {
-            set( lambda_type::make_nothing() );
+            this->set( lambda_type::make_nothing() );
         }
     };
 
@@ -192,7 +192,7 @@ namespace detail
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
         {
-            set( r );
+            this->set( r );
         }
 
     private:
