@@ -10,8 +10,8 @@
 #define MOCK_ERROR_HPP_INCLUDED
 
 #include "config.hpp"
-#include "exception.hpp"
 #ifdef MOCK_USE_BOOST_TEST
+#include "exception.hpp"
 #include <boost/test/framework.hpp>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
