@@ -157,7 +157,7 @@ namespace detail
     Expected_##n expected##n;
 
 #define MOCK_CONSTRAINT_CREF_PARAM(z, n, Args) \
-    BOOST_DEDUCED_TYPENAME \
+    typename \
         boost::unwrap_reference< Expected_##n >::type \
             BOOST_PP_ARRAY_ELEM(n, Args)
 

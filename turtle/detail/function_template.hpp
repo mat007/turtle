@@ -9,7 +9,7 @@
 #include "function_impl_template.hpp"
 
 #define MOCK_FUNCTION_CALL(z, n, d ) \
-    BOOST_PP_COMMA_IF(n) BOOST_DEDUCED_TYPENAME \
+    BOOST_PP_COMMA_IF(n) typename \
         boost::call_traits< T##n >::param_type
 
 #define MOCK_FUNCTION_PARAM(z, n, d) \
@@ -38,9 +38,8 @@ namespace detail
         typedef function_impl<
             R ( BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FUNCTION_CALL, _) )
         > impl_type;
-        typedef BOOST_DEDUCED_TYPENAME
-            impl_type::expectation_type expectation_type;
-        typedef BOOST_DEDUCED_TYPENAME impl_type::error_type error_type;
+        typedef typename impl_type::expectation_type expectation_type;
+        typedef typename impl_type::error_type error_type;
 
     public:
         function()

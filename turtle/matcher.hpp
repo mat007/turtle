@@ -84,7 +84,7 @@ namespace mock
 
     template< typename Actual, typename Functor >
     class matcher< Actual, Functor,
-        BOOST_DEDUCED_TYPENAME boost::enable_if<
+        typename boost::enable_if<
             detail::is_functor< Functor, Actual >
         >::type
     > : public detail::matcher_base< Actual >

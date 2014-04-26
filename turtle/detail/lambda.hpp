@@ -31,8 +31,7 @@ namespace detail
     template< typename Result, typename Signature >
     struct lambda
     {
-        typedef BOOST_DEDUCED_TYPENAME
-            boost::function< Signature > functor_type;
+        typedef boost::function< Signature > functor_type;
 
         template< typename T >
         static functor_type make_val( T t )

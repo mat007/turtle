@@ -165,7 +165,7 @@ namespace detail
 #endif
 
     template< typename T >
-    BOOST_DEDUCED_TYPENAME boost::enable_if<
+    typename boost::enable_if<
         boost::function_types::is_callable_builtin< T >,
         stream&
     >::type
@@ -174,7 +174,7 @@ namespace detail
         return s << '?';
     }
     template< typename T >
-    BOOST_DEDUCED_TYPENAME boost::disable_if<
+    typename boost::disable_if<
         boost::function_types::is_callable_builtin< T >,
         stream&
     >::type

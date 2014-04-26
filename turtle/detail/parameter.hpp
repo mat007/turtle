@@ -21,9 +21,9 @@ namespace detail
     template< typename Signature, int n >
     struct parameter
     {
-        typedef BOOST_DEDUCED_TYPENAME
+        typedef typename
             boost::mpl::at_c<
-                BOOST_DEDUCED_TYPENAME
+                typename
                     boost::function_types::parameter_types< Signature >,
                 n
             >::type type;

@@ -60,11 +60,11 @@ namespace detail
     template< typename Result, typename Signature >
     class action
     {
-        typedef BOOST_DEDUCED_TYPENAME
+        typedef typename
             boost::function< Signature > functor_type;
-        typedef BOOST_DEDUCED_TYPENAME
+        typedef typename
             boost::remove_reference<
-                BOOST_DEDUCED_TYPENAME boost::remove_const< Result >::type
+                typename boost::remove_const< Result >::type
             >::type result_type;
 
         typedef lambda< Result, Signature > lambda_type;
@@ -119,7 +119,7 @@ namespace detail
     template< typename Result, typename Signature >
     class action< Result*, Signature >
     {
-        typedef BOOST_DEDUCED_TYPENAME
+        typedef typename
             boost::function< Signature > functor_type;
 
         typedef lambda< Result*, Signature > lambda_type;
@@ -160,7 +160,7 @@ namespace detail
     template< typename Signature >
     class action< void, Signature >
     {
-        typedef BOOST_DEDUCED_TYPENAME
+        typedef typename
             boost::function< Signature > functor_type;
 
         typedef lambda< void, Signature > lambda_type;
@@ -195,7 +195,7 @@ namespace detail
     template< typename Result, typename Signature >
     class action< std::auto_ptr< Result >, Signature >
     {
-        typedef BOOST_DEDUCED_TYPENAME
+        typedef typename
             boost::function< Signature > functor_type;
 
         typedef lambda< std::auto_ptr< Result >, Signature > lambda_type;

@@ -28,11 +28,11 @@ namespace detail
         boost::function_types::function_type<
             boost::mpl::joint_view<
                 boost::mpl::single_view<
-                    BOOST_DEDUCED_TYPENAME
+                    typename
                         boost::function_types::result_type< M >::type
                 >,
-                BOOST_DEDUCED_TYPENAME boost::mpl::pop_front<
-                    BOOST_DEDUCED_TYPENAME
+                typename boost::mpl::pop_front<
+                    typename
                         boost::function_types::parameter_types< M >
                 >::type
             >

@@ -76,7 +76,7 @@ namespace detail
         {
             return os << "same( " << mock::format( *s.expected_ ) << " )";
         }
-        const BOOST_DEDUCED_TYPENAME
+        const typename
             boost::unwrap_reference< Expected >::type* expected_;
     };
 
@@ -88,10 +88,10 @@ namespace detail
         {}
         template< typename Actual >
         bool operator()( const Actual& actual,
-            BOOST_DEDUCED_TYPENAME boost::disable_if<
+            typename boost::disable_if<
                 boost::is_convertible<
                     const Actual*,
-                    BOOST_DEDUCED_TYPENAME
+                    typename
                         boost::unwrap_reference< Expected >::type
                 >
             >::type* = 0 ) const
@@ -101,9 +101,9 @@ namespace detail
         }
         template< typename Actual >
         bool operator()( Actual& actual,
-            BOOST_DEDUCED_TYPENAME boost::enable_if<
+            typename boost::enable_if<
                 boost::is_convertible< Actual*,
-                    BOOST_DEDUCED_TYPENAME
+                    typename
                         boost::unwrap_reference< Expected >::type
                 >
             >::type* = 0 ) const
@@ -115,7 +115,7 @@ namespace detail
         {
             return s << "retrieve( " << mock::format( *r.expected_ ) << " )";
         }
-        BOOST_DEDUCED_TYPENAME
+        typename
             boost::unwrap_reference< Expected >::type* expected_;
     };
 
@@ -133,9 +133,9 @@ namespace detail
         }
         template< typename Actual >
         bool operator()( Actual* actual,
-            BOOST_DEDUCED_TYPENAME boost::enable_if<
+            typename boost::enable_if<
                 boost::is_convertible<
-                    BOOST_DEDUCED_TYPENAME
+                    typename
                         boost::unwrap_reference< Expected >::type,
                     Actual
                 >

@@ -36,8 +36,8 @@ namespace detail
         boost::unit_test::const_string instance,
         boost::optional< type_name > type,
         boost::unit_test::const_string name,
-        BOOST_DEDUCED_TYPENAME boost::disable_if<
-            BOOST_DEDUCED_TYPENAME boost::is_base_of< object, T >
+        typename boost::disable_if<
+            typename boost::is_base_of< object, T >
         >::type* = 0 )
     {
         e.configure( detail::root, &t, instance, type, name );

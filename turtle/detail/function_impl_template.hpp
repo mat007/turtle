@@ -167,8 +167,7 @@ namespace detail
         };
 
         typedef std::list< expectation_type > expectations_type;
-        typedef BOOST_DEDUCED_TYPENAME
-            expectations_type::const_iterator expectations_cit;
+        typedef typename expectations_type::const_iterator expectations_cit;
 
         expectations_type expectations_;
         context* context_;

@@ -39,7 +39,7 @@
     mock::detail::functor< MOCK_FUNCTION_TYPE((__VA_ARGS__),) > f, f##_mock
 #define MOCK_FUNCTOR_TPL(f, ...) \
     mock::detail::functor< \
-        MOCK_FUNCTION_TYPE((__VA_ARGS__), BOOST_DEDUCED_TYPENAME) > f, f##_mock
+        MOCK_FUNCTION_TYPE((__VA_ARGS__), typename) > f, f##_mock
 
 #else // MOCK_VARIADIC_MACROS
 
@@ -50,7 +50,7 @@
     mock::detail::functor< MOCK_FUNCTION_TYPE(S,) > f, f##_mock
 #define MOCK_FUNCTOR_TPL(f, S) \
     mock::detail::functor< \
-        MOCK_FUNCTION_TYPE(S, BOOST_DEDUCED_TYPENAME) > f, f##_mock
+        MOCK_FUNCTION_TYPE(S, typename) > f, f##_mock
 
 #endif // MOCK_VARIADIC_MACROS
 
@@ -104,15 +104,15 @@
     MOCK_METHOD_HELPER(S, t,)
 
 #define MOCK_METHOD_EXT_TPL(M, n, S, t) \
-    MOCK_METHOD_AUX(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_AUX(M, n, S, t, const, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_HELPER(S, t, BOOST_DEDUCED_TYPENAME)
+    MOCK_METHOD_AUX(M, n, S, t,, typename) \
+    MOCK_METHOD_AUX(M, n, S, t, const, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
 #define MOCK_CONST_METHOD_EXT_TPL(M, n, S, t) \
-    MOCK_METHOD_AUX(M, n, S, t, const, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_HELPER(S, t, BOOST_DEDUCED_TYPENAME)
+    MOCK_METHOD_AUX(M, n, S, t, const, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
 #define MOCK_NON_CONST_METHOD_EXT_TPL(M, n, S, t) \
-    MOCK_METHOD_AUX(M, n, S, t,, BOOST_DEDUCED_TYPENAME) \
-    MOCK_METHOD_HELPER(S, t, BOOST_DEDUCED_TYPENAME)
+    MOCK_METHOD_AUX(M, n, S, t,, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
 
 #define MOCK_CONVERSION_OPERATOR(M, T, t) \
     M T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
@@ -128,13 +128,13 @@
 #define MOCK_CONVERSION_OPERATOR_TPL(M, T, t) \
     M T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
     M T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
-    MOCK_METHOD_HELPER(T(), t, BOOST_DEDUCED_TYPENAME)
+    MOCK_METHOD_HELPER(T(), t, typename)
 #define MOCK_CONST_CONVERSION_OPERATOR_TPL(M, T, t) \
     M T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
-    MOCK_METHOD_HELPER(T(), t, BOOST_DEDUCED_TYPENAME)
+    MOCK_METHOD_HELPER(T(), t, typename)
 #define MOCK_NON_CONST_CONVERSION_OPERATOR_TPL(M, T, t) \
     M T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
-    MOCK_METHOD_HELPER(T(), t, BOOST_DEDUCED_TYPENAME)
+    MOCK_METHOD_HELPER(T(), t, typename)
 
 #define MOCK_FUNCTION_HELPER(S, t, s, tpn) \
     s mock::detail::function< MOCK_FUNCTION_TYPE(S, tpn) >& t##_mock( \
@@ -155,7 +155,7 @@
 #define MOCK_CONSTRUCTOR(T, n, A, t) \
     MOCK_CONSTRUCTOR_AUX(T, n, A, t,)
 #define MOCK_CONSTRUCTOR_TPL(T, n, A, t) \
-    MOCK_CONSTRUCTOR_AUX(T, n, A, t, BOOST_DEDUCED_TYPENAME)
+    MOCK_CONSTRUCTOR_AUX(T, n, A, t, typename)
 
 #define MOCK_DESTRUCTOR(T, t) \
     T() { try { MOCK_ANONYMOUS_HELPER(t)(); } catch( ... ) {} } \
@@ -218,7 +218,7 @@
     MOCK_FUNCTION_AUX(F, n, \
         MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
         MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
-        static, BOOST_DEDUCED_TYPENAME)
+        static, typename)
 
 #else // MOCK_VARIADIC_MACROS
 
@@ -231,7 +231,7 @@
 #define MOCK_STATIC_METHOD(F, n, S, t) \
     MOCK_FUNCTION_AUX(F, n, S, t, static,)
 #define MOCK_STATIC_METHOD_TPL(F, n, S, t) \
-    MOCK_FUNCTION_AUX(F, n, S, t, static, BOOST_DEDUCED_TYPENAME)
+    MOCK_FUNCTION_AUX(F, n, S, t, static, typename)
 
 #endif // MOCK_VARIADIC_MACROS
 
