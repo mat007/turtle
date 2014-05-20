@@ -171,3 +171,8 @@ struct custom_policy
 #define MOCK_ERROR_POLICY custom_policy
 #include <turtle/mock.hpp>
 //]
+
+//[ thread_safe
+#define MOCK_THREAD_SAFE
+#include <turtle/mock.hpp>
+//]

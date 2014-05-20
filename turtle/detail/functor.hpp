@@ -11,6 +11,7 @@
 
 #include "../config.hpp"
 #include "function.hpp"
+#include "mutex.hpp"
 
 namespace mock
 {
@@ -21,14 +22,20 @@ namespace detail
     {
         functor()
         {
+            static mutex m_;
+            scoped_lock _( m_ );
             static functor* f = 0;
             if( f )
             {
                 *this = *f;
                 f = 0;
+                m_.unlock();
             }
             else
+            {
+                m_.lock();
                 f = this;
+            }
         }
     };
 }

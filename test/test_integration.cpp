@@ -576,3 +576,78 @@ namespace
     MOCK_BASE_CLASS( my_comma_mock, my_base< int BOOST_PP_COMMA() int > )
     {};
 }
+
+#ifdef MOCK_THREAD_SAFE
+
+#include <boost/thread.hpp>
+
+namespace
+{
+    void create_class()
+    {
+        my_mock m;
+        MOCK_EXPECT( m.my_tag ).once().with( 3 ).returns( 42 );
+        try
+        {
+            m.my_method( 3 );
+        }
+        catch( ... )
+        {}
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE( mock_class_creation_is_thread_safe, mock_error_fixture )
+{
+    boost::thread_group group;
+    for( int i = 0; i < 100; ++i )
+        group.create_thread( &create_class );
+    group.join_all();
+    CHECK_CALLS( 100 );
+}
+
+namespace
+{
+    void create_functor( int i )
+    {
+        mock::detail::functor< void( int ) > f;
+        boost::this_thread::sleep( boost::posix_time::milliseconds( 100 ) );
+        mock::detail::functor< void( int ) > f_mock;
+        MOCK_EXPECT( f ).once().with( i );
+        try
+        {
+            f( i );
+        }
+        catch( ... )
+        {}
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE( mock_functor_creation_is_thread_safe, mock_error_fixture )
+{
+    boost::thread_group group;
+    for( int i = 0; i < 100; ++i )
+        group.create_thread( boost::bind( &create_functor, i ) );
+    group.join_all();
+    CHECK_CALLS( 100 );
+}
+
+namespace
+{
+    void iterate( my_mock& m )
+    {
+        MOCK_EXPECT( m.my_tag ).once().with( 3 ).returns( 42 );
+        BOOST_CHECK_EQUAL( 42, m.my_method( 3 ) );
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE( mock_class_is_thread_safe, mock_error_fixture )
+{
+    my_mock m;
+    boost::thread_group group;
+    for( int i = 0; i < 100; ++i )
+        group.create_thread( boost::bind( &iterate, boost::ref( m ) ) );
+    group.join_all();
+    CHECK_CALLS( 100 );
+}
+
+#endif // MOCK_THREAD_SAFE

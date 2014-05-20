@@ -37,8 +37,7 @@ namespace detail
             function_impl< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )> >
     {
     public:
-        typedef MOCK_ERROR_POLICY< R > error_type;
-
+        typedef safe_error< R, MOCK_ERROR_POLICY< R > > error_type;
         typedef expectation<
                     R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
                 > expectation_type;
@@ -47,6 +46,7 @@ namespace detail
         function_impl()
             : context_( 0 )
             , valid_( true )
+            , mutex_( boost::make_shared< mutex >() )
         {}
         virtual ~function_impl()
         {
@@ -56,13 +56,16 @@ namespace detail
                     if( ! it->verify() )
                         error_type::fail( "untriggered expectation",
                             boost::unit_test::lazy_ostream::instance()
-                                << *this, it->file(), it->line() );
+                                << lazy_context( this )
+                                << lazy_expectations( this ),
+                            it->file(), it->line() );
             if( context_ )
                 context_->remove( *this );
         }
 
         virtual bool verify() const
         {
+            lock _( mutex_ );
             for( expectations_cit it = expectations_.begin();
                 it != expectations_.end(); ++it )
                 if( ! it->verify() )
@@ -70,35 +73,128 @@ namespace detail
                     valid_ = false;
                     error_type::fail( "verification failed",
                         boost::unit_test::lazy_ostream::instance()
-                            << *this, it->file(), it->line() );
+                            << lazy_context( this )
+                            << lazy_expectations( this ),
+                        it->file(), it->line() );
                 }
             return valid_;
         }
 
         virtual void reset()
         {
+            lock _( mutex_ );
             valid_ = true;
             boost::shared_ptr< function_impl > guard =
                 this->shared_from_this();
             expectations_.clear();
         }
 
-        expectation_type& expect( const char* file, int line )
+    private:
+        template< typename T >
+        struct wrapper : wrapper_base< T, expectation_type >
         {
+            wrapper( const boost::shared_ptr< mutex >& m, expectation_type& e )
+                : wrapper_base< T, expectation_type >( e )
+                , lock_( m )
+            {}
+
+            wrapper once()
+            {
+                this->e_->once();
+                return *this;
+            }
+            wrapper never()
+            {
+                this->e_->never();
+                return *this;
+            }
+            wrapper exactly( std::size_t count )
+            {
+                this->e_->exactly( count );
+                return *this;
+            }
+            wrapper at_least( std::size_t min )
+            {
+                this->e_->at_least( min );
+                return *this;
+            }
+            wrapper at_most( std::size_t max )
+            {
+                this->e_->at_most( max );
+                return *this;
+            }
+            wrapper between( std::size_t min, std::size_t max )
+            {
+                this->e_->between( min, max );
+                return *this;
+            }
+
+#ifndef MOCK_NUM_ARGS_0
+            template<
+                BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_)
+            >
+            wrapper with(
+                BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
+            {
+                this->e_->with(
+                    BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, c) );
+                return *this;
+            }
+#endif
+
+#define MOCK_FUNCTION_IN(z, n, d) \
+    wrapper in( BOOST_PP_ENUM_PARAMS(n, sequence& s) ) \
+    { \
+        this->e_->in( BOOST_PP_ENUM_PARAMS(n, s) ); \
+        return *this; \
+    }
+
+            BOOST_PP_REPEAT(MOCK_MAX_SEQUENCES,
+                MOCK_FUNCTION_IN, _)
+
+#undef MOCK_FUNCTION_IN
+
+            template< typename TT >
+            void calls( TT t )
+            {
+                this->e_->calls( t );
+            }
+            template< typename TT >
+            void throws( TT t )
+            {
+                this->e_->throws( t );
+            }
+            template< typename TT >
+            void moves( TT t )
+            {
+                this->e_->moves( t );
+            }
+
+            lock lock_;
+        };
+
+    public:
+        typedef wrapper< R > wrapper_type;
+
+        wrapper_type expect( const char* file, int line )
+        {
+            lock _( mutex_ );
             expectations_.push_back( expectation_type( file, line ) );
             valid_ = true;
-            return expectations_.back();
+            return wrapper_type( mutex_, expectations_.back() );
         }
-        expectation_type& expect()
+        wrapper_type expect()
         {
+            lock _( mutex_ );
             expectations_.push_back( expectation_type() );
             valid_ = true;
-            return expectations_.back();
+            return wrapper_type( mutex_, expectations_.back() );
         }
 
         R operator()(
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, t) ) const
         {
+            lock _( mutex_ );
             valid_ = false;
             for( expectations_cit it = expectations_.begin();
                 it != expectations_.end(); ++it )
@@ -132,6 +228,7 @@ namespace detail
             boost::optional< type_name > type,
             boost::unit_test::const_string name )
         {
+            lock _( mutex_ );
             if( ! context_ )
                 c.add( *this );
             c.add( p, *this, instance, type, name );
@@ -141,6 +238,7 @@ namespace detail
         friend std::ostream& operator<<(
             std::ostream& s, const function_impl& impl )
         {
+            lock _( impl.mutex_ );
             return s << lazy_context( &impl ) << lazy_expectations( &impl );
         }
 
@@ -183,6 +281,7 @@ namespace detail
         expectations_type expectations_;
         context* context_;
         mutable bool valid_;
+        const boost::shared_ptr< mutex > mutex_;
     };
 }
 } // mock

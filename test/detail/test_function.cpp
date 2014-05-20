@@ -846,3 +846,33 @@ BOOST_FIXTURE_TEST_CASE( adding_file_and_line_number_information, mock_error_fix
     BOOST_CHECK_EQUAL( "file name", mock_error_data.last_file );
     BOOST_CHECK_EQUAL( 42, mock_error_data.last_line );
 }
+
+#ifdef MOCK_THREAD_SAFE
+
+#include <boost/thread.hpp>
+
+namespace
+{
+    void iterate( mock::detail::function< int() >& f )
+    {
+        f.expect().once().returns( 0 );
+        try
+        {
+            f();
+        }
+        catch( ... )
+        {}
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE( function_is_thread_safe, mock_error_fixture )
+{
+    mock::detail::function< int() > f;
+    boost::thread_group group;
+    for( int i = 0; i < 100; ++i )
+        group.create_thread( boost::bind( &iterate, boost::ref( f ) ) );
+    group.join_all();
+    CHECK_CALLS( 100 );
+}
+
+#endif // MOCK_THREAD_SAFE

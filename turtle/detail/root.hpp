@@ -14,6 +14,7 @@
 #include "group.hpp"
 #include "context.hpp"
 #include "child.hpp"
+#include "mutex.hpp"
 #include <boost/test/utils/trivial_singleton.hpp>
 #include <boost/optional.hpp>
 #include <ostream>
@@ -31,6 +32,7 @@ namespace detail
             boost::optional< type_name > type,
             boost::unit_test::const_string name )
         {
+            scoped_lock _( mutex_ );
             children_t::iterator it = children_.lower_bound( &v );
             if( it == children_.end() ||
                 children_.key_comp()( &v, it->first ) )
@@ -40,26 +42,31 @@ namespace detail
         }
         virtual void add( verifiable& v )
         {
+            scoped_lock _( mutex_ );
             group_.add( v );
         }
 
         virtual void remove( verifiable& v )
         {
+            scoped_lock _( mutex_ );
             group_.remove( v );
             children_.erase( &v );
         }
 
         bool verify() const
         {
+            scoped_lock _( mutex_ );
             return group_.verify();
         }
         void reset()
         {
+            scoped_lock _( mutex_ );
             group_.reset();
         }
 
         virtual void serialize( std::ostream& s, const verifiable& v ) const
         {
+            scoped_lock _( mutex_ );
             children_cit it = children_.find( &v );
             if( it != children_.end() )
                 s << it->second;
@@ -119,6 +126,7 @@ namespace detail
         parents_t parents_;
         children_t children_;
         group group_;
+        mutable mutex mutex_;
 
     private:
         BOOST_TEST_SINGLETON_CONS( root_t );

@@ -83,4 +83,10 @@
 #   endif
 #endif
 
+#if !defined(BOOST_NO_CXX11_HDR_MUTEX) && !defined(BOOST_NO_0X_HDR_MUTEX)
+#   ifndef MOCK_NO_HDR_MUTEX
+#      define MOCK_HDR_MUTEX
+#   endif
+#endif
+
 #endif // MOCK_CONFIG_HPP_INCLUDED

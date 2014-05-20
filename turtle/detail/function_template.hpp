@@ -38,7 +38,7 @@ namespace detail
         typedef function_impl<
             R ( BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FUNCTION_CALL, _) )
         > impl_type;
-        typedef typename impl_type::expectation_type expectation_type;
+        typedef typename impl_type::wrapper_type expectation_type;
         typedef typename impl_type::error_type error_type;
 
     public:
@@ -65,12 +65,12 @@ namespace detail
             impl_->reset();
         }
 
-        expectation_type& expect( const char* file, int line )
+        expectation_type expect( const char* file, int line )
         {
             error_type::pass( file, line );
             return impl_->expect( file, line );
         }
-        expectation_type& expect()
+        expectation_type expect()
         {
             return impl_->expect();
         }

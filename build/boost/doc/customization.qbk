@@ -144,4 +144,14 @@ The policy can then be activated by defining MOCK_ERROR_POLICY prior to includin
 
 [endsect]
 
+[section Thread safety]
+
+Thread safety is not activated by default however defining MOCK_THREAD_SAFE before including the library will make creations and calls to mock objects thread-safe :
+
+[thread_safe]
+
+If available the library will rely on the C++11 standard mutexes and locks, otherwise Boost.Thread will be used.
+
+[endsect]
+
 [endsect]

@@ -20,6 +20,7 @@
 #include "invocation.hpp"
 #include "type_name.hpp"
 #include "context.hpp"
+#include "mutex.hpp"
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
@@ -34,6 +35,57 @@
 #include <ostream>
 #include <vector>
 #include <list>
+
+namespace mock
+{
+namespace detail
+{
+    template< typename R, typename E >
+    struct wrapper_base
+    {
+        wrapper_base( E& e )
+            : e_( &e )
+        {}
+
+        template< typename T >
+        void returns( T t )
+        {
+            e_->returns( t );
+        }
+
+        E* e_;
+    };
+    template< typename E >
+    struct wrapper_base< void, E >
+    {
+        wrapper_base( E& e )
+            : e_( &e )
+        {}
+
+        E* e_;
+    };
+    template< typename R, typename E >
+    struct wrapper_base< R*, E >
+    {
+        wrapper_base( E& e )
+            : e_( &e )
+        {}
+
+        void returns( R* r )
+        {
+            e_->returns( r );
+        }
+        template< typename Y >
+        void returns( const boost::reference_wrapper< Y >& r )
+        {
+            e_->returns( r );
+        }
+
+        E* e_;
+    };
+
+}
+}
 
 #define MOCK_NUM_ARGS 0
 #define MOCK_NUM_ARGS_0

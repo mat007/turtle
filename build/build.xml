@@ -39,6 +39,9 @@
     <build-turtle-test name="turtle_no_variadic_macros">
       <defineset define="MOCK_NO_VARIADIC_MACROS"/>
     </build-turtle-test>
+    <build-turtle-test name="turtle_thread_safe">
+      <defineset define="MOCK_THREAD_SAFE"/>
+    </build-turtle-test>
   </target>
 
   <target name="analyse" description="run errors analyser">
