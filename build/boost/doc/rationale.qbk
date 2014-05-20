@@ -1,4 +1,5 @@
 [section:rationale Rationale]
+[import example/rationale.cpp]
 
 This section explains some of the design and implementation choices.
 
@@ -14,14 +15,12 @@ Several design choices follow the same motivation :
 * both const and non-const versions of a method are mocked by default
 * the short-cuts for adding constraints cover 95% of the use cases
 * non-serializable types do not yield compilation errors but are logged as '?' by default
-* etc..
 
 At the same time customizing any aspect of the library should require minimum effort, for instance :
 
 * custom constraints can be any functors, including free functions
 * customizing the logging of a type is done by defining a serialization operator
 * integrating into a test framework is made possible by writing a simple custom policy
-* etc..
 
 [endsect]
 
@@ -29,12 +28,7 @@ At the same time customizing any aspect of the library should require minimum ef
 
 By design the exceptions thrown upon error should not inherit from std::exception, for instance consider the following test case based on the example from the [link turtle.motivation motivation] section :
 
- BOOST_AUTO_TEST_CASE( overflow_throws )
- {
-    mock_view v;
-    calculator c( v );
-    BOOST_CHECK_THROW( c.add( std::numeric_limits< int >::max(), 1 ), std::exception );
- }
+[overflow_throws]
 
 Any call to 'v' will be unexpected and yield an exception, which if it were an std::exception would erroneously make the test succeed whereas it is supposed to pass only if the operation overflows (thus not triggering 'v').
 

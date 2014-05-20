@@ -2,7 +2,7 @@
     [quickbook 1.5]
 [/    [authors [Champlon, Mathieu]] ]
     [authors [,A C++ mock object library for Boost]]
-    [copyright 2008-2013 Mathieu Champlon]
+    [copyright 2008-2014 Mathieu Champlon]
     [license
         Distributed under the [@http://www.boost.org/LICENSE_1_0.txt Boost Software License, Version 1.0].
     ]
