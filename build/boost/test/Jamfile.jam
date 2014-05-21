@@ -17,12 +17,13 @@ rule run-test ( name )
   run $(name).cpp undefined.cpp /boost//unit_test_framework : : : <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
   run $(name).cpp undefined.cpp /boost//unit_test_framework : : : <define>MOCK_NO_DECLTYPE : $(name)_no_decltype ;
   run $(name).cpp undefined.cpp /boost//unit_test_framework : : : <define>MOCK_NO_VARIADIC_MACROS : $(name)_no_variadic_macros ;
+  run $(name).cpp undefined.cpp /boost//unit_test_framework : : : <define>MOCK_THREAD_SAFE : $(name)_thread_safe ;
 }
 
 alias mock_tests :
     [ run-test test_constraint ]
     [ run-test test_constraints ]
-    [ run-test test_error ]
+    [ run-test test_exception ]
     [ run-test test_integration ]
     [ run-test test_log ]
     [ run-test test_matcher ]
@@ -33,8 +34,8 @@ alias mock_tests :
     [ run-test detail/test_function ]
     [ run-test detail/test_invocation ]
     [ run-test detail/test_is_functor ]
-    [ run-test detail/test_type_name ]
     [ run-test detail/test_signature ]
+    [ run-test detail/test_type_name ]
 ;
 
 alias mock_failures :
