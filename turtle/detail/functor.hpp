@@ -17,23 +17,31 @@ namespace mock
 {
 namespace detail
 {
+    class functor_mutex_t :
+        public boost::unit_test::singleton< functor_mutex_t >,
+        public mutex
+    {
+    private:
+        BOOST_TEST_SINGLETON_CONS( functor_mutex_t );
+    };
+    BOOST_TEST_SINGLETON_INST( functor_mutex )
+
     template< typename Signature >
     struct functor : function< Signature >
     {
         functor()
         {
-            static mutex m_;
-            scoped_lock _( m_ );
+            scoped_lock _( functor_mutex );
             static functor* f = 0;
             if( f )
             {
                 *this = *f;
                 f = 0;
-                m_.unlock();
+                functor_mutex.unlock();
             }
             else
             {
-                m_.lock();
+                functor_mutex.lock();
                 f = this;
             }
         }
