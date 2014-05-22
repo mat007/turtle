@@ -83,9 +83,8 @@ namespace detail
 
         E* e_;
     };
-
 }
-}
+} // mock
 
 #define MOCK_NUM_ARGS 0
 #define MOCK_NUM_ARGS_0
