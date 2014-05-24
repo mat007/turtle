@@ -1,5 +1,10 @@
 [section Changelog]
 
+[section 1.2.6]
+Released 24 May 2014
+
+* Added MOCK_THREAD_SAFE to enable thread safety
+
 [section 1.2.5]
 Released 10 February 2014
 
