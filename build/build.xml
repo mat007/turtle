@@ -5,6 +5,7 @@
 
   <property name="boost.root" value="${env.BOOST_ROOT}"/>
   <property name="boost.dir" value="${out.dir}/../boost"/>
+  <property name="boostbook.dir" value="${out.dir}/boostbook"/>
 
   <target name="clean" description="clean intermediate build artifacts">
     <delete dir="${out.dir}"/>
@@ -143,8 +144,11 @@
     <copy todir="${boost.dir}/boost/mock">
       <fileset dir="${libraries.dir}/turtle" includes="**"/>
     </copy>
-    <copy todir="${boost.dir}/libs/mock/doc">
+    <copy todir="${boostbook.dir}">
       <fileset dir="${boost.root}/tools/boostbook" includes="xsl/**,dtd/**"/>
+    </copy>
+    <copy todir="${boostbook.dir}" overwrite="true">
+      <fileset dir="boostbook"/>
     </copy>
     <copy todir="${boost.dir}/libs/mock/doc/html">
       <fileset dir="${boost.root}/doc/src" includes="**/*.css,**/**.png"/>
@@ -213,8 +217,8 @@
     <replaceregexp match="\[include changelog.qbk\]" replace="" flags="g">
       <fileset dir="${boost.dir}/libs/mock" includes="**/mock.qbk"/>
     </replaceregexp>
-    <copy todir="${boost.dir}/libs/mock/doc" overwrite="true">
-      <fileset dir="${boost.root}/tools/boostbook" includes="xsl/navbar.xsl"/>
+    <copy todir="${boostbook.dir}" overwrite="true">
+      <fileset dir="${boost.root}/tools/boostbook" includes="xsl/**,dtd/**"/>
     </copy>
   </target>
 
@@ -223,7 +227,9 @@
   </target>
 
   <target name="boost.doc" description="generate boost.mock documentation in ${boost.dir}">
-    <b2 dir="${boost.dir}/libs/mock/doc"/>
+    <b2 dir="${boost.dir}/libs/mock/doc">
+      <env key="BOOSTBOOK_DIR" value="${boostbook.dir}"/>
+    </b2>
   </target>
 
   <target name="boost.package" description="package boost.mock">

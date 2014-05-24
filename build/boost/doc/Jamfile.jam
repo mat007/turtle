@@ -6,8 +6,7 @@
 # accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt)
 
-import path ;
-using boostbook : : : [ path.pwd ] ;
+using boostbook ;
 using quickbook ;
 using doxygen ;
 
@@ -32,6 +31,7 @@ boostbook standalone
     mock
   :
 #    <dependency>reference
+    <xsl:param>boost.root=../../../..
     <xsl:param>boost.image.src=images/boost.png
     <xsl:param>chunk.first.sections=1
 #    <xsl:param>toc.max.depth=3
@@ -39,6 +39,7 @@ boostbook standalone
     <xsl:param>nav.layout=horizontal
 ;
 
+# not needed anymore once in boost
 project example
   : requirements
    <include>../../../../..
