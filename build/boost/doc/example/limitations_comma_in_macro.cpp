@@ -25,7 +25,7 @@ namespace limitations_comma_in_macro_solution_2
 {
 //[ limitations_comma_in_macro_solution_2
     template< typename T1, typename T2 >
-    MOCK_BASE_CLASS( my_mock, my_base_type< T1 BOOST_PP_COMMA() T2 > )
+    MOCK_BASE_CLASS( my_mock, my_base_class< T1 BOOST_PP_COMMA() T2 > )
     {};
 //]
 }
@@ -34,7 +34,7 @@ namespace limitations_comma_in_macro_solution_3
 {
 //[ limitations_comma_in_macro_solution_3
     template< typename T1, typename T2 >
-    struct my_mock : my_base_type< T1, T2 >, mock::object
+    struct my_mock : my_base_class< T1, T2 >, mock::object
     {};
 //]
 }

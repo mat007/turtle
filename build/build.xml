@@ -236,7 +236,7 @@
 
   <target name="documentation" depends="boost.generate,boost.doc" description="generate documentation"/>
 
-  <target name="boost" depends="boost.generate,boost.convert,boost.test,boost.doc" description="convert to boost with documentation and tests"/>
+  <target name="boost" depends="boost.generate,boost.convert,boost.doc,boost.test" description="convert to boost with documentation and tests"/>
 
   <target name="release" depends="documentation,package" description="produce release packages">
     <fail unless="version" message="missing version property"/>

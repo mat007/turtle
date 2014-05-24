@@ -31,7 +31,7 @@ boostbook standalone
   :
     mock
   :
-    <dependency>reference
+#    <dependency>reference
     <xsl:param>boost.image.src=images/boost.png
     <xsl:param>chunk.first.sections=1
 #    <xsl:param>toc.max.depth=3
@@ -44,15 +44,9 @@ project example
    <include>../../../../..
 ;
 
-compile example/motivation.cpp ;
-compile example/getting_started.cpp ;
-compile example/customization.cpp ;
-compile example/patterns_async_call.cpp ;
-compile example/patterns_retrieve_cref.cpp ;
-compile example/patterns_invoke_functor.cpp ;
-compile example/patterns_quick_constraint.cpp ;
-compile example/reference.cpp ;
-compile example/limitations_throw_specifier.cpp ;
-compile example/limitations_literal_zero.cpp ;
-compile example/limitations_template_method.cpp ;
-compile example/limitations_private_method.cpp ;
+rule compile-examples
+{
+  for name in [ glob example/*.cpp ] { compile $(name) ; }
+}
+
+alias mock_examples : [ compile-examples ] ;
