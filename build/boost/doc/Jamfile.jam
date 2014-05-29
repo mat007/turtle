@@ -39,10 +39,9 @@ boostbook standalone
     <xsl:param>nav.layout=horizontal
 ;
 
-# not needed anymore once in boost
 project example
   : requirements
-   <include>../../../../..
+   <include>../include
 ;
 
 rule compile-examples

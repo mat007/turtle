@@ -15,8 +15,8 @@
 #ifdef BOOST_MSVC
 #pragma warning( push, 0 )
 #endif
-#include <boost/spirit/home/phoenix.hpp>
-#include <boost/spirit/home/phoenix/bind.hpp>
+#include <boost/phoenix/phoenix.hpp>
+#include <boost/phoenix/bind.hpp>
 #ifndef BOOST_MSVC // this produces an ICE with all versions of MSVC
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>

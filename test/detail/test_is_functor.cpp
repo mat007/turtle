@@ -12,7 +12,7 @@
 #pragma warning( push, 0 )
 #endif
 #include <boost/lambda/lambda.hpp>
-#include <boost/spirit/home/phoenix.hpp>
+#include <boost/phoenix/phoenix.hpp>
 #ifdef BOOST_MSVC
 #pragma warning( pop )
 #endif

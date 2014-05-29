@@ -143,10 +143,9 @@
   </presetdef>
 
   <target name="boost.generate" description="generate boost.mock into ${boost.dir}">
-    <delete dir="${boost.dir}/boost/mock"/>
     <delete dir="${boost.dir}/libs/mock"/>
-    <copy todir="${boost.dir}/boost/mock">
-      <fileset dir="${libraries.dir}/turtle" includes="**"/>
+    <copy todir="${boost.dir}/libs/mock/include/turtle">
+      <fileset dir="${libraries.dir}/turtle"/>
     </copy>
     <copy todir="${boostbook.dir}">
       <fileset dir="${boost.root}/tools/boostbook" includes="xsl/**,dtd/**"/>
@@ -168,45 +167,38 @@
   </target>
 
   <target name="boost.convert" description="convert boost.mock in ${boost.dir}">
+    <move file="${boost.dir}/libs/mock/include/turtle" tofile="${boost.dir}/libs/mock/include/boost/mock"/>
     <replaceregexp match="MOCK" replace="BOOST_MOCK" flags="g">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/*.hpp"/>
       <fileset dir="${boost.dir}/libs/mock" includes="**/*.cpp,**/*.hpp,**/*.qbk"/>
     </replaceregexp>
     <replaceregexp match="BOOST_MOCK_BOOST_MOCK" replace="BOOST_MOCK" flags="g">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/*.hpp"/>
       <fileset dir="${boost.dir}/libs/mock" includes="**/*.cpp,**/*.hpp,**/*.qbk"/>
     </replaceregexp>
     <replaceregexp match='"([^"]+\.hpp)"' replace="&lt;boost/mock/\1&gt;" flags="g">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/*.hpp" excludes="**/detail/*.hpp"/>
+      <fileset dir="${boost.dir}/libs/mock/include" includes="**/*.hpp" excludes="**/detail/*.hpp"/>
     </replaceregexp>
     <replaceregexp match='"\.\./([^"]+\.hpp)"' replace="&lt;boost/mock/\1&gt;" flags="g">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/*.hpp"/>
+      <fileset dir="${boost.dir}/libs/mock/include" includes="**/*.hpp"/>
     </replaceregexp>
     <replaceregexp match='"([^"]+\.hpp)"' replace="&lt;boost/mock/detail/\1&gt;" flags="g">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/detail/*.hpp"/>
+      <fileset dir="${boost.dir}/libs/mock/include" includes="**/detail/*.hpp"/>
     </replaceregexp>
     <replaceregexp match="&lt;turtle/([^&gt;]+)" replace="&lt;boost/mock/\1" flags="g">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/*.hpp"/>
       <fileset dir="${boost.dir}/libs/mock" includes="**/*.cpp,**/*.hpp,**/*.qbk"/>
     </replaceregexp>
     <replaceregexp match="(namespace mock)" replace="namespace boost${line.separator}{${line.separator}\1" flags="g">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/*.hpp"/>
       <fileset dir="${boost.dir}/libs/mock" includes="**/*.cpp,**/*.hpp,**/*.qbk"/>
     </replaceregexp>
     <replaceregexp match="} // mock" replace="}${line.separator}}" flags="g">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/*.hpp"/>
       <fileset dir="${boost.dir}/libs/mock" includes="**/*.cpp,**/*.hpp"/>
     </replaceregexp>
     <replaceregexp match=" mock::" replace=" boost::mock::" flags="g">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/*.hpp"/>
       <fileset dir="${boost.dir}/libs/mock" includes="**/*.cpp,**/*.hpp,**/*.qbk"/>
     </replaceregexp>
     <replaceregexp match="^mock::" replace="boost::mock::" flags="m">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/*.hpp"/>
       <fileset dir="${boost.dir}/libs/mock" includes="**/*.cpp,**/*.hpp,**/*.qbk"/>
     </replaceregexp>
     <replaceregexp match="http://turtle.sourceforge.net" replace="Boost.Mock" flags="g">
-      <fileset dir="${boost.dir}/boost/mock" includes="**/*.hpp"/>
       <fileset dir="${boost.dir}/libs/mock" includes="**/*.cpp,**/*.hpp"/>
     </replaceregexp>
     <replaceregexp match="reference.helpers." replace="reference.helpers.boost_" flags="g">
@@ -238,15 +230,18 @@
 
   <target name="boost.package" description="package boost.mock">
     <zip destfile="${out.dir}/boost-mock.zip">
-      <fileset dir="${boost.dir}" includes="boost/mock/**"/>
       <fileset dir="${boost.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
-      <fileset dir="${boost.dir}" includes="LICENSE_1_0.txt,Jamroot.jam,Jamfile.v2"/>
+      <fileset dir="${boost.dir}" includes="LICENSE_1_0.txt"/>
     </zip>
+    <tar destfile="${out.dir}/boost-mock.tar.bz2" compression="bzip2">
+      <fileset dir="${boost.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
+      <fileset dir="${boost.dir}" includes="LICENSE_1_0.txt"/>
+    </tar>
   </target>
 
   <target name="documentation" depends="boost.generate,boost.doc" description="generate documentation"/>
 
-  <target name="boost" depends="boost.generate,boost.convert,boost.doc,boost.test" description="convert to boost with documentation and tests"/>
+  <target name="boost" depends="boost.generate,boost.convert,boost.doc,boost.test,boost.package" description="convert to boost with documentation and tests"/>
 
   <target name="release" depends="documentation,package" description="produce release packages">
     <fail unless="version" message="missing version property"/>

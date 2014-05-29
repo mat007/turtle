@@ -22,6 +22,7 @@
 #   define MOCK_MAX_ARGS 9
 #elif BOOST_PP_LESS(9, MOCK_MAX_ARGS)
 #   define MOCK_USE_BOOST_PHOENIX
+#   define BOOST_PHOENIX_USE_V2_OVER_V3
 #endif
 
 #ifndef MOCK_MAX_SEQUENCES

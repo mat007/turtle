@@ -8,7 +8,12 @@
 
 import testing ;
 
-project : requirements <define>BOOST_AUTO_TEST_MAIN <define>BOOST_ALL_NO_LIB ;
+project
+  : requirements
+   <define>BOOST_AUTO_TEST_MAIN
+   <define>BOOST_ALL_NO_LIB
+   <include>../include
+;
 
 rule run-test ( name )
 {

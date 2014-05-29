@@ -11,7 +11,7 @@
 
 #include "../config.hpp"
 #ifdef MOCK_USE_BOOST_PHOENIX
-#include <boost/spirit/home/phoenix/bind.hpp>
+#include <boost/phoenix/bind.hpp>
 #else
 #include <boost/bind.hpp>
 #endif
