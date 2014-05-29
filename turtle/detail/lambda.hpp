@@ -11,7 +11,11 @@
 
 #include "../config.hpp"
 #ifdef MOCK_USE_BOOST_PHOENIX
+#   ifdef BOOST_PHOENIX_USE_V2_OVER_V3
+#include <boost/spirit/home/phoenix/bind.hpp>
+#   else
 #include <boost/phoenix/bind.hpp>
+#   endif
 #else
 #include <boost/bind.hpp>
 #endif

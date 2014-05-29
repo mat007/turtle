@@ -22,7 +22,6 @@
 #   define MOCK_MAX_ARGS 9
 #elif BOOST_PP_LESS(9, MOCK_MAX_ARGS)
 #   define MOCK_USE_BOOST_PHOENIX
-#   define BOOST_PHOENIX_USE_V2_OVER_V3
 #endif
 
 #ifndef MOCK_MAX_SEQUENCES
@@ -42,6 +41,7 @@
 #endif
 
 #ifdef MOCK_USE_BOOST_PHOENIX
+#   define BOOST_PHOENIX_USE_V2_OVER_V3 // V3 doesn't work due to various bugs including https://svn.boost.org/trac/boost/ticket/8504
 #   ifndef BOOST_RESULT_OF_NUM_ARGS
 #       define BOOST_RESULT_OF_NUM_ARGS MOCK_MAX_ARGS
 #   elif BOOST_PP_LESS(BOOST_RESULT_OF_NUM_ARGS, MOCK_MAX_ARGS)
