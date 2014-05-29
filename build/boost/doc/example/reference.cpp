@@ -631,6 +631,8 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_bind )
 //]
 }
 
+#ifndef BOOST_MSVC // this produces an ICE with all versions of MSVC
+
 #include <boost/lambda/lambda.hpp>
 
 namespace constraints_example_5
@@ -648,6 +650,8 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_lambda 
 }
 //]
 }
+
+#endif // BOOST_MSVC
 
 #include <boost/phoenix/phoenix.hpp>
 

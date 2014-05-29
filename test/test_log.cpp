@@ -17,8 +17,10 @@
 #endif
 #include <boost/spirit/home/phoenix.hpp>
 #include <boost/spirit/home/phoenix/bind.hpp>
+#ifndef BOOST_MSVC // this produces an ICE with all versions of MSVC
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
+#endif
 #ifdef BOOST_MSVC
 #pragma warning( pop )
 #endif
@@ -647,11 +649,15 @@ BOOST_AUTO_TEST_CASE( boost_bind_functor_yields_question_mark_when_serialized )
     BOOST_CHECK_EQUAL( "?", to_string( boost::bind( &some_function ) ) );
 }
 
+#ifndef BOOST_MSVC // this produces an ICE with all versions of MSVC
+
 BOOST_AUTO_TEST_CASE( boost_lambda_functor_yields_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( boost::lambda::bind( &some_function ) ) );
     BOOST_CHECK_EQUAL( "?", to_string( boost::lambda::_1 < 42 ) );
 }
+
+#endif
 
 #ifdef MOCK_NULLPTR
 
