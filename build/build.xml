@@ -129,12 +129,16 @@
     </tar>
   </target>
 
+  <condition property="b2.toolset" value="--toolset=${boost.toolset}" else="">
+    <isset property="boost.toolset"/>
+  </condition>
   <condition property="b2" value="b2.exe" else="b2">
     <os family="windows"/>
   </condition>
   <presetdef name="b2">
     <exec taskname="b2" failonerror="true" executable="${boost.root}/${b2}">
       <arg value="-q"/>
+      <arg value="${b2.toolset}"/>
     </exec>
   </presetdef>
 
