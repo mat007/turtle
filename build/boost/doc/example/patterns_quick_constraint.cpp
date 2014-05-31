@@ -1,3 +1,11 @@
+// http://turtle.sourceforge.net
+//
+// Copyright Mathieu Champlon 2014
+//
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
 //[ quick_constraint_problem
 #define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
@@ -10,7 +18,7 @@ namespace
     {
     public:
         explicit my_class( int data )
-	    : data_( data )
+      : data_( data )
         {}
         int data_;
     };

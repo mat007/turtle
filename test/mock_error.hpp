@@ -17,10 +17,6 @@
 
 struct mock_error_data_t : boost::unit_test::singleton< mock_error_data_t >
 {
-    ~mock_error_data_t()
-    {
-        assert( verify() );
-    }
     void reset()
     {
         call_count = 0;

@@ -155,7 +155,7 @@
       <fileset dir="boostbook"/>
     </copy>
     <copy todir="${boost-mock.dir}/doc/html">
-      <fileset dir="${boost.root}/doc/src" includes="**/*.css,**/**.png"/>
+      <fileset dir="${boost.root}/doc/src" includes="**/boostbook.css,**/**.png"/>
       <fileset dir="boost/doc" includes="images/*.png"/>
     </copy>
     <copy todir="${boost-mock.dir}" overwrite="true">

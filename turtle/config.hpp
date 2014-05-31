@@ -6,6 +6,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+// boost-no-inspect
+
 #ifndef MOCK_CONFIG_HPP_INCLUDED
 #define MOCK_CONFIG_HPP_INCLUDED
 
@@ -87,6 +89,12 @@
 #if !defined(BOOST_NO_CXX11_HDR_MUTEX) && !defined(BOOST_NO_0X_HDR_MUTEX)
 #   ifndef MOCK_NO_HDR_MUTEX
 #      define MOCK_HDR_MUTEX
+#   endif
+#endif
+
+#if !defined(BOOST_NO_CXX11_LAMBDAS) && !defined(BOOST_NO_LAMBDAS)
+#   ifndef MOCK_NO_LAMBDAS
+#      define MOCK_NO_LAMBDAS
 #   endif
 #endif
 

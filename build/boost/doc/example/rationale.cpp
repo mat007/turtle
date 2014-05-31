@@ -15,6 +15,6 @@ BOOST_AUTO_TEST_CASE( overflow_throws )
 {
     mock_view v;
     calculator c( v );
-    BOOST_CHECK_THROW( c.add( std::numeric_limits< int >::max(), 1 ), std::exception );
+    BOOST_CHECK_THROW( c.add( (std::numeric_limits< int >::max)(), 1 ), std::exception );
 }
 //]

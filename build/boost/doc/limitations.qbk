@@ -1,3 +1,10 @@
+[/
+ / Copyright (c) 2014 Mathieu Champlon
+ /
+ / Distributed under the Boost Software License, Version 1.0. (See accompanying
+ / file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+ /]
+
 [section Limitations]
 [import example/limitations_literal_zero.cpp]
 [import example/limitations_throw_specifier.cpp]
@@ -155,7 +162,7 @@ Finally another workaround would be to not use the macro at all :
 
 [limitations_comma_in_macro_solution_3]
 
-Note that [@www.boost.org/libs/utility/identity_type/doc/html/index.html Boost.IdentityType] is of little help here because the type is by essence very often abstract, which doesn't work well for some compilers (e.g. gcc).
+Note that [@http://www.boost.org/libs/utility/identity_type/doc/html/index.html Boost.IdentityType] is of little help here because the type is by essence very often abstract, which doesn't work well for some compilers (e.g. gcc).
 
 [endsect]
 

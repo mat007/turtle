@@ -15,6 +15,14 @@ project
    <include>../include
 ;
 
+path-constant parent : .. ;
+
+alias mock_inspect :
+  [ run /boost/tools/inspect//inspect/<variant>release
+       : $(parent) -text -brief : : : inspect
+  ]
+;
+
 rule run-test ( name )
 {
   run $(name) undefined.cpp /boost//unit_test_framework : : : : $(name)_ ;

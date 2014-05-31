@@ -1,3 +1,11 @@
+// http://turtle.sourceforge.net
+//
+// Copyright Mathieu Champlon 2014
+//
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
 #define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
@@ -672,7 +680,8 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_phoenix
 //]
 }
 
-#if !defined(BOOST_NO_CXX11_LAMBDAS) && !defined(BOOST_NO_LAMBDAS)
+#ifndef MOCK_NO_LAMBDAS
+
 namespace constraints_example_7
 {
 //[ constraints_example_7
@@ -688,6 +697,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_constraint_with_cxx11_lambda )
 }
 //]
 }
+
 #endif
 
 namespace constraints_example_8

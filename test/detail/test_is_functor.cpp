@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE( class_with_sig_is_functor )
     is_functor( sig_functor() );
 }
 
-#if !defined(BOOST_NO_CXX11_LAMBDAS) && !defined(BOOST_NO_LAMBDAS)
+#ifndef MOCK_NO_LAMBDAS
 
 BOOST_AUTO_TEST_CASE( cxx11_lambda_is_functor )
 {
