@@ -680,7 +680,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_phoenix
 //]
 }
 
-#ifndef MOCK_NO_LAMBDAS
+#ifdef MOCK_LAMBDAS
 
 namespace constraints_example_7
 {

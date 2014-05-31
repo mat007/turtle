@@ -94,7 +94,7 @@
 
 #if !defined(BOOST_NO_CXX11_LAMBDAS) && !defined(BOOST_NO_LAMBDAS)
 #   ifndef MOCK_NO_LAMBDAS
-#      define MOCK_NO_LAMBDAS
+#      define MOCK_LAMBDAS
 #   endif
 #endif
 
