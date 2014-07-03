@@ -533,7 +533,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_functor )
 namespace invocation_example_3
 {
 //[ invocation_example_3
-MOCK_FUNCTION( f, 1, float( int ) )
+MOCK_FUNCTION( f, 1, void( int ) )
 
 BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_function )
 {
@@ -547,7 +547,7 @@ namespace invocation_example_4
 //[ invocation_example_4
 MOCK_CLASS( mock_class )
 {
-    MOCK_STATIC_METHOD( method, 1, float( int ) )
+    MOCK_STATIC_METHOD( method, 1, void( int ) )
 };
 
 BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_static_method )
