@@ -482,6 +482,8 @@ Synopsis :
  MOCK_EXPECT( identifier ).throws( exception );
  MOCK_EXPECT( identifier ).calls( functor );    // gets assigned to a boost::function and throws std::invalid_argument if empty
 
+[note The returns and moves actions are not available for mock methods returning void, including constructors and destructors.]
+
 Example :
 
 [action_example_1]
