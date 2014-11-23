@@ -27,8 +27,9 @@ BOOST_AUTO_TEST_CASE( int_and_int_can_be_compared )
 
 BOOST_AUTO_TEST_CASE( ref_to_int_and_int_can_be_compared )
 {
-    BOOST_CHECK( match( 3, boost::cref( 3 ) ) );
-    BOOST_CHECK( ! match( 4, boost::cref( 3 ) ) );
+    const int i = 3;
+    BOOST_CHECK( match( 3, boost::cref( i ) ) );
+    BOOST_CHECK( ! match( 4, boost::cref( i ) ) );
 }
 
 namespace

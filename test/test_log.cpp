@@ -523,7 +523,8 @@ BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized )
 
 BOOST_AUTO_TEST_CASE( boost_reference_wrappers_are_serialized )
 {
-    BOOST_CHECK_EQUAL( "3", to_string( boost::cref( 3 ) ) );
+    const int i = 3;
+    BOOST_CHECK_EQUAL( "3", to_string( boost::cref( i ) ) );
     BOOST_CHECK_EQUAL( "\"string\"", to_string( boost::cref( "string" ) ) );
 }
 
