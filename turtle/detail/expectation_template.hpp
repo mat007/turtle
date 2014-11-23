@@ -28,7 +28,7 @@
     && (*c##n##_)( a##n )
 
 #define MOCK_EXPECTATION_SERIALIZE(z, n, d) \
-    BOOST_PP_IF(n, << ", " <<,) *m.c##n##_
+    BOOST_PP_IF(n, << ", " <<,) *e.c##n##_
 
 #define MOCK_EXPECTATION_IN_ADD(z, n, d ) \
     s##n.impl_->add( this ); sequences_.push_back( s##n.impl_ );
@@ -163,10 +163,10 @@ namespace detail
         }
 
         friend std::ostream& operator<<(
-            std::ostream& s, const expectation& m )
+            std::ostream& s, const expectation& e )
         {
-            return s << (m.i_->exhausted() ? 'v' : '.')
-                << ' ' << *m.i_
+            return s << (e.i_->exhausted() ? 'v' : '.')
+                << ' ' << *e.i_
 #ifndef MOCK_NUM_ARGS_0
                 << ".with( "
                 << BOOST_PP_REPEAT(MOCK_NUM_ARGS,

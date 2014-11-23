@@ -26,11 +26,12 @@ namespace detail
         virtual bool operator()( Actual ) = 0;
 
         friend std::ostream& operator<<(
-            std::ostream& s, const matcher_base& c )
+            std::ostream& s, const matcher_base& m )
         {
-            c.serialize( s );
+            m.serialize( s );
             return s;
         }
+
     private:
         virtual void serialize( std::ostream& ) const = 0;
     };
