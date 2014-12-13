@@ -207,7 +207,7 @@ namespace detail
                             MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
                         return error_type::abort();
                     }
-                    if( ! it->functor() && ! it->actionn() )
+                    if( ! it->valid() )
                     {
                         error_type::fail( "missing action",
                             MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
@@ -219,7 +219,7 @@ namespace detail
                     if( it->functor() )
                         return it->functor()(
                             BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) );
-                    return it->actionn()();
+                    return it->trigger();
                 }
             error_type::fail( "unexpected call", MOCK_FUNCTION_CONTEXT );
             return error_type::abort();
