@@ -102,7 +102,7 @@ namespace detail
     BOOST_TEST_SINGLETON_INST( error_mutex )
 
 #ifdef BOOST_MSVC
-#   pragma warning( push, 0 )
+#   pragma warning( push )
 #   pragma warning( disable: 4702 )
 #endif
     template< typename Result, typename Error >
