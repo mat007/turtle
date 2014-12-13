@@ -123,7 +123,6 @@ The mock object library uses several boost libraries and will adjust some of the
 
 * Boost.Function with BOOST_FUNCTION_MAX_ARGS required at MOCK_MAX_ARGS or higher
 * Boost.FunctionTypes with BOOST_FT_MAX_ARITY required at MOCK_MAX_ARGS + 1 or higher
-* Boost.Phoenix (when increasing MOCK_MAX_ARGS over 9 otherwise Boost.Bind is used) with PHOENIX_LIMIT required at MOCK_MAX_ARGS or higher
 
 A compilation error will happen if one of those constants is already defined too low.
 

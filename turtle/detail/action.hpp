@@ -28,12 +28,17 @@ namespace detail
     {
     private:
         typedef boost::function< Signature > functor_type;
-        typedef lambda< Result, Signature > lambda_type;
+        typedef boost::function< Result() > action_type;
+        typedef lambda< Result > lambda_type;
 
     public:
         const functor_type& functor() const
         {
             return f_;
+        }
+        const action_type& actionn() const
+        {
+            return a_;
         }
 
         void calls( const functor_type& f )
@@ -46,28 +51,27 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            f_ = lambda_type::make_throw( e );
+            a_ = lambda_type::make_throw( e );
         }
 
     protected:
-        void set( const functor_type& f )
+        void set( const action_type& a )
         {
-            f_ = f;
+            a_ = a;
         }
         template< typename Y >
         void set( const boost::reference_wrapper< Y >& r )
         {
-            f_ = lambda_type::make_ref( r );
+            a_ = lambda_type::make_ref( r );
         }
 
         functor_type f_;
+        action_type a_;
     };
 
     template< typename Result, typename Signature >
     class action : public action_base< Result, Signature >
     {
-        typedef lambda< Result, Signature > lambda_type;
-
     public:
         template< typename Value >
         void returns( const Value& v )
@@ -138,7 +142,7 @@ namespace detail
     class action< Result*, Signature >
         : public action_base< Result*, Signature >
     {
-        typedef lambda< Result*, Signature > lambda_type;
+        typedef lambda< Result* > lambda_type;
 
     public:
         void returns( Result* r )
@@ -155,7 +159,7 @@ namespace detail
     template< typename Signature >
     class action< void, Signature > : public action_base< void, Signature >
     {
-        typedef lambda< void, Signature > lambda_type;
+        typedef lambda< void > lambda_type;
 
     public:
         action()

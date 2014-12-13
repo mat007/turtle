@@ -10,15 +10,7 @@
 #define MOCK_LAMBDA_HPP_INCLUDED
 
 #include "../config.hpp"
-#ifdef MOCK_USE_BOOST_PHOENIX
-#   ifdef BOOST_PHOENIX_USE_V2_OVER_V3
-#include <boost/spirit/home/phoenix/bind.hpp>
-#   else
-#include <boost/phoenix/bind.hpp>
-#   endif
-#else
 #include <boost/bind.hpp>
-#endif
 #include <boost/move/move.hpp>
 #include <boost/function.hpp>
 
@@ -26,40 +18,34 @@ namespace mock
 {
 namespace detail
 {
-#ifdef MOCK_USE_BOOST_PHOENIX
-    using boost::phoenix::bind;
-#else
-    using boost::bind;
-#endif
-
-    template< typename Result, typename Signature >
+    template< typename Result >
     struct lambda
     {
-        typedef boost::function< Signature > functor_type;
+        typedef boost::function< Result() > functor_type;
 
         template< typename T >
         static functor_type make_val( T t )
         {
-            return detail::bind( &do_val< T >, t );
+            return boost::bind( &do_val< T >, t );
         }
         template< typename T >
         static functor_type make_ref( const boost::reference_wrapper< T >& t )
         {
-            return detail::bind( &do_ref< T >, t.get_pointer() );
+            return boost::bind( &do_ref< T >, t.get_pointer() );
         }
         template< typename T >
         static functor_type make_move( T& t )
         {
-            return detail::bind( &do_move< T >, &t );
+            return boost::bind( &do_move< T >, &t );
         }
         template< typename T >
         static functor_type make_throw( T t )
         {
-            return detail::bind( &do_throw< T >, t );
+            return boost::bind( &do_throw< T >, t );
         }
         static functor_type make_nothing()
         {
-            return detail::bind( &do_nothing );
+            return boost::bind( &do_nothing );
         }
 
     private:
