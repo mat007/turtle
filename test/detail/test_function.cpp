@@ -437,6 +437,15 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_value, mock_e
         BOOST_CHECK( ! f() );
         CHECK_CALLS( 1 );
     }
+#ifdef BOOST_MSVC // this produces a warning with gcc
+    {
+        mock::detail::function< int* const() > f;
+        int i = 0;
+        f.expect().returns( &i );
+        BOOST_CHECK_EQUAL( &i, f() );
+        CHECK_CALLS( 1 );
+    }
+#endif
     {
         mock::detail::function< int() > f;
         f.expect().returns( 0 );
@@ -570,20 +579,36 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_unique_ptr_lval
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_unique_ptr_rvalue, mock_error_fixture )
 {
-    mock::detail::function< std::unique_ptr< int >() > f;
-    f.expect().moves( std::unique_ptr< int >( new int ) );
-    BOOST_CHECK_NO_THROW( f() );
-    CHECK_CALLS( 1 );
+    {
+        mock::detail::function< std::unique_ptr< int >() > f;
+        f.expect().moves( std::unique_ptr< int >( new int ) );
+        BOOST_CHECK_NO_THROW( f() );
+        CHECK_CALLS( 1 );
+    }
 }
 
 #endif // MOCK_SMART_PTR
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_shared_ptr_value, mock_error_fixture )
 {
-    mock::detail::function< boost::shared_ptr< base >() > f;
-    f.expect().returns( new derived );
-    BOOST_CHECK_NO_THROW( f() );
-    CHECK_CALLS( 1 );
+    {
+        mock::detail::function< boost::shared_ptr< base >() > f;
+        f.expect().returns( new derived );
+        BOOST_CHECK_NO_THROW( f() );
+        CHECK_CALLS( 1 );
+    }
+    {
+        mock::detail::function< const boost::shared_ptr< base >&() > f;
+        f.expect().returns( new derived );
+        BOOST_CHECK_NO_THROW( f() );
+        CHECK_CALLS( 1 );
+    }
+    {
+        mock::detail::function< boost::shared_ptr< base >&() > f;
+        f.expect().returns( new derived );
+        BOOST_CHECK_NO_THROW( f() );
+        CHECK_CALLS( 1 );
+    }
 }
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_by_reference, mock_error_fixture )

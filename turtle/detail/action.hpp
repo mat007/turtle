@@ -91,16 +91,7 @@ namespace detail
         template< typename Value >
         void returns( const Value& v )
         {
-            returns( boost::ref( v_.store( v ) ) );
-        }
-        template< typename Value >
-        void returns( Value* v )
-        {
-            typedef typename
-                boost::remove_reference<
-                    typename boost::remove_const< Result >::type
-                >::type result_type;
-            returns( result_type( v ) );
+            this->set( boost::ref( store( v ) ) );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
@@ -114,68 +105,58 @@ namespace detail
             this->set(
                 boost::bind(
                     &boost::move< BOOST_RV_REF( Value ) >,
-                    boost::ref( v_.store( boost::move( v ) ) ) ) );
+                    boost::ref( store( boost::move( v ) ) ) ) );
         }
 
     private:
-        struct value
+        struct value : boost::noncopyable
         {
-            struct holder : boost::noncopyable
-            {
-                virtual ~holder()
-                {}
-            };
-            template< typename T >
-            struct holder_imp : holder
-            {
-                holder_imp( BOOST_RV_REF( T ) t )
-                    : t_( boost::move( t ) )
-                {}
-                holder_imp( const T& t )
-                    : t_( t )
-                {}
-                T t_;
-            };
+            virtual ~value()
+            {}
+        };
+        template< typename T >
+        struct value_imp : value
+        {
+            typedef
+                typename boost::remove_const<
+                    typename boost::remove_reference<
+                        T
+                    >::type
+                >::type value_type;
 
-            template< typename T >
-            T& store( BOOST_RV_REF( T ) t )
-            {
-                h_.reset( new holder_imp< T >( boost::move( t ) ) );
-                return static_cast< holder_imp< T >& >( *h_ ).t_;
-            }
-            template< typename T >
-            T& store( const T& t )
-            {
-                h_.reset( new holder_imp< T >( t ) );
-                return static_cast< holder_imp< T >& >( *h_ ).t_;
-            }
-            boost::shared_ptr< holder > h_;
+            value_imp( BOOST_RV_REF( value_type ) t )
+                : t_( boost::move( t ) )
+            {}
+            value_imp( const T& t )
+                : t_( t )
+            {}
+            template< typename Y >
+            value_imp( Y* y )
+                : t_( y )
+            {}
+            value_type t_;
         };
 
-        value v_;
-    };
-
-    template< typename Result, typename Signature >
-    class action< Result*, Signature >
-        : public action_base< Result*, Signature >
-    {
-    public:
-        void returns( Result* r )
-        {
-            this->set( boost::bind( &do_val< Result* >, r ) );
-        }
-        template< typename Y >
-        void returns( const boost::reference_wrapper< Y >& r )
-        {
-            this->set( r );
-        }
-
-    private:
         template< typename T >
-        static T do_val( T t )
+        T& store( BOOST_RV_REF( T ) t )
         {
-            return t;
+            v_.reset( new value_imp< T >( boost::move( t ) ) );
+            return static_cast< value_imp< T >& >( *v_ ).t_;
         }
+        template< typename T >
+        T& store( const T& t )
+        {
+            v_.reset( new value_imp< T >( t ) );
+            return static_cast< value_imp< T >& >( *v_ ).t_;
+        }
+        template< typename T >
+        Result& store( T* t )
+        {
+            v_.reset( new value_imp< Result >( t ) );
+            return static_cast< value_imp< Result >& >( *v_ ).t_;
+        }
+
+        boost::shared_ptr< value > v_;
     };
 
     template< typename Signature >
@@ -210,13 +191,13 @@ namespace detail
         void returns( Y* r )
         {
             v_.reset( r );
-            returns( boost::ref( v_ ) );
+            this->set( boost::ref( v_ ) );
         }
         template< typename Y >
         void returns( std::auto_ptr< Y > r )
         {
             v_ = r;
-            returns( boost::ref( v_ ) );
+            this->set( boost::ref( v_ ) );
         }
         template< typename Y >
         void returns( const boost::reference_wrapper< Y >& r )
