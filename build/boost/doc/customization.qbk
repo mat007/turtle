@@ -104,7 +104,7 @@ The use of boost::unwrap_ref provides support for passing arguments as reference
 
 See [link turtle.reference.expectation.constraints constraints] for an explanation of how the library detects whether an argument is a functor or a value.
 
-For more information about the serialization operator and the use of mock::format, refer to [link turtle.customization.logging loggin].
+For more information about the serialization operator and the use of mock::format, refer to [link turtle.customization.logging logging].
 
 [note The [link turtle.reference.constraint constraint helper macro] takes care of everything for simple cases.]
 
