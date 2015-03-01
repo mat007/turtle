@@ -96,7 +96,7 @@ class base
 
 struct name : base, mock::object // equivalent to using MOCK_BASE_CLASS
 {
-    typedef base base_type;      // this is required for MOCK_METHOD to work when not using MOCK_BASE_CLASS
+    typedef base base_type;      // this is required for the shortest form of MOCK_METHOD to work when not using MOCK_BASE_CLASS
 };
 //]
 }

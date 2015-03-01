@@ -42,6 +42,8 @@ Synopsis :
  MOCK_CLASS( name )            // defines a class
  MOCK_BASE_CLASS( name, base ) // defines a class deriving from a base class
 
+The preferred form for defining a mock class is with using MOCK_CLASS and MOCK_BASE_CLASS, however using a regular struct or class is also perfectly fine.
+
 Example :
 
 [class_example_1]
@@ -57,8 +59,6 @@ Example :
 Example :
 
 [class_example_4]
-
-The preferred form for defining a mock class is with using MOCK_CLASS and MOCK_BASE_CLASS, however equivalent alternatives exist without the macros.
 
 Example :
 
