@@ -142,10 +142,13 @@ namespace detail
             }
 #endif
 
+#define MOCK_FUNCTION_IN_ADD(z, n, d) \
+    this->e_->add( s##n );
+
 #define MOCK_FUNCTION_IN(z, n, d) \
     wrapper in( BOOST_PP_ENUM_PARAMS(n, sequence& s) ) \
     { \
-        this->e_->in( BOOST_PP_ENUM_PARAMS(n, s) ); \
+        BOOST_PP_REPEAT(n, MOCK_FUNCTION_IN_ADD, _) \
         return *this; \
     }
 
@@ -153,6 +156,7 @@ namespace detail
                 MOCK_FUNCTION_IN, _)
 
 #undef MOCK_FUNCTION_IN
+#undef MOCK_FUNCTION_IN_ADD
 
             template< typename TT >
             void calls( TT t )

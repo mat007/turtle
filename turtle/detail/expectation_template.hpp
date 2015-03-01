@@ -27,16 +27,6 @@
 #define MOCK_EXPECTATION_SERIALIZE(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) *e.c##n##_
 
-#define MOCK_EXPECTATION_IN_ADD(z, n, d ) \
-    s##n.impl_->add( this ); sequences_.push_back( s##n.impl_ );
-
-#define MOCK_EXPECTATION_IN(z, n, d) \
-    expectation& in( BOOST_PP_ENUM_PARAMS(n, sequence& s) ) \
-    { \
-        BOOST_PP_REPEAT(n, MOCK_EXPECTATION_IN_ADD, _ ) \
-        return *this; \
-    }
-
 namespace mock
 {
 namespace detail
@@ -91,8 +81,11 @@ namespace detail
         }
 #endif
 
-        BOOST_PP_REPEAT(MOCK_MAX_SEQUENCES,
-            MOCK_EXPECTATION_IN, _)
+        void add( sequence& s )
+        {
+            s.impl_->add( this );
+            sequences_.push_back( s.impl_ );
+        }
 
         bool verify() const
         {
@@ -160,12 +153,9 @@ namespace detail
 }
 } // mock
 
-#undef MOCK_EXPECTATION_TYPEDEF
 #undef MOCK_EXPECTATION_INITIALIZE
 #undef MOCK_EXPECTATION_WITH
 #undef MOCK_EXPECTATION_MEMBER
 #undef MOCK_EXPECTATION_ARGS
 #undef MOCK_EXPECTATION_IS_VALID
 #undef MOCK_EXPECTATION_SERIALIZE
-#undef MOCK_EXPECTATION_IN
-#undef MOCK_EXPECTATION_IN_ADD
