@@ -6,23 +6,20 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define MOCK_EXPECTATION_TYPEDEF(z, n, d) \
-    typedef T##n arg##n##_type;
-
 #define MOCK_EXPECTATION_INITIALIZE(z, n, d) \
     BOOST_PP_COMMA_IF(n) c##n##_( \
         boost::make_shared< \
-            matcher< arg##n##_type, constraint< any > > >( mock::any ) )
+            matcher< T##n, constraint< any > > >( mock::any ) )
 
 #define MOCK_EXPECTATION_WITH(z, n, d) \
     c##n##_ = boost::make_shared< \
-        matcher< arg##n##_type, Constraint_##n > >( c##n );
+        matcher< T##n, Constraint_##n > >( c##n );
 
 #define MOCK_EXPECTATION_MEMBER(z, n, d) \
-    boost::shared_ptr< matcher_base< arg##n##_type > > c##n##_;
+    boost::shared_ptr< matcher_base< T##n > > c##n##_;
 
 #define MOCK_EXPECTATION_ARGS(z, n, d) \
-    BOOST_PP_COMMA_IF(n) arg##n##_type a##n
+    BOOST_PP_COMMA_IF(n) T##n a##n
 
 #define MOCK_EXPECTATION_IS_VALID(z, n, d) \
     && (*c##n##_)( a##n )
@@ -51,9 +48,6 @@ namespace detail
     class expectation< R (BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS,T)) >
         : public action< R, R (BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS,T)) >
     {
-        BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-            MOCK_EXPECTATION_TYPEDEF, _)
-
     public:
         expectation()
             : BOOST_PP_REPEAT(MOCK_NUM_ARGS,
