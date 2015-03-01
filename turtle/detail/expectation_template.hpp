@@ -79,35 +79,9 @@ namespace detail
                 (*it)->remove( this );
         }
 
-        expectation& once()
+        void invoke( const boost::shared_ptr< invocation >& i )
         {
-            invocation_ = boost::make_shared< detail::once >();
-            return *this;
-        }
-        expectation& never()
-        {
-            invocation_ = boost::make_shared< detail::never >();
-            return *this;
-        }
-        expectation& exactly( std::size_t count )
-        {
-            invocation_ = boost::make_shared< detail::exactly >( count );
-            return *this;
-        }
-        expectation& at_least( std::size_t min )
-        {
-            invocation_ = boost::make_shared< detail::at_least >( min );
-            return *this;
-        }
-        expectation& at_most( std::size_t max )
-        {
-            invocation_ = boost::make_shared< detail::at_most >( max );
-            return *this;
-        }
-        expectation& between( std::size_t min, std::size_t max )
-        {
-            invocation_ = boost::make_shared< detail::between >( min, max );
-            return *this;
+            invocation_ = i;
         }
 
 #ifndef MOCK_NUM_ARGS_0

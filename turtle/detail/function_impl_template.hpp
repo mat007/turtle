@@ -100,32 +100,32 @@ namespace detail
 
             wrapper once()
             {
-                this->e_->once();
+                this->e_->invoke( boost::make_shared< detail::once >() );
                 return *this;
             }
             wrapper never()
             {
-                this->e_->never();
+                this->e_->invoke( boost::make_shared< detail::never >() );
                 return *this;
             }
             wrapper exactly( std::size_t count )
             {
-                this->e_->exactly( count );
+                this->e_->invoke( boost::make_shared< detail::exactly >( count ) );
                 return *this;
             }
             wrapper at_least( std::size_t min )
             {
-                this->e_->at_least( min );
+                this->e_->invoke( boost::make_shared< detail::at_least >( min ) );
                 return *this;
             }
             wrapper at_most( std::size_t max )
             {
-                this->e_->at_most( max );
+                this->e_->invoke( boost::make_shared< detail::at_most >( max ) );
                 return *this;
             }
             wrapper between( std::size_t min, std::size_t max )
             {
-                this->e_->between( min, max );
+                this->e_->invoke( boost::make_shared< detail::between >( min, max ) );
                 return *this;
             }
 
