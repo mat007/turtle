@@ -59,7 +59,7 @@ namespace detail
             : BOOST_PP_REPEAT(MOCK_NUM_ARGS,
                 MOCK_EXPECTATION_INITIALIZE, _)
             BOOST_PP_COMMA_IF(MOCK_NUM_ARGS)
-                i_( boost::make_shared< unlimited >() )
+                invocation_( boost::make_shared< unlimited >() )
             , file_( "unknown location" )
             , line_( 0 )
         {}
@@ -67,7 +67,7 @@ namespace detail
             : BOOST_PP_REPEAT(MOCK_NUM_ARGS,
                 MOCK_EXPECTATION_INITIALIZE, _)
             BOOST_PP_COMMA_IF(MOCK_NUM_ARGS)
-                i_( boost::make_shared< unlimited >() )
+                invocation_( boost::make_shared< unlimited >() )
             , file_( file )
             , line_( line )
         {}
@@ -81,32 +81,32 @@ namespace detail
 
         expectation& once()
         {
-            i_ = boost::make_shared< detail::once >();
+            invocation_ = boost::make_shared< detail::once >();
             return *this;
         }
         expectation& never()
         {
-            i_ = boost::make_shared< detail::never >();
+            invocation_ = boost::make_shared< detail::never >();
             return *this;
         }
         expectation& exactly( std::size_t count )
         {
-            i_ = boost::make_shared< detail::exactly >( count );
+            invocation_ = boost::make_shared< detail::exactly >( count );
             return *this;
         }
         expectation& at_least( std::size_t min )
         {
-            i_ = boost::make_shared< detail::at_least >( min );
+            invocation_ = boost::make_shared< detail::at_least >( min );
             return *this;
         }
         expectation& at_most( std::size_t max )
         {
-            i_ = boost::make_shared< detail::at_most >( max );
+            invocation_ = boost::make_shared< detail::at_most >( max );
             return *this;
         }
         expectation& between( std::size_t min, std::size_t max )
         {
-            i_ = boost::make_shared< detail::between >( min, max );
+            invocation_ = boost::make_shared< detail::between >( min, max );
             return *this;
         }
 
@@ -128,14 +128,14 @@ namespace detail
 
         bool verify() const
         {
-            return i_->verify();
+            return invocation_->verify();
         }
 
         bool is_valid(
             BOOST_PP_REPEAT(MOCK_NUM_ARGS,
                 MOCK_EXPECTATION_ARGS, _) ) const
         {
-            return ! i_->exhausted()
+            return ! invocation_->exhausted()
                 BOOST_PP_REPEAT(MOCK_NUM_ARGS,
                     MOCK_EXPECTATION_IS_VALID, _);
         }
@@ -146,7 +146,7 @@ namespace detail
                 it != sequences_.end(); ++it )
                 if( ! (*it)->is_valid( this ) )
                     return false;
-            bool result = i_->invoke();
+            bool result = invocation_->invoke();
             for( sequences_cit it = sequences_.begin();
                 it != sequences_.end(); ++it )
                 (*it)->invalidate( this );
@@ -165,8 +165,8 @@ namespace detail
         friend std::ostream& operator<<(
             std::ostream& s, const expectation& e )
         {
-            return s << (e.i_->exhausted() ? 'v' : '.')
-                << ' ' << *e.i_
+            return s << (e.invocation_->exhausted() ? 'v' : '.')
+                << ' ' << *e.invocation_
 #ifndef MOCK_NUM_ARGS_0
                 << ".with( "
                 << BOOST_PP_REPEAT(MOCK_NUM_ARGS,
@@ -184,7 +184,7 @@ namespace detail
 
         BOOST_PP_REPEAT(
             MOCK_NUM_ARGS, MOCK_EXPECTATION_MEMBER, _)
-        boost::shared_ptr< invocation > i_;
+        boost::shared_ptr< invocation > invocation_;
         sequences_type sequences_;
         const char* file_;
         int line_;
