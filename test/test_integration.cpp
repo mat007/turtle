@@ -651,3 +651,42 @@ BOOST_FIXTURE_TEST_CASE( mock_class_is_thread_safe, mock_error_fixture )
 }
 
 #endif // MOCK_THREAD_SAFE
+
+namespace
+{
+    MOCK_CLASS( my_multi_mock )
+    {
+        MOCK_METHOD_EXT( m1, 1, void( int ), m1 );
+        MOCK_METHOD_EXT( m2, 2, void( int, int ), m2 );
+    };
+}
+
+BOOST_FIXTURE_TEST_CASE( mock_method_accepts_multi_constraint, mock_error_fixture )
+{
+    my_multi_mock m;
+    MOCK_FUNCTOR( f, bool( int, int ) );
+    MOCK_EXPECT( m.m2 ).once().with( f );
+    MOCK_EXPECT( f ).once().with( 1, 2 ).returns( true );
+    m.m2( 1, 2 );
+    CHECK_CALLS( 2 );
+}
+
+namespace
+{
+    struct my_polymorphic_constraint
+    {
+        template< typename T1, typename T2 >
+        bool operator()( T1, T2 ) const
+        {
+            return true;
+        }
+    };
+}
+
+BOOST_FIXTURE_TEST_CASE( mock_method_accepts_polymorphic_multi_constraint, mock_error_fixture )
+{
+    my_multi_mock m;
+    MOCK_EXPECT( m.m2 ).once().with( my_polymorphic_constraint() );
+    m.m2( 1, 2 );
+    CHECK_CALLS( 1 );
+}

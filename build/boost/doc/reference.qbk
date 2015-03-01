@@ -361,49 +361,54 @@ Example :
 
 [section Constraints]
 
-A constraint validates the actual parameter value of a call to a mock object.
+Constraints validate the actual parameter values of a call to a mock object.
 
 Synopsis :
 
- MOCK_EXPECT( identifier ).with( constraint_1, constraint_2, ... );
+ MOCK_EXPECT( identifier ).with( constraint );                      // one constraint for all parameters
+ MOCK_EXPECT( identifier ).with( constraint_1, constraint_2, ... ); // one constraint for each parameter
 
-The number of constraints must match the number of mocked parameters.
+In the following table 'expected' denotes a user supplied data whereas 'actual' stands for the one or several parameter values received in a call to a mock function.
 
 Constraints :
 
 [table
- [[Constraint]                         [Effect]                     [Description]]
- [[mock::any]                          [true]                       [does not perform any verification]]
- [[['expected]]                        [['expected]( ['actual] )
+ [[Constraint]                                        [Effect]                     [Description]]
+ [[mock::any]                                         [true]                       [does not perform any verification]]
+ [[['expected]]                                       [['expected]( ['actual] )
 
-                                        ['actual] == ['expected]]   [calls ['expected] as a functor returning a ['bool], throws std::invalid_argument if ! ['expected]
+                                                       ['expected]( ['actual_1], ['actual_2], ... )
 
-                                                                     compares ['actual] to ['expected] using operator ==]]
- [[mock::equal( ['expected] )]         [['actual] == ['expected]]   [compares ['actual] to ['expected] using operator ==]]
- [[mock::less( ['expected] )]          [['actual] < ['expected]]    [compares ['actual] to ['expected] using operator <]]
- [[mock::greater( ['expected] )]       [['actual] > ['expected]]    [compares ['actual] to ['expected] using operator >]]
- [[mock::less_equal( ['expected] )]    [['actual] <= ['expected]]   [compares ['actual] to ['expected] using operator <=]]
- [[mock::greater_equal( ['expected] )] [['actual] >= ['expected]]   [compares ['actual] to ['expected] using operator >=]]
+                                                       ['actual] == ['expected]]   [calls ['expected] as a functor returning a ['bool], throws std::invalid_argument if ! ['expected]
+
+                                                                                    calls ['expected] as a functor returning a ['bool], throws std::invalid_argument if ! ['expected]
+
+                                                                                    compares ['actual] to ['expected] using operator ==]]
+ [[mock::equal( ['expected] )]                        [['actual] == ['expected]]   [compares ['actual] to ['expected] using operator ==]]
+ [[mock::less( ['expected] )]                         [['actual] < ['expected]]    [compares ['actual] to ['expected] using operator <]]
+ [[mock::greater( ['expected] )]                      [['actual] > ['expected]]    [compares ['actual] to ['expected] using operator >]]
+ [[mock::less_equal( ['expected] )]                   [['actual] <= ['expected]]   [compares ['actual] to ['expected] using operator <=]]
+ [[mock::greater_equal( ['expected] )]                [['actual] >= ['expected]]   [compares ['actual] to ['expected] using operator >=]]
  [[mock::near( ['expected], ['tolerance] )]           [std::abs( ['actual] - ['expected] ) < ['tolerance]]                                        [checks whether ['actual] is near ['expected] within ['tolerance]]]
  [[mock::close( ['expected], ['tolerance] )]          [boost::test_tools::check_is_close( ['actual], ['expected], boost::test_tools::percent_tolerance( ['arg] ) )]   [checks whether ['actual] is close to ['expected], see [@http://www.boost.org/libs/test/doc/html/utf/testing-tools/floating_point_comparison.html Floating-point comparison algorithms] ]]
  [[mock::close_fraction( ['expected], ['tolerance] )] [boost::test_tools::check_is_close( ['actual], ['expected], boost::test_tools::fraction_tolerance( ['arg] ) )]  [checks whether ['actual] is close to ['expected], see [@http://www.boost.org/libs/test/doc/html/utf/testing-tools/floating_point_comparison.html Floating-point comparison algorithms] ]]
  [[mock::small( ['tolerance] )]                       [boost::test_tools::check_is_small( ['actual], ['expected] ) )] [checks whether ['actual] is small within ['tolerance], see [@http://www.boost.org/libs/test/doc/html/utf/testing-tools/floating_point_comparison.html Floating-point comparison algorithms] ]]
- [[mock::call( ['expected] )]          [['expected]( ['actual] )]   [calls ['expected] as a functor returning a ['bool] and accepting ['actual] as parameter]]
- [[mock::same( ['expected] )]          [&['actual] == &['expected]] [compares ['actual] to ['expected] by comparing their pointers]]
- [[mock::assign( ['expected] )]        [['actual] = ['expected], true
+ [[mock::call( ['expected] )]                         [['expected]( ['actual] )]   [calls ['expected] as a functor returning a ['bool] and accepting ['actual] as parameter]]
+ [[mock::same( ['expected] )]                         [&['actual] == &['expected]] [compares ['actual] to ['expected] by comparing their pointers]]
+ [[mock::assign( ['expected] )]                       [['actual] = ['expected], true
 
-                                        *['actual] = ['expected], true] [assigns ['expected] to ['actual] using operator =
+                                                       *['actual] = ['expected], true] [assigns ['expected] to ['actual] using operator =
 
-                                                                         assigns ['expected] to ['actual] content using operator =]]
- [[mock::retrieve( ['expected] )]      [['expected] = ['actual], true
+                                                                                        assigns ['expected] to ['actual] content using operator =]]
+ [[mock::retrieve( ['expected] )]                     [['expected] = ['actual], true
 
-                                        ['expected] = &['actual], true] [retrieves ['actual] into ['expected] using operator =
+                                                       ['expected] = &['actual], true] [retrieves ['actual] into ['expected] using operator =
 
-                                                                         retrieves ['actual] address into ['expected] using operator =]]
- [[mock::contain( ['expected] )]       [['actual].find( ['expected] ) != std::string::npos] [checks whether ['expected] is contained in the std::string ['actual]]]
- [[mock::affirm]                       [['actual]]                                          [uses ['actual] as a boolean]]
- [[mock::negate]                       [! ['actual]]                                         [negates ['actual] using operator !]]
- [[mock::evaluate]                     [['actual]()]                                        [evaluates ['actual] as a functor returning a bool and taking no argument]]
+                                                                                        retrieves ['actual] address into ['expected] using operator =]]
+ [[mock::contain( ['expected] )]                      [['actual].find( ['expected] ) != std::string::npos] [checks whether ['expected] is contained in the std::string ['actual]]]
+ [[mock::affirm]                                      [['actual]]                                          [uses ['actual] as a boolean]]
+ [[mock::negate]                                      [! ['actual]]                                         [negates ['actual] using operator !]]
+ [[mock::evaluate]                                    [['actual]()]                                        [evaluates ['actual] as a functor returning a bool and taking no argument]]
 ]
 
 [important When passing ['expected] directly as a shortcut mock::call is implied for a function, a function pointer, an instance of a type with a result_type member typedef (support for standard library, [@http://www.boost.org/libs/bind/bind.html Boost.Bind], [@http://www.boost.org/libs/function Boost.Function] functors), an instance of a type with a sig member (support for [@http://www.boost.org/libs/lambda Boost.Lambda] functors), an instance of a type with a result member (support for [@http://www.boost.org/libs/phoenix Boost.Phoenix] functors); mock::equal is implied for anything else.]

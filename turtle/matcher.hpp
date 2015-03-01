@@ -13,7 +13,6 @@
 #include "log.hpp"
 #include "constraint.hpp"
 #include "detail/is_functor.hpp"
-#include "detail/matcher_base.hpp"
 #include <boost/utility/enable_if.hpp>
 #include <boost/ref.hpp>
 #include <cstring>
@@ -21,20 +20,20 @@
 namespace mock
 {
     template< typename Actual, typename Expected, typename Enable = void >
-    class matcher : public detail::matcher_base< Actual >
+    class matcher
     {
     public:
         explicit matcher( Expected expected )
             : expected_( expected )
         {}
-        virtual bool operator()( Actual actual )
+        bool operator()( Actual actual )
         {
             return actual == boost::unwrap_ref( expected_ );
         }
-    private:
-        virtual void serialize( std::ostream& s ) const
+        friend std::ostream& operator<<(
+            std::ostream& s, const matcher& m )
         {
-            s << mock::format( expected_ );
+            return s << mock::format( m.expected_ );
         }
     private:
         Expected expected_;
@@ -42,20 +41,19 @@ namespace mock
 
     template<>
     class matcher< const char*, const char* >
-        : public detail::matcher_base< const char* >
     {
     public:
         explicit matcher( const char* expected )
             : expected_( expected )
         {}
-        virtual bool operator()( const char* actual )
+        bool operator()( const char* actual )
         {
             return std::strcmp( actual, expected_ ) == 0;
         }
-    private:
-        virtual void serialize( std::ostream& s ) const
+        friend std::ostream& operator<<(
+            std::ostream& s, const matcher& m )
         {
-            s << mock::format( expected_ );
+            return s << mock::format( m.expected_ );
         }
     private:
         const char* expected_;
@@ -63,20 +61,19 @@ namespace mock
 
     template< typename Actual, typename Constraint >
     class matcher< Actual, mock::constraint< Constraint > >
-        : public detail::matcher_base< Actual >
     {
     public:
         explicit matcher( const constraint< Constraint >& c )
             : c_( c.c_ )
         {}
-        virtual bool operator()( Actual actual )
+        bool operator()( Actual actual )
         {
             return c_( actual );
         }
-    private:
-        virtual void serialize( std::ostream& s ) const
+        friend std::ostream& operator<<(
+            std::ostream& s, const matcher& m )
         {
-            s << mock::format( c_ );
+            return s << mock::format( m.c_ );
         }
     private:
         Constraint c_;
@@ -87,20 +84,20 @@ namespace mock
         typename boost::enable_if<
             detail::is_functor< Functor, Actual >
         >::type
-    > : public detail::matcher_base< Actual >
+    >
     {
     public:
         explicit matcher( const Functor& f )
             : c_( f )
         {}
-        virtual bool operator()( Actual actual )
+        bool operator()( Actual actual )
         {
             return c_( actual );
         }
-    private:
-        virtual void serialize( std::ostream& s ) const
+        friend std::ostream& operator<<(
+            std::ostream& s, const matcher& m )
         {
-            s << mock::format( c_ );
+            return s << mock::format( m.c_ );
         }
     private:
         Functor c_;

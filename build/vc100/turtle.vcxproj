@@ -37,7 +37,7 @@
     <ClInclude Include="..\..\turtle\detail\group.hpp" />
     <ClInclude Include="..\..\turtle\detail\invocation.hpp" />
     <ClInclude Include="..\..\turtle\detail\is_functor.hpp" />
-    <ClInclude Include="..\..\turtle\detail\matcher_base.hpp" />
+    <ClInclude Include="..\..\turtle\detail\matcher_base_template.hpp" />
     <ClInclude Include="..\..\turtle\detail\mutex.hpp" />
     <ClInclude Include="..\..\turtle\detail\object_impl.hpp" />
     <ClInclude Include="..\..\turtle\detail\parameter.hpp" />
