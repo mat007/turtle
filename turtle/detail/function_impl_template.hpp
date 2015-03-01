@@ -38,9 +38,6 @@ namespace detail
     {
     public:
         typedef safe_error< R, MOCK_ERROR_POLICY< R > > error_type;
-        typedef expectation<
-                    R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-                > expectation_type;
 
     public:
         function_impl()
@@ -90,11 +87,14 @@ namespace detail
         }
 
     private:
-        template< typename T >
-        struct wrapper : wrapper_base< T, expectation_type >
+        typedef expectation<
+            R( BOOST_PP_ENUM_PARAMS( MOCK_NUM_ARGS, T ) )
+        > expectation_type;
+
+        struct wrapper : wrapper_base< R, expectation_type >
         {
             wrapper( const boost::shared_ptr< mutex >& m, expectation_type& e )
-                : wrapper_base< T, expectation_type >( e )
+                : wrapper_base< R, expectation_type >( e )
                 , lock_( m )
             {}
 
@@ -178,21 +178,21 @@ namespace detail
         };
 
     public:
-        typedef wrapper< R > wrapper_type;
+        typedef wrapper wrapper_type;
 
-        wrapper_type expect( const char* file, int line )
+        wrapper expect( const char* file, int line )
         {
             lock _( mutex_ );
             expectations_.push_back( expectation_type( file, line ) );
             valid_ = true;
-            return wrapper_type( mutex_, expectations_.back() );
+            return wrapper( mutex_, expectations_.back() );
         }
-        wrapper_type expect()
+        wrapper expect()
         {
             lock _( mutex_ );
             expectations_.push_back( expectation_type() );
             valid_ = true;
-            return wrapper_type( mutex_, expectations_.back() );
+            return wrapper( mutex_, expectations_.back() );
         }
 
         R operator()(
