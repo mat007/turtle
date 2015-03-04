@@ -1,0 +1,50 @@
+# Boost.Mock
+#
+# Copyright Mathieu Champlon 2012
+#
+# Distributed under the Boost Software License version 1.0. (See
+# accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+import testing ;
+
+project
+  : requirements
+   <define>BOOST_AUTO_TEST_MAIN
+   <define>BOOST_ALL_NO_LIB
+   <include>../include
+;
+
+path-constant parent : .. ;
+
+alias mock_inspect :
+  [ run /boost/tools/inspect//inspect/<variant>release
+       : $(parent) -text -brief : : : inspect
+  ]
+;
+
+rule run-test ( name )
+{
+  run $(name) undefined.cpp /boost//unit_test_framework : : : : $(name)_ ;
+  run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_MAX_ARGS=21 : $(name)_max_args ;
+  run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
+  run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_NO_DECLTYPE : $(name)_no_decltype ;
+  run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_NO_VARIADIC_MACROS : $(name)_no_variadic_macros ;
+  run $(name) undefined.cpp /boost//unit_test_framework /boost//thread : : : <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE : $(name)_thread_safe ;
+}
+
+rule run-tests
+{
+  for name in [ glob test_*.cpp detail/test_*.cpp ] { run-test $(name) ; }
+}
+
+alias mock_tests : [ run-tests ] ;
+
+rule run-failures
+{
+  for name in [ glob fail_*.cpp ] { compile-fail $(name) ; }
+}
+
+alias mock_failures : [ run-failures ] ;
+
+# How to time bench_*.cpp compilation ?

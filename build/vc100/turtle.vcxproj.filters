@@ -10,121 +10,121 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\turtle\config.hpp">
+    <ClInclude Include="..\..\include\turtle\config.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\constraint.hpp">
+    <ClInclude Include="..\..\include\turtle\constraint.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\constraints.hpp">
+    <ClInclude Include="..\..\include\turtle\constraints.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\error.hpp">
+    <ClInclude Include="..\..\include\turtle\error.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\log.hpp">
+    <ClInclude Include="..\..\include\turtle\exception.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\mock.hpp">
+    <ClInclude Include="..\..\include\turtle\format.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\object.hpp">
+    <ClInclude Include="..\..\include\turtle\log.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\sequence.hpp">
+    <ClInclude Include="..\..\include\turtle\matcher.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\signature.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\child.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\group.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\context.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\parent.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\root.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\type_name.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\verifiable.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\action.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\expectation_template.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\function.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\function_iterate.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\function_template.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\invocation.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\object_impl.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\function_impl_template.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\is_functor.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\stream.hpp">
+    <ClInclude Include="..\..\include\turtle\mock.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\format.hpp">
+    <ClInclude Include="..\..\include\turtle\object.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\verify.hpp">
+    <ClInclude Include="..\..\include\turtle\reset.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\reset.hpp">
+    <ClInclude Include="..\..\include\turtle\sequence.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\functor.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\parameter.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\sequence_impl.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\formatter.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\cleanup.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\turtle\matcher.hpp">
+    <ClInclude Include="..\..\include\turtle\stream.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\exception.hpp">
+    <ClInclude Include="..\..\include\turtle\verify.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\addressof.hpp">
+    <ClInclude Include="..\..\include\turtle\detail\function.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\mutex.hpp">
+    <ClInclude Include="..\..\include\turtle\detail\function_impl_template.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\turtle\detail\matcher_base_template.hpp">
+    <ClInclude Include="..\..\include\turtle\detail\function_iterate.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\function_template.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\functor.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\group.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\invocation.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\is_functor.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\matcher_base_template.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\mutex.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\object_impl.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\parameter.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\parent.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\root.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\sequence_impl.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\signature.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\type_name.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\verifiable.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\action.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\addressof.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\child.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\cleanup.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\context.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\expectation_template.hpp">
+      <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\detail\formatter.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
   </ItemGroup>

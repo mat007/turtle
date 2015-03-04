@@ -1,0 +1,14 @@
+# Copyright Rene Rivera 2007.
+#
+# Distributed under the Boost Software License, Version 1.0.
+#    (See accompanying file LICENSE_1_0.txt or copy at
+#          http://www.boost.org/LICENSE_1_0.txt)
+
+import modules ;
+
+local boost = [ modules.peek : BOOST ] ;
+
+project mock : requirements <include>$(boost) <include>. ;
+
+# This seems to prevent some Boost.Build errors that otherwise occur :-(
+use-project /boost : $(boost) ;

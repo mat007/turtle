@@ -1,135 +1,26 @@
+<!--
+ Copyright Mathieu Champlon 2008.
+
+ Distributed under the Boost Software License, Version 1.0.
+    (See accompanying file LICENSE_1_0.txt or copy at
+          http://www.boost.org/LICENSE_1_0.txt)
+-->
 <project name="turtle" default="all">
 
   <property environment="env"/>
-  <import file="${env.PONEY_HOME}/poney.xml"/>
-
-  <property name="boost.root" value="${env.BOOST_ROOT}"/>
-  <property name="boost.dir" value="${out.dir}/../boost"/>
+  <fail unless="env.BOOST_ROOT" message="missing BOOST_ROOT environment variable"/>
+  <property name="boost.dir" value="${env.BOOST_ROOT}"/>
+  <property name="include.dir" value="${env.BOOST_ROOT}"/>
+  <property name="src.dir" value="${root.dir}"/>
+  <property name="doc.dir" value="${src.dir}/doc"/>
+  <property name="tests.dir" value="${src.dir}/test"/>
+  <property name="libraries.dir" value="${src.dir}/include"/>
   <property name="boostbook.dir" value="${out.dir}/boostbook"/>
-  <property name="boost-mock.dir" value="${boost.dir}/libs/mock"/>
+  <property name="boost-mock.dir" value="${out.dir}/boost-mock"/>
+  <property name="version" value="unreleased"/>
 
-  <target name="clean" description="clean intermediate build artifacts">
-    <delete dir="${out.dir}"/>
-  </target>
-
-  <target name="configure" description="update external libraries">
-    <update name="boost"/>
-  </target>
-
-  <presetdef name="build-turtle-test">
-    <build-test input="test" depends="boost" mode="all" excludes="bench_*,fail_*">
-      <compilerarg value="-Wno-uninitialized" location="mid" if="is-cygwin"/>
-      <compilerarg value="-Wno-strict-aliasing" location="mid" if="is-gcc"/>
-      <compilerarg value="/wd4505" if="is-msvc"/>
-    </build-test>
-  </presetdef>
-
-  <target name="test" description="run unit tests">
-    <delete dir="${tests.dir}/test/bin"/>
-    <build-turtle-test name="turtle"/>
-    <build-turtle-test name="turtle_max_args">
-      <defineset>
-        <define name="MOCK_MAX_ARGS" value="21"/>
-      </defineset>
-    </build-turtle-test>
-    <build-turtle-test name="turtle_use_conversions">
-      <defineset define="MOCK_USE_CONVERSIONS"/>
-    </build-turtle-test>
-    <build-turtle-test name="turtle_no_decltype">
-      <defineset define="MOCK_NO_DECLTYPE"/>
-    </build-turtle-test>
-    <build-turtle-test name="turtle_no_variadic_macros">
-      <defineset define="MOCK_NO_VARIADIC_MACROS"/>
-    </build-turtle-test>
-    <build-turtle-test name="turtle_thread_safe">
-      <defineset define="MOCK_THREAD_SAFE"/>
-    </build-turtle-test>
-  </target>
-
-  <target name="analyse" description="run errors analyser">
-    <quiet>
-      <mkdir dir="${reports.dir}"/>
-      <delete file="${reports.dir}/errors-${platform}.log"/>
-      <touch file="${reports.dir}/errors-${platform}.log"/>
-    </quiet>
-    <for param="file">
-      <fileset dir="${tests.dir}/test" includes="fail*.cpp"/>
-      <sequential>
-        <record name="${reports.dir}/errors-${platform}.log" action="start" append="true"/>
-        <ant target="-analyse">
-          <property name="file" value="@{file}"/>
-        </ant>
-        <record name="${reports.dir}/errors-${platform}.log" action="stop"/>
-      </sequential>
-    </for>
-  </target>
-
-  <target name="-analyse">
-    <trycatch>
-      <try>
-        <echo>${file}</echo>
-        <compile name="errors" input="${tests.dir}/errors_test" outdir="${out.dir}/errors_test" excludes="**">
-          <includepath path="${libraries.dir}"/>
-          <fileset file="${file}"/>
-        </compile>
-      </try>
-    </trycatch>
-  </target>
-
-  <target name="bench" description="run compilation benchmark">
-    <mkdir dir="${reports.dir}"/>
-    <quiet>
-      <delete file="${reports.dir}/benchmark-${platform}.log"/>
-      <touch file="${reports.dir}/benchmark-${platform}.log"/>
-      <delete dir="${out.dir}/bench_test"/>
-      <delete dir="${tests.dir}/test/bin"/>
-    </quiet>
-    <for param="file">
-      <fileset dir="${tests.dir}/test" includes="bench_*.cpp"/>
-      <sequential>
-        <record name="${reports.dir}/benchmark-${platform}.log" action="start" append="true"/>
-        <ant target="-bench">
-          <property name="file" value="@{file}"/>
-        </ant>
-        <record name="${reports.dir}/benchmark-${platform}.log" action="stop"/>
-      </sequential>
-    </for>
-  </target>
-
-  <target name="-bench">
-    <echo>${file}</echo>
-    <stopwatch name="bench"/>
-    <quiet>
-      <compile name="bench" input="${tests.dir}/test" outdir="${out.dir}/bench_test" excludes="**">
-        <includepath path="${libraries.dir}"/>
-        <fileset file="${file}"/>
-      </compile>
-    </quiet>
-    <stopwatch name="bench" action="total"/>
-  </target>
-
-  <target name="reports" description="generate code analysis reports">
-    <headers name="turtle" excludes="**/*_iterate.hpp,**/*_template.hpp"/>
-    <check name="turtle"/>
-  </target>
-
-  <target name="export" description="export distribution">
-    <sync todir="${dist.dir}/include">
-      <fileset dir="${libraries.dir}" includes="turtle/**"/>
-    </sync>
-    <info version="svn rev ${svn.revision}" todir="${dist.dir}"/>
-  </target>
-
-  <target name="package" depends="export" description="package distribution">
-    <mkdir dir="${dist.dir}"/>
-    <zip destfile="${dist.dir}/${ant.project.name}.zip">
-      <fileset dir="${dist.dir}" includes="include/**"/>
-    </zip>
-    <tar destfile="${dist.dir}/${ant.project.name}.tar.bz2" compression="bzip2">
-      <fileset dir="${dist.dir}" includes="include/**"/>
-    </tar>
-  </target>
-
+  <import file="${env.PONEY_HOME}/poney.xml"/>
+  
   <condition property="b2.toolset" value="--toolset=${boost.toolset}" else="">
     <isset property="boost.toolset"/>
   </condition>
@@ -137,37 +28,65 @@
     <os family="windows"/>
   </condition>
   <presetdef name="b2">
-    <exec taskname="b2" failonerror="true" executable="${boost.root}/${b2}">
+    <exec taskname="b2" failonerror="true" executable="${boost.dir}/${b2}">
       <arg value="-q"/>
       <arg value="${b2.toolset}"/>
     </exec>
   </presetdef>
 
-  <target name="boost.generate" description="generate boost.mock into ${boost.dir}">
+  <target name="reports" description="generate code analysis reports">
+    <headers name="turtle" excludes="**/*_iterate.hpp,**/*_template.hpp"/>
+    <check name="turtle"/>
+  </target>
+
+  <target name="test" description="run tests">
+    <b2 dir="${tests.dir}"/>
+  </target>
+
+  <target name="documentation" depends="boost.generate" description="generate documentation">
+    <b2 dir="${boost-mock.dir}/doc">
+      <env key="BOOSTBOOK_DIR" value="${boostbook.dir}"/>
+    </b2>
+  </target>
+
+  <target name="release" depends="documentation" description="produce release packages">
+    <fail unless="version" message="missing version property"/>
+    <copy file="version.hpp" tofile="${out.dir}/version.hpp">
+      <filterset>
+        <filter token="MOCK_VERSION" value="${version}"/>
+      </filterset>
+    </copy>
+    <zip destfile="${dist.dir}/${ant.project.name}-${version}.zip">
+      <fileset dir="${dist.dir}" includes="include/**"/>
+      <zipfileset dir="${doc.dir}/html" prefix="doc"/>
+      <zipfileset dir="${out.dir}" includes="version.hpp" prefix="include/turtle"/>
+    </zip>
+    <tar destfile="${dist.dir}/${ant.project.name}-${version}.tar.bz2" compression="bzip2">
+      <fileset dir="${dist.dir}" includes="include/**"/>
+      <zipfileset dir="${doc.dir}/html" prefix="doc"/>
+      <zipfileset dir="${out.dir}" includes="version.hpp" prefix="include/turtle"/>
+    </tar>
+  </target>
+
+  <target name="all" depends="test,reports,release" description="build and run tests then package distribution"/>
+
+  <target name="boost.generate" description="generate Boost.Mock">
     <delete dir="${boost-mock.dir}"/>
-    <copy todir="${boost-mock.dir}/include/turtle">
-      <fileset dir="${libraries.dir}/turtle"/>
+    <copy todir="${boost-mock.dir}" overwrite="true" preservelastmodified="true">
+      <fileset dir="${src.dir}" includes="LICENSE_1_0.txt,index.html,include/**,doc/**,test/**" excludes="**/bin/**"/>
     </copy>
     <copy todir="${boostbook.dir}">
-      <fileset dir="${boost.root}/tools/boostbook" includes="xsl/**,dtd/**"/>
+      <fileset dir="${boost.dir}/tools/boostbook" includes="xsl/**,dtd/**"/>
     </copy>
     <copy todir="${boostbook.dir}" overwrite="true">
       <fileset dir="boostbook"/>
     </copy>
     <copy todir="${boost-mock.dir}/doc/html">
-      <fileset dir="${boost.root}/doc/src" includes="**/boostbook.css,**/**.png"/>
-      <fileset dir="boost/doc" includes="images/*.png"/>
-    </copy>
-    <copy todir="${boost-mock.dir}" overwrite="true">
-      <fileset dir="${tests.dir}" includes="test/**"/>
-      <fileset dir="boost" includes="test/**,doc/**,index.html"/>
-    </copy>
-    <copy todir="${boost.dir}">
-      <fileset dir="boost" includes="LICENSE_1_0.txt,Jamroot.jam,Jamfile.v2"/>
+      <fileset dir="${boost.dir}/doc/src" includes="**/boostbook.css,**/**.png"/>
     </copy>
   </target>
 
-  <target name="boost.convert" description="convert boost.mock in ${boost.dir}">
+  <target name="boost.convert" depends="boost.generate" description="convert Boost.Mock">
     <move file="${boost-mock.dir}/include/turtle" tofile="${boost-mock.dir}/include/boost/mock"/>
     <replaceregexp match="MOCK" replace="BOOST_MOCK" flags="g">
       <fileset dir="${boost-mock.dir}" includes="**/*.cpp,**/*.hpp,**/*.qbk"/>
@@ -214,55 +133,29 @@
     <replaceregexp match="\[include changelog.qbk\]" replace="" flags="g">
       <fileset dir="${boost-mock.dir}" includes="**/mock.qbk"/>
     </replaceregexp>
-    <copy todir="${boostbook.dir}" overwrite="true">
-      <fileset dir="${boost.root}/tools/boostbook" includes="xsl/**,dtd/**"/>
-    </copy>
   </target>
 
-  <target name="boost.test" description="run boost.mock tests in ${boost.dir}">
+  <target name="boost.test" description="run Boost.Mock tests">
     <b2 dir="${boost-mock.dir}/test"/>
   </target>
 
-  <target name="boost.doc" description="generate boost.mock documentation in ${boost.dir}">
+  <target name="boost.documentation" depends="boost.generate" description="generate Boost.Mock documentation">
     <b2 dir="${boost-mock.dir}/doc">
       <env key="BOOSTBOOK_DIR" value="${boostbook.dir}"/>
     </b2>
   </target>
 
-  <target name="boost.package" description="package boost.mock">
+  <target name="boost.package" description="package Boost.Mock">
     <zip destfile="${out.dir}/boost-mock.zip">
-      <fileset dir="${boost.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
-      <fileset dir="${boost.dir}" includes="LICENSE_1_0.txt"/>
+      <fileset dir="${boost-mock.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
+      <fileset dir="${boost-mock.dir}" includes="LICENSE_1_0.txt"/>
     </zip>
     <tar destfile="${out.dir}/boost-mock.tar.bz2" compression="bzip2">
-      <fileset dir="${boost.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
-      <fileset dir="${boost.dir}" includes="LICENSE_1_0.txt"/>
+      <fileset dir="${boost-mock.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
+      <fileset dir="${boost-mock.dir}" includes="LICENSE_1_0.txt"/>
     </tar>
   </target>
 
-  <target name="documentation" depends="boost.generate,boost.doc" description="generate documentation"/>
-
-  <target name="boost" depends="boost.generate,boost.convert,boost.doc,boost.test,boost.package" description="convert to boost with documentation and tests"/>
-
-  <target name="release" depends="documentation,package" description="produce release packages">
-    <fail unless="version" message="missing version property"/>
-    <copy file="version.hpp" tofile="${out.dir}/version.hpp">
-      <filterset>
-        <filter token="MOCK_VERSION" value="${version}"/>
-      </filterset>
-    </copy>
-    <zip destfile="${dist.dir}/${ant.project.name}-${version}.zip">
-      <fileset dir="${dist.dir}" includes="include/**"/>
-      <zipfileset dir="${boost-mock.dir}/doc/html" prefix="doc"/>
-      <zipfileset dir="${out.dir}" includes="version.hpp" prefix="include/turtle"/>
-    </zip>
-    <tar destfile="${dist.dir}/${ant.project.name}-${version}.tar.bz2" compression="bzip2">
-      <fileset dir="${dist.dir}" includes="include/**"/>
-      <zipfileset dir="${boost-mock.dir}/doc/html" prefix="doc"/>
-      <zipfileset dir="${out.dir}" includes="version.hpp" prefix="include/turtle"/>
-    </tar>
-  </target>
-
-  <target name="all" depends="configure,test,bench,reports,export,package" description="configure, build and run tests and benchmark, export and package distribution"/>
+  <target name="boost" depends="boost.convert,boost.test,boost.documentation,boost.package" description="convert to boost with documentation and tests"/>
 
 </project>
