@@ -10,46 +10,26 @@
   <property environment="env"/>
   <fail unless="env.BOOST_ROOT" message="missing BOOST_ROOT environment variable"/>
   <property name="boost.dir" value="${env.BOOST_ROOT}"/>
-  <property name="include.dir" value="${env.BOOST_ROOT}"/>
   <property name="src.dir" value="${root.dir}"/>
   <property name="doc.dir" value="${src.dir}/doc"/>
-  <property name="tests.dir" value="${src.dir}/test"/>
   <property name="libraries.dir" value="${src.dir}/include"/>
-  <property name="boostbook.dir" value="${out.dir}/boostbook"/>
+  <property name="out.dir" value="${root.dir}/bin/poney/${platform}"/>
   <property name="boost-mock.dir" value="${out.dir}/boost-mock"/>
+
   <property name="version" value="unreleased"/>
 
   <import file="${env.PONEY_HOME}/poney.xml"/>
   
-  <condition property="b2.toolset" value="--toolset=${boost.toolset}" else="">
-    <isset property="boost.toolset"/>
-  </condition>
-  <condition property="b2" value="b2.exe" else="b2">
-    <os family="windows"/>
-  </condition>
-  <presetdef name="b2">
-    <exec taskname="b2" failonerror="true" executable="${boost.dir}/${b2}">
-      <arg value="-q"/>
-      <arg value="${b2.toolset}"/>
-    </exec>
-  </presetdef>
-
   <target name="reports" description="generate code analysis reports">
     <headers name="turtle" excludes="**/*_iterate.hpp,**/*_template.hpp"/>
     <check name="turtle"/>
   </target>
 
-  <target name="test" description="run tests">
-    <b2 dir="${tests.dir}"/>
+  <target name="build" description="build tests and documentation">
+    <run dir="." script="build"/>
   </target>
 
-  <target name="documentation" depends="boost.generate" description="generate documentation">
-    <b2 dir="${boost-mock.dir}/doc">
-      <env key="BOOSTBOOK_DIR" value="${boostbook.dir}"/>
-    </b2>
-  </target>
-
-  <target name="release" depends="documentation" description="produce release packages">
+  <target name="release" depends="build" description="produce release packages">
     <fail unless="version" message="missing version property"/>
     <copy file="version.hpp" tofile="${out.dir}/version.hpp">
       <filterset>
@@ -68,25 +48,13 @@
     </tar>
   </target>
 
-  <target name="all" depends="test,reports,release" description="build and run tests then package distribution"/>
+  <target name="all" depends="build,reports,release" description="build documentation, run tests and package distribution"/>
 
-  <target name="boost.generate" description="generate Boost.Mock">
+  <target name="boost.convert" description="convert Boost.Mock">
     <delete dir="${boost-mock.dir}"/>
-    <copy todir="${boost-mock.dir}" overwrite="true" preservelastmodified="true">
-      <fileset dir="${src.dir}" includes="LICENSE_1_0.txt,index.html,include/**,doc/**,test/**" excludes="**/bin/**"/>
+    <copy todir="${boost-mock.dir}">
+      <fileset dir="${root.dir}"/>
     </copy>
-    <copy todir="${boostbook.dir}">
-      <fileset dir="${boost.dir}/tools/boostbook" includes="xsl/**,dtd/**"/>
-    </copy>
-    <copy todir="${boostbook.dir}" overwrite="true">
-      <fileset dir="boostbook"/>
-    </copy>
-    <copy todir="${boost-mock.dir}/doc/html">
-      <fileset dir="${boost.dir}/doc/src" includes="**/boostbook.css,**/**.png"/>
-    </copy>
-  </target>
-
-  <target name="boost.convert" depends="boost.generate" description="convert Boost.Mock">
     <move file="${boost-mock.dir}/include/turtle" tofile="${boost-mock.dir}/include/boost/mock"/>
     <replaceregexp match="MOCK" replace="BOOST_MOCK" flags="g">
       <fileset dir="${boost-mock.dir}" includes="**/*.cpp,**/*.hpp,**/*.qbk"/>
@@ -135,17 +103,11 @@
     </replaceregexp>
   </target>
 
-  <target name="boost.test" description="run Boost.Mock tests">
-    <b2 dir="${boost-mock.dir}/test"/>
+  <target name="boost.build" depends="boost.convert" description="build Boost.Mock tests and documentation">
+    <run dir="${boost-mock.dir}/build" script="build"/>
   </target>
 
-  <target name="boost.documentation" depends="boost.generate" description="generate Boost.Mock documentation">
-    <b2 dir="${boost-mock.dir}/doc">
-      <env key="BOOSTBOOK_DIR" value="${boostbook.dir}"/>
-    </b2>
-  </target>
-
-  <target name="boost.package" description="package Boost.Mock">
+  <target name="boost.package" depends="boost.build" description="package Boost.Mock">
     <zip destfile="${out.dir}/boost-mock.zip">
       <fileset dir="${boost-mock.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
       <fileset dir="${boost-mock.dir}" includes="LICENSE_1_0.txt"/>
@@ -156,6 +118,6 @@
     </tar>
   </target>
 
-  <target name="boost" depends="boost.convert,boost.test,boost.documentation,boost.package" description="convert to boost with documentation and tests"/>
+  <target name="boost" depends="boost.convert,boost.build,boost.package" description="convert to boost with documentation and tests"/>
 
 </project>

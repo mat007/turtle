@@ -45,38 +45,38 @@ before_install:
     - git submodule foreach "git reset --quiet --hard; git clean -fxd"
     - git reset --hard; git clean -fxd
     - git status
-    - mv $PROJECT_DIR/../$PROJECT_TO_TEST/ $BOOST/libs/$PROJECT_TO_TEST
-    - PROJECT_DIR=$BOOST/libs/$PROJECT_TO_TEST
-    - rm $PROJECT_DIR/Jam*
     - ./bootstrap.sh
     - ./b2 headers
 
 script:
     - if [ "$CCFLAGS" != "" ]; then FLAGS="cxxflags=\"$CCFLAGS\" linkflags=\"$LINKFLAGS\""; else FLAGS=""; fi
-    - cd $BOOST/libs/$PROJECT_TO_TEST/test/
+    - cd $PROJECT_DIR/build
     # `--coverage` flags required to generate coverage info for Coveralls
-    - ../../../b2 -q cxxflags="--coverage -std=$CXX_STANDARD" linkflags="--coverage"
+    # ../../../b2 -q cxxflags="--coverage -std=$CXX_STANDARD" linkflags="--coverage"
+    - export BOOST_ROOT=$BOOST
+    - ./build.sh cxxflags="--coverage -std=$CXX_STANDARD" linkflags="--coverage"
 
 after_success:
+    - COVERALS_DIR=$PROJECT_DIR/coverals
+
     # Copying Coveralls data to a separate folder
-    - mkdir -p $PROJECT_DIR/coverals
-    - find ../../../bin.v2/ -name "*.gcda" -exec cp "{}" $PROJECT_DIR/coverals/ \;
-    - find ../../../bin.v2/ -name "*.gcno" -exec cp "{}" $PROJECT_DIR/coverals/ \;
+    - mkdir -p $COVERALS_DIR
+    - find ../test/bin/ -name "*.gcda" -exec cp "{}" $COVERALS_DIR/ \;
+    - find ../test/bin/ -name "*.gcno" -exec cp "{}" $COVERALS_DIR/ \;
 
     # Preparing Coveralls data by
     # ... installing the tools
     - sudo apt-get install -qq python-yaml lcov
     # ... changind data format to a readable one
-    - lcov --directory $PROJECT_DIR/coverals --base-directory ./ --capture --output-file $PROJECT_DIR/coverals/coverage.info
+    - lcov --directory $COVERALS_DIR --base-directory ./ --capture --output-file $COVERALS_DIR/coverage.info
 
     # ... erasing /test/ /example/ folder data
-    - cd $BOOST
-    - lcov --remove $PROJECT_DIR/coverals/coverage.info "/usr*" "*/$PROJECT_TO_TEST/test/*" $IGNORE_COVERAGE "*/$PROJECT_TO_TEST/tests/*" "*/$PROJECT_TO_TEST/examples/*" "*/$PROJECT_TO_TEST/example/*" -o $PROJECT_DIR/coverals/coverage.info
+    - lcov --remove $COVERALS_DIR/coverage.info "/usr*" "/test/*" $IGNORE_COVERAGE "tests/*" "*/doc/examples/*" -o $COVERALS_DIR/coverage.info
 
     # ... erasing data that is not related to this project directly
     - OTHER_LIBS=`grep "submodule .*" .gitmodules | sed 's/\[submodule\ "\(.*\)"\]/"\*\/boost\/\1\.hpp" "\*\/boost\/\1\/\*"/g'| sed "/\"\*\/boost\/$PROJECT_TO_TEST\/\*\"/d" | sed ':a;N;$!ba;s/\n/ /g'`
     - echo $OTHER_LIBS
-    - eval "lcov --remove $PROJECT_DIR/coverals/coverage.info $OTHER_LIBS -o $PROJECT_DIR/coverals/coverage.info"
+    - eval "lcov --remove $COVERALS_DIR/coverage.info $OTHER_LIBS -o $COVERALS_DIR/coverage.info"
 
     # Sending data to Coveralls
     - cd $PROJECT_DIR
