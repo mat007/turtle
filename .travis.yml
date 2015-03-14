@@ -47,6 +47,7 @@ before_install:
     - git status
     - ./bootstrap.sh
     - ./b2 headers
+    - sudo apt-get install -qq xsltproc
 
 script:
     - if [ "$CCFLAGS" != "" ]; then FLAGS="cxxflags=\"$CCFLAGS\" linkflags=\"$LINKFLAGS\""; else FLAGS=""; fi
