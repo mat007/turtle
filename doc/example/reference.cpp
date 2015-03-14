@@ -111,7 +111,7 @@ struct base
 template< typename T >
 struct name : base< T >, mock::object
 {
-    typedef typename base< T > base_type;
+    typedef base< T > base_type;
 };
 //]
 }
