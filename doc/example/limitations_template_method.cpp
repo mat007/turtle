@@ -54,8 +54,8 @@ public:
 template< typename T >
 void function_under_test( T t ) // T is supposed to model the previous concept
 {
-    t.create< int >();
-    t.create< std::string >();
+    t.template create< int >();
+    t.template create< std::string >();
 }
 //]
  
@@ -65,19 +65,19 @@ MOCK_CLASS( mock_concept )
     template< typename T >
     T create();
 
-    template<>
-    int create< int >()
-    {
-        return create_int();
-    }
-    template<>
-    std::string create< std::string >()
-    {
-        return create_string();
-    }
-
     MOCK_METHOD( create_int, 0, int(), create_int )
     MOCK_METHOD( create_string, 0, std::string(), create_string )
 };
+
+template<>
+int mock_concept::create< int >()
+{
+    return create_int();
+}
+template<>
+std::string mock_concept::create< std::string >()
+{
+    return create_string();
+}
 //]
 }
