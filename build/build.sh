@@ -7,6 +7,7 @@
 
 run()
 {
+    echo $@
     $@
     r=$?
     if test $r -ne 0 ; then
@@ -21,19 +22,19 @@ copy()
     run cp $@
 }
 
-export BOOST=$BOOST_ROOT
+run export BOOST=$BOOST_ROOT
 
-cd ../test
+run cd ../test
 run $BOOST/b2 -q $*
-cd ../build
+run cd ../build
 
-export BOOSTBOOK_DIR=../bin/turtle/boostbook
+run export BOOSTBOOK_DIR=../bin/turtle/boostbook
 run copy -r "$BOOST"/tools/boostbook/xsl $BOOSTBOOK_DIR
 run copy -r "$BOOST"/tools/boostbook/dtd $BOOSTBOOK_DIR
 run copy -r boostbook/* $BOOSTBOOK_DIR
 run copy "$BOOST"/doc/src/boostbook.css ../doc/html
 run copy "$BOOST"/doc/src/images/*.png ../doc/html/images
 run copy "$BOOST"/doc/src/images/callouts/*.png ../doc/html/images/callouts
-cd ../doc
+run cd ../doc
 run $BOOST/b2 -q $*
-cd ../build
+run cd ../build
