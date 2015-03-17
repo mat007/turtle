@@ -25,7 +25,7 @@ copy()
 run export BOOST=$BOOST_ROOT
 
 run cd ../test
-run $BOOST/b2 -q $*
+run $BOOST/b2 -q "$@"
 run cd ../build
 
 run export BOOSTBOOK_DIR=../bin/turtle/boostbook
@@ -36,5 +36,5 @@ run copy "$BOOST"/doc/src/boostbook.css ../doc/html
 run copy "$BOOST"/doc/src/images/*.png ../doc/html/images
 run copy "$BOOST"/doc/src/images/callouts/*.png ../doc/html/images/callouts
 run cd ../doc
-run $BOOST/b2 -q $*
+run $BOOST/b2 -q "$@"
 run cd ../build
