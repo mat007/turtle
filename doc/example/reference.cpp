@@ -747,6 +747,8 @@ BOOST_AUTO_TEST_CASE( demonstrates_enforcing_several_expectation_orders )
 //]
 }
 
+#ifdef MOCK_LAMBDAS
+
 namespace action_example_1
 {
 //[ action_example_1
@@ -772,6 +774,8 @@ BOOST_AUTO_TEST_CASE( demonstrates_configuring_actions )
 }
 //]
 }
+
+#endif
 
 namespace verification_example_1
 {
