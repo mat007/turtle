@@ -321,7 +321,7 @@ template< typename T >
 MOCK_CLASS( mock_class )
 {
     MOCK_CONSTRUCTOR( mock_class, 2, ( int, const std::string& ), identifier )
-    MOCK_CONSTRUCTOR_TPL( mock_class, 2, ( T, const std::string& ), identifier )
+    MOCK_CONSTRUCTOR_TPL( mock_class, 2, ( T, const std::string& ), identifier_2 )
 };
 //]
 }
