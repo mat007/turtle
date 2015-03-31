@@ -26,7 +26,7 @@ before_install:
     - BRANCH_TO_TEST=master
 
     # Files, which coverage results must be ignored (files from other projects). Example: - IGNORE_COVERAGE='*/boost/progress.hpp */filesystem/src/path.cpp'
-    - IGNORE_COVERAGE='*/boost/progress.hpp */filesystem/src/path.cpp */numeric/conversion/converter_policies.hpp'
+    - IGNORE_COVERAGE='*/boost-local/*'
 
     # From this point and below code is same for all the Boost libs
     # Cloning Boost libraries (fast nondeep cloning)
