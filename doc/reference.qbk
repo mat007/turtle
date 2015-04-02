@@ -453,6 +453,10 @@ Example using &&, || and ! :
 
 [constraints_example_8]
 
+Example using one constraint for all parameters :
+
+[constraints_example_9]
+
 [endsect]
 
 [section Sequence]

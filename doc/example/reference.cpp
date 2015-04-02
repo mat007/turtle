@@ -716,6 +716,27 @@ BOOST_AUTO_TEST_CASE( demonstrates_combining_constraints )
 //]
 }
 
+namespace constraints_example_9
+{
+//[ constraints_example_9
+MOCK_CLASS( mock_class )
+{
+    MOCK_METHOD( method, 2, void( const std::string&, std::size_t ) )
+};
+
+bool custom_constraint( const std::string& actual_1, std::size_t actual_2 )
+{
+    return actual_1.size() <= actual_2;
+}
+
+BOOST_AUTO_TEST_CASE( demonstrates_one_constraint_for_all_arguments )
+{
+   mock_class c;
+   MOCK_EXPECT( c.method ).with( &custom_constraint );
+}
+//]
+}
+
 namespace sequence_example_1
 {
 //[ sequence_example_1
