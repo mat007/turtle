@@ -95,6 +95,19 @@ The first line tells that a set expectation has not been fulfilled. The file and
 The following lines once again list the set expectations.
 It means the two first calls correctly passed the expected values to the mock object, but then no third call happened.
 
+Finally an error looking like :
+
+ src/tests/turtle_test/Tutorial.cpp(73): error in "zero_plus_zero_is_zero": missing action: v.mock_view::display( 0 )
+ v once().with( 0 )
+
+indicates that an [link turtle.reference.expectation.actions action] is missing because a mock function must be told what to do when called if it has a return type other than void, for instance given :
+
+[action_view]
+
+the following test case will raise a missing action error :
+
+[action_test]
+
 [endsect]
 
 [endsect]

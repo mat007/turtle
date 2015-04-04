@@ -94,3 +94,36 @@ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
 }
 //]
 }
+
+namespace action
+{
+//[ action_view
+class view
+{
+public:
+    virtual bool display( int result ) = 0; // returns a boolean
+};
+//]
+
+MOCK_BASE_CLASS( mock_view, view )
+{
+    MOCK_METHOD( display, 1 )
+};
+
+class calculator
+{
+public:
+    calculator( view& v );
+
+    void add( int a, int b );
+};
+//[ action_test
+BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+{
+   mock_view v;
+   calculator c( v );
+   MOCK_EXPECT( v.display ).once().with( 0 ); // missing returns( true )
+   c.add( 0, 0 );
+}
+//]
+}
