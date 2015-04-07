@@ -378,8 +378,9 @@ namespace
     };
 
     template< typename T >
-    MOCK_CLASS( variadic_tpl )
+    MOCK_BASE_CLASS( variadic_tpl, base )
     {
+        MOCK_METHOD( m1, 0 )
         MOCK_METHOD_TPL( m2, 0, T() )
         MOCK_METHOD_TPL( m3, 0, T(), m3 )
         MOCK_CONST_METHOD_TPL( m4, 0, T() )
@@ -398,6 +399,30 @@ namespace
     MOCK_FUNCTION( fun3, 0, (std::map< int, int >()) )
 
     MOCK_FUNCTOR( f_variadic, std::map< int, int >() );
+}
+
+#else // MOCK_VARIADIC_MACROS
+
+namespace
+{
+    struct base
+    {
+        virtual ~base()
+        {}
+    protected:
+        virtual void m1() = 0;
+    };
+
+    MOCK_BASE_CLASS( derived, base )
+    {
+        MOCK_METHOD( m1, 0 )
+    };
+
+    template< typename T >
+    MOCK_BASE_CLASS( derived_tpl, base )
+    {
+        MOCK_METHOD( m1, 0 )
+    };
 }
 
 #endif // MOCK_VARIADIC_MACROS

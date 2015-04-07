@@ -87,17 +87,19 @@ Deriving from mock::object is optional but provides the additional following ben
 
 Synopsis :
 
- MOCK_METHOD( [calling convention] name, arity[, signature[, identifier]] )               // generates both const and non-const methods
- MOCK_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )         // generates only the const version of the method
- MOCK_NON_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )     // generates only the non-const version of the method
+ MOCK_METHOD( [calling convention] name, arity[, signature[, identifier]] )             // generates both const and non-const methods
+ MOCK_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )       // generates only the const version of the method
+ MOCK_NON_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )   // generates only the non-const version of the method
  
- MOCK_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] )           // must be used if the signature uses a template parameter of the class, generates both const and non-const methods
- MOCK_CONST_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] )     // must be used if the signature uses a template parameter of the class, generates only the const version of the method
- MOCK_NON_CONST_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] ) // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method
+ MOCK_METHOD_TPL( [calling convention] name, arity, signature[, identifier] )           // must be used if the signature uses a template parameter of the class, generates both const and non-const methods
+ MOCK_CONST_METHOD_TPL( [calling convention] name, arity, signature[, identifier] )     // must be used if the signature uses a template parameter of the class, generates only the const version of the method
+ MOCK_NON_CONST_METHOD_TPL( [calling convention] name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method
 
 [note If the identifier is omitted it will default to the method name.]
 
 [note If the method name is not ambiguous both the signature and the identifier can be omitted in the context of a derived MOCK_BASE_CLASS or base_type typedef.]
+
+[note The signature cannot be omitted for the _TPL familly of macros, see the related [link turtle.limitations.template_base_class_methods_cannot_be_mocked_without_specifying_the_signature limitation section].]
 
 [note The signature must be surrounded with round parenthesis if the return type contains a comma.]
 
