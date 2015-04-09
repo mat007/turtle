@@ -488,16 +488,22 @@ An action performs additional treatments after an expectation has been deemed va
 
 Synopsis :
 
- MOCK_EXPECT( identifier ).returns( value );
- MOCK_EXPECT( identifier ).moves( value );
- MOCK_EXPECT( identifier ).throws( exception );
- MOCK_EXPECT( identifier ).calls( functor );    // gets assigned to a boost::function and throws std::invalid_argument if empty
+ MOCK_EXPECT( identifier ).returns( value );    // stored internally by copy
+ MOCK_EXPECT( identifier ).moves( value );      // stored internally by copy
+ MOCK_EXPECT( identifier ).throws( exception ); // stored internally by copy
+ MOCK_EXPECT( identifier ).calls( functor );    // stored internally by copy, throws std::invalid_argument if empty
 
 [note The returns and moves actions are not available for mock methods returning void, including constructors and destructors.]
+
+[note Actions are captured by copy, boost::ref and boost::cref can however be used to turn the copies into references.]
 
 Example :
 
 [action_example_1]
+
+Example with references :
+
+[action_example_2]
 
 [endsect]
 

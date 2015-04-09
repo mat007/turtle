@@ -798,6 +798,25 @@ BOOST_AUTO_TEST_CASE( demonstrates_configuring_actions )
 
 #endif
 
+namespace action_example_2
+{
+//[ action_example_2
+MOCK_CLASS( mock_class )
+{
+    MOCK_METHOD( method, 0, int&() )
+};
+
+BOOST_AUTO_TEST_CASE( demonstrates_configuring_actions_with_references )
+{
+   mock_class c;
+   int i = 0;
+   MOCK_EXPECT( c.method ).returns( boost::ref( i ) ); // wrap i to store a reference
+   c.method() = 42;                                    // really change i and not just the stored copy
+   BOOST_CHECK_EQUAL( 42, i );                         // indeed
+}
+//]
+}
+
 namespace verification_example_1
 {
 //[ verification_example_1
