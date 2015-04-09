@@ -31,7 +31,10 @@
     <ClCompile Include="..\..\test\test_constraint.cpp" />
     <ClCompile Include="..\..\test\test_constraints.cpp" />
     <ClCompile Include="..\..\test\test_exception.cpp" />
-    <ClCompile Include="..\..\test\test_integration.cpp" />
+    <ClCompile Include="..\..\test\test_integration.cpp">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|x64'">BOOST_AUTO_TEST_MAIN;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|x64'">BOOST_AUTO_TEST_MAIN;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
     <ClCompile Include="..\..\test\test_log.cpp" />
     <ClCompile Include="..\..\test\test_matcher.cpp" />
     <ClCompile Include="..\..\test\test_max_args.cpp" />
@@ -83,6 +86,22 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='release|x64'">../../out/vc100_x64/$(Configuration)/tests/$(ProjectName)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='release|Win32'">../../out/vc100/$(Configuration)/tests/$(ProjectName)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='release|x64'">../../out/vc100_x64/$(Configuration)/tests/$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+    <IncludePath>c:\dev\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath>c:\dev\lib\vc100_x64;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+    <IncludePath>c:\dev\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath>c:\dev\lib\vc100_x64;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+    <IncludePath>c:\dev\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath>c:\dev\lib\vc100_x64;$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64;</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+    <IncludePath>c:\dev\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath>c:\dev\lib\vc100_x64;$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -145,8 +164,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>cd ../../run/vc100
-"$(TargetDir)$(TargetName).exe" --result_code=no --report_level=no --log_level=warning --data_directory=../../data/tests/$(ProjectName)
+      <Command>"$(TargetDir)$(TargetName).exe" --result_code=no --report_level=no --log_level=warning --data_directory=../../data/tests/$(ProjectName)
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -211,8 +229,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>cd ../../run/vc100
-"$(TargetDir)$(TargetName).exe" --result_code=no --report_level=no --log_level=warning --data_directory=../../data/tests/$(ProjectName)
+      <Command>"$(TargetDir)$(TargetName).exe" --result_code=no --report_level=no --log_level=warning --data_directory=../../data/tests/$(ProjectName)
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

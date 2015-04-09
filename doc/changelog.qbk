@@ -12,6 +12,9 @@ Not yet released
 
 * Dropped support for obsolete Boost.Phoenix V2
 * Added support for multiple parameters constraints
+* Added inline to generated MOCK_FUNCTION
+* Documented limitation concerning MOCK_METHOD_TPL
+* Fixed mocking protected member function
 
 [section 1.2.6]
 Released 24 May 2014

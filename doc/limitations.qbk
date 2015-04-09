@@ -53,6 +53,22 @@ or with C++11 nullptr support :
 
 [endsect]
 
+[section Non-virtual methods cannot be mocked]
+
+Given :
+
+[limitations_non_virtual_method_problem]
+
+the following code compiles but will not work as expected :
+
+[limitations_non_virtual_method_problem_2]
+
+The mock object will never be exercised because the library relies on polymorphism to hook the calls.
+
+There is no other solution than to refactor the production code, the most simple being to change the method to virtual.
+
+[endsect]
+
 [section Template methods cannot be mocked]
 
 Given :
@@ -75,23 +91,27 @@ While still somewhat possible, mocking a template method can indeed prove a bit 
 
 [endsect]
 
-[section Non-virtual methods cannot be mocked]
+[section Template base class methods cannot be mocked without specifying the signature]
 
 Given :
 
-[limitations_non_virtual_method_problem]
+[limitations_template_base_class_method_problem]
 
-the following code compiles but will not work as expected :
+the following code does not compile :
 
-[limitations_non_virtual_method_problem_2]
+ template< typename T >
+ MOCK_BASE_CLASS( mock_base, base< T > )
+ {
+     MOCK_METHOD( method, 0 ) // this fails
+ };
 
-The mock object will never be exercised because the library relies on polymorphism to hook the calls.
+A workaround would be to add the signature to MOCK_METHOD :
 
-There is no other solution than to refactor the production code, the most simple being to change the method to virtual.
+[limitations_template_base_class_method_solution]
 
 [endsect]
 
-[section Private virtual methods cannot be mocked without spelling out the signature]
+[section Private virtual methods cannot be mocked without specifying the signature]
 
 Given :
 
@@ -101,7 +121,7 @@ the following code does not compile :
 
  MOCK_BASE_CLASS( mock_base, base )
  {
-     MOCK_METHOD( method, 0 )       // this fails because 'method' is not visible
+     MOCK_METHOD( method, 0 ) // this fails because 'method' is not visible
  };
 
 A workaround would be to add the signature to MOCK_METHOD :
@@ -120,7 +140,7 @@ the following code does not compile :
 
  MOCK_BASE_CLASS( mock_class, base_class )
  {
-     MOCK_METHOD( method, 0 )              // this fails because of the throw specifier
+     MOCK_METHOD( method, 0 ) // this fails because of the throw specifier
  };
 
 A workaround would be to write a proxy member function :
