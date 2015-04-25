@@ -29,26 +29,27 @@
     <run dir="." script="build"/>
   </target>
 
-  <target name="release" depends="build" description="produce release packages">
+  <target name="package" depends="build" description="produce release packages">
     <fail unless="version" message="missing version property"/>
-    <copy file="version.hpp" tofile="${out.dir}/version.hpp">
+    <copy file="version.hpp" tofile="${out.dir}/version.hpp" overwrite="true">
       <filterset>
         <filter token="MOCK_VERSION" value="${version}"/>
       </filterset>
     </copy>
+    <mkdir dir="${dist.dir}"/>
     <zip destfile="${dist.dir}/${ant.project.name}-${version}.zip">
-      <fileset dir="${dist.dir}" includes="include/**"/>
+      <fileset dir="${src.dir}" includes="include/**"/>
       <zipfileset dir="${doc.dir}/html" prefix="doc"/>
       <zipfileset dir="${out.dir}" includes="version.hpp" prefix="include/turtle"/>
     </zip>
     <tar destfile="${dist.dir}/${ant.project.name}-${version}.tar.bz2" compression="bzip2">
-      <fileset dir="${dist.dir}" includes="include/**"/>
+      <fileset dir="${src.dir}" includes="include/**"/>
       <zipfileset dir="${doc.dir}/html" prefix="doc"/>
       <zipfileset dir="${out.dir}" includes="version.hpp" prefix="include/turtle"/>
     </tar>
   </target>
 
-  <target name="all" depends="build,reports,release" description="build documentation, run tests and package distribution"/>
+  <target name="all" depends="build,reports,package" description="build documentation, run tests and package distribution"/>
 
   <target name="boost.convert" description="convert Boost.Mock">
     <delete dir="${boost-mock.dir}"/>
@@ -109,13 +110,13 @@
 
   <target name="boost.package" depends="boost.build" description="package Boost.Mock">
     <fail unless="version" message="missing version property"/>
-    <zip destfile="${out.dir}/boost-mock-${version}.zip">
-      <fileset dir="${boost-mock.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
-      <fileset dir="${boost-mock.dir}" includes="LICENSE_1_0.txt"/>
+    <zip destfile="${dist.dir}/boost-mock-${version}.zip">
+      <fileset dir="${boost-mock.dir}" includes="include/**,test/**,doc/**" excludes="**/bin/**"/>
+      <fileset dir="${boost-mock.dir}" includes="LICENSE_1_0.txt,index.html"/>
     </zip>
-    <tar destfile="${out.dir}/boost-mock-${version}.tar.bz2" compression="bzip2">
-      <fileset dir="${boost-mock.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
-      <fileset dir="${boost-mock.dir}" includes="LICENSE_1_0.txt"/>
+    <tar destfile="${dist.dir}/boost-mock-${version}.tar.bz2" compression="bzip2">
+      <fileset dir="${boost-mock.dir}" includes="include/**,test/**,doc/**" excludes="**/bin/**"/>
+      <fileset dir="${boost-mock.dir}" includes="LICENSE_1_0.txt,index.html"/>
     </tar>
   </target>
 
