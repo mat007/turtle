@@ -108,11 +108,12 @@
   </target>
 
   <target name="boost.package" depends="boost.build" description="package Boost.Mock">
-    <zip destfile="${out.dir}/boost-mock.zip">
+    <fail unless="version" message="missing version property"/>
+    <zip destfile="${out.dir}/boost-mock-${version}.zip">
       <fileset dir="${boost-mock.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
       <fileset dir="${boost-mock.dir}" includes="LICENSE_1_0.txt"/>
     </zip>
-    <tar destfile="${out.dir}/boost-mock.tar.bz2" compression="bzip2">
+    <tar destfile="${out.dir}/boost-mock-${version}.tar.bz2" compression="bzip2">
       <fileset dir="${boost-mock.dir}" includes="libs/mock/**" excludes="**/bin/**"/>
       <fileset dir="${boost-mock.dir}" includes="LICENSE_1_0.txt"/>
     </tar>
