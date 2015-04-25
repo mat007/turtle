@@ -54,9 +54,10 @@
   <target name="boost.convert" description="convert Boost.Mock">
     <delete dir="${boost-mock.dir}"/>
     <copy todir="${boost-mock.dir}">
-      <fileset dir="${root.dir}"/>
+      <fileset dir="${root.dir}" excludes="bin/**"/>
     </copy>
     <move file="${boost-mock.dir}/include/turtle" tofile="${boost-mock.dir}/include/boost/mock"/>
+    <delete dir="${boost-mock.dir}/doc/html/turtle"/>
     <replaceregexp match="MOCK" replace="BOOST_MOCK" flags="g">
       <fileset dir="${boost-mock.dir}" includes="**/*.cpp,**/*.hpp,**/*.qbk"/>
     </replaceregexp>
