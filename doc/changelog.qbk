@@ -7,8 +7,8 @@
 
 [section Changelog]
 
-[section unreleased]
-Not yet released
+[section 1.2.7]
+Released 25 April 2015
 
 * Dropped support for obsolete Boost.Phoenix V2
 * Added support for multiple parameters constraints
@@ -16,6 +16,8 @@ Not yet released
 * Documented limitation concerning MOCK_METHOD_TPL
 * Fixed mocking protected member function
 * Document how actions store data by copy
+
+[endsect]
 
 [section 1.2.6]
 Released 24 May 2014
