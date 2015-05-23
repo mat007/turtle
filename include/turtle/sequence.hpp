@@ -10,8 +10,8 @@
 #define MOCK_SEQUENCE_HPP_INCLUDED
 
 #include "config.hpp"
-#include "detail/sequence_impl.hpp"
 #include <boost/make_shared.hpp>
+#include "detail/sequence_impl.hpp"
 
 namespace mock
 {
