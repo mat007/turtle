@@ -12,7 +12,7 @@
 #include "../config.hpp"
 #include "mutex.hpp"
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <algorithm>
 #include <vector>
 
@@ -23,8 +23,10 @@ namespace detail
     class sequence_impl : private boost::noncopyable
     {
     public:
-        sequence_impl() : mutex_( boost::make_shared< mutex >() ) {}
-        
+        sequence_impl()
+            : mutex_( boost::make_shared< mutex >() )
+        {}
+
         void add( void* e )
         {
             lock _( mutex_ );
@@ -57,7 +59,6 @@ namespace detail
         typedef std::vector< void* > elements_type;
 
         elements_type elements_;
-        
         const boost::shared_ptr< mutex > mutex_;
     };
 }
