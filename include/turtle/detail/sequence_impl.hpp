@@ -22,24 +22,30 @@ namespace detail
     class sequence_impl : private boost::noncopyable
     {
     public:
+        sequence_impl() : mutex_( boost::make_shared< mutex >() ) {}
+        
         void add( void* e )
         {
+            lock _( mutex_ );
             elements_.push_back( e );
         }
         void remove( void* e )
         {
+            lock _( mutex_ );
             elements_.erase( std::remove( elements_.begin(),
                 elements_.end(), e ), elements_.end() );
         }
 
         bool is_valid( const void* e ) const
         {
+            lock _( mutex_ );
             return std::find( elements_.begin(), elements_.end(), e )
                 != elements_.end();
         }
 
         void invalidate( const void* e )
         {
+            lock _( mutex_ );
             elements_type::iterator it =
                 std::find( elements_.begin(), elements_.end(), e );
             if( it != elements_.end() )
@@ -50,6 +56,8 @@ namespace detail
         typedef std::vector< void* > elements_type;
 
         elements_type elements_;
+        
+        const boost::shared_ptr< mutex > mutex_;
     };
 }
 } // mock
