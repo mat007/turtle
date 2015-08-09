@@ -54,7 +54,11 @@ BOOST_FIXTURE_TEST_CASE( const_char_pointer_and_const_char_pointer_can_be_compar
     const char* expected = "same text";
     BOOST_CHECK( match( expected, actual ) );
     const char* unexpected = "different text";
-    BOOST_CHECK( ! match( actual, unexpected ) );
+    BOOST_CHECK( ! match( unexpected, actual ) );
+    const char* null = 0;
+    BOOST_CHECK( ! match( expected, null ) );
+    BOOST_CHECK( ! match( null, actual ) );
+    BOOST_CHECK( match( null, null ) );
 }
 
 BOOST_FIXTURE_TEST_CASE( const_char_pointer_and_string_literal_can_be_compared, fixture )
