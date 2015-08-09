@@ -48,7 +48,9 @@ namespace mock
         {}
         bool operator()( const char* actual )
         {
-            return std::strcmp( actual, expected_ ) == 0;
+            return actual == expected_
+                || actual && expected_
+                    && std::strcmp( actual, expected_ ) == 0;
         }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )
