@@ -19,10 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\test\defined.hpp" />
     <ClInclude Include="..\..\test\mock_error.hpp" />
     <ClInclude Include="..\..\test\undefined.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\test\defined_1.cpp" />
+    <ClCompile Include="..\..\test\defined_2.cpp" />
     <ClCompile Include="..\..\test\detail\test_function.cpp" />
     <ClCompile Include="..\..\test\detail\test_invocation.cpp" />
     <ClCompile Include="..\..\test\detail\test_is_functor.cpp" />

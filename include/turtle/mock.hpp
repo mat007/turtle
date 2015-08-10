@@ -163,7 +163,7 @@
 
 #define MOCK_FUNCTION_AUX(F, n, S, t, s, tpn) \
     MOCK_FUNCTION_HELPER(S, t, s, tpn) \
-    s inline MOCK_DECL(F, n, S,,tpn) \
+    s MOCK_DECL(F, n, S,,tpn) \
     { \
         BOOST_MPL_ASSERT_RELATION( n, ==, \
             boost::function_types::function_arity< \
@@ -210,7 +210,8 @@
 #define MOCK_FUNCTION(F, n, ...) \
     MOCK_FUNCTION_AUX(F, n, \
         MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F),,)
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
+        inline,)
 
 #define MOCK_STATIC_METHOD(F, n, ...) \
     MOCK_FUNCTION_AUX(F, n, \
@@ -231,10 +232,11 @@
     MOCK_METHOD_EXT(M, n, M##_sig_type, M)
 
 #define MOCK_FUNCTION(F, n, S, t) \
-    MOCK_FUNCTION_AUX(F, n, S, t,,)
+    MOCK_FUNCTION_AUX(F, n, S, t, inline,)
 
 #define MOCK_STATIC_METHOD(F, n, S, t) \
     MOCK_FUNCTION_AUX(F, n, S, t, static,)
+
 #define MOCK_STATIC_METHOD_TPL(F, n, S, t) \
     MOCK_FUNCTION_AUX(F, n, S, t, static, typename)
 
