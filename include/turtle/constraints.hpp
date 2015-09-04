@@ -34,26 +34,26 @@ namespace mock
 #   pragma push_macro( "small" )
 #   undef small
 #endif
-    MOCK_NARY_CONSTRAINT( small, 1, ( expected ), \
+    MOCK_NARY_CONSTRAINT( small, 1, ( expected ),
         ( boost::test_tools::check_is_small( actual, expected ) ) )
 #ifdef BOOST_MSVC
 #   pragma pop_macro( "small" )
 #endif
 
-    MOCK_NARY_CONSTRAINT( close, 2, ( expected, tolerance ), \
-        ( boost::test_tools::check_is_close( \
-            actual, expected, \
+    MOCK_NARY_CONSTRAINT( close, 2, ( expected, tolerance ),
+        ( boost::test_tools::check_is_close(
+            actual, expected,
             boost::test_tools::percent_tolerance( tolerance ) ) ) )
-    MOCK_NARY_CONSTRAINT( close_fraction, 2, ( expected, tolerance ), \
-        ( boost::test_tools::check_is_close( \
-            actual, expected, \
+    MOCK_NARY_CONSTRAINT( close_fraction, 2, ( expected, tolerance ),
+        ( boost::test_tools::check_is_close(
+            actual, expected,
             boost::test_tools::fraction_tolerance( tolerance ) ) ) )
 
 #ifdef BOOST_MSVC
 #   pragma push_macro( "near" )
 #   undef near
 #endif
-    MOCK_NARY_CONSTRAINT( near, 2, ( expected, tolerance ), \
+    MOCK_NARY_CONSTRAINT( near, 2, ( expected, tolerance ),
         std::abs( actual - expected ) < tolerance )
 #ifdef BOOST_MSVC
 #   pragma pop_macro( "near" )
