@@ -12,6 +12,7 @@
 #include "config.hpp"
 #ifdef MOCK_USE_BOOST_TEST
 #include "exception.hpp"
+#include <boost/version.hpp>
 #include <boost/test/framework.hpp>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
@@ -39,7 +40,13 @@ namespace mock
         static void fail( const char* message, const Context& context,
             const char* file = "unknown location", int line = 0 )
         {
-            boost::unit_test::framework::assertion_result( false );
+            boost::unit_test::framework::assertion_result(
+#if BOOST_VERSION < 105900
+                false
+#else
+                boost::unit_test::AR_FAILED
+#endif
+            );
             boost::unit_test::unit_test_log
                 << boost::unit_test::log::begin( file,
                     static_cast< std::size_t >( line ) )
@@ -51,7 +58,13 @@ namespace mock
         template< typename Context >
         static void call( const Context& context, const char* file, int line )
         {
-            boost::unit_test::framework::assertion_result( true );
+            boost::unit_test::framework::assertion_result(
+#if BOOST_VERSION < 105900
+                true
+#else
+                boost::unit_test::AR_PASSED
+#endif
+            );
             boost::unit_test::unit_test_log
                 << boost::unit_test::log::begin( file,
                     static_cast< std::size_t >( line ) )
