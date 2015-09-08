@@ -13,7 +13,9 @@
 #include "constraint.hpp"
 #include "detail/addressof.hpp"
 #include <boost/ref.hpp>
+#include <boost/version.hpp>
 #include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/common_type.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 
@@ -30,30 +32,73 @@ namespace mock
     MOCK_NARY_CONSTRAINT( less_equal, 1, ( expected ), actual <= expected )
     MOCK_NARY_CONSTRAINT( greater_equal, 1, ( expected ), actual >= expected )
 
+#if BOOST_VERSION < 105900
+
+#   define MOCK_SMALL() \
+        boost::test_tools::check_is_small( actual, tolerance )
+#   define MOCK_PERCENT_TOLERANCE() \
+        boost::test_tools::check_is_close( \
+            actual, \
+            expected, \
+            boost::test_tools::percent_tolerance( tolerance ) )
+#   define MOCK_FRACTION_TOLERANCE() \
+        boost::test_tools::check_is_close( \
+            actual, \
+            expected, \
+            boost::test_tools::fraction_tolerance( tolerance ) )
+
+#else // BOOST_VERSION < 105900
+
+namespace detail
+{
+    template< typename T, typename Tolerance >
+    bool is_small( const T& t, const Tolerance& tolerance )
+    {
+        return boost::math::fpc::small_with_tolerance< T >( tolerance )( t );
+    }
+
+    template< typename T1, typename T2, typename Tolerance >
+    bool is_close( const T1& t1, const T2& t2, const Tolerance& tolerance )
+    {
+        typedef typename boost::common_type< T1, T2 >::type common_type;
+        return boost::math::fpc::close_at_tolerance< common_type >(
+            tolerance, boost::math::fpc::FPC_STRONG )( t1, t2 );
+    }
+}
+
+#   define MOCK_SMALL() \
+        detail::is_small( actual, tolerance )
+#   define MOCK_PERCENT_TOLERANCE() \
+        detail::is_close( actual, expected, boost::math::fpc::percent_tolerance( tolerance ) )
+#   define MOCK_FRACTION_TOLERANCE() \
+        detail::is_close( actual, expected, tolerance )
+
+#endif // BOOST_VERSION < 105900
+
 #ifdef BOOST_MSVC
 #   pragma push_macro( "small" )
 #   undef small
 #endif
-    MOCK_NARY_CONSTRAINT( small, 1, ( expected ), \
-        ( boost::test_tools::check_is_small( actual, expected ) ) )
+    MOCK_NARY_CONSTRAINT( small, 1, ( tolerance ),
+        ( MOCK_SMALL() ) )
 #ifdef BOOST_MSVC
 #   pragma pop_macro( "small" )
 #endif
 
-    MOCK_NARY_CONSTRAINT( close, 2, ( expected, tolerance ), \
-        ( boost::test_tools::check_is_close( \
-            actual, expected, \
-            boost::test_tools::percent_tolerance( tolerance ) ) ) )
-    MOCK_NARY_CONSTRAINT( close_fraction, 2, ( expected, tolerance ), \
-        ( boost::test_tools::check_is_close( \
-            actual, expected, \
-            boost::test_tools::fraction_tolerance( tolerance ) ) ) )
+    MOCK_NARY_CONSTRAINT( close, 2, ( expected, tolerance ),
+        ( MOCK_PERCENT_TOLERANCE() ) )
+
+    MOCK_NARY_CONSTRAINT( close_fraction, 2, ( expected, tolerance ),
+        ( MOCK_FRACTION_TOLERANCE() ) )
+
+#undef MOCK_PERCENT_TOLERANCE
+#undef MOCK_FRACTION_TOLERANCE
 
 #ifdef BOOST_MSVC
 #   pragma push_macro( "near" )
 #   undef near
 #endif
-    MOCK_NARY_CONSTRAINT( near, 2, ( expected, tolerance ), \
+    MOCK_NARY_CONSTRAINT( near, 2, ( expected, tolerance ),
         std::abs( actual - expected ) < tolerance )
 #ifdef BOOST_MSVC
 #   pragma pop_macro( "near" )

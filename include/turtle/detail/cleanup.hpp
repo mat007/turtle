@@ -28,7 +28,7 @@ namespace detail
             mock::reset();
         }
     };
-    BOOST_GLOBAL_FIXTURE( cleanup )
+    BOOST_GLOBAL_FIXTURE( cleanup );
 }
 } // mock
 
