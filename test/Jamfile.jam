@@ -30,7 +30,7 @@ rule run-test ( name )
   run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
   run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_NO_DECLTYPE : $(name)_no_decltype ;
   run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_NO_VARIADIC_MACROS : $(name)_no_variadic_macros ;
-  run $(name) undefined.cpp /boost//unit_test_framework /boost//thread : : : <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE : $(name)_thread_safe ;
+  run $(name) undefined.cpp /boost//unit_test_framework /boost//thread : : : <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE <threading>multi : $(name)_thread_safe ;
 }
 
 rule run-tests
