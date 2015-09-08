@@ -22,6 +22,11 @@ env:
     - CXX_STANDARD=c++98 BRANCH_TO_TEST=master
     - CXX_STANDARD=c++0x BRANCH_TO_TEST=master
 
+addons:
+  apt:
+    packages:
+    - xsltproc
+
 before_install:
     # Set this to the name of your Boost library
     # Autodetect library name by using the following code: - PROJECT_TO_TEST=$(basename $(pwd))
@@ -40,7 +45,6 @@ before_install:
     - git submodule update --init --merge
     - ./bootstrap.sh
     - ./b2 headers
-    - sudo apt-get install -qq xsltproc
 
 script:
     - if [ "$CCFLAGS" != "" ]; then FLAGS="cxxflags=\"$CCFLAGS\" linkflags=\"$LINKFLAGS\""; else FLAGS=""; fi
