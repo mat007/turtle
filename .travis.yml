@@ -9,6 +9,8 @@
 # and how it can be used with Boost libraries.
 #
 
+sudo: false
+
 os:
     - linux
 
