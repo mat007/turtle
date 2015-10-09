@@ -6,12 +6,29 @@
  /]
 
 [section Patterns]
+[import example/patterns_static_objects.cpp]
 [import example/patterns_async_call.cpp]
 [import example/patterns_retrieve_cref.cpp]
 [import example/patterns_invoke_functor.cpp]
 [import example/patterns_quick_constraint.cpp]
 
 This section highlights not-so-obvious features of the library gathered from real use cases.
+
+[section Managing static mock objects]
+
+Problem :
+
+[static_objects_problem]
+
+Partial solution :
+
+[static_objects_partial_solution]
+
+Solution :
+
+[static_objects_solution]
+
+[endsect]
 
 [section Waiting for an asynchronous call]
 

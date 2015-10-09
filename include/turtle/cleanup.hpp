@@ -9,29 +9,28 @@
 #ifndef MOCK_CLEANUP_HPP_INCLUDED
 #define MOCK_CLEANUP_HPP_INCLUDED
 
-#include "../config.hpp"
+#include "config.hpp"
+#include "verify.hpp"
+#include "reset.hpp"
 #ifdef MOCK_USE_BOOST_TEST
-#include "../verify.hpp"
-#include "../reset.hpp"
 #include <boost/test/unit_test_suite.hpp>
+#endif
 
 namespace mock
-{
-namespace detail
 {
     struct cleanup
     {
         ~cleanup()
         {
-            // see https://svn.boost.org/trac/boost/ticket/5563
-            //mock::verify();
             mock::reset();
         }
     };
+
+#ifdef MOCK_USE_BOOST_TEST
     BOOST_GLOBAL_FIXTURE( cleanup );
-}
+#endif
+
 } // mock
 
-#endif // MOCK_USE_BOOST_TEST
 
 #endif // MOCK_CLEANUP_HPP_INCLUDED
