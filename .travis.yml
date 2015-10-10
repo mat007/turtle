@@ -28,8 +28,13 @@ addons:
   apt:
     packages:
     - xsltproc
+    - docbook-xsl
+    - docbook-xml
 
 before_install:
+    - DOCBOOK_XSL_DIR=/usr/share/xml/docbook/stylesheet/docbook-xsl
+    - DOCBOOK_DTD_DIR=/usr/share/xml/docbook/schema/dtd/4.2
+
     # Set this to the name of your Boost library
     # Autodetect library name by using the following code: - PROJECT_TO_TEST=$(basename $(pwd))
     - PROJECT_TO_TEST=$(basename $(pwd))
