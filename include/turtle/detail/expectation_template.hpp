@@ -7,6 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "matcher_base_template.hpp"
+#include <atomic>
 
 #define MOCK_EXPECTATION_INITIALIZE(z, n, d) \
     BOOST_PP_COMMA_IF(n) c##n##_( c##n )
@@ -132,8 +133,11 @@ namespace detail
                     >
                 > () )
             , file_( "unknown location" )
-            , line_( 0 )
-        {}
+            , line_( 0 )  
+#if defined(MOCK_THREAD_SAFE)
+            , blocked(ATOMIC_VAR_INIT(false))
+#endif
+        { }
         expectation( const char* file, int line )
             : invocation_( boost::make_shared< unlimited >() )
             , matcher_(
@@ -144,7 +148,10 @@ namespace detail
                 > () )
             , file_( file )
             , line_( line )
-        {}
+#if defined(MOCK_THREAD_SAFE)
+            , blocked(ATOMIC_VAR_INIT(false))
+#endif
+        { }
 
         ~expectation()
         {
@@ -185,7 +192,15 @@ namespace detail
         }
 #endif
 #endif
-
+#if defined(MOCK_THREAD_SAFE)
+        template < typename duration>
+        expectation &async(const duration timeout)
+        {
+            timeout_ = timeout;
+            blocked = false;
+            return *this;
+        }
+#endif
         void add( sequence& s )
         {
             s.impl_->add( this );
@@ -196,16 +211,41 @@ namespace detail
         {
             return invocation_->verify();
         }
-
+#if defined(MOCK_THREAD_SAFE)
+        bool verify(const boost::shared_ptr< condition_variable> &cv, lock &lk) const
+        {
+            if (timeout_)
+            {
+                while (!invocation_->verify())
+                {
+                    if (MOCK_THREAD_NAMESPACE::cv_status::timeout == cv->wait_for(lk.get_unique_lock(), *timeout_))
+                    {
+                        std::atomic_store(&blocked,true);
+                        return false;
+                    }
+                }
+            }
+            return invocation_->verify();
+        }
+#endif
         bool is_valid(
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) ) const
         {
+#if defined(MOCK_THREAD_SAFE)
+            return !blocked && !invocation_->exhausted()
+                && (*matcher_)( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a) );
+#else
             return !invocation_->exhausted()
                 && (*matcher_)( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a) );
+#endif
         }
 
         bool invoke() const
         {
+#if defined(MOCK_THREAD_SAFE)
+            if (blocked.load(std::memory_order_acquire))
+                return false;
+#endif
             for( sequences_cit it = sequences_.begin();
                 it != sequences_.end(); ++it )
                 if( ! (*it)->is_valid( this ) )
@@ -252,6 +292,10 @@ namespace detail
         sequences_type sequences_;
         const char* file_;
         int line_;
+#if defined(MOCK_THREAD_SAFE)
+        boost::optional<nanoseconds> timeout_;
+        mutable std::atomic_bool blocked;
+#endif
     };
 }
 } // mock

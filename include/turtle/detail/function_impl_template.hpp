@@ -7,6 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "expectation_template.hpp"
+#include <atomic>
 
 #ifndef MOCK_ERROR_POLICY
 #   error no error policy has been set
@@ -44,20 +45,30 @@ namespace detail
             : context_( 0 )
             , valid_( true )
             , mutex_( boost::make_shared< mutex >() )
+#if defined(MOCK_THREAD_SAFE)
+            , cv_( boost::make_shared< condition_variable>() )
+#endif
         {}
         virtual ~function_impl()
         {
-            if( valid_ && ! std::uncaught_exception() )
-                for( expectations_cit it = expectations_.begin();
-                    it != expectations_.end(); ++it )
-                    if( ! it->verify() )
-                        error_type::fail( "untriggered expectation",
-                            boost::unit_test::lazy_ostream::instance()
-                                << lazy_context( this )
-                                << lazy_expectations( this ),
-                            it->file(), it->line() );
-            if( context_ )
-                context_->remove( *this );
+            if (valid_ && !std::uncaught_exception()){
+                lock _(mutex_);
+                for (expectations_cit it = expectations_.begin();
+                    it != expectations_.end(); ++it)
+#if defined(MOCK_THREAD_SAFE)
+                    if (!it->verify(cv_, _))
+#else
+                    if (!it->verify())
+#endif
+                        error_type::fail("untriggered expectation",
+                        boost::unit_test::lazy_ostream::instance()
+                        << lazy_context(this)
+                        << lazy_expectations(this),
+                        it->file(), it->line());
+            }
+            context *c = context_.load(std::memory_order_acquire);
+            if (c)
+                c->remove( *this );
         }
 
         virtual bool verify() const
@@ -65,7 +76,11 @@ namespace detail
             lock _( mutex_ );
             for( expectations_cit it = expectations_.begin();
                 it != expectations_.end(); ++it )
+#if defined(MOCK_THREAD_SAFE)
+                if( ! it->verify(cv_,_) )
+#else
                 if( ! it->verify() )
+#endif
                 {
                     valid_ = false;
                     error_type::fail( "verification failed",
@@ -76,7 +91,7 @@ namespace detail
                 }
             return valid_;
         }
-
+        
         virtual void reset()
         {
             lock _( mutex_ );
@@ -97,36 +112,38 @@ namespace detail
                 : wrapper_base< R, expectation_type >( e )
                 , lock_( m )
             {}
+            
+            wrapper(const wrapper &) = delete;
 
-            wrapper once()
+            wrapper &once()
             {
                 this->e_->invoke( boost::make_shared< detail::once >() );
                 return *this;
             }
-            wrapper never()
+            wrapper &never()
             {
                 this->e_->invoke( boost::make_shared< detail::never >() );
                 return *this;
             }
-            wrapper exactly( std::size_t count )
+            wrapper &exactly( std::size_t count )
             {
                 this->e_->invoke(
                     boost::make_shared< detail::exactly >( count ) );
                 return *this;
             }
-            wrapper at_least( std::size_t min )
+            wrapper &at_least( std::size_t min )
             {
                 this->e_->invoke(
                     boost::make_shared< detail::at_least >( min ) );
                 return *this;
             }
-            wrapper at_most( std::size_t max )
+            wrapper &at_most( std::size_t max )
             {
                 this->e_->invoke(
                     boost::make_shared< detail::at_most >( max ) );
                 return *this;
             }
-            wrapper between( std::size_t min, std::size_t max )
+            wrapper &between( std::size_t min, std::size_t max )
             {
                 this->e_->invoke(
                     boost::make_shared< detail::between >( min, max ) );
@@ -137,7 +154,7 @@ namespace detail
             template<
                 BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_)
             >
-            wrapper with(
+            wrapper &with(
                 BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
             {
                 this->e_->with(
@@ -146,7 +163,7 @@ namespace detail
             }
 #if MOCK_NUM_ARGS > 1
             template< typename Constraint >
-            wrapper with( const Constraint& c )
+            wrapper &with( const Constraint& c )
             {
                 this->e_->with( c );
                 return *this;
@@ -158,7 +175,7 @@ namespace detail
     this->e_->add( s##n );
 
 #define MOCK_FUNCTION_IN(z, n, d) \
-    wrapper in( BOOST_PP_ENUM_PARAMS(n, sequence& s) ) \
+    wrapper &in( BOOST_PP_ENUM_PARAMS(n, sequence& s) ) \
     { \
         BOOST_PP_REPEAT(n, MOCK_FUNCTION_IN_ADD, _) \
         return *this; \
@@ -169,7 +186,13 @@ namespace detail
 
 #undef MOCK_FUNCTION_IN
 #undef MOCK_FUNCTION_IN_ADD
-
+#if defined(MOCK_THREAD_SAFE)
+            wrapper &async(const nanoseconds &timeout)
+            {
+                this->e_->async(timeout);
+                return *this;
+            }
+#endif
             template< typename TT >
             void calls( TT t )
             {
@@ -211,6 +234,19 @@ namespace detail
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, t) ) const
         {
             lock _( mutex_ );
+#if defined(MOCK_THREAD_SAFE)
+            struct notify_cv_on_exit
+            {
+                notify_cv_on_exit(condition_variable &cv)
+                    : cv(cv){}
+                ~notify_cv_on_exit()
+                {
+                    cv.notify_one();
+                }
+                condition_variable &cv;
+            };
+            notify_cv_on_exit _cv(*cv_);
+#endif
             valid_ = false;
             for( expectations_cit it = expectations_.begin();
                 it != expectations_.end(); ++it )
@@ -246,11 +282,9 @@ namespace detail
             boost::optional< type_name > type,
             boost::unit_test::const_string name )
         {
-            lock _( mutex_ );
-            if( ! context_ )
+            if (!context_.exchange(&c,std::memory_order_release))
                 c.add( *this );
             c.add( p, *this, instance, type, name );
-            context_ = &c;
         }
 
         friend std::ostream& operator<<(
@@ -268,8 +302,10 @@ namespace detail
             friend std::ostream& operator<<(
                 std::ostream& s, const lazy_context& c )
             {
-                if( c.impl_->context_ )
-                    c.impl_->context_->serialize( s, *c.impl_ );
+
+                context *pContext = c.impl_->context_.load(std::memory_order_acquire);
+                if( pContext )
+                    pContext->serialize( s, *c.impl_ );
                 else
                     s << '?';
                 return s;
@@ -297,9 +333,12 @@ namespace detail
         typedef typename expectations_type::const_iterator expectations_cit;
 
         expectations_type expectations_;
-        context* context_;
+        std::atomic<context*> context_;
         mutable bool valid_;
         const boost::shared_ptr< mutex > mutex_;
+#if defined(MOCK_THREAD_SAFE)
+        const boost::shared_ptr<condition_variable> cv_;
+#endif
     };
 }
 } // mock
