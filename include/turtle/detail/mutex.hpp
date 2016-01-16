@@ -41,13 +41,19 @@ namespace detail
     typedef MOCK_THREAD_NAMESPACE::condition_variable_any condition_variable;
     typedef MOCK_THREAD_NAMESPACE::chrono::nanoseconds nanoseconds;
     typedef MOCK_THREAD_NAMESPACE::unique_lock<mutex> lock_base;
-    
-    struct lock : public lock_base 
+
+    struct lock : public lock_base
     {
         lock(const boost::shared_ptr< detail::mutex > &m)
             : lock_base (*m)
             , m_(m)
         {}
+
+        lock(lock && l)
+            : lock_base(*l.m_)
+            , m_(l.m_)
+        {
+        }
         ~lock()
         {
             unlock();

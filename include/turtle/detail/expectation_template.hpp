@@ -133,9 +133,9 @@ namespace detail
                     >
                 > () )
             , file_( "unknown location" )
-            , line_( 0 )  
+            , line_( 0 )
 #if defined(MOCK_THREAD_SAFE)
-            , blocked(ATOMIC_VAR_INIT(false))
+            , blocked(false)
 #endif
         { }
         expectation( const char* file, int line )
@@ -149,9 +149,19 @@ namespace detail
             , file_( file )
             , line_( line )
 #if defined(MOCK_THREAD_SAFE)
-            , blocked(ATOMIC_VAR_INIT(false))
+            , blocked(false)
 #endif
         { }
+
+        expectation(expectation && e)
+            : invocation_ ( e.invocation_)
+            , matcher_(e.matcher_)
+            , file_(e.file_)
+            , line_(e.line_)
+#if defined(MOCK_THREAD_SAFE)
+            , blocked(false)
+#endif
+        {}
 
         ~expectation()
         {
@@ -197,7 +207,7 @@ namespace detail
         expectation &async(const duration timeout)
         {
             timeout_ = timeout;
-            blocked = false;
+            blocked.store(false,std::memory_order_release);
             return *this;
         }
 #endif
@@ -220,7 +230,7 @@ namespace detail
                 {
                     if (MOCK_THREAD_NAMESPACE::cv_status::timeout == cv->wait_for(lk.get_unique_lock(), *timeout_))
                     {
-                        std::atomic_store(&blocked,true);
+                        blocked.store(true, std::memory_order_release);
                         return false;
                     }
                 }
@@ -232,7 +242,7 @@ namespace detail
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) ) const
         {
 #if defined(MOCK_THREAD_SAFE)
-            return !blocked && !invocation_->exhausted()
+            return !blocked.load(std::memory_order_acquire) && !invocation_->exhausted()
                 && (*matcher_)( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a) );
 #else
             return !invocation_->exhausted()
@@ -294,7 +304,7 @@ namespace detail
         int line_;
 #if defined(MOCK_THREAD_SAFE)
         boost::optional<nanoseconds> timeout_;
-        mutable std::atomic_bool blocked;
+        mutable std::atomic<bool> blocked;
 #endif
     };
 }

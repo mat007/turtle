@@ -29,11 +29,11 @@ namespace
 BOOST_FIXTURE_TEST_CASE( mock_object_asynchonous_call_expectation, mock_error_fixture )
 {
 #if defined(MOCK_THREAD_SAFE)
-    const mock_class m;
+    const mock_class m{};
     MOCK_EXPECT( m.my_tag ).async(MOCK_THREAD_NAMESPACE::chrono::milliseconds(50)).once().with( "some parameter" );
-    MOCK_THREAD_NAMESPACE::thread context([&](){ 
+    MOCK_THREAD_NAMESPACE::thread context([&](){
         MOCK_THREAD_NAMESPACE::this_thread::sleep_for(MOCK_THREAD_NAMESPACE::chrono::milliseconds(10));
-        m.my_method("some parameter"); 
+        m.my_method("some parameter");
     });
     mock::verify();
     CHECK_CALLS( 1 );
@@ -45,10 +45,10 @@ BOOST_FIXTURE_TEST_CASE( mock_object_asynchonous_call_expectation, mock_error_fi
 BOOST_AUTO_TEST_CASE( mock_object_asynchonous_call_expectation_fails )
 {
 #if defined(MOCK_THREAD_SAFE)
-    const mock_class m;
+    const mock_class m{};
     bool unexpected_call_received = false;
     MOCK_EXPECT( m.my_tag ).async(MOCK_THREAD_NAMESPACE::chrono::milliseconds(50)).once().with( "some parameter" );
-    MOCK_THREAD_NAMESPACE::thread context([&](){ 
+    MOCK_THREAD_NAMESPACE::thread context([&](){
         MOCK_THREAD_NAMESPACE::this_thread::sleep_for(MOCK_THREAD_NAMESPACE::chrono::milliseconds(100));
         try{
             m.my_method("some parameter");

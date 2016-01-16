@@ -91,7 +91,7 @@ namespace detail
                 }
             return valid_;
         }
-        
+
         virtual void reset()
         {
             lock _( mutex_ );
@@ -112,8 +112,15 @@ namespace detail
                 : wrapper_base< R, expectation_type >( e )
                 , lock_( m )
             {}
-            
+
             wrapper(const wrapper &) = delete;
+
+            wrapper( wrapper && w)
+                : wrapper_base< R, expectation_type > (*w.e_)
+                , lock_( std::move(w.lock_) )
+            {
+
+            }
 
             wrapper &once()
             {

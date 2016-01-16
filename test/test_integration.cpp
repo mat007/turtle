@@ -128,7 +128,7 @@ BOOST_FIXTURE_TEST_CASE( mock_object_method_const_disambiguation, mock_error_fix
     my_const_ambiguited_mock mock;
     MOCK_EXPECT( mock.tag1 );
     BOOST_CHECK_NO_THROW( mock.my_method() );
-    const my_const_ambiguited_mock const_mock;
+    const my_const_ambiguited_mock const_mock{};
     CHECK_ERROR( const_mock.my_method(), "unexpected call", 1, "?.my_const_ambiguited_mock::tag_2()" );
 }
 

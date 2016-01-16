@@ -49,6 +49,10 @@ namespace detail
             : e_( &e )
         {}
 
+        wrapper_base( wrapper_base && w )
+            : e_( w.e_ )
+        {}
+
         template< typename T >
         void returns( T t )
         {
@@ -64,6 +68,11 @@ namespace detail
             : e_( &e )
         {}
 
+        wrapper_base( wrapper_base && w )
+            : e_( w.e_ )
+        {}
+
+
         E* e_;
     };
     template< typename R, typename E >
@@ -71,6 +80,10 @@ namespace detail
     {
         wrapper_base( E& e )
             : e_( &e )
+        {}
+
+        wrapper_base( wrapper_base && w )
+            : e_( w.e_ )
         {}
 
         void returns( R* r )
