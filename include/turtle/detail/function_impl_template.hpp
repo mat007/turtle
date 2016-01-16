@@ -7,6 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "expectation_template.hpp"
+#include <boost/move/utility.hpp>
 #include <atomic>
 
 #ifndef MOCK_ERROR_POLICY
@@ -108,14 +109,17 @@ namespace detail
 
         struct wrapper : wrapper_base< R, expectation_type >
         {
+            private:
+                BOOST_MOVABLE_BUT_NOT_COPYABLE(wrapper);
+
+            public:
+
             wrapper( const boost::shared_ptr< mutex >& m, expectation_type& e )
                 : wrapper_base< R, expectation_type >( e )
                 , lock_( m )
             {}
 
-            wrapper(const wrapper &) = delete;
-
-            wrapper( wrapper && w)
+            wrapper( BOOST_RV_REF(wrapper) w)
                 : wrapper_base< R, expectation_type > (*w.e_)
                 , lock_( std::move(w.lock_) )
             {
