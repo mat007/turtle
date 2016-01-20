@@ -42,6 +42,7 @@ namespace detail
     typedef MOCK_THREAD_NAMESPACE::chrono::nanoseconds nanoseconds;
     typedef MOCK_THREAD_NAMESPACE::unique_lock<mutex> lock_base;
 
+#if defined(MOCK_ASYNC)
     struct lock : public lock_base
     {
         lock(const boost::shared_ptr< detail::mutex > &m)
@@ -49,7 +50,7 @@ namespace detail
             , m_(m)
         {}
 
-        lock(lock && l)
+        lock(BOOST_RV_REF(lock) l)
             : lock_base(*l.m_)
             , m_(l.m_)
         {
@@ -62,6 +63,31 @@ namespace detail
 
         boost::shared_ptr< detail::mutex > m_;
     };
+#else // MOCK_ASYNC
+
+    struct lock
+    {
+        lock(const boost::shared_ptr< detail::mutex > &m)
+            : m_(m)
+        {
+            m_->lock();
+        }
+
+        lock( const lock & rhs)
+        {
+            m_.swap(rhs.m_);
+        }
+        ~lock()
+        {
+            if(m_)
+              m_->unlock();
+        }
+        private:
+            lock & operator=(const lock &rhs);
+            mutable boost::shared_ptr< detail::mutex > m_;
+    };
+
+#endif // MOCK_ASYNC
 }
 } // mock
 

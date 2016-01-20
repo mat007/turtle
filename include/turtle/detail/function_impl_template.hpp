@@ -8,7 +8,8 @@
 
 #include "expectation_template.hpp"
 #include <boost/move/utility.hpp>
-#include <atomic>
+#include <boost/atomic.hpp>
+#include <iostream>
 
 #ifndef MOCK_ERROR_POLICY
 #   error no error policy has been set
@@ -46,7 +47,7 @@ namespace detail
             : context_( 0 )
             , valid_( true )
             , mutex_( boost::make_shared< mutex >() )
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
             , cv_( boost::make_shared< condition_variable>() )
 #endif
         {}
@@ -56,7 +57,7 @@ namespace detail
                 lock _(mutex_);
                 for (expectations_cit it = expectations_.begin();
                     it != expectations_.end(); ++it)
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
                     if (!it->verify(cv_, _))
 #else
                     if (!it->verify())
@@ -67,7 +68,7 @@ namespace detail
                         << lazy_expectations(this),
                         it->file(), it->line());
             }
-            context *c = context_.load(std::memory_order_acquire);
+            context *c = context_.load(boost::memory_order_acquire);
             if (c)
                 c->remove( *this );
         }
@@ -77,7 +78,7 @@ namespace detail
             lock _( mutex_ );
             for( expectations_cit it = expectations_.begin();
                 it != expectations_.end(); ++it )
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
                 if( ! it->verify(cv_,_) )
 #else
                 if( ! it->verify() )
@@ -121,7 +122,7 @@ namespace detail
 
             wrapper( BOOST_RV_REF(wrapper) w)
                 : wrapper_base< R, expectation_type > (*w.e_)
-                , lock_( std::move(w.lock_) )
+                , lock_( boost::move(w.lock_) )
             {
 
             }
@@ -197,7 +198,7 @@ namespace detail
 
 #undef MOCK_FUNCTION_IN
 #undef MOCK_FUNCTION_IN_ADD
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
             wrapper &async(const nanoseconds &timeout)
             {
                 this->e_->async(timeout);
@@ -245,7 +246,7 @@ namespace detail
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, t) ) const
         {
             lock _( mutex_ );
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
             struct notify_cv_on_exit
             {
                 notify_cv_on_exit(condition_variable &cv)
@@ -293,7 +294,7 @@ namespace detail
             boost::optional< type_name > type,
             boost::unit_test::const_string name )
         {
-            if (!context_.exchange(&c,std::memory_order_release))
+            if (!context_.exchange(&c,boost::memory_order_release))
                 c.add( *this );
             c.add( p, *this, instance, type, name );
         }
@@ -314,7 +315,7 @@ namespace detail
                 std::ostream& s, const lazy_context& c )
             {
 
-                context *pContext = c.impl_->context_.load(std::memory_order_acquire);
+                context *pContext = c.impl_->context_.load(boost::memory_order_acquire);
                 if( pContext )
                     pContext->serialize( s, *c.impl_ );
                 else
@@ -344,10 +345,10 @@ namespace detail
         typedef typename expectations_type::const_iterator expectations_cit;
 
         expectations_type expectations_;
-        std::atomic<context*> context_;
+        boost::atomic<context*> context_;
         mutable bool valid_;
         const boost::shared_ptr< mutex > mutex_;
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
         const boost::shared_ptr<condition_variable> cv_;
 #endif
     };

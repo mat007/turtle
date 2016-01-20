@@ -7,7 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "matcher_base_template.hpp"
-#include <atomic>
+#include <boost/atomic.hpp>
 
 #define MOCK_EXPECTATION_INITIALIZE(z, n, d) \
     BOOST_PP_COMMA_IF(n) c##n##_( c##n )
@@ -134,7 +134,7 @@ namespace detail
                 > () )
             , file_( "unknown location" )
             , line_( 0 )
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
             , blocked(false)
 #endif
         { }
@@ -148,20 +148,31 @@ namespace detail
                 > () )
             , file_( file )
             , line_( line )
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
             , blocked(false)
 #endif
         { }
 
-        expectation(expectation && e)
+        expectation(BOOST_RV_REF(expectation) e)
             : invocation_ ( e.invocation_)
             , matcher_(e.matcher_)
             , file_(e.file_)
             , line_(e.line_)
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
             , blocked(false)
 #endif
         {}
+
+        expectation &operator=(BOOST_RV_REF(expectation) e)
+        {
+            invocation_ = e.invocation_;
+             matcher_ =e.matcher_;
+             file_ = e.file_;
+             line_ = e.line_;
+#if defined(MOCK_ASYNC)
+            blocked.store(false, boost::memory_order_release);
+#endif
+        }
 
         ~expectation()
         {
@@ -202,12 +213,12 @@ namespace detail
         }
 #endif
 #endif
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
         template < typename duration>
         expectation &async(const duration timeout)
         {
             timeout_ = timeout;
-            blocked.store(false,std::memory_order_release);
+            blocked.store(false,boost::memory_order_release);
             return *this;
         }
 #endif
@@ -221,7 +232,7 @@ namespace detail
         {
             return invocation_->verify();
         }
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
         bool verify(const boost::shared_ptr< condition_variable> &cv, lock &lk) const
         {
             if (timeout_)
@@ -230,7 +241,7 @@ namespace detail
                 {
                     if (MOCK_THREAD_NAMESPACE::cv_status::timeout == cv->wait_for(lk.get_unique_lock(), *timeout_))
                     {
-                        blocked.store(true, std::memory_order_release);
+                        blocked.store(true, boost::memory_order_release);
                         return false;
                     }
                 }
@@ -241,8 +252,8 @@ namespace detail
         bool is_valid(
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) ) const
         {
-#if defined(MOCK_THREAD_SAFE)
-            return !blocked.load(std::memory_order_acquire) && !invocation_->exhausted()
+#if defined(MOCK_ASYNC)
+            return !blocked.load(boost::memory_order_acquire) && !invocation_->exhausted()
                 && (*matcher_)( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a) );
 #else
             return !invocation_->exhausted()
@@ -252,8 +263,8 @@ namespace detail
 
         bool invoke() const
         {
-#if defined(MOCK_THREAD_SAFE)
-            if (blocked.load(std::memory_order_acquire))
+#if defined(MOCK_ASYNC)
+            if (blocked.load(boost::memory_order_acquire))
                 return false;
 #endif
             for( sequences_cit it = sequences_.begin();
@@ -302,9 +313,9 @@ namespace detail
         sequences_type sequences_;
         const char* file_;
         int line_;
-#if defined(MOCK_THREAD_SAFE)
+#if defined(MOCK_ASYNC)
         boost::optional<nanoseconds> timeout_;
-        mutable std::atomic<bool> blocked;
+        mutable boost::atomic<bool> blocked;
 #endif
     };
 }

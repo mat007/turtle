@@ -49,7 +49,7 @@ namespace detail
             : e_( &e )
         {}
 
-        wrapper_base( wrapper_base && w )
+        wrapper_base( BOOST_RV_REF(wrapper_base) w )
             : e_( w.e_ )
         {}
 
@@ -68,7 +68,7 @@ namespace detail
             : e_( &e )
         {}
 
-        wrapper_base( wrapper_base && w )
+        wrapper_base( BOOST_RV_REF(wrapper_base) w )
             : e_( w.e_ )
         {}
 
@@ -82,7 +82,7 @@ namespace detail
             : e_( &e )
         {}
 
-        wrapper_base( wrapper_base && w )
+        wrapper_base( BOOST_RV_REF(wrapper_base) w )
             : e_( w.e_ )
         {}
 

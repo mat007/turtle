@@ -127,7 +127,7 @@ namespace detail
             value_imp( BOOST_RV_REF( value_type ) t )
                 : t_( boost::move( t ) )
             {}
-            value_imp( const T& t )
+            value_imp( const typename boost::remove_reference<T>::type & t )
                 : t_( t )
             {}
             template< typename Y >
@@ -150,10 +150,10 @@ namespace detail
             return static_cast< value_imp< T >& >( *v_ ).t_;
         }
         template< typename T >
-        Result& store( T* t )
+        typename boost::remove_reference<Result>::type & store( T* t )
         {
             v_.reset( new value_imp< Result >( t ) );
-            return static_cast< value_imp< Result >& >( *v_ ).t_;
+            return static_cast< value_imp< typename boost::remove_reference< Result >::type >& >( *v_ ).t_;
         }
 
         boost::shared_ptr< value > v_;
