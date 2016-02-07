@@ -13,6 +13,7 @@ Not yet released
 * Fixed missing thread synchronization in mock::sequence
 * Fixed build errors with Boost 1.59
 * Fixed multiply defined symbol definition for MOCK_FUNCTION included from several translation units
+* Fixed extra semicolon warning with BOOST_GLOBAL_FIXTURE prior to Boost 1.59
 
 [endsect]
 
