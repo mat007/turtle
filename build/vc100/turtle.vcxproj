@@ -19,13 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\turtle\cleanup.hpp" />
     <ClInclude Include="..\..\include\turtle\config.hpp" />
     <ClInclude Include="..\..\include\turtle\constraint.hpp" />
     <ClInclude Include="..\..\include\turtle\constraints.hpp" />
     <ClInclude Include="..\..\include\turtle\detail\action.hpp" />
     <ClInclude Include="..\..\include\turtle\detail\addressof.hpp" />
     <ClInclude Include="..\..\include\turtle\detail\child.hpp" />
-    <ClInclude Include="..\..\include\turtle\detail\cleanup.hpp" />
     <ClInclude Include="..\..\include\turtle\detail\context.hpp" />
     <ClInclude Include="..\..\include\turtle\detail\expectation_template.hpp" />
     <ClInclude Include="..\..\include\turtle\detail\formatter.hpp" />

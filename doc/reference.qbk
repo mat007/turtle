@@ -165,7 +165,7 @@ Synopsis :
  
  MOCK_STATIC_METHOD_TPL( [calling convention] name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
 
-[note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test.]
+[note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test, see the related [link turtle.patterns.managing_static_mock_objects pattern section].]
 
 [note In case of a calling convention specified, all four parameters must be provided.]
 
@@ -275,7 +275,7 @@ Synopsis :
 
  MOCK_FUNCTION( [calling convention] name, arity, signature[, identifier] ) // if 'identifier' is omitted it will default to 'name'
 
-[note A static object is used behind the scene in order to keep track of the expectations of a mock function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test.]
+[note A static object is used behind the scene in order to keep track of the expectations of a mock function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test, see the related [link turtle.patterns.managing_static_mock_objects pattern section].]
 
 [note In case of a calling convention specified, all four parameters must be provided.]
 

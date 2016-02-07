@@ -13,12 +13,12 @@
 #include "object.hpp"
 #include "reset.hpp"
 #include "verify.hpp"
+#include "cleanup.hpp"
 #include "detail/functor.hpp"
 #include "detail/function.hpp"
 #include "detail/type_name.hpp"
 #include "detail/signature.hpp"
 #include "detail/parameter.hpp"
-#include "detail/cleanup.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/utility/identity_type.hpp>

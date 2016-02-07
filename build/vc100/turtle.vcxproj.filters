@@ -115,9 +115,6 @@
     <ClInclude Include="..\..\include\turtle\detail\child.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\turtle\detail\cleanup.hpp">
-      <Filter>Source Files\detail</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\turtle\detail\context.hpp">
       <Filter>Source Files\detail</Filter>
     </ClInclude>
@@ -126,6 +123,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\turtle\detail\formatter.hpp">
       <Filter>Source Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\turtle\cleanup.hpp">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
