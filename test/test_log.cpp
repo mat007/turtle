@@ -12,6 +12,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/optional.hpp>
 #ifdef BOOST_MSVC
 #pragma warning( push, 0 )
 #endif
@@ -668,3 +669,12 @@ BOOST_AUTO_TEST_CASE( nullptr_is_serialized )
 }
 
 #endif
+
+BOOST_AUTO_TEST_CASE( mock_boost_optional_yields_its_value_when_serialized )
+{
+    BOOST_CHECK_EQUAL( "7", to_string( boost::optional< int >( 7 ) ) );
+    BOOST_CHECK_EQUAL( "?", to_string( boost::optional< non_serializable >( non_serializable() ) ) );
+    BOOST_CHECK_EQUAL( "none", to_string( boost::optional< int >() ) );
+    BOOST_CHECK_EQUAL( "none", to_string( boost::optional< non_serializable >() ) );
+    BOOST_CHECK_EQUAL( "none", to_string( boost::none ) );
+}
