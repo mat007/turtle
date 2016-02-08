@@ -140,7 +140,7 @@ namespace detail
         return s << mock::format( t.lock() );
     }
     template< typename T, typename D >
-    inline stream& operator<<( stream& s, const std::unique_ptr< T, D >& p )
+    stream& operator<<( stream& s, const std::unique_ptr< T, D >& p )
     {
         return s << mock::format( p.get() );
     }
