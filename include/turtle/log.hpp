@@ -15,6 +15,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/detail/container_fwd.hpp>
 #include <boost/function_types/is_callable_builtin.hpp>
+#include <boost/none.hpp>
 #include <memory>
 
 namespace boost
@@ -22,6 +23,7 @@ namespace boost
     template< typename T > class shared_ptr;
     template< typename T > class weak_ptr;
     template< typename T > class reference_wrapper;
+    template< typename T > class optional;
 
 namespace phoenix
 {
@@ -127,6 +129,17 @@ namespace detail
     {
         return s << mock::format( t.lock() );
     }
+    inline stream& operator<<( stream& s, const boost::none_t& )
+    {
+        return s << "none";
+    }
+    template< typename T >
+    stream& operator<<( stream& s, const boost::optional< T >& t )
+    {
+        if( t )
+            return s << mock::format( t.get() );
+        return s << boost::none;
+    }
 
 #ifdef MOCK_SMART_PTR
     template< typename T >
@@ -140,7 +153,7 @@ namespace detail
         return s << mock::format( t.lock() );
     }
     template< typename T, typename D >
-    inline stream& operator<<( stream& s, const std::unique_ptr< T, D >& p )
+    stream& operator<<( stream& s, const std::unique_ptr< T, D >& p )
     {
         return s << mock::format( p.get() );
     }
