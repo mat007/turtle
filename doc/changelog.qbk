@@ -10,6 +10,9 @@
 [section unreleased]
 Not yet released
 
+* Fixed MOCK_FUNCTOR compilation with VS2015
+* Removed round parenthesis in signature support for compilers without variadic macros
+
 [endsect]
 
 [section 1.2.8]

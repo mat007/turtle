@@ -28,7 +28,7 @@
     struct T : mock::object
 
 #define MOCK_FUNCTION_TYPE(S, tpn) \
-    tpn boost::remove_pointer< tpn BOOST_IDENTITY_TYPE((S)) >::type
+    tpn boost::remove_pointer< tpn BOOST_IDENTITY_TYPE(S) >::type
 
 #ifdef MOCK_VARIADIC_MACROS
 
@@ -47,10 +47,10 @@
     struct T : B, mock::object, mock::detail::base< B >
 
 #define MOCK_FUNCTOR(f, S) \
-    mock::detail::functor< MOCK_FUNCTION_TYPE(S,) > f, f##_mock
+    mock::detail::functor< MOCK_FUNCTION_TYPE((S),) > f, f##_mock
 #define MOCK_FUNCTOR_TPL(f, S) \
     mock::detail::functor< \
-        MOCK_FUNCTION_TYPE(S, typename) > f, f##_mock
+        MOCK_FUNCTION_TYPE((S), typename) > f, f##_mock
 
 #endif // MOCK_VARIADIC_MACROS
 
@@ -60,8 +60,8 @@
     t##_mock( mock::detail::root, "?." )
 
 #define MOCK_METHOD_HELPER(S, t, tpn) \
-    mutable mock::detail::function< MOCK_FUNCTION_TYPE(S, tpn) > t##_mock_; \
-    mock::detail::function< MOCK_FUNCTION_TYPE(S, tpn) >& t##_mock( \
+    mutable mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) > t##_mock_; \
+    mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) >& t##_mock( \
         const mock::detail::context&, \
         boost::unit_test::const_string instance ) const \
     { \
@@ -76,10 +76,10 @@
     BOOST_PP_COMMA_IF(n) d, n >::type p##n
 #define MOCK_PARAMS(n, S, tpn) \
     BOOST_PP_REPEAT(n, MOCK_PARAM, \
-        tpn mock::detail::parameter< MOCK_FUNCTION_TYPE(S, tpn))
+        tpn mock::detail::parameter< MOCK_FUNCTION_TYPE((S), tpn))
 #define MOCK_DECL(M, n, S, c, tpn) \
     tpn boost::function_types::result_type< \
-        MOCK_FUNCTION_TYPE(S, tpn) >::type M( \
+        MOCK_FUNCTION_TYPE((S), tpn) >::type M( \
             MOCK_PARAMS(n, S, tpn) ) c
 
 #define MOCK_METHOD_AUX(M, n, S, t, c, tpn) \
@@ -87,7 +87,7 @@
     { \
         BOOST_MPL_ASSERT_RELATION( n, ==, \
             boost::function_types::function_arity< \
-                MOCK_FUNCTION_TYPE(S, tpn) >::value ); \
+                MOCK_FUNCTION_TYPE((S), tpn) >::value ); \
         return MOCK_ANONYMOUS_HELPER(t)( \
             BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
@@ -137,11 +137,11 @@
     MOCK_METHOD_HELPER(T(), t, typename)
 
 #define MOCK_FUNCTION_HELPER(S, t, s, tpn) \
-    s mock::detail::function< MOCK_FUNCTION_TYPE(S, tpn) >& t##_mock( \
+    s mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) >& t##_mock( \
         mock::detail::context& context, \
         boost::unit_test::const_string instance ) \
     { \
-        static mock::detail::function< MOCK_FUNCTION_TYPE(S, tpn) > f; \
+        static mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) > f; \
         return f( context, instance ); \
     }
 
@@ -167,7 +167,7 @@
     { \
         BOOST_MPL_ASSERT_RELATION( n, ==, \
             boost::function_types::function_arity< \
-                MOCK_FUNCTION_TYPE(S, tpn) >::value ); \
+                MOCK_FUNCTION_TYPE((S), tpn) >::value ); \
         return MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
     }
 
@@ -178,7 +178,7 @@
 #define MOCK_VARIADIC_ELEM_2(e0, e1, e2, ...) e2
 
 #define MOCK_METHOD_SIGNATURE(M, n, S, t) \
-    typedef MOCK_FUNCTION_TYPE(S,) BOOST_PP_CAT(t,_sig_type); \
+    typedef MOCK_FUNCTION_TYPE((S),) BOOST_PP_CAT(t,_sig_type); \
     MOCK_METHOD_EXT(M, n, BOOST_PP_CAT(t,_sig_type), t)
 #define MOCK_METHOD(M, ...) \
     MOCK_METHOD_SIGNATURE(M, \
