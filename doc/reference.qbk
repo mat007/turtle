@@ -101,8 +101,6 @@ Synopsis :
 
 [note The signature cannot be omitted for the _TPL familly of macros, see the related [link turtle.limitations.template_base_class_methods_cannot_be_mocked_without_specifying_the_signature limitation section].]
 
-[note The signature must be surrounded with round parenthesis if the return type contains a comma.]
-
 [note [link turtle.reference.creation.constructor Constructors], [link turtle.reference.creation.destructor destructors] and [link turtle.reference.creation.conversion_operator conversion operators] require special care.]
 
 [note In case of a calling convention specified, all four parameters must be provided.]

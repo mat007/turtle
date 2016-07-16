@@ -346,11 +346,11 @@ namespace
 {
     MOCK_CLASS( round_parenthesized_signature )
     {
-        MOCK_METHOD_EXT( m0, 0, (std::map< int, int >()), m0 )
-        MOCK_STATIC_METHOD( m1, 0, (std::map< int, int >()), m1 )
-        MOCK_FUNCTOR( f0, (std::map< int, int >()) );
+        MOCK_METHOD_EXT( m0, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())), m0 )
+        MOCK_STATIC_METHOD( m1, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())), m1 )
+        MOCK_FUNCTOR( f0, BOOST_IDENTITY_TYPE((std::map< int, int >())) );
     };
-    MOCK_FUNCTION( fun0, 0, (std::map< int, int >()), fun0 )
+    MOCK_FUNCTION( fun0, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())), fun0 )
 }
 
 #ifdef MOCK_VARIADIC_MACROS
@@ -397,7 +397,7 @@ namespace
 
     MOCK_FUNCTION( fun1, 0, void() )
     MOCK_FUNCTION( fun2, 0, void(), fun2 )
-    MOCK_FUNCTION( fun3, 0, (std::map< int, int >()) )
+    MOCK_FUNCTION( fun3, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())) )
 
     MOCK_FUNCTOR( f_variadic, std::map< int, int >() );
 }
