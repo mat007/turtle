@@ -234,7 +234,7 @@ namespace member_function_example_8
 //[ member_function_example_8
 MOCK_CLASS( mock_class )
 {
-    MOCK_METHOD( method, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())) ) // the signature must be wrapped in [@http://www.boost.org/libs/utility/identity_type/doc/html/index.html BOOST_IDENTITY_TYPE] if the return type contains a comma
+    MOCK_METHOD( method, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())) ) // the signature must be wrapped in BOOST_IDENTITY_TYPE if the return type contains a comma
 };
 //]
 }
