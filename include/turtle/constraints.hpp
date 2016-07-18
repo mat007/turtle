@@ -69,7 +69,8 @@ namespace detail
 #   define MOCK_SMALL() \
         detail::is_small( actual, tolerance )
 #   define MOCK_PERCENT_TOLERANCE() \
-        detail::is_close( actual, expected, boost::math::fpc::percent_tolerance( tolerance ) )
+        detail::is_close( actual, expected, \
+            boost::math::fpc::percent_tolerance( tolerance ) )
 #   define MOCK_FRACTION_TOLERANCE() \
         detail::is_close( actual, expected, tolerance )
 

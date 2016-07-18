@@ -121,6 +121,6 @@
     </tar>
   </target>
 
-  <target name="boost" depends="boost.convert,boost.build,boost.package" description="convert to boost with documentation and tests"/>
+  <target name="boost" depends="boost.convert,boost.build,boost.package" description="convert and package to boost with documentation and tests"/>
 
 </project>
