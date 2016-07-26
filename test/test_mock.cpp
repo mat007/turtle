@@ -367,7 +367,7 @@ namespace
 
     MOCK_BASE_CLASS( variadic, base )
     {
-        MOCK_METHOD( m1, 0 )
+        MOCK_METHOD( m1, 0, void() )
         MOCK_METHOD( m2, 0, void() )
         MOCK_METHOD( m3, 0, void(), m3 )
         MOCK_CONST_METHOD( m4, 0, void() )

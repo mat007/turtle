@@ -17,45 +17,77 @@
 
 #ifdef MOCK_HDR_MUTEX
 #include <mutex>
+#include <condition_variable>
+#include <chrono>
 #else
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
+#include <boost/thread/condition_variable.hpp>
+#include <boost/chrono.hpp>
+#endif
+
+#ifdef MOCK_HDR_MUTEX
+#define MOCK_THREAD_NAMESPACE std
+#else
+#define MOCK_THREAD_NAMESPACE boost
 #endif
 
 namespace mock
 {
 namespace detail
 {
-#ifdef MOCK_HDR_MUTEX
-    typedef std::recursive_mutex mutex;
-    typedef std::lock_guard< mutex > scoped_lock;
-#else
-    typedef boost::recursive_mutex mutex;
-    typedef boost::lock_guard< mutex > scoped_lock;
-#endif
+    typedef MOCK_THREAD_NAMESPACE::recursive_mutex mutex;
+    typedef MOCK_THREAD_NAMESPACE::lock_guard< mutex > scoped_lock;
+    typedef MOCK_THREAD_NAMESPACE::condition_variable_any condition_variable;
+    typedef MOCK_THREAD_NAMESPACE::chrono::nanoseconds nanoseconds;
+    typedef MOCK_THREAD_NAMESPACE::unique_lock<mutex> lock_base;
 
-    struct lock
+#if defined(MOCK_ASYNC)
+    struct lock : public lock_base
     {
-        lock( const boost::shared_ptr< mutex >& m )
-            : m_( m )
+        lock(const boost::shared_ptr< detail::mutex > &m)
+            : lock_base (*m)
+            , m_(m)
+        {}
+
+        lock(BOOST_RV_REF(lock) l)
+            : lock_base(*l.m_)
+            , m_(l.m_)
         {
-            m_->lock();
-        }
-        lock( const lock& rhs )
-        {
-            m_.swap( rhs.m_ );
         }
         ~lock()
         {
-            if( m_ )
-                m_->unlock();
+            unlock();
+        }
+        lock_base &get_unique_lock() { return *this; }
+
+        boost::shared_ptr< detail::mutex > m_;
+    };
+#else // MOCK_ASYNC
+
+    struct lock
+    {
+        lock(const boost::shared_ptr< detail::mutex > &m)
+            : m_(m)
+        {
+            m_->lock();
         }
 
-    private:
-        lock& operator=( const lock& rhs );
-
-        mutable boost::shared_ptr< mutex > m_;
+        lock( const lock & rhs)
+        {
+            m_.swap(rhs.m_);
+        }
+        ~lock()
+        {
+            if(m_)
+              m_->unlock();
+        }
+        private:
+            lock & operator=(const lock &rhs);
+            mutable boost::shared_ptr< detail::mutex > m_;
     };
+
+#endif // MOCK_ASYNC
 }
 } // mock
 

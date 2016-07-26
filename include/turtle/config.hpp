@@ -82,4 +82,10 @@
 #   endif
 #endif
 
+#if defined(MOCK_RVALUE_REFERENCES) && defined(MOCK_THREAD_SAFE)
+#   ifndef MOCK_NO_ASYNC
+#       define MOCK_ASYNC
+#   endif
+#endif
+
 #endif // MOCK_CONFIG_HPP_INCLUDED

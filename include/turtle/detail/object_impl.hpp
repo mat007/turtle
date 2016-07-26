@@ -31,6 +31,7 @@ namespace detail
     public:
         object_impl()
             : mutex_( boost::make_shared< mutex >() )
+            , children_mutex_( boost::make_shared< mutex >() )
         {}
 
         virtual void add( const void* /*p*/, verifiable& v,
@@ -38,7 +39,7 @@ namespace detail
             boost::optional< type_name > type,
             boost::unit_test::const_string name )
         {
-            lock _( mutex_ );
+            lock _( children_mutex_ );
             if( children_.empty() )
                 detail::root.add( *this );
             children_[ &v ].update( parent_, instance, type, name );
@@ -50,16 +51,21 @@ namespace detail
         }
         virtual void remove( verifiable& v )
         {
-            lock _( mutex_ );
-            group_.remove( v );
-            children_.erase( &v );
-            if( children_.empty() )
-                detail::root.remove( *this );
+            {
+                lock _(mutex_);
+                group_.remove(v);
+            }
+            {
+                lock _( children_mutex_ );
+                children_.erase(&v);
+                if (children_.empty())
+                    detail::root.remove(*this);
+            }
         }
 
         virtual void serialize( std::ostream& s, const verifiable& v ) const
         {
-            lock _( mutex_ );
+            lock _( children_mutex_ );
             children_cit it = children_.find( &v );
             if( it != children_.end() )
                 s << it->second;
@@ -72,6 +78,7 @@ namespace detail
             lock _( mutex_ );
             return group_.verify();
         }
+
         virtual void reset()
         {
             lock _( mutex_ );
@@ -87,6 +94,7 @@ namespace detail
         parent parent_;
         children_t children_;
         const boost::shared_ptr< mutex > mutex_;
+        const boost::shared_ptr< mutex > children_mutex_;
     };
 }
 } // mock
