@@ -150,7 +150,7 @@ namespace detail
             return static_cast< value_imp< T >& >( *v_ ).t_;
         }
         template< typename T >
-        Result& store( T* t )
+        typename boost::remove_reference< Result >::type& store( T* t )
         {
             v_.reset( new value_imp< Result >( t ) );
             return static_cast< value_imp< Result >& >( *v_ ).t_;

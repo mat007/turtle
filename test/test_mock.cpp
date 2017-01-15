@@ -9,7 +9,6 @@
 #include "mock_error.hpp"
 #include <turtle/mock.hpp>
 #include <boost/test/auto_unit_test.hpp>
-#include <boost/mpl/assert.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
 
