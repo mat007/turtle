@@ -462,3 +462,46 @@ namespace stdcall
 
     MOCK_FUNCTION( MOCK_STDCALL f, 0, void(), f )
 }
+
+namespace
+{
+    MOCK_CLASS( base_1 )
+    {
+        MOCK_DESTRUCTOR( ~base_1, base_1_destructor )
+
+        virtual void f_1() = 0;
+    };
+    MOCK_CLASS( base_2 )
+    {
+        MOCK_DESTRUCTOR( ~base_2, base_2_destructor )
+
+        virtual void f_2() = 0;
+    };
+    MOCK_BASE_CLASS( mock_1, base_1 )
+    {
+        MOCK_DESTRUCTOR( ~mock_1, mock_1_destructor )
+
+        MOCK_METHOD( f_1, 0 )
+    };
+    MOCK_BASE_CLASS( mock_2, base_2 ), mock_1
+    {
+        MOCK_DESTRUCTOR( ~mock_2, mock_2_destructor )
+
+        MOCK_METHOD( f_2, 0 )
+    };
+}
+
+BOOST_AUTO_TEST_CASE( mock_object_can_inherit_from_another_mock_object )
+{
+    mock_2 m;
+    MOCK_EXPECT( m.f_1 ).once();
+    MOCK_EXPECT( m.f_2 ).once();
+    m.f_1();
+    m.f_2();
+    mock::verify( m );
+    mock::reset( m );
+    MOCK_EXPECT( m.mock_2_destructor ).once();
+    MOCK_EXPECT( m.mock_1_destructor ).once();
+    MOCK_EXPECT( m.base_2_destructor ).once();
+    MOCK_EXPECT( m.base_1_destructor ).once();
+}

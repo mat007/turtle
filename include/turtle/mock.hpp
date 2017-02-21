@@ -25,7 +25,7 @@
 #include <boost/mpl/assert.hpp>
 
 #define MOCK_CLASS(T) \
-    struct T : mock::object
+    struct T : virtual mock::object
 
 #define MOCK_FUNCTION_TYPE(S, tpn) \
     tpn boost::remove_pointer< tpn BOOST_IDENTITY_TYPE(S) >::type
@@ -33,7 +33,8 @@
 #ifdef MOCK_VARIADIC_MACROS
 
 #define MOCK_BASE_CLASS(T, ...) \
-    struct T : __VA_ARGS__, mock::object, mock::detail::base< __VA_ARGS__ >
+    struct T : __VA_ARGS__, virtual mock::object, \
+        virtual mock::detail::base< __VA_ARGS__ >
 
 #define MOCK_FUNCTOR(f, ...) \
     mock::detail::functor< MOCK_FUNCTION_TYPE((__VA_ARGS__),) > f, f##_mock
@@ -43,8 +44,8 @@
 
 #else // MOCK_VARIADIC_MACROS
 
-#define MOCK_BASE_CLASS(T, I) \
-    struct T : I, mock::object, mock::detail::base< I >
+#define MOCK_BASE_CLASS(T, B) \
+    struct T : B, virtual mock::object, virtual mock::detail::base< B >
 
 #define MOCK_FUNCTOR(f, S) \
     mock::detail::functor< MOCK_FUNCTION_TYPE((S),) > f, f##_mock
@@ -164,7 +165,7 @@
     MOCK_CONSTRUCTOR_AUX(T, n, A, t, typename)
 
 #define MOCK_DESTRUCTOR(T, t) \
-    T() { try { MOCK_ANONYMOUS_HELPER(t)(); } catch( ... ) {} } \
+    virtual T() { try { MOCK_ANONYMOUS_HELPER(t)(); } catch( ... ) {} } \
     MOCK_METHOD_HELPER(void(), t,)
 
 #define MOCK_FUNCTION_AUX(F, n, S, t, s, tpn) \

@@ -18,6 +18,8 @@ Not yet released
 * Added support for dereferencing in mock::equal
 * Added support for movable objects in mock::retrieve
 * Fixed deprecation warning about std::uncaught_exception in c++17 for msvc
+* Added virtual inheritance to mock::object defined with MOCK_BASE_CLASS and MOCK_CLASS
+* Added virtual to destructors defined with MOCK_DESTRUCTOR
 
 [endsect]
 
