@@ -13,6 +13,7 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/utility/result_of.hpp>
 #include <boost/mpl/assert.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 
@@ -480,6 +481,8 @@ namespace
     };
 }
 
+#ifdef MOCK_AUTO_PTR
+
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_value, mock_error_fixture )
 {
     {
@@ -534,6 +537,8 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_valu
         CHECK_CALLS( 1 );
     }
 }
+
+#endif // MOCK_AUTO_PTR
 
 #ifdef MOCK_RVALUE_REFERENCES
 
@@ -824,7 +829,7 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, moc
 
 BOOST_FIXTURE_TEST_CASE( expectation_with_remaining_untriggered_matches_upon_destruction_calls_untriggered_expectation, mock_error_fixture )
 {
-    std::auto_ptr< mock::detail::function< void() > > f( new mock::detail::function< void() > );
+    boost::scoped_ptr< mock::detail::function< void() > > f( new mock::detail::function< void() > );
     f->expect().once();
     CHECK_ERROR( f.reset(), "untriggered expectation", 0, "?\n. once()" );
 }
@@ -844,7 +849,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_unexpected_call_call_disables_the_automatic_
 
 BOOST_FIXTURE_TEST_CASE( adding_an_expectation_reactivates_the_verification_upon_destruction, mock_error_fixture )
 {
-    std::auto_ptr< mock::detail::function< void() > > f( new mock::detail::function< void() > );
+    boost::scoped_ptr< mock::detail::function< void() > > f( new mock::detail::function< void() > );
     CHECK_ERROR( (*f)(), "unexpected call", 0, "?()" );
     f->expect().once();
     CHECK_ERROR( f.reset(), "untriggered expectation", 0, "?\n. once()" );

@@ -173,6 +173,7 @@ namespace detail
         {}
     };
 
+#ifdef MOCK_AUTO_PTR
     template< typename Result, typename Signature >
     class action< std::auto_ptr< Result >, Signature >
         : public action_base< std::auto_ptr< Result >, Signature >
@@ -208,6 +209,7 @@ namespace detail
     private:
         mutable std::auto_ptr< Result > v_;
     };
+#endif // MOCK_AUTO_PTR
 }
 } // mock
 
