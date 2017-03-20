@@ -207,6 +207,8 @@ BOOST_FIXTURE_TEST_CASE( mock_object_is_named, mock_error_fixture )
     BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
 }
 
+#ifdef MOCK_AUTO_PTR
+
 BOOST_FIXTURE_TEST_CASE( mock_object_auto_pointer_is_named, mock_error_fixture )
 {
     std::auto_ptr< my_mock > m( new my_mock );
@@ -224,6 +226,8 @@ BOOST_FIXTURE_TEST_CASE( mock_object_const_auto_pointer_is_named, mock_error_fix
     BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
     BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
 }
+
+#endif // MOCK_AUTO_PTR
 
 BOOST_FIXTURE_TEST_CASE( mock_object_shared_pointer_is_named, mock_error_fixture )
 {

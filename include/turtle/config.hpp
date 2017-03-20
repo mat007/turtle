@@ -82,4 +82,10 @@
 #   endif
 #endif
 
+#if !defined(BOOST_NO_AUTO_PTR)
+#   ifndef MOCK_NO_AUTO_PTR
+#      define MOCK_AUTO_PTR
+#   endif
+#endif
+
 #endif // MOCK_CONFIG_HPP_INCLUDED

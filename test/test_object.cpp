@@ -11,6 +11,7 @@
 #include <turtle/verify.hpp>
 #include <turtle/detail/function.hpp>
 #include <boost/test/auto_unit_test.hpp>
+#include <boost/scoped_ptr.hpp>
 
 namespace
 {
@@ -89,7 +90,7 @@ BOOST_FIXTURE_TEST_CASE( an_object_is_assignable_by_sharing_its_state, mock_erro
 
 BOOST_FIXTURE_TEST_CASE( an_object_is_copiable_by_sharing_its_state, mock_error_fixture )
 {
-    std::auto_ptr< object > o2( new object );
+    boost::scoped_ptr< object > o2( new object );
     const object o1( *o2 );
     mock::detail::function< void() > e;
     mock::detail::configure( *o2, e, "instance", MOCK_TYPE_NAME(*o2), "name" );
