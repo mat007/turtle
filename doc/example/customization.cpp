@@ -147,21 +147,22 @@ struct custom_policy
 {
     static Result abort()
     {
-        // ...
+        // Notify the test framework that an error occurs which makes it impossible to continue the test.
+        // This should most likely throw an exception of some kind.
     }
     template< typename Context >
     static void fail( const char* message, const Context& context, const char* file = "unknown location", int line = 0 )
     {
-        // ...
+        // Notify the test framework that an unexpected call has occurred.
     }
     template< typename Context >
     static void call( const Context& context, const char* file, int line )
     {
-        // ...
+        // Notify the test framework that an expectation has been fulfilled.
     }
     static void pass( const char* file, int line )
     {
-        // ...
+        // Notify the test framework that the test execution merely passed the given code location.
     }
 };
 //]
