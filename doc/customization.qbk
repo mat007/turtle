@@ -148,6 +148,8 @@ The policy can then be activated by defining MOCK_ERROR_POLICY prior to includin
 
 [define_custom_policy]
 
+A custom policy for [@https://github.com/philsquared/Catch Catch] is provided and can be enabled simply by including catch.hpp instead of turtle.hpp.
+
 [endsect]
 
 [section Thread safety]
