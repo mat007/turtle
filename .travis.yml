@@ -11,9 +11,14 @@
 
 sudo: false
 
-os:
-    - linux
+os: linux
 
+language: cpp
+
+compiler:
+    - gcc
+    - clang
+  
 env:
     - CXX_STANDARD=c++98 BRANCH_TO_TEST=boost-1.56.0
     - CXX_STANDARD=c++0x BRANCH_TO_TEST=boost-1.56.0
@@ -57,9 +62,8 @@ script:
     - if [ "$CCFLAGS" != "" ]; then FLAGS="cxxflags=\"$CCFLAGS\" linkflags=\"$LINKFLAGS\""; else FLAGS=""; fi
     - cd $PROJECT_DIR/build
     # `--coverage` flags required to generate coverage info for Coveralls
-    # ../../../b2 -q cxxflags="--coverage -std=$CXX_STANDARD" linkflags="--coverage"
     - export BOOST_ROOT=$BOOST
-    - ./build.sh cxxflags="--coverage -std=$CXX_STANDARD" linkflags="--coverage"
+    - ./build.sh toolset=$CC cxxflags="--coverage -std=$CXX_STANDARD" linkflags="--coverage"
 
 after_success:
     - COVERALS_DIR=$PROJECT_DIR/coverals
