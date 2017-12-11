@@ -219,6 +219,16 @@ BOOST_AUTO_TEST_CASE( retrieve_constraint )
         BOOST_CHECK_EQUAL( i, &j );
     }
 #endif
+#ifdef MOCK_SMART_PTR
+    {
+        std::unique_ptr< int > i;
+        std::unique_ptr< int > j( new int( 3 ) );
+        BOOST_CHECK( mock::retrieve( i ).c_( j ) );
+        BOOST_REQUIRE( i );
+        BOOST_CHECK_EQUAL( 3, *i );
+        BOOST_CHECK( !j );
+    }
+#endif
 }
 
 namespace
