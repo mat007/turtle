@@ -14,6 +14,7 @@
 #include "detail/addressof.hpp"
 #include <boost/ref.hpp>
 #include <boost/version.hpp>
+#include <boost/move/move.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/common_type.hpp>
 #include <boost/type_traits/is_convertible.hpp>
@@ -155,6 +156,12 @@ namespace detail
             >::type* = 0 ) const
         {
             *expected_ = detail::addressof( actual );
+            return true;
+        }
+        template< typename Actual >
+        bool operator()( BOOST_RV_REF( Actual ) actual ) const
+        {
+            *expected_ = boost::move( actual );
             return true;
         }
         friend std::ostream& operator<<( std::ostream& s, const retrieve& r )
