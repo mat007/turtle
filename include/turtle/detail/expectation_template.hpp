@@ -91,7 +91,7 @@ namespace detail
     template< typename F,
         BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T) >
     class multi_matcher< F, void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
-        : public matcher_base< void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS,T) ) >
+        : public matcher_base< void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
     {
     public:
         multi_matcher( const F& f )
@@ -102,7 +102,7 @@ namespace detail
         virtual bool operator()(
             BOOST_PP_ENUM_BINARY_PARAMS( MOCK_NUM_ARGS, T, a ) )
         {
-            return f_( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a ) );
+            return f_( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a) );
         }
         virtual void serialize( std::ostream& s ) const
         {

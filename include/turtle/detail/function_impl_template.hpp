@@ -144,6 +144,7 @@ namespace detail
                     BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, c) );
                 return *this;
             }
+
 #if MOCK_NUM_ARGS > 1
             template< typename Constraint >
             wrapper with( const Constraint& c )
