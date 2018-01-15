@@ -27,8 +27,8 @@ namespace detail
     class action_base
     {
     private:
-        typedef boost::function< Signature > functor_type;
-        typedef boost::function< Result() > action_type;
+        typedef std::function< Signature > functor_type;
+        typedef std::function< Result() > action_type;
 
     public:
         const functor_type& functor() const

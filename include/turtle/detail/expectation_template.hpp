@@ -23,6 +23,9 @@
 #define MOCK_EXPECTATION_SERIALIZE_ANY(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) "any"
 
+#define MOCK_CALL_PARAM_TYPE(z, n, d) \
+    typename boost::call_traits< T##n >::param_type
+
 namespace mock
 {
 namespace detail
@@ -36,7 +39,7 @@ namespace detail
     {
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_CALL_PARAM_TYPE, _) )
         {
             return true;
         }
@@ -70,7 +73,7 @@ namespace detail
 
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) )
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_CALL_PARAM, _) )
         {
             return BOOST_PP_REPEAT(MOCK_NUM_ARGS,
                 MOCK_EXPECTATION_IS_VALID, _);
@@ -100,7 +103,7 @@ namespace detail
 
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM_BINARY_PARAMS( MOCK_NUM_ARGS, T, a ) )
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_CALL_PARAM, _) )
         {
             return f_( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a) );
         }
@@ -198,7 +201,7 @@ namespace detail
         }
 
         bool is_valid(
-            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) ) const
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_CALL_PARAM, _) ) const
         {
             return !invocation_->exhausted()
                 && (*matcher_)( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a) );
@@ -256,6 +259,7 @@ namespace detail
 }
 } // mock
 
+#undef MOCK_CALL_PARAM_TYPE
 #undef MOCK_EXPECTATION_INITIALIZE
 #undef MOCK_EXPECTATION_MEMBER
 #undef MOCK_EXPECTATION_IS_VALID

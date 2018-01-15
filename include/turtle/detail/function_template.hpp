@@ -8,12 +8,8 @@
 
 #include "function_impl_template.hpp"
 
-#define MOCK_FUNCTION_CALL(z, n, d ) \
-    BOOST_PP_COMMA_IF(n) typename \
-        boost::call_traits< T##n >::param_type
-
-#define MOCK_FUNCTION_PARAM(z, n, d) \
-    MOCK_FUNCTION_CALL(z, n, d) t##n
+#define MOCK_FORWARD(z, n, d) \
+    boost::forward< T##n >( t##n )
 
 namespace mock
 {
@@ -36,7 +32,7 @@ namespace detail
 
     private:
         typedef function_impl<
-            R ( BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FUNCTION_CALL, _) )
+            R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
         > impl_type;
         typedef typename impl_type::wrapper_type expectation_type;
         typedef typename impl_type::error_type error_type;
@@ -76,9 +72,9 @@ namespace detail
         }
 
         R operator()(
-            BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_FUNCTION_PARAM, _) ) const
+            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, t) ) const
         {
-            return (*impl_)( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) );
+            return (*impl_)( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) );
         }
 
         friend std::ostream& operator<<( std::ostream& s, const function& f )
@@ -106,6 +102,3 @@ namespace detail
     };
 }
 } // mock
-
-#undef MOCK_FUNCTION_CALL
-#undef MOCK_FUNCTION_PARAM

@@ -690,3 +690,19 @@ BOOST_FIXTURE_TEST_CASE( mock_method_accepts_polymorphic_multi_constraint, mock_
     m.m2( 1, 2 );
     CHECK_CALLS( 1 );
 }
+
+#ifdef MOCK_SMART_PTR
+
+BOOST_FIXTURE_TEST_CASE( std_unique_ptr_argument_is_supported_in_action, mock_error_fixture )
+{
+    MOCK_FUNCTOR( f, void( std::unique_ptr< int > ) );
+    std::unique_ptr< int > p;
+    MOCK_EXPECT( f ).once().calls(
+        []( std::unique_ptr< int > )
+        {
+        } );
+    f( std::unique_ptr< int >( new int( 7 ) ) );
+    CHECK_CALLS( 1 );
+}
+
+#endif

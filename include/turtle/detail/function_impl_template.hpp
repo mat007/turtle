@@ -235,7 +235,7 @@ namespace detail
                         MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
                     if( it->functor() )
                         return it->functor()(
-                            BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) );
+                            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) );
                     return it->trigger();
                 }
             error_type::fail( "unexpected call", MOCK_FUNCTION_CONTEXT );

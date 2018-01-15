@@ -33,6 +33,7 @@
 #include <boost/call_traits.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/noncopyable.hpp>
+#include <boost/move/move.hpp>
 #include <boost/optional.hpp>
 #include <ostream>
 #include <vector>
