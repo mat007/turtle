@@ -14,6 +14,7 @@ Not yet released
 * Added MOCK_NO_AUTO_PTR to deactivate std::auto_ptr support
 * Added [@https://github.com/philsquared/Catch Catch] integration
 * Fixed move-only type argument in actions
+* Fixed move-only type support in constraints
 
 [endsect]
 
