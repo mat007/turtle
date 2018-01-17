@@ -705,4 +705,20 @@ BOOST_FIXTURE_TEST_CASE( std_unique_ptr_argument_is_supported_in_action, mock_er
     CHECK_CALLS( 1 );
 }
 
+BOOST_FIXTURE_TEST_CASE( std_unique_ptr_argument_is_supported_in_equal_constraint, mock_error_fixture )
+{
+    {
+        MOCK_FUNCTOR( f, void( std::unique_ptr< int > ) );
+        MOCK_EXPECT( f ).once().with( mock::equal( 7 ) );
+        f( std::unique_ptr< int >( new int( 7 ) ) );
+        CHECK_CALLS( 1 );
+    }
+    {
+        MOCK_FUNCTOR( f, void( std::unique_ptr< int > ) );
+        MOCK_EXPECT( f ).once().with( 7 );
+        f( std::unique_ptr< int >( new int( 7 ) ) );
+        CHECK_CALLS( 1 );
+    }
+}
+
 #endif

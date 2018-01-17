@@ -384,7 +384,11 @@ Constraints :
                                                                                     calls ['expected] as a functor returning a ['bool], throws std::invalid_argument if ! ['expected]
 
                                                                                     compares ['actual] to ['expected] using operator ==]]
- [[mock::equal( ['expected] )]                        [['actual] == ['expected]]   [compares ['actual] to ['expected] using operator ==]]
+ [[mock::equal( ['expected] )]                        [['actual] == ['expected]
+ 
+                                                       ['actual] && *['actual] == ['expected]]   [compares ['actual] to ['expected] using operator ==
+
+                                                                                                  compares ['actual] content to ['expected] using operator ==]]
  [[mock::less( ['expected] )]                         [['actual] < ['expected]]    [compares ['actual] to ['expected] using operator <]]
  [[mock::greater( ['expected] )]                      [['actual] > ['expected]]    [compares ['actual] to ['expected] using operator >]]
  [[mock::less_equal( ['expected] )]                   [['actual] <= ['expected]]   [compares ['actual] to ['expected] using operator <=]]

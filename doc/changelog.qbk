@@ -15,6 +15,7 @@ Not yet released
 * Added [@https://github.com/philsquared/Catch Catch] integration
 * Fixed move-only type argument in actions
 * Fixed move-only type support in constraints
+* Added support for dereferencing in mock::equal
 
 [endsect]
 

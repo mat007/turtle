@@ -11,7 +11,7 @@
 
 #include "config.hpp"
 #include "log.hpp"
-#include "constraint.hpp"
+#include "constraints.hpp"
 #include "detail/is_functor.hpp"
 #include <boost/utility/enable_if.hpp>
 #include <boost/ref.hpp>
@@ -26,9 +26,10 @@ namespace mock
         explicit matcher( Expected expected )
             : expected_( expected )
         {}
-        bool operator()( Actual actual )
+        bool operator()( const Actual& actual )
         {
-            return actual == boost::unwrap_ref( expected_ );
+            return mock::equal(
+                boost::unwrap_ref( expected_ ) ).c_( actual );
         }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )
@@ -66,7 +67,7 @@ namespace mock
         explicit matcher( const constraint< Constraint >& c )
             : c_( c.c_ )
         {}
-        bool operator()( Actual actual )
+        bool operator()( const Actual& actual )
         {
             return c_( actual );
         }
@@ -90,7 +91,7 @@ namespace mock
         explicit matcher( const Functor& f )
             : c_( f )
         {}
-        bool operator()( Actual actual )
+        bool operator()( const Actual& actual )
         {
             return c_( actual );
         }

@@ -17,6 +17,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/common_type.hpp>
 #include <boost/type_traits/is_convertible.hpp>
+#include <boost/type_traits/has_equal_to.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 
 namespace mock
@@ -26,7 +27,6 @@ namespace mock
     MOCK_UNARY_CONSTRAINT( negate, 0,, ! actual )
     MOCK_UNARY_CONSTRAINT( evaluate, 0,, actual() )
 
-    MOCK_NARY_CONSTRAINT( equal, 1, ( expected ), actual == expected )
     MOCK_NARY_CONSTRAINT( less, 1, ( expected ), actual < expected )
     MOCK_NARY_CONSTRAINT( greater, 1, ( expected ), actual > expected )
     MOCK_NARY_CONSTRAINT( less_equal, 1, ( expected ), actual <= expected )
@@ -108,6 +108,43 @@ namespace detail
 namespace detail
 {
     template< typename Expected >
+    struct equal
+    {
+        explicit equal( Expected expected )
+            : expected_( expected )
+        {}
+        template< typename Actual >
+        bool operator()( const Actual& actual,
+            typename boost::enable_if<
+                boost::has_equal_to<
+                    Actual,
+                    typename
+                        boost::unwrap_reference< Expected >::type
+                >
+            >::type* = 0 ) const
+        {
+            return actual == boost::unwrap_ref( expected_ );
+        }
+        template< typename Actual >
+        bool operator()( const Actual& actual,
+            typename boost::disable_if<
+                boost::has_equal_to<
+                    Actual,
+                    typename
+                        boost::unwrap_reference< Expected >::type
+                >
+            >::type* = 0 ) const
+        {
+            return actual && *actual == boost::unwrap_ref( expected_ );
+        }
+        friend std::ostream& operator<<( std::ostream& s, const equal& e )
+        {
+            return s << "equal( " << mock::format( e.expected_ ) << " )";
+        }
+        Expected expected_;
+    };
+
+    template< typename Expected >
     struct same
     {
         explicit same( const Expected& expected )
@@ -187,6 +224,8 @@ namespace detail
                 >
             >::type* = 0 ) const
         {
+            if( ! actual )
+                return false;
             *actual = boost::unwrap_ref( expected_ );
             return true;
         }
@@ -215,6 +254,12 @@ namespace detail
         Expected expected_;
     };
 }
+
+    template< typename T >
+    constraint< detail::equal< T > > equal( BOOST_FWD_REF(T) t )
+    {
+        return detail::equal< T >( boost::forward< T >( t ) );
+    }
 
     template< typename T >
     constraint< detail::same< T > > same( T& t )

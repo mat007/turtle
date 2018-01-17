@@ -63,6 +63,27 @@ BOOST_AUTO_TEST_CASE( equal_constraint )
 #endif
 }
 
+BOOST_AUTO_TEST_CASE( equal_constraint_deref )
+{
+    {
+        int i = 3;
+        BOOST_CHECK( mock::equal( 3 ).c_( &i ) );
+        BOOST_CHECK( ! mock::equal( 7 ).c_( &i ) );
+    }
+    {
+        int* i = 0;
+        BOOST_CHECK( ! mock::equal( 3 ).c_( i ) );
+    }
+#ifdef MOCK_SMART_PTR
+    {
+        std::unique_ptr< int > j( new int( 3 ) );
+        BOOST_CHECK( mock::equal( 3 ).c_( j ) );
+        std::unique_ptr< int > i;
+        BOOST_CHECK( ! mock::equal( 3 ).c_( i ) );
+    }
+#endif // MOCK_SMART_PTR
+}
+
 BOOST_AUTO_TEST_CASE( same_constraint )
 {
     {
@@ -109,6 +130,12 @@ BOOST_AUTO_TEST_CASE( assign_constraint )
         const int j = 1;
         BOOST_CHECK( mock::assign( &j ).c_( i ) );
         BOOST_CHECK_EQUAL( &j, i );
+    }
+    {
+        int* i = 0;
+        const int j = 1;
+        BOOST_CHECK( ! mock::assign( j ).c_( i ) );
+        BOOST_CHECK( ! i );
     }
     {
         int i = 0;
