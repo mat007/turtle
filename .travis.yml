@@ -54,12 +54,10 @@ before_install:
     - ./b2 headers
 
 script:
-    - if [ "$CCFLAGS" != "" ]; then FLAGS="cxxflags=\"$CCFLAGS\" linkflags=\"$LINKFLAGS\""; else FLAGS=""; fi
     - cd $PROJECT_DIR/build
-    # `--coverage` flags required to generate coverage info for Coveralls
-    # ../../../b2 -q cxxflags="--coverage -std=$CXX_STANDARD" linkflags="--coverage"
     - export BOOST_ROOT=$BOOST
-    - ./build.sh cxxflags="--coverage -std=$CXX_STANDARD" linkflags="--coverage"
+    # `--coverage` flags required to generate coverage info for Coveralls
+    - ./build.sh "cxxflags=-std=$CXX_STANDARD --coverage" "linkflags=--coverage"
 
 after_success:
     - COVERALS_DIR=$PROJECT_DIR/coverals
