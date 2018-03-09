@@ -146,6 +146,20 @@ BOOST_FIXTURE_TEST_CASE( mock_object_method_with_declared_but_not_defined_parame
     MOCK_EXPECT( mock.t );
 }
 
+namespace
+{
+    MOCK_FUNCTOR( gf, int( float, const std::string& ) );
+}
+
+BOOST_FIXTURE_TEST_CASE( mock_functor_in_namespace_is_supported, mock_error_fixture )
+{
+    boost::function< int( float, const std::string& ) > func;
+    MOCK_EXPECT( gf ).once().with( 3, "op" ).returns( 42 );
+    func = gf;
+    BOOST_CHECK_EQUAL( 42, func( 3, "op" ) );
+    CHECK_CALLS( 1 );
+}
+
 BOOST_FIXTURE_TEST_CASE( mock_functor_in_function_is_supported, mock_error_fixture )
 {
     boost::function< int( float, const std::string& ) > func;

@@ -1,0 +1,43 @@
+# Use, modification, and distribution are
+# subject to the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+#
+# Copyright Mathieu Champlon 2015.
+
+
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      BOOST_ROOT: C:\Libraries\boost_1_59_0
+      TOOLSET: msvc-14.0
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      BOOST_ROOT: C:\Libraries\boost_1_65_1
+      TOOLSET: msvc-14.1
+
+platform:
+  - 32
+  - 64
+
+configuration:
+  - debug
+  - release
+
+install:
+  - mkdir C:\xsltproc
+  - cd C:\xsltproc
+  - ps: Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/iconv-1.9.2.win32.zip -OutFile iconv.zip
+  - 7z e iconv.zip iconv.dll -r
+  - ps: Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/libxml2-2.7.8.win32.zip -OutFile libxml2.zip
+  - 7z e libxml2.zip libxml2.dll -r
+  - ps: Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/libxslt-1.1.26.win32.zip -OutFile libxslt.zip
+  - 7z e libxslt.zip libexslt.dll libxslt.dll xsltproc.exe -r
+  - ps: Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/zlib-1.2.5.win32.zip -OutFile zlib.zip
+  - 7z e zlib.zip zlib1.dll -r
+  - set PATH=%PATH%;%CD%
+  - xsltproc --version
+
+build_script:
+  - cd %BOOST_ROOT%
+  - call bootstrap.bat
+  - cd C:\projects\turtle\build
+  - call build.bat --toolset=%TOOLSET% address-model=%PLATFORM% --build-type=complete %CONFIGURATION%
