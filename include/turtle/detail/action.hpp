@@ -27,8 +27,13 @@ namespace detail
     class action_base
     {
     private:
+#ifdef MOCK_HDR_FUNCTIONAL
+        typedef std::function< Signature > functor_type;
+        typedef std::function< Result() > action_type;
+#else
         typedef boost::function< Signature > functor_type;
         typedef boost::function< Result() > action_type;
+#endif
 
     public:
         const functor_type& functor() const
@@ -100,11 +105,11 @@ namespace detail
         }
 
         template< typename Value >
-        void moves( BOOST_RV_REF( Value ) v )
+        void moves( BOOST_RV_REF(Value) v )
         {
             this->set(
                 boost::bind(
-                    &boost::move< BOOST_RV_REF( Value ) >,
+                    &boost::move< BOOST_RV_REF(Value) >,
                     boost::ref( store( boost::move( v ) ) ) ) );
         }
 
@@ -124,7 +129,7 @@ namespace detail
                     >::type
                 >::type value_type;
 
-            value_imp( BOOST_RV_REF( value_type ) t )
+            value_imp( BOOST_RV_REF(value_type) t )
                 : t_( boost::move( t ) )
             {}
             value_imp( const T& t )
@@ -138,7 +143,7 @@ namespace detail
         };
 
         template< typename T >
-        T& store( BOOST_RV_REF( T ) t )
+        T& store( BOOST_RV_REF(T) t )
         {
             v_.reset( new value_imp< T >( boost::move( t ) ) );
             return static_cast< value_imp< T >& >( *v_ ).t_;

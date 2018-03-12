@@ -144,6 +144,7 @@ namespace detail
                     BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, c) );
                 return *this;
             }
+
 #if MOCK_NUM_ARGS > 1
             template< typename Constraint >
             wrapper with( const Constraint& c )
@@ -215,7 +216,7 @@ namespace detail
             for( expectations_cit it = expectations_.begin();
                 it != expectations_.end(); ++it )
                 if( it->is_valid(
-                    BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) ) )
+                    BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) ) )
                 {
                     if( ! it->invoke() )
                     {
@@ -234,7 +235,7 @@ namespace detail
                         MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
                     if( it->functor() )
                         return it->functor()(
-                            BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) );
+                            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) );
                     return it->trigger();
                 }
             error_type::fail( "unexpected call", MOCK_FUNCTION_CONTEXT );

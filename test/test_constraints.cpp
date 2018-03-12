@@ -47,14 +47,41 @@ BOOST_AUTO_TEST_CASE( equal_constraint )
     BOOST_CHECK( ! mock::equal( std::string( "string" ) ).c_( "not string" ) );
     {
         std::string s;
-        mock::constraint<
-            mock::detail::equal<
-                boost::reference_wrapper< const std::string >
-            >
-        > c = mock::equal( boost::cref( s ) );
+        auto c = mock::equal( boost::cref( s ) );
         s = "string";
         BOOST_CHECK( c.c_( "string" ) );
     }
+#ifdef MOCK_SMART_PTR
+    {
+        std::unique_ptr< int > i;
+        std::unique_ptr< int > j( new int( 3 ) );
+        BOOST_CHECK( ! mock::equal( i ).c_( j ) );
+        BOOST_CHECK( ! mock::equal( j ).c_( i ) );
+        BOOST_CHECK( mock::equal( i ).c_( i ) );
+        BOOST_CHECK( mock::equal( j ).c_( j ) );
+    }
+#endif
+}
+
+BOOST_AUTO_TEST_CASE( equal_constraint_deref )
+{
+    {
+        int i = 3;
+        BOOST_CHECK( mock::equal( 3 ).c_( &i ) );
+        BOOST_CHECK( ! mock::equal( 7 ).c_( &i ) );
+    }
+    {
+        int* i = 0;
+        BOOST_CHECK( ! mock::equal( 3 ).c_( i ) );
+    }
+#ifdef MOCK_SMART_PTR
+    {
+        std::unique_ptr< int > j( new int( 3 ) );
+        BOOST_CHECK( mock::equal( 3 ).c_( j ) );
+        std::unique_ptr< int > i;
+        BOOST_CHECK( ! mock::equal( 3 ).c_( i ) );
+    }
+#endif // MOCK_SMART_PTR
 }
 
 BOOST_AUTO_TEST_CASE( same_constraint )
@@ -103,6 +130,12 @@ BOOST_AUTO_TEST_CASE( assign_constraint )
         const int j = 1;
         BOOST_CHECK( mock::assign( &j ).c_( i ) );
         BOOST_CHECK_EQUAL( &j, i );
+    }
+    {
+        int* i = 0;
+        const int j = 1;
+        BOOST_CHECK( ! mock::assign( j ).c_( i ) );
+        BOOST_CHECK( ! i );
     }
     {
         int i = 0;
@@ -219,6 +252,16 @@ BOOST_AUTO_TEST_CASE( retrieve_constraint )
         BOOST_CHECK_EQUAL( i, &j );
     }
 #endif
+#ifdef MOCK_SMART_PTR
+    {
+        std::unique_ptr< int > i;
+        std::unique_ptr< int > j( new int( 3 ) );
+        BOOST_CHECK( mock::retrieve( i ).c_( boost::move( j ) ) );
+        BOOST_REQUIRE( i );
+        BOOST_CHECK_EQUAL( 3, *i );
+        BOOST_CHECK( !j );
+    }
+#endif
 }
 
 namespace
@@ -244,10 +287,20 @@ BOOST_AUTO_TEST_CASE( retrieve_constraint_uses_assignment_operator )
 
 BOOST_AUTO_TEST_CASE( affirm_constraint )
 {
-    int* i = 0;
-    int j;
-    BOOST_CHECK( ! mock::affirm.c_( i ) );
-    BOOST_CHECK( mock::affirm.c_( &j ) );
+    {
+        int* i = 0;
+        int j;
+        BOOST_CHECK( ! mock::affirm.c_( i ) );
+        BOOST_CHECK( mock::affirm.c_( &j ) );
+    }
+    {
+#ifdef MOCK_SMART_PTR
+        std::unique_ptr< int > i;
+        std::unique_ptr< int > j( new int( 3 ) );
+        BOOST_CHECK( ! mock::affirm.c_( i ) );
+        BOOST_CHECK( mock::affirm.c_( j ) );
+#endif
+    }
 }
 
 BOOST_AUTO_TEST_CASE( negate_constraint )

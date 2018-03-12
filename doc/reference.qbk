@@ -384,17 +384,21 @@ Constraints :
                                                                                     calls ['expected] as a functor returning a ['bool], throws std::invalid_argument if ! ['expected]
 
                                                                                     compares ['actual] to ['expected] using operator ==]]
- [[mock::equal( ['expected] )]                        [['actual] == ['expected]]   [compares ['actual] to ['expected] using operator ==]]
+ [[mock::equal( ['expected] )]                        [['actual] == ['expected]
+ 
+                                                       ['actual] && *['actual] == ['expected]]   [compares ['actual] to ['expected] using operator ==
+
+                                                                                                  compares ['actual] content to ['expected] using operator ==]]
  [[mock::less( ['expected] )]                         [['actual] < ['expected]]    [compares ['actual] to ['expected] using operator <]]
  [[mock::greater( ['expected] )]                      [['actual] > ['expected]]    [compares ['actual] to ['expected] using operator >]]
  [[mock::less_equal( ['expected] )]                   [['actual] <= ['expected]]   [compares ['actual] to ['expected] using operator <=]]
  [[mock::greater_equal( ['expected] )]                [['actual] >= ['expected]]   [compares ['actual] to ['expected] using operator >=]]
- [[mock::near( ['expected], ['tolerance] )]           [std::abs( ['actual] - ['expected] ) < ['tolerance]]                                        [checks whether ['actual] is near ['expected] within ['tolerance]]]
- [[mock::close( ['expected], ['tolerance] )]          [boost::test_tools::check_is_close( ['actual], ['expected], boost::test_tools::percent_tolerance( ['arg] ) )]   [checks whether ['actual] is close to ['expected], see [@http://www.boost.org/libs/test/doc/html/boost_test/testing_tools/extended_comparison/floating_point.html Floating-point comparison algorithms] ]]
- [[mock::close_fraction( ['expected], ['tolerance] )] [boost::test_tools::check_is_close( ['actual], ['expected], boost::test_tools::fraction_tolerance( ['arg] ) )]  [checks whether ['actual] is close to ['expected], see [@http://www.boost.org/libs/test/doc/html/boost_test/testing_tools/extended_comparison/floating_point.html Floating-point comparison algorithms] ]]
- [[mock::small( ['tolerance] )]                       [boost::test_tools::check_is_small( ['actual], ['expected] ) )] [checks whether ['actual] is small within ['tolerance], see [@http://www.boost.org/libs/test/doc/html/boost_test/testing_tools/extended_comparison/floating_point.html Floating-point comparison algorithms] ]]
- [[mock::call( ['expected] )]                         [['expected]( ['actual] )]   [calls ['expected] as a functor returning a ['bool] and accepting ['actual] as parameter]]
- [[mock::same( ['expected] )]                         [&['actual] == &['expected]] [compares ['actual] to ['expected] by comparing their pointers]]
+ [[mock::near( ['expected], ['tolerance] )]           [std::abs( ['actual] - ['expected] ) < ['tolerance]]                                                           [checks whether ['actual] is near ['expected] within ['tolerance]]]
+ [[mock::close( ['expected], ['tolerance] )]          [boost::test_tools::check_is_close( ['actual], ['expected], boost::test_tools::percent_tolerance( ['arg] ) )]  [checks whether ['actual] is close to ['expected], see [@http://www.boost.org/libs/test/doc/html/boost_test/testing_tools/extended_comparison/floating_point.html Floating-point comparison algorithms] ]]
+ [[mock::close_fraction( ['expected], ['tolerance] )] [boost::test_tools::check_is_close( ['actual], ['expected], boost::test_tools::fraction_tolerance( ['arg] ) )] [checks whether ['actual] is close to ['expected], see [@http://www.boost.org/libs/test/doc/html/boost_test/testing_tools/extended_comparison/floating_point.html Floating-point comparison algorithms] ]]
+ [[mock::small( ['tolerance] )]                       [boost::test_tools::check_is_small( ['actual], ['expected] ) )]                                                [checks whether ['actual] is small within ['tolerance], see [@http://www.boost.org/libs/test/doc/html/boost_test/testing_tools/extended_comparison/floating_point.html Floating-point comparison algorithms] ]]
+ [[mock::call( ['expected] )]                         [['expected]( ['actual] )]                                                                                     [calls ['expected] as a functor returning a ['bool] and accepting ['actual] as parameter]]
+ [[mock::same( ['expected] )]                         [&['actual] == &['expected]]                                                                                   [compares ['actual] to ['expected] by comparing their pointers]]
  [[mock::assign( ['expected] )]                       [['actual] = ['expected], true
 
                                                        *['actual] = ['expected], true] [assigns ['expected] to ['actual] using operator =
@@ -406,9 +410,9 @@ Constraints :
 
                                                                                         retrieves ['actual] address into ['expected] using operator =]]
  [[mock::contain( ['expected] )]                      [['actual].find( ['expected] ) != std::string::npos] [checks whether ['expected] is contained in the std::string ['actual]]]
- [[mock::affirm]                                      [['actual]]                                          [uses ['actual] as a boolean]]
- [[mock::negate]                                      [! ['actual]]                                         [negates ['actual] using operator !]]
- [[mock::evaluate]                                    [['actual]()]                                        [evaluates ['actual] as a functor returning a bool and taking no argument]]
+ [[mock::affirm]                                      [['actual]]                                          [uses ['actual] as a ['bool]]]
+ [[mock::negate]                                      [! ['actual]]                                        [negates ['actual] using operator !]]
+ [[mock::evaluate]                                    [['actual]()]                                        [evaluates ['actual] as a functor returning a ['bool] and taking no argument]]
 ]
 
 [important When passing ['expected] directly as a shortcut mock::call is implied for a function, a function pointer, an instance of a type with a result_type member typedef (support for standard library, [@http://www.boost.org/libs/bind/bind.html Boost.Bind], [@http://www.boost.org/libs/function Boost.Function] functors), an instance of a type with a sig member (support for [@http://www.boost.org/libs/lambda Boost.Lambda] functors), an instance of a type with a result member (support for [@http://www.boost.org/libs/phoenix Boost.Phoenix] functors); mock::equal is implied for anything else.]

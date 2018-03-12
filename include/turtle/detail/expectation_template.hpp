@@ -15,13 +15,16 @@
     matcher< T##n, Constraint_##n > c##n##_;
 
 #define MOCK_EXPECTATION_IS_VALID(z, n, d) \
-    BOOST_PP_IF(n, &&,) c##n##_( a##n )
+    BOOST_PP_IF(n, &&,) c##n##_( boost::forward< T##n >( a##n ) )
 
 #define MOCK_EXPECTATION_SERIALIZE(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) c##n##_
 
 #define MOCK_EXPECTATION_SERIALIZE_ANY(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) "any"
+
+#define MOCK_EXPECTATION_PARAM(z, n, Args) \
+    boost::forward< T##n >( a##n )
 
 namespace mock
 {
@@ -91,7 +94,7 @@ namespace detail
     template< typename F,
         BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T) >
     class multi_matcher< F, void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
-        : public matcher_base< void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS,T) ) >
+        : public matcher_base< void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
     {
     public:
         multi_matcher( const F& f )
@@ -100,9 +103,9 @@ namespace detail
 
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM_BINARY_PARAMS( MOCK_NUM_ARGS, T, a ) )
+            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) )
         {
-            return f_( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a ) );
+            return f_( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _) );
         }
         virtual void serialize( std::ostream& s ) const
         {
@@ -201,7 +204,7 @@ namespace detail
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) ) const
         {
             return !invocation_->exhausted()
-                && (*matcher_)( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a) );
+                && (*matcher_)( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _) );
         }
 
         bool invoke() const

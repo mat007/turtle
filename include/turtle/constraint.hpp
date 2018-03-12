@@ -19,6 +19,7 @@
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/array.hpp>
+#include <boost/move/move.hpp>
 
 namespace mock
 {
@@ -157,12 +158,14 @@ namespace detail
     Expected_##n expected##n;
 
 #define MOCK_CONSTRAINT_CREF_PARAM(z, n, Args) \
-    typename \
-        boost::unwrap_reference< Expected_##n >::type \
-            BOOST_PP_ARRAY_ELEM(n, Args)
+    const typename boost::unwrap_reference< Expected_##n >::type& \
+        BOOST_PP_ARRAY_ELEM(n, Args)
+
+#define MOCK_CONSTRAINT_ARG(z, n, Args) \
+    BOOST_FWD_REF(T##n) BOOST_PP_ARRAY_ELEM(n, Args)
 
 #define MOCK_CONSTRAINT_PARAM(z, n, Args) \
-    T##n BOOST_PP_ARRAY_ELEM(n, Args)
+    boost::forward< T##n >( BOOST_PP_ARRAY_ELEM(n, Args) )
 
 #define MOCK_NARY_CONSTRAINT(Name, n, Args, Expr) \
     namespace detail \
@@ -171,7 +174,7 @@ namespace detail
         struct Name \
         { \
             explicit Name( \
-                BOOST_PP_ENUM_BINARY_PARAMS(n, const Expected_, & e) ) \
+                BOOST_PP_ENUM_BINARY_PARAMS(n, Expected_, e) ) \
                 : BOOST_PP_ENUM(n, MOCK_CONSTRAINT_ASSIGN, _) \
             {} \
             template< typename Actual > \
@@ -199,9 +202,10 @@ namespace detail
     template< BOOST_PP_ENUM_PARAMS(n, typename T) > \
     mock::constraint< \
         detail::Name< BOOST_PP_ENUM_PARAMS(n, T) > \
-    > Name( BOOST_PP_ENUM(n, MOCK_CONSTRAINT_PARAM, (n, Args)) ) \
+    > Name( BOOST_PP_ENUM(n, MOCK_CONSTRAINT_ARG, (n, Args)) ) \
     { \
-        return detail::Name< BOOST_PP_ENUM_PARAMS(n, T) > Args; \
+        return detail::Name< BOOST_PP_ENUM_PARAMS(n, T) >( \
+            BOOST_PP_ENUM(n, MOCK_CONSTRAINT_PARAM, (n, Args)) ); \
     }
 
 #define MOCK_CONSTRAINT_EXT(Name, n, Args, Expr) \

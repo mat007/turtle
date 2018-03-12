@@ -18,10 +18,11 @@ namespace
     {
     public:
         explicit my_class( int data )
-      : data_( data )
+            : data_( data )
         {}
         int data_;
     };
+
     std::ostream& operator<<( std::ostream& os, const my_class& c ) // my_class is serializable to an std::ostream
     {
         return os << "my_class( " << c.data_ << " )";
@@ -37,7 +38,7 @@ namespace
 //[ quick_constraint_solution
 #include <boost/lexical_cast.hpp>
 
-namespace mock // it could also be in the namespace of 'my_class'
+namespace // in the same namespace as 'my_class'
 {
     bool operator==( const my_class& actual, const std::string& expected ) // the first part of the trick is to compare to a string
     {
