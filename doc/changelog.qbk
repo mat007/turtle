@@ -16,6 +16,7 @@ Not yet released
 * Fixed move-only type argument in actions
 * Fixed move-only type support in constraints
 * Added support for dereferencing in mock::equal
+* Added support for movable objects in mock::retrieve
 
 [endsect]
 

@@ -183,6 +183,19 @@ namespace detail
             return true;
         }
         template< typename Actual >
+        bool operator()( BOOST_RV_REF(Actual) actual,
+            typename boost::disable_if<
+                boost::is_convertible<
+                    const Actual*,
+                    typename
+                        boost::unwrap_reference< Expected >::type
+                >
+            >::type* = 0 ) const
+        {
+            *expected_ = boost::move( actual );
+            return true;
+        }
+        template< typename Actual >
         bool operator()( Actual& actual,
             typename boost::enable_if<
                 boost::is_convertible< Actual*,

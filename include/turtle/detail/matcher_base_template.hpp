@@ -6,9 +6,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define MOCK_CALL_PARAM(z, n, d) \
-    typename boost::call_traits< T##n >::param_type a##n
-
 namespace mock
 {
 namespace detail
@@ -24,7 +21,7 @@ namespace detail
         virtual ~matcher_base() {}
 
         virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_CALL_PARAM, _) ) = 0;
+            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) ) = 0;
 
         friend std::ostream& operator<<(
             std::ostream& s, const matcher_base& m )

@@ -15,7 +15,7 @@
     matcher< T##n, Constraint_##n > c##n##_;
 
 #define MOCK_EXPECTATION_IS_VALID(z, n, d) \
-    BOOST_PP_IF(n, &&,) c##n##_( a##n )
+    BOOST_PP_IF(n, &&,) c##n##_( boost::forward< T##n >( a##n ) )
 
 #define MOCK_EXPECTATION_SERIALIZE(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) c##n##_
@@ -23,8 +23,8 @@
 #define MOCK_EXPECTATION_SERIALIZE_ANY(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) "any"
 
-#define MOCK_CALL_PARAM_TYPE(z, n, d) \
-    typename boost::call_traits< T##n >::param_type
+#define MOCK_EXPECTATION_PARAM(z, n, Args) \
+    boost::forward< T##n >( a##n )
 
 namespace mock
 {
@@ -39,7 +39,7 @@ namespace detail
     {
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_CALL_PARAM_TYPE, _) )
+            BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
         {
             return true;
         }
@@ -73,7 +73,7 @@ namespace detail
 
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_CALL_PARAM, _) )
+            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) )
         {
             return BOOST_PP_REPEAT(MOCK_NUM_ARGS,
                 MOCK_EXPECTATION_IS_VALID, _);
@@ -103,9 +103,9 @@ namespace detail
 
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_CALL_PARAM, _) )
+            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) )
         {
-            return f_( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a) );
+            return f_( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _) );
         }
         virtual void serialize( std::ostream& s ) const
         {
@@ -201,10 +201,10 @@ namespace detail
         }
 
         bool is_valid(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_CALL_PARAM, _) ) const
+            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) ) const
         {
             return !invocation_->exhausted()
-                && (*matcher_)( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, a) );
+                && (*matcher_)( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _) );
         }
 
         bool invoke() const
@@ -259,7 +259,6 @@ namespace detail
 }
 } // mock
 
-#undef MOCK_CALL_PARAM_TYPE
 #undef MOCK_EXPECTATION_INITIALIZE
 #undef MOCK_EXPECTATION_MEMBER
 #undef MOCK_EXPECTATION_IS_VALID

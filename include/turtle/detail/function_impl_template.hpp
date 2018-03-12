@@ -216,7 +216,7 @@ namespace detail
             for( expectations_cit it = expectations_.begin();
                 it != expectations_.end(); ++it )
                 if( it->is_valid(
-                    BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) ) )
+                    BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) ) )
                 {
                     if( ! it->invoke() )
                     {

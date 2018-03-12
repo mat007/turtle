@@ -67,9 +67,9 @@ namespace mock
         explicit matcher( const constraint< Constraint >& c )
             : c_( c.c_ )
         {}
-        bool operator()( const Actual& actual )
+        bool operator()( BOOST_RV_REF(Actual) actual )
         {
-            return c_( actual );
+            return c_( boost::forward< Actual >( actual ) );
         }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )
@@ -91,9 +91,9 @@ namespace mock
         explicit matcher( const Functor& f )
             : c_( f )
         {}
-        bool operator()( const Actual& actual )
+        bool operator()( BOOST_RV_REF(Actual) actual )
         {
-            return c_( actual );
+            return c_( boost::forward< Actual >( actual ) );
         }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )
