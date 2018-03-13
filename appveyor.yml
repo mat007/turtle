@@ -25,13 +25,13 @@ configuration:
 
 install:
   - cd C:\projects\turtle\doc
-  - ps: Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/iconv-1.9.2.win32.zip -OutFile iconv.zip
+  - appveyor-retry powershell Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/iconv-1.9.2.win32.zip -OutFile iconv.zip
   - 7z e iconv.zip iconv.dll -r
-  - ps: Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/libxml2-2.7.8.win32.zip -OutFile libxml2.zip
+  - appveyor-retry powershell Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/libxml2-2.7.8.win32.zip -OutFile libxml2.zip
   - 7z e libxml2.zip libxml2.dll -r
-  - ps: Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/libxslt-1.1.26.win32.zip -OutFile libxslt.zip
+  - appveyor-retry powershell Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/libxslt-1.1.26.win32.zip -OutFile libxslt.zip
   - 7z e libxslt.zip libexslt.dll libxslt.dll xsltproc.exe -r
-  - ps: Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/zlib-1.2.5.win32.zip -OutFile zlib.zip
+  - appveyor-retry powershell Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/zlib-1.2.5.win32.zip -OutFile zlib.zip
   - 7z e zlib.zip zlib1.dll -r
   - xsltproc -V
 
