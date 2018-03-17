@@ -26,6 +26,9 @@
 #define MOCK_EXPECTATION_PARAM(z, n, Args) \
     boost::forward< T##n >( a##n )
 
+#define MOCK_RV_REF_ARG(z, n, d) \
+    BOOST_RV_REF(T##n) a##n
+
 namespace mock
 {
 namespace detail
@@ -39,7 +42,7 @@ namespace detail
     {
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_RV_REF, _) )
         {
             return true;
         }
@@ -73,7 +76,7 @@ namespace detail
 
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) )
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_RV_REF_ARG, _) )
         {
             return BOOST_PP_REPEAT(MOCK_NUM_ARGS,
                 MOCK_EXPECTATION_IS_VALID, _);
@@ -103,7 +106,7 @@ namespace detail
 
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) )
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_RV_REF_ARG, _) )
         {
             return f_( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _) );
         }
@@ -201,7 +204,7 @@ namespace detail
         }
 
         bool is_valid(
-            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) ) const
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_RV_REF_ARG, _) ) const
         {
             return !invocation_->exhausted()
                 && (*matcher_)( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _) );
@@ -264,3 +267,6 @@ namespace detail
 #undef MOCK_EXPECTATION_IS_VALID
 #undef MOCK_EXPECTATION_SERIALIZE
 #undef MOCK_EXPECTATION_SERIALIZE_ANY
+#undef MOCK_EXPECTATION_PARAM
+#undef MOCK_RV_REF_ARG
+#undef MOCK_RV_REF
