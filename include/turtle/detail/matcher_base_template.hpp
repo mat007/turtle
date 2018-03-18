@@ -6,6 +6,9 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#define MOCK_RV_REF(z, n, d) \
+    BOOST_RV_REF(T##n)
+
 namespace mock
 {
 namespace detail
@@ -21,7 +24,7 @@ namespace detail
         virtual ~matcher_base() {}
 
         virtual bool operator()(
-            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, a) ) = 0;
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_RV_REF, _) ) = 0;
 
         friend std::ostream& operator<<(
             std::ostream& s, const matcher_base& m )

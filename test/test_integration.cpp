@@ -754,6 +754,19 @@ BOOST_FIXTURE_TEST_CASE( std_unique_ptr_argument_is_supported_in_retrieve_constr
         BOOST_CHECK_EQUAL( 7, *i );
         CHECK_CALLS( 1 );
     }
+    {
+        std::unique_ptr< int > i;
+        MOCK_FUNCTOR( f, void( std::unique_ptr< int > ) );
+        MOCK_EXPECT( f ).once().with( nullptr );
+        MOCK_EXPECT( f ).once().with( mock::retrieve( i ) );
+        f( 0 );
+        std::unique_ptr< int > j( new int( 7 ) );
+        f( std::move( j ) );
+        BOOST_CHECK( !j );
+        BOOST_REQUIRE( i );
+        BOOST_CHECK_EQUAL( 7, *i );
+        CHECK_CALLS( 2 );
+    }
 }
 
 #endif

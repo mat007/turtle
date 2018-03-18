@@ -85,10 +85,45 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_unlimited_expectation_is_valid, mock_erro
         CHECK_CALLS( 2 );
     }
     {
+        mock::detail::function< void( int, std::string ) > f;
+        f.expect();
+        f( 1, "s1" );
+        f( 2, "s2" );
+        CHECK_CALLS( 2 );
+    }
+    {
         mock::detail::function< void( int, const std::string& ) > f;
         f.expect();
-        f( 1, "s" );
-        f( 1, "s" );
+        f( 1, "s1" );
+        f( 2, "s2" );
+        CHECK_CALLS( 2 );
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE( triggering_several_once_expectations_is_valid, mock_error_fixture )
+{
+    {
+        mock::detail::function< void() > f;
+        f.expect().once();
+        f.expect().once();
+        f();
+        f();
+        CHECK_CALLS( 2 );
+    }
+    {
+        mock::detail::function< void( int, std::string ) > f;
+        f.expect().once().with( 1, "s1" );
+        f.expect().once().with( 2, "s2" );
+        f( 1, "s1" );
+        f( 2, "s2" );
+        CHECK_CALLS( 2 );
+    }
+    {
+        mock::detail::function< void( int, const std::string& ) > f;
+        f.expect().once().with( 1, "s1" );
+        f.expect().once().with( 2, "s2" );
+        f( 1, "s1" );
+        f( 2, "s2" );
         CHECK_CALLS( 2 );
     }
 }
