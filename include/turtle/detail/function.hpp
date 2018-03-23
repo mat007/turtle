@@ -86,6 +86,15 @@ namespace detail
 
         E* e_;
     };
+
+    inline int uncaught_exceptions()
+    {
+#ifdef MOCK_UNCAUGHT_EXCEPTIONS
+        return std::uncaught_exceptions();
+#else
+        return std::uncaught_exception() ? 1 : 0;
+#endif
+    }
 }
 } // mock
 
