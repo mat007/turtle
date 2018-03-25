@@ -12,7 +12,7 @@ copy()
     cp $@
 }
 
-set -x
+set -ex
 
 export BOOST=$BOOST_ROOT
 
