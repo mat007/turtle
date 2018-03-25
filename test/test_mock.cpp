@@ -433,11 +433,9 @@ namespace
 
 #ifdef BOOST_MSVC
 #   define MOCK_STDCALL __stdcall
-#elif defined( BOOST_GCC )
-#   define MOCK_STDCALL __attribute((stdcall))
 #else
 #   define MOCK_STDCALL
-#endif // BOOST_GCC
+#endif
 
 namespace stdcall
 {

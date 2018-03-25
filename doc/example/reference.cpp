@@ -249,16 +249,6 @@ MOCK_CLASS( mock_class )
 };
 //]
 }
-#elif defined( BOOST_GCC )
-namespace member_function_example_10
-{
-//[ member_function_example_10
-MOCK_CLASS( mock_class )
-{
-    MOCK_METHOD( __attribute((stdcall)) method, 0, void(), method ) // all parameters must be provided when specifying a different calling convention
-};
-//]
-}
 #endif
 
 namespace static_member_function_example_1
@@ -289,16 +279,6 @@ namespace static_member_function_example_3
 MOCK_CLASS( mock_class )
 {
     MOCK_STATIC_METHOD( __stdcall method, 0, void(), method ) // all parameters must be provided when specifying a different calling convention
-};
-//]
-}
-#elif defined( BOOST_GCC )
-namespace static_member_function_example_4
-{
-//[ static_member_function_example_4
-MOCK_CLASS( mock_class )
-{
-    MOCK_STATIC_METHOD( __attribute((stdcall)) method, 0, void(), method ) // all parameters must be provided when specifying a different calling convention
 };
 //]
 }
@@ -336,16 +316,6 @@ MOCK_CLASS( mock_class )
 };
 //]
 }
-#elif defined( BOOST_GCC )
-namespace constructor_example_4
-{
-//[ constructor_example_4
-MOCK_CLASS( mock_class )
-{
-    MOCK_CONSTRUCTOR( __attribute((stdcall)) mock_class, 0, (), constructor )
-};
-//]
-}
 #endif
 
 namespace destructor_example_1
@@ -365,16 +335,6 @@ namespace destructor_example_2
 MOCK_CLASS( mock_class )
 {
     MOCK_DESTRUCTOR( __stdcall ~mock_class, destructor )
-};
-//]
-}
-#elif defined( BOOST_GCC )
-namespace destructor_example_3
-{
-//[ destructor_example_3
-MOCK_CLASS( mock_class )
-{
-    MOCK_DESTRUCTOR( __attribute((stdcall)) ~mock_class, destructor )
 };
 //]
 }
@@ -414,16 +374,6 @@ MOCK_CLASS( mock_class )
 };
 //]
 }
-#elif defined( BOOST_GCC )
-namespace conversion_operator_example_4
-{
-//[ conversion_operator_example_4
-MOCK_CLASS( mock_class )
-{
-    MOCK_CONVERSION_OPERATOR( __attribute((stdcall)) operator, int, conversion_to_int )
-};
-//]
-}
 #endif
 
 namespace function_example_1
@@ -443,13 +393,6 @@ namespace function_example_2
 {
 //[ function_example_2
 MOCK_FUNCTION( __stdcall f, 0, void(), f ) // all parameters must be provided when specifying a different calling convention
-//]
-}
-#elif defined( BOOST_GCC )
-namespace function_example_3
-{
-//[ function_example_3
-MOCK_FUNCTION( __attribute((stdcall)) f, 0, void(), f ) // all parameters must be provided when specifying a different calling convention
 //]
 }
 #endif
