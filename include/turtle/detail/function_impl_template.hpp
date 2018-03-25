@@ -44,10 +44,11 @@ namespace detail
             : context_( 0 )
             , valid_( true )
             , mutex_( boost::make_shared< mutex >() )
+            , exceptions_( uncaught_exceptions() )
         {}
         virtual ~function_impl()
         {
-            if( valid_ && ! std::uncaught_exception() )
+            if( valid_ && exceptions_ >= uncaught_exceptions() )
                 for( expectations_cit it = expectations_.begin();
                     it != expectations_.end(); ++it )
                     if( ! it->verify() )
@@ -300,6 +301,7 @@ namespace detail
         expectations_type expectations_;
         context* context_;
         mutable bool valid_;
+        const int exceptions_;
         const boost::shared_ptr< mutex > mutex_;
     };
 }

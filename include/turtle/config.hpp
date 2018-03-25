@@ -94,4 +94,11 @@
 #   endif
 #endif
 
+#if defined(__cplusplus) && (__cplusplus >= 201703L) || \
+    defined(_MSC_VER) && (_MSC_VER >= 1900)
+#   ifndef MOCK_NO_UNCAUGHT_EXCEPTIONS
+#       define MOCK_UNCAUGHT_EXCEPTIONS
+#   endif
+#endif
+
 #endif // MOCK_CONFIG_HPP_INCLUDED
