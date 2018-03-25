@@ -10,23 +10,32 @@
 #
 
 sudo: false
-
-os:
-    - linux
+language: cpp
 
 env:
-    - CXX_STANDARD=c++98 BRANCH_TO_TEST=boost-1.58.0
-    - CXX_STANDARD=c++11 BRANCH_TO_TEST=boost-1.58.0
-    - CXX_STANDARD=c++98 BRANCH_TO_TEST=boost-1.59.0
-    - CXX_STANDARD=c++11 BRANCH_TO_TEST=boost-1.59.0
-    - CXX_STANDARD=c++98 BRANCH_TO_TEST=master
-    - CXX_STANDARD=c++11 BRANCH_TO_TEST=master
-    - CXX_STANDARD=c++14 BRANCH_TO_TEST=master
     - CXX_STANDARD=c++17 BRANCH_TO_TEST=master
+    - CXX_STANDARD=c++14 BRANCH_TO_TEST=master
+    - CXX_STANDARD=c++11 BRANCH_TO_TEST=master
+    - CXX_STANDARD=c++98 BRANCH_TO_TEST=master
+    - CXX_STANDARD=c++11 BRANCH_TO_TEST=boost-1.58.0
+    - CXX_STANDARD=c++98 BRANCH_TO_TEST=boost-1.58.0
+    - CXX_STANDARD=c++11 BRANCH_TO_TEST=boost-1.59.0
+    - CXX_STANDARD=c++98 BRANCH_TO_TEST=boost-1.59.0
+
+compiler:
+  - clang
+  - gcc
 
 addons:
   apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    - llvm-toolchain-precise
     packages:
+    - gcc-5
+    - g++-5
+    - clang-5.0
+    - lld-5.0
     - xsltproc
     - docbook-xsl
     - docbook-xml
@@ -34,6 +43,9 @@ addons:
 before_install:
     - DOCBOOK_XSL_DIR=/usr/share/xml/docbook/stylesheet/docbook-xsl
     - DOCBOOK_DTD_DIR=/usr/share/xml/docbook/schema/dtd/4.2
+
+    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+    - gcc --version
 
     # Set this to the name of your Boost library
     # Autodetect library name by using the following code: - PROJECT_TO_TEST=$(basename $(pwd))
@@ -57,7 +69,7 @@ script:
     - cd $PROJECT_DIR/build
     - export BOOST_ROOT=$BOOST
     # `--coverage` flags required to generate coverage info for Coveralls
-    - ./build.sh "cxxflags=-std=$CXX_STANDARD --coverage" "linkflags=--coverage"
+    - ./build.sh --toolset=$CC "cxxflags=-std=$CXX_STANDARD -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations --coverage" "--coverage"
 
 after_success:
     - COVERALS_DIR=$PROJECT_DIR/coverals
