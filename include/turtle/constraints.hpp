@@ -22,7 +22,7 @@
 
 namespace mock
 {
-    MOCK_UNARY_CONSTRAINT( any, 0,, true && &actual )
+    MOCK_UNARY_CONSTRAINT( any, 0,, ((void)actual, true) )
     MOCK_UNARY_CONSTRAINT( affirm, 0,, !! actual )
     MOCK_UNARY_CONSTRAINT( negate, 0,, ! actual )
     MOCK_UNARY_CONSTRAINT( evaluate, 0,, actual() )
