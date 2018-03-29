@@ -11,7 +11,7 @@
 [import example/limitations_non_virtual_method.cpp]
 [import example/limitations_template_base_class_method.cpp]
 [import example/limitations_template_method.cpp]
-[import example/limitations_private_method.cpp]
+[import example/limitations_protected_private_method.cpp]
 [import example/limitations_comma_in_macro.cpp]
 [import example/limitations_const_parameter_warning.cpp]
 
@@ -116,18 +116,19 @@ A workaround would be to add the signature to MOCK_METHOD :
 
 Given :
 
-[limitations_private_method_problem]
+[limitations_protected_private_method_problem]
 
 the following code does not compile :
 
  MOCK_BASE_CLASS( mock_base, base )
  {
-     MOCK_METHOD( method, 0 ) // this fails because 'method' is not visible
+     MOCK_METHOD( method_1, 0 ) // this fails because a function pointer on 'base::method_1' is not allowed
+     MOCK_METHOD( method_2, 0 ) // this fails because 'method_2' is not visible
  };
 
 A workaround would be to add the signature to MOCK_METHOD :
 
-[limitations_private_method_solution]
+[limitations_protected_private_method_solution]
 
 [endsect]
 

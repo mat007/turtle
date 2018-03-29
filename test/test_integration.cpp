@@ -84,8 +84,8 @@ namespace
     class my_ambiguited_interface : boost::noncopyable
     {
     public:
-        virtual ~my_ambiguited_interface() {}
-
+        virtual ~my_ambiguited_interface()
+        {}
         virtual void my_method() = 0;
         virtual void my_method( int ) = 0;
     };
@@ -110,8 +110,8 @@ namespace
     class my_const_ambiguited_interface : boost::noncopyable
     {
     public:
-        virtual ~my_const_ambiguited_interface() {}
-
+        virtual ~my_const_ambiguited_interface()
+        {}
         virtual void my_method() = 0;
         virtual void my_method() const = 0;
     };

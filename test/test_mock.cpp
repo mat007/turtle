@@ -364,7 +364,7 @@ namespace
     {
         virtual ~base()
         {}
-    protected:
+
         virtual void m1() = 0;
     };
 
@@ -413,7 +413,7 @@ namespace
     {
         virtual ~base()
         {}
-    protected:
+
         virtual void m1() = 0;
     };
 
@@ -444,7 +444,6 @@ namespace stdcall
         virtual ~base()
         {}
 
-    protected:
         virtual void MOCK_STDCALL m1() = 0;
     };
 

@@ -12,18 +12,21 @@
 
 namespace
 {
-//[ limitations_private_method_problem
+//[ limitations_protected_private_method_problem
     class base
     {
     private:
-        virtual void method() = 0;
+        virtual void method_1() = 0;
+    private:
+        virtual void method_2() = 0;
     };
 //]
 
-//[ limitations_private_method_solution
+//[ limitations_protected_private_method_solution
     MOCK_BASE_CLASS( mock_base, base )
     {
-        MOCK_METHOD( method, 0, void() )
+        MOCK_METHOD( method_1, 0, void() )
+        MOCK_METHOD( method_2, 0, void() )
     };
 //]
 }
