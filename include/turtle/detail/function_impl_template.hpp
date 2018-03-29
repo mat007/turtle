@@ -183,9 +183,9 @@ namespace detail
                 this->e_->throws( t );
             }
             template< typename TT >
-            void moves( TT t )
+            void moves( BOOST_RV_REF(TT) t )
             {
-                this->e_->moves( t );
+                this->e_->moves( boost::move( t ) );
             }
 
             lock lock_;
