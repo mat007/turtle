@@ -14,7 +14,7 @@ namespace
     class base_class
     {
     public:
-        virtual void method( boost::function< void( int ) > functor ) = 0;
+        virtual void method( const boost::function< void( int ) >& functor ) = 0;
     };
 
     void function( base_class& ); // the function will call 'method' with a functor to be applied
