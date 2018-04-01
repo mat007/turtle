@@ -28,5 +28,5 @@ copy "$BOOST"/doc/src/boostbook.css ../doc/html
 copy "$BOOST"/doc/src/images/*.png ../doc/html/images
 copy "$BOOST"/doc/src/images/callouts/*.png ../doc/html/images/callouts
 cd ../doc
-$BOOST/b2 -q "$C"
+$BOOST/b2 -q "$@"
 cd ../build
