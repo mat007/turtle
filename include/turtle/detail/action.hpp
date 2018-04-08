@@ -109,11 +109,17 @@ namespace detail
         {
             this->set(
                 boost::bind(
-                    &boost::move< BOOST_RV_REF(Value) >,
+                    &move< Value >,
                     boost::ref( store( boost::move( v ) ) ) ) );
         }
 
     private:
+        template< typename T >
+        static T&& move( T& t )
+        {
+            return std::move( t );
+        }
+
         struct value : boost::noncopyable
         {
             virtual ~value()

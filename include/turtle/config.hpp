@@ -94,7 +94,7 @@
 #   endif
 #endif
 
-#if defined(__cplusplus) && (__cplusplus >= 201703L) || \
+#if defined(__cpp_lib_uncaught_exceptions) || \
     defined(_MSC_VER) && (_MSC_VER >= 1900)
 #   ifndef MOCK_NO_UNCAUGHT_EXCEPTIONS
 #       define MOCK_UNCAUGHT_EXCEPTIONS

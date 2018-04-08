@@ -23,7 +23,7 @@ namespace
 BOOST_AUTO_TEST_CASE( mock_signature_generates_signature )
 {
     BOOST_MPL_ASSERT((
-        boost::is_same< void(), MOCK_SIGNATURE( method_1 ) > ));
+        boost::is_same< void(), MOCK_SIGNATURE(method_1) > ));
     BOOST_MPL_ASSERT((
-        boost::is_same< float( int ), MOCK_SIGNATURE( method_2 ) > ));
+        boost::is_same< float( int ), MOCK_SIGNATURE(method_2) > ));
 }

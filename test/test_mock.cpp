@@ -364,7 +364,7 @@ namespace
     {
         virtual ~base()
         {}
-    protected:
+
         virtual void m1() = 0;
     };
 
@@ -384,7 +384,7 @@ namespace
     template< typename T >
     MOCK_BASE_CLASS( variadic_tpl, base )
     {
-        MOCK_METHOD( m1, 0 )
+        MOCK_METHOD( m1, 0, void() )
         MOCK_METHOD_TPL( m2, 0, T() )
         MOCK_METHOD_TPL( m3, 0, T(), m3 )
         MOCK_CONST_METHOD_TPL( m4, 0, T() )
@@ -413,7 +413,7 @@ namespace
     {
         virtual ~base()
         {}
-    protected:
+
         virtual void m1() = 0;
     };
 
@@ -425,7 +425,7 @@ namespace
     template< typename T >
     MOCK_BASE_CLASS( derived_tpl, base )
     {
-        MOCK_METHOD( m1, 0 )
+        MOCK_METHOD_EXT( m1, 0, void(), m1 )
     };
 }
 
@@ -433,11 +433,9 @@ namespace
 
 #ifdef BOOST_MSVC
 #   define MOCK_STDCALL __stdcall
-#elif defined( BOOST_GCC )
-#   define MOCK_STDCALL __attribute((stdcall))
 #else
 #   define MOCK_STDCALL
-#endif // BOOST_GCC
+#endif
 
 namespace stdcall
 {
@@ -446,7 +444,6 @@ namespace stdcall
         virtual ~base()
         {}
 
-    protected:
         virtual void MOCK_STDCALL m1() = 0;
     };
 

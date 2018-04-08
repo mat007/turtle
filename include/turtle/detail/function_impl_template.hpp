@@ -43,12 +43,12 @@ namespace detail
         function_impl()
             : context_( 0 )
             , valid_( true )
+            , exceptions_( exceptions() )
             , mutex_( boost::make_shared< mutex >() )
-            , exceptions_( uncaught_exceptions() )
         {}
         virtual ~function_impl()
         {
-            if( valid_ && exceptions_ >= uncaught_exceptions() )
+            if( valid_ && exceptions_ >= exceptions() )
                 for( expectations_cit it = expectations_.begin();
                     it != expectations_.end(); ++it )
                     if( ! it->verify() )
@@ -183,9 +183,9 @@ namespace detail
                 this->e_->throws( t );
             }
             template< typename TT >
-            void moves( TT t )
+            void moves( BOOST_RV_REF(TT) t )
             {
-                this->e_->moves( t );
+                this->e_->moves( boost::move( t ) );
             }
 
             lock lock_;
