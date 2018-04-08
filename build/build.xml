@@ -18,17 +18,6 @@
 
   <property name="version" value="unreleased"/>
 
-  <import file="${env.PONEY_HOME}/poney.xml"/>
-  
-  <target name="reports" description="generate code analysis reports">
-    <headers name="turtle" excludes="**/*_iterate.hpp,**/*_template.hpp"/>
-    <check name="turtle"/>
-  </target>
-
-  <target name="build" description="build tests and documentation">
-    <run dir="." script="build"/>
-  </target>
-
   <target name="package" depends="build" description="produce release packages">
     <fail unless="version" message="missing version property"/>
     <copy file="version.hpp" tofile="${out.dir}/version.hpp" overwrite="true">

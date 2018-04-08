@@ -11,7 +11,7 @@ rem error if BOOST_ROOT not set
 set BOOST=%BOOST_ROOT%
 
 pushd ..\test
-%BOOST%\b2 -q %*
+%BOOST%\b2.exe -q %*
 popd
 if errorlevel 1 exit /b %ERRORLEVEL%
 
@@ -24,6 +24,6 @@ xcopy /Y /S /Q /I %BOOST%\doc\src\images\*.png ..\doc\html\images
 xcopy /Y /S /Q /I %BOOST%\doc\src\images\callouts\*.png ..\doc\html\images\callouts
 if errorlevel 1 exit /b %ERRORLEVEL%
 pushd ..\doc
-%BOOST%\b2 -q %*
+%BOOST%\b2.exe -q %*
 popd
 if errorlevel 1 exit /b %ERRORLEVEL%
