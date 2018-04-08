@@ -49,7 +49,7 @@ namespace detail
         virtual void serialize( std::ostream& s ) const
         {
             s << "" BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                MOCK_EXPECTATION_SERIALIZE_ANY, _ );
+                MOCK_EXPECTATION_SERIALIZE_ANY, _);
         }
     };
 
@@ -84,12 +84,12 @@ namespace detail
         virtual void serialize( std::ostream& s ) const
         {
             s << BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                MOCK_EXPECTATION_SERIALIZE, _ );
+                MOCK_EXPECTATION_SERIALIZE, _);
         }
 
     private:
         BOOST_PP_REPEAT(
-            MOCK_NUM_ARGS, MOCK_EXPECTATION_MEMBER, _ )
+            MOCK_NUM_ARGS, MOCK_EXPECTATION_MEMBER, _)
 };
 
     template< typename F, typename Signature > class multi_matcher;
