@@ -72,16 +72,22 @@
         return t##_mock_; \
     }
 
-#define MOCK_PARAM(z, n, d) \
+#define MOCK_PARAM(S, tpn) \
+    tpn mock::detail::parameter< MOCK_FUNCTION_TYPE((S), tpn)
+#define MOCK_DECL_PARAM(z, n, d) \
     BOOST_PP_COMMA_IF(n) d, n >::type p##n
-#define MOCK_PARAMS(n, S, tpn) \
-    BOOST_PP_REPEAT(n, MOCK_PARAM, \
-        tpn mock::detail::parameter< MOCK_FUNCTION_TYPE((S), tpn))
+#define MOCK_DECL_PARAMS(n, S, tpn) \
+    BOOST_PP_REPEAT(n, MOCK_DECL_PARAM, MOCK_PARAM(S, tpn))
 #define MOCK_DECL(M, n, S, c, tpn) \
     tpn boost::function_types::result_type< \
         MOCK_FUNCTION_TYPE((S), tpn) >::type M( \
-            MOCK_PARAMS(n, S, tpn) ) c
+            MOCK_DECL_PARAMS(n, S, tpn) ) c
 
+#define MOCK_FORWARD_PARAM(z, n, d) \
+    BOOST_PP_COMMA_IF(n) d, n >::type >( p##n )
+#define MOCK_FORWARD_PARAMS(n, S, tpn) \
+    BOOST_PP_REPEAT(n, MOCK_FORWARD_PARAM, \
+        boost::forward< MOCK_PARAM(S, tpn))
 #define MOCK_METHOD_AUX(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
     { \
@@ -89,7 +95,7 @@
             boost::function_types::function_arity< \
                 MOCK_FUNCTION_TYPE((S), tpn) >::value ); \
         return MOCK_ANONYMOUS_HELPER(t)( \
-            BOOST_PP_ENUM_PARAMS(n, p) ); \
+            MOCK_FORWARD_PARAMS(n, S, tpn) ); \
     }
 
 #define MOCK_METHOD_EXT(M, n, S, t) \
@@ -146,9 +152,9 @@
     }
 
 #define MOCK_CONSTRUCTOR_AUX(T, n, A, t, tpn) \
-    T( MOCK_PARAMS(n, void A, tpn) ) \
+    T( MOCK_DECL_PARAMS(n, void A, tpn) ) \
     { \
-        MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
+        MOCK_HELPER(t)( MOCK_FORWARD_PARAMS(n, void A, tpn) ); \
     } \
     MOCK_FUNCTION_HELPER(void A, t, static, tpn)
 
@@ -168,7 +174,7 @@
         BOOST_MPL_ASSERT_RELATION( n, ==, \
             boost::function_types::function_arity< \
                 MOCK_FUNCTION_TYPE((S), tpn) >::value ); \
-        return MOCK_HELPER(t)( BOOST_PP_ENUM_PARAMS(n, p) ); \
+        return MOCK_HELPER(t)( MOCK_FORWARD_PARAMS(n, S, tpn) ); \
     }
 
 #ifdef MOCK_VARIADIC_MACROS

@@ -769,4 +769,11 @@ BOOST_FIXTURE_TEST_CASE( std_unique_ptr_argument_is_supported_in_retrieve_constr
     }
 }
 
+struct my_unique_ptr_class
+{
+    MOCK_CONSTRUCTOR( my_unique_ptr_class, 1, ( std::unique_ptr< int > ), constructor )
+    MOCK_METHOD_EXT( m, 1, void( std::unique_ptr< int > ), m )
+    MOCK_STATIC_METHOD( ms, 1, void( std::unique_ptr< int > ), ms )
+};
+
 #endif
