@@ -51,7 +51,7 @@ namespace detail
             : impl_( boost::make_shared< detail::object_impl >() )
         {}
     protected:
-        ~object()
+        virtual ~object()
         {}
     public:
         boost::shared_ptr< detail::object_impl > impl_;
