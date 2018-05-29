@@ -22,7 +22,7 @@ struct catch_mock_error_policy
     
     template< typename Context >
     static void fail( const char* message, const Context& context,
-        const char* file = "file://unknown-location", line = 0 )
+        const char* file = "file://unknown-location", int line = 0 )
     {
         CAPTURE( context );
         FAIL_CHECK( message << " in: " << file << ":" << line );
