@@ -55,9 +55,9 @@
 #endif // MOCK_VARIADIC_MACROS
 
 #define MOCK_HELPER(t) \
-    t##_mock( mock::detail::root, BOOST_PP_STRINGIZE(t) )
+    t##_mock( mock::detail::root::inst(), BOOST_PP_STRINGIZE(t) )
 #define MOCK_ANONYMOUS_HELPER(t) \
-    t##_mock( mock::detail::root, "?." )
+    t##_mock( mock::detail::root::inst(), "?." )
 
 #define MOCK_METHOD_HELPER(S, t, tpn) \
     mutable mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) > t##_mock_; \

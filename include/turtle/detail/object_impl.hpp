@@ -40,7 +40,7 @@ namespace detail
         {
             lock _( mutex_ );
             if( children_.empty() )
-                detail::root.add( *this );
+                detail::root::inst().add( *this );
             children_[ &v ].update( parent_, instance, type, name );
         }
         virtual void add( verifiable& v )
@@ -54,7 +54,7 @@ namespace detail
             group_.remove( v );
             children_.erase( &v );
             if( children_.empty() )
-                detail::root.remove( *this );
+                detail::root::inst().remove( *this );
         }
 
         virtual void serialize( std::ostream& s, const verifiable& v ) const

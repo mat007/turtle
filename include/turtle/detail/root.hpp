@@ -15,7 +15,7 @@
 #include "context.hpp"
 #include "child.hpp"
 #include "mutex.hpp"
-#include <boost/test/utils/trivial_singleton.hpp>
+#include "singleton.hpp"
 #include <boost/optional.hpp>
 #include <ostream>
 #include <map>
@@ -24,7 +24,7 @@ namespace mock
 {
 namespace detail
 {
-    class root_t : public boost::unit_test::singleton< root_t >, public context
+    class root_t : public singleton< root_t >, public context
     {
     public:
         virtual void add( const void* p, verifiable& v,
@@ -128,10 +128,8 @@ namespace detail
         group group_;
         mutable mutex mutex_;
 
-    private:
-        BOOST_TEST_SINGLETON_CONS( root_t );
+        MOCK_SINGLETON_CONS( root_t );
     };
-    BOOST_TEST_SINGLETON_INST( root )
 }
 } // mock
 

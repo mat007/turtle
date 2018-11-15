@@ -18,7 +18,7 @@ namespace mock
 {
     inline bool verify()
     {
-        return detail::root.verify();
+        return detail::root::inst().verify();
     }
     inline bool verify( const object& o )
     {

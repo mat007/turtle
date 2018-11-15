@@ -18,7 +18,7 @@ namespace mock
 {
     inline void reset()
     {
-        detail::root.reset();
+        detail::root::inst().reset();
     }
     inline void reset( const object& o )
     {

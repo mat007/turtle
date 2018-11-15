@@ -40,7 +40,7 @@ namespace detail
             typename boost::is_base_of< object, T >
         >::type* = 0 )
     {
-        e.configure( detail::root, &t, instance, type, name );
+        e.configure( detail::root::inst(), &t, instance, type, name );
         return e;
     }
 }
