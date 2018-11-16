@@ -6,6 +6,10 @@
 
 skip_branch_with_pr: true
 
+branches:
+  only:
+    - master
+
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015

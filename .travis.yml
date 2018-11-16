@@ -12,6 +12,10 @@
 sudo: false
 language: cpp
 
+branches:
+  only:
+    - master
+
 env:
     - CXX_STANDARD=c++17 BRANCH_TO_TEST=master
     - CXX_STANDARD=c++14 BRANCH_TO_TEST=master
