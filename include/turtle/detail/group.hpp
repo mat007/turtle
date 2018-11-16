@@ -22,6 +22,13 @@ namespace detail
     class group
     {
     public:
+        ~group()
+        {
+            for( verifiables_cit it = verifiables_.begin();
+                    it != verifiables_.end(); ++it )
+                (*it)->context_destroyed();
+        }
+
         void add( verifiable& v )
         {
             verifiables_.push_back( &v );

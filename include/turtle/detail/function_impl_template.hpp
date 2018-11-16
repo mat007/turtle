@@ -255,6 +255,11 @@ namespace detail
             context_ = &c;
         }
 
+        virtual void context_destroyed()
+        {
+            context_ = NULL;
+        }
+
         friend std::ostream& operator<<(
             std::ostream& s, const function_impl& impl )
         {

@@ -25,6 +25,8 @@ namespace detail
         virtual bool verify() const = 0;
 
         virtual void reset() = 0;
+
+        virtual void context_destroyed() = 0;
     };
 }
 } // mock

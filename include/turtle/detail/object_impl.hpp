@@ -56,6 +56,8 @@ namespace detail
             if( children_.empty() )
                 detail::root::inst().remove( *this );
         }
+        virtual void context_destroyed()
+        {}
 
         virtual void serialize( std::ostream& s, const verifiable& v ) const
         {
