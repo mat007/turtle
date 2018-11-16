@@ -24,7 +24,7 @@ namespace mock
 {
 namespace detail
 {
-    class root_t : public singleton< root_t >, public context
+    class root : public singleton< root >, public context
     {
     public:
         virtual void add( const void* p, verifiable& v,
@@ -128,7 +128,7 @@ namespace detail
         group group_;
         mutable mutex mutex_;
 
-        MOCK_SINGLETON_CONS( root_t );
+        MOCK_SINGLETON_CONS( root );
     };
 }
 } // mock

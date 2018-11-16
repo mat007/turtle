@@ -15,7 +15,7 @@
 #include <boost/test/unit_test.hpp>
 #include <stdexcept>
 
-struct mock_error_data_t : turtle::detail::singleton< mock_error_data_t >
+struct mock_error_data : mock::detail::singleton< mock_error_data >
 {
     void reset()
     {
@@ -53,7 +53,7 @@ struct mock_error_data_t : turtle::detail::singleton< mock_error_data_t >
     std::string last_file;
     int last_line;
 
-    MOCK_SINGLETON_CONS( mock_error_data_t );
+    MOCK_SINGLETON_CONS( mock_error_data );
 };
 
 template< typename Result >

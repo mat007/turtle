@@ -18,11 +18,11 @@ namespace mock
 {
 namespace detail
 {
-    class functor_mutex_t :
-        public singleton< functor_mutex_t >,
+    class functor_mutex :
+        public singleton< functor_mutex >,
         public mutex
     {
-        MOCK_SINGLETON_CONS( functor_mutex_t );
+        MOCK_SINGLETON_CONS( functor_mutex );
     };
 
     template< typename Signature >

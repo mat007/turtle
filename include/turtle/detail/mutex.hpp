@@ -93,10 +93,10 @@ namespace mock
 {
 namespace detail
 {
-    class error_mutex_t : public singleton< error_mutex_t >,
+    class error_mutex : public singleton< error_mutex >,
         public mutex
     {
-        MOCK_SINGLETON_CONS( error_mutex_t );
+        MOCK_SINGLETON_CONS( error_mutex );
     };
 
 #ifdef BOOST_MSVC

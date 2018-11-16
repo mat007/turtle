@@ -907,8 +907,8 @@ BOOST_FIXTURE_TEST_CASE( adding_file_and_line_number_information, mock_error_fix
     mock::detail::function< void() > f;
     f.expect( "file name", 42 ).once();
     CHECK_ERROR( f.verify(), "verification failed", 0, "?\n. once()" );
-    BOOST_CHECK_EQUAL( "file name", mock_error_data.last_file );
-    BOOST_CHECK_EQUAL( 42, mock_error_data.last_line );
+    BOOST_CHECK_EQUAL( "file name", mock_error_data::inst().last_file );
+    BOOST_CHECK_EQUAL( 42, mock_error_data::inst().last_line );
 }
 
 #ifdef MOCK_THREAD_SAFE
