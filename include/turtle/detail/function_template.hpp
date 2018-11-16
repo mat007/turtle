@@ -9,7 +9,7 @@
 #include "function_impl_template.hpp"
 
 #define MOCK_FORWARD(z, n, d) \
-    boost::forward< T##n >( t##n )
+    boost::move_if_not_lvalue_reference< T##n >( t##n )
 
 namespace mock
 {

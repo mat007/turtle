@@ -183,9 +183,9 @@ namespace detail
                 this->e_->throws( t );
             }
             template< typename TT >
-            void moves( BOOST_RV_REF(TT) t )
+            void moves( BOOST_FWD_REF(TT) t )
             {
-                this->e_->moves( boost::move( t ) );
+                this->e_->moves( boost::forward<TT>( t ) );
             }
 
             lock lock_;
@@ -217,7 +217,7 @@ namespace detail
             for( expectations_cit it = expectations_.begin();
                 it != expectations_.end(); ++it )
                 if( it->is_valid(
-                    BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) ) )
+                    BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, t) ) )
                 {
                     if( ! it->invoke() )
                     {

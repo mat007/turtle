@@ -105,7 +105,7 @@ namespace detail
         }
 
         template< typename Value >
-        void moves( BOOST_RV_REF(Value) v )
+        void moves( BOOST_FWD_REF(Value) v )
         {
             this->set(
                 boost::bind(
@@ -137,7 +137,7 @@ namespace detail
             value_imp( BOOST_RV_REF(value_type) t )
                 : t_( boost::move( t ) )
             {}
-            value_imp( const T& t )
+            value_imp( const value_type& t )
                 : t_( t )
             {}
             template< typename Y >

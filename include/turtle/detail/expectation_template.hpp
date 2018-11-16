@@ -12,10 +12,10 @@
     BOOST_PP_COMMA_IF(n) c##n##_( c##n )
 
 #define MOCK_EXPECTATION_MEMBER(z, n, d) \
-    matcher< T##n, Constraint_##n > c##n##_;
+    matcher< typename boost::remove_reference< T##n >::type, Constraint_##n > c##n##_;
 
 #define MOCK_EXPECTATION_IS_VALID(z, n, d) \
-    BOOST_PP_IF(n, &&,) c##n##_( boost::forward< T##n >( a##n ) )
+    BOOST_PP_IF(n, &&,) c##n##_( a##n )
 
 #define MOCK_EXPECTATION_SERIALIZE(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) c##n##_
@@ -24,10 +24,10 @@
     BOOST_PP_IF(n, << ", " <<,) "any"
 
 #define MOCK_EXPECTATION_PARAM(z, n, Args) \
-    boost::forward< T##n >( a##n )
+    a##n
 
-#define MOCK_RV_REF_ARG(z, n, d) \
-    BOOST_RV_REF(T##n) a##n
+#define MOCK_ARG_TYPE(z, n, d) \
+    typename ::mock::detail::ref_arg< T##n >::type a##n
 
 namespace mock
 {
@@ -42,7 +42,7 @@ namespace detail
     {
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_RV_REF, _) )
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_ARG_TYPE, _) )
         {
             return true;
         }
@@ -76,7 +76,7 @@ namespace detail
 
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_RV_REF_ARG, _) )
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_ARG_TYPE, _) )
         {
             return BOOST_PP_REPEAT(MOCK_NUM_ARGS,
                 MOCK_EXPECTATION_IS_VALID, _);
@@ -106,7 +106,7 @@ namespace detail
 
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_RV_REF_ARG, _) )
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_ARG_TYPE, _) )
         {
             return f_( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _) );
         }
@@ -204,7 +204,7 @@ namespace detail
         }
 
         bool is_valid(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_RV_REF_ARG, _) ) const
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_ARG_TYPE, _) ) const
         {
             return !invocation_->exhausted()
                 && (*matcher_)( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _) );
@@ -268,5 +268,4 @@ namespace detail
 #undef MOCK_EXPECTATION_SERIALIZE
 #undef MOCK_EXPECTATION_SERIALIZE_ANY
 #undef MOCK_EXPECTATION_PARAM
-#undef MOCK_RV_REF_ARG
-#undef MOCK_RV_REF
+#undef MOCK_ARG_TYPE

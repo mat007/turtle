@@ -29,6 +29,7 @@
 #include <boost/preprocessor/comparison/greater.hpp>
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/test/utils/lazy_ostream.hpp>
+#include <boost/type_traits/add_reference.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/call_traits.hpp>
 #include <boost/make_shared.hpp>
@@ -43,6 +44,12 @@ namespace mock
 {
 namespace detail
 {
+    template< typename T >
+    struct ref_arg
+    {
+        typedef typename boost::add_reference<T>::type type;
+    };
+
     template< typename R, typename E >
     struct wrapper_base
     {

@@ -20,6 +20,8 @@
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/array.hpp>
 #include <boost/move/move.hpp>
+#include <boost/type_traits/decay.hpp>
+#include <boost/type_traits/add_const.hpp>
 
 namespace mock
 {
@@ -145,8 +147,8 @@ namespace detail
     } \
     const mock::constraint< detail::Name > Name;
 
-#define MOCK_CONSTRAINT_ASSIGN(z, n, d) \
-    expected##n( e##n )
+#define MOCK_CONSTRAINT_ASSIGN(z, n, Args) \
+    expected##n( boost::forward< T##n >( BOOST_PP_ARRAY_ELEM(n, Args) ) )
 
 #define MOCK_CONSTRAINT_UNWRAP_REF(z, n, d) \
     boost::unwrap_ref( expected##n )
@@ -154,11 +156,14 @@ namespace detail
 #define MOCK_CONSTRAINT_FORMAT(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) mock::format( c.expected##n )
 
+#define MOCK_CONSTRAINT_MEMBER_TYPE(n) \
+    typename boost::decay< typename boost::add_const< Expected_##n >::type >::type
+
 #define MOCK_CONSTRAINT_MEMBER(z, n, d) \
-    Expected_##n expected##n;
+    MOCK_CONSTRAINT_MEMBER_TYPE(n) expected##n;
 
 #define MOCK_CONSTRAINT_CREF_PARAM(z, n, Args) \
-    const typename boost::unwrap_reference< Expected_##n >::type& \
+    const typename boost::unwrap_reference< MOCK_CONSTRAINT_MEMBER_TYPE(n) >::type& \
         BOOST_PP_ARRAY_ELEM(n, Args)
 
 #define MOCK_CONSTRAINT_ARG(z, n, Args) \
@@ -173,9 +178,10 @@ namespace detail
         template< BOOST_PP_ENUM_PARAMS(n, typename Expected_) > \
         struct Name \
         { \
+            template< BOOST_PP_ENUM_PARAMS(n, typename T) > \
             explicit Name( \
-                BOOST_PP_ENUM_BINARY_PARAMS(n, Expected_, e) ) \
-                : BOOST_PP_ENUM(n, MOCK_CONSTRAINT_ASSIGN, _) \
+                BOOST_PP_ENUM(n, MOCK_CONSTRAINT_ARG, (n, Args)) ) \
+                : BOOST_PP_ENUM(n, MOCK_CONSTRAINT_ASSIGN, (n, Args)) \
             {} \
             template< typename Actual > \
             bool operator()( const Actual& actual ) const \

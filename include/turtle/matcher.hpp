@@ -71,6 +71,10 @@ namespace mock
         {
             return c_( boost::forward< Actual >( actual ) );
         }
+        bool operator()( Actual& actual )
+        {
+            return c_( actual );
+        }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )
         {
@@ -94,6 +98,10 @@ namespace mock
         bool operator()( BOOST_RV_REF(Actual) actual )
         {
             return c_( boost::forward< Actual >( actual ) );
+        }
+        bool operator()( Actual& actual )
+        {
+            return c_( actual );
         }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )
