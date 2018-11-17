@@ -6,17 +6,21 @@
 
 skip_branch_with_pr: true
 
+branches:
+  only:
+    - master
+
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      BOOST: 1_59_0
+      BOOST: 1_60_0
       TOOLSET: msvc-14.0
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       BOOST: 1_65_1
       TOOLSET: msvc-14.1
       CXX_STANDARD: 14
     # - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    #   BOOST: 1_65_1
+    #   BOOST: 1_67_0
     #   TOOLSET: msvc-14.1
     #   CXX_STANDARD: 17
 
