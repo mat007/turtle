@@ -62,7 +62,7 @@ before_install:
     # Cloning Boost libraries (fast nondeep cloning)
     - PROJECT_DIR=`pwd`
     - git --version
-    - BOOST=$HOME/boost
+    - BOOST=$HOME/boost-local
     - git clone -b $BRANCH_TO_TEST https://github.com/boostorg/boost.git $BOOST
     - cd $BOOST
     - git submodule update --init --merge
