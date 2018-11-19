@@ -21,6 +21,7 @@
 #include "type_name.hpp"
 #include "context.hpp"
 #include "mutex.hpp"
+#include "move_helper.hpp"
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>

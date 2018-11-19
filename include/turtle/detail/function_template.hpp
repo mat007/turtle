@@ -8,8 +8,8 @@
 
 #include "function_impl_template.hpp"
 
-#define MOCK_FORWARD(z, n, d) \
-    boost::forward< T##n >( t##n )
+#define MOCK_MOVE(z, n, d) \
+    mock::detail::move_if_not_lvalue_reference< T##n >( t##n )
 
 namespace mock
 {
@@ -74,7 +74,7 @@ namespace detail
         R operator()(
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, t) ) const
         {
-            return (*impl_)( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) );
+            return (*impl_)( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) );
         }
 
         friend std::ostream& operator<<( std::ostream& s, const function& f )
@@ -102,3 +102,5 @@ namespace detail
     };
 }
 } // mock
+
+#undef MOCK_MOVE

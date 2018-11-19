@@ -20,6 +20,7 @@
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/array.hpp>
 #include <boost/move/move.hpp>
+#include <boost/type_traits/decay.hpp>
 
 namespace mock
 {
@@ -146,7 +147,7 @@ namespace detail
     const mock::constraint< detail::Name > Name;
 
 #define MOCK_CONSTRAINT_ASSIGN(z, n, d) \
-    expected##n( e##n )
+    expected##n( boost::forward< T##n >(e##n) )
 
 #define MOCK_CONSTRAINT_UNWRAP_REF(z, n, d) \
     boost::unwrap_ref( expected##n )
@@ -157,12 +158,18 @@ namespace detail
 #define MOCK_CONSTRAINT_MEMBER(z, n, d) \
     Expected_##n expected##n;
 
+#define MOCK_CONSTRAINT_TPL_TYPE(z, n, d) \
+    typename boost::decay< const T##n >::type
+
 #define MOCK_CONSTRAINT_CREF_PARAM(z, n, Args) \
     const typename boost::unwrap_reference< Expected_##n >::type& \
         BOOST_PP_ARRAY_ELEM(n, Args)
 
 #define MOCK_CONSTRAINT_ARG(z, n, Args) \
     BOOST_FWD_REF(T##n) BOOST_PP_ARRAY_ELEM(n, Args)
+
+#define MOCK_CONSTRAINT_ARGS(z, n, Args) \
+    BOOST_FWD_REF(T##n) e##n
 
 #define MOCK_CONSTRAINT_PARAM(z, n, Args) \
     boost::forward< T##n >( BOOST_PP_ARRAY_ELEM(n, Args) )
@@ -173,8 +180,9 @@ namespace detail
         template< BOOST_PP_ENUM_PARAMS(n, typename Expected_) > \
         struct Name \
         { \
+            template< BOOST_PP_ENUM_PARAMS(n, typename T) > \
             explicit Name( \
-                BOOST_PP_ENUM_BINARY_PARAMS(n, Expected_, e) ) \
+                BOOST_PP_ENUM(n, MOCK_CONSTRAINT_ARGS, _) ) \
                 : BOOST_PP_ENUM(n, MOCK_CONSTRAINT_ASSIGN, _) \
             {} \
             template< typename Actual > \
@@ -201,10 +209,10 @@ namespace detail
     } \
     template< BOOST_PP_ENUM_PARAMS(n, typename T) > \
     mock::constraint< \
-        detail::Name< BOOST_PP_ENUM_PARAMS(n, T) > \
+        detail::Name< BOOST_PP_ENUM(n, MOCK_CONSTRAINT_TPL_TYPE, _) > \
     > Name( BOOST_PP_ENUM(n, MOCK_CONSTRAINT_ARG, (n, Args)) ) \
     { \
-        return detail::Name< BOOST_PP_ENUM_PARAMS(n, T) >( \
+        return detail::Name< BOOST_PP_ENUM(n, MOCK_CONSTRAINT_TPL_TYPE, _) >( \
             BOOST_PP_ENUM(n, MOCK_CONSTRAINT_PARAM, (n, Args)) ); \
     }
 

@@ -8,6 +8,7 @@
 
 #include <turtle/constraints.hpp>
 #include <boost/test/auto_unit_test.hpp>
+#include <boost/typeof/typeof.hpp>
 
 BOOST_AUTO_TEST_CASE( all_comparison_constraints_can_be_instanciated )
 {
@@ -47,7 +48,7 @@ BOOST_AUTO_TEST_CASE( equal_constraint )
     BOOST_CHECK( ! mock::equal( std::string( "string" ) ).c_( "not string" ) );
     {
         std::string s;
-        auto c = mock::equal( boost::cref( s ) );
+        BOOST_AUTO( c, mock::equal( boost::cref( s ) ) );
         s = "string";
         BOOST_CHECK( c.c_( "string" ) );
     }
