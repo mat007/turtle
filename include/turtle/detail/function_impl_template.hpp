@@ -257,7 +257,7 @@ namespace detail
 
         virtual void context_destroyed()
         {
-            context_ = NULL;
+            context_ = 0;
         }
 
         friend std::ostream& operator<<(

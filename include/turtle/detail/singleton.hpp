@@ -14,7 +14,7 @@
 namespace mock {
 namespace detail {
 
-template<typename Derived>
+template< typename Derived >
 class singleton {
 public:
     static Derived& inst() { static Derived the_inst; return the_inst; }
@@ -30,7 +30,7 @@ protected:
 // Add a private ctor to the type to prevent misuse
 #define MOCK_SINGLETON_CONS( type )           \
 private:                                      \
-friend class ::mock::detail::singleton<type>; \
+friend class mock::detail::singleton< type >; \
 type() {}
 
 } // detail
