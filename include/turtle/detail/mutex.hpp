@@ -11,6 +11,8 @@
 
 #include "../config.hpp"
 #include "singleton.hpp"
+#include <boost/move/move.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
 #ifdef MOCK_THREAD_SAFE
@@ -36,25 +38,35 @@ namespace detail
 
     struct lock
     {
+    private:
+        BOOST_MOVABLE_BUT_NOT_COPYABLE(lock)
+
+    public:
         lock( const boost::shared_ptr< mutex >& m )
             : m_( m )
         {
             m_->lock();
-        }
-        lock( const lock& rhs )
-        {
-            m_.swap( rhs.m_ );
         }
         ~lock()
         {
             if( m_ )
                 m_->unlock();
         }
+        lock( BOOST_RV_REF( lock ) x )
+            : m_( x.m_ )
+        {
+            // Explicit reset to avoid unlock in destructor
+            x.m_.reset();
+        }
+        lock& operator=( BOOST_RV_REF( lock ) x )
+        {
+            m_ = x.m_;
+            x.m_.reset();
+            return *this;
+        }
 
     private:
-        lock& operator=( const lock& rhs );
-
-        mutable boost::shared_ptr< mutex > m_;
+        boost::shared_ptr< mutex > m_;
     };
 }
 } // mock
@@ -65,24 +77,38 @@ namespace mock
 {
 namespace detail
 {
-    struct mutex
+    struct mutex : boost::noncopyable
     {
-        mutex()
-        {}
         void lock()
         {}
         void unlock()
         {}
     };
-    struct scoped_lock
+    // Dummy lock classes.
+    // Constructor + Destructor make it RAII classes for compilers and avoid unused variable warnings
+    struct scoped_lock : boost::noncopyable
     {
         scoped_lock( mutex& )
         {}
+        ~scoped_lock()
+        {}
     };
-    struct lock
+    class lock : boost::noncopyable
     {
+    private:
+        BOOST_MOVABLE_BUT_NOT_COPYABLE(lock)
+
+    public:
         lock( const boost::shared_ptr< mutex >& )
         {}
+        ~lock()
+        {}
+        lock( BOOST_RV_REF( lock ) x )
+        {}
+        lock& operator=( BOOST_RV_REF( lock ) x )
+        {
+            return *this;
+        }
     };
 }
 } // mock

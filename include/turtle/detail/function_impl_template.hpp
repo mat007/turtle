@@ -95,42 +95,56 @@ namespace detail
             R( BOOST_PP_ENUM_PARAMS( MOCK_NUM_ARGS, T ) )
         > expectation_type;
 
-        struct wrapper : wrapper_base< R, expectation_type >
+        class wrapper : public wrapper_base< R, expectation_type >
         {
+        private:
+            typedef wrapper_base< R, expectation_type > base_type;
+            BOOST_MOVABLE_BUT_NOT_COPYABLE(wrapper)
+
+        public:
             wrapper( const boost::shared_ptr< mutex >& m, expectation_type& e )
-                : wrapper_base< R, expectation_type >( e )
+                : base_type( e )
                 , lock_( m )
             {}
-
-            wrapper once()
+            wrapper( BOOST_RV_REF( wrapper ) x )
+                : base_type( x )
+                , lock_( boost::move( x.lock_) )
+            {}
+            wrapper& operator=( BOOST_RV_REF( wrapper ) x )
+            {
+                static_cast< base_type& >( *this ) = x;
+                lock_ = boost::move( x.lock_ );
+                return *this;
+            }
+            wrapper& once()
             {
                 this->e_->invoke( boost::make_shared< detail::once >() );
                 return *this;
             }
-            wrapper never()
+            wrapper& never()
             {
                 this->e_->invoke( boost::make_shared< detail::never >() );
                 return *this;
             }
-            wrapper exactly( std::size_t count )
+            wrapper& exactly( std::size_t count )
             {
                 this->e_->invoke(
                     boost::make_shared< detail::exactly >( count ) );
                 return *this;
             }
-            wrapper at_least( std::size_t min )
+            wrapper& at_least( std::size_t min )
             {
                 this->e_->invoke(
                     boost::make_shared< detail::at_least >( min ) );
                 return *this;
             }
-            wrapper at_most( std::size_t max )
+            wrapper& at_most( std::size_t max )
             {
                 this->e_->invoke(
                     boost::make_shared< detail::at_most >( max ) );
                 return *this;
             }
-            wrapper between( std::size_t min, std::size_t max )
+            wrapper& between( std::size_t min, std::size_t max )
             {
                 this->e_->invoke(
                     boost::make_shared< detail::between >( min, max ) );
@@ -141,7 +155,7 @@ namespace detail
             template<
                 BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_)
             >
-            wrapper with(
+            wrapper& with(
                 BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
             {
                 this->e_->with(
@@ -151,7 +165,7 @@ namespace detail
 
 #if MOCK_NUM_ARGS > 1
             template< typename Constraint >
-            wrapper with( const Constraint& c )
+            wrapper& with( const Constraint& c )
             {
                 this->e_->with( c );
                 return *this;
@@ -163,7 +177,7 @@ namespace detail
     this->e_->add( s##n );
 
 #define MOCK_FUNCTION_IN(z, n, d) \
-    wrapper in( BOOST_PP_ENUM_PARAMS(n, sequence& s) ) \
+    wrapper& in( BOOST_PP_ENUM_PARAMS(n, sequence& s) ) \
     { \
         BOOST_PP_REPEAT(n, MOCK_FUNCTION_IN_ADD, _) \
         return *this; \

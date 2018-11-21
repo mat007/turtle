@@ -74,7 +74,7 @@ script:
     - cd $PROJECT_DIR/build
     - export BOOST_ROOT=$BOOST
     # `--coverage` flags required to generate coverage info for Coveralls
-    - ./build.sh --toolset=$CC "cxxflags=-std=$CXX_STANDARD -Wno-unused-local-typedefs -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations --coverage" "linkflags=--coverage"
+    - ./build.sh --toolset=$CC "cxxflags=-std=$CXX_STANDARD -Wno-unused-local-typedefs -Wno-unused-function -Wno-deprecated-declarations --coverage" "linkflags=--coverage"
 
 after_success:
     - COVERALS_DIR=$PROJECT_DIR/coverals
