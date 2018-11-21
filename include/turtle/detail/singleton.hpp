@@ -12,8 +12,8 @@
 //  Description : simple helpers for creating cusom output manipulators
 // ***************************************************************************
 
-#ifndef MOCK_UTILS_TRIVIAL_SIGNLETON_HPP
-#define MOCK_UTILS_TRIVIAL_SIGNLETON_HPP
+#ifndef MOCK_UTILS_TRIVIAL_SINGLETON_HPP
+#define MOCK_UTILS_TRIVIAL_SINGLETON_HPP
 
 // Boost.Test
 #include <boost/config.hpp>
@@ -76,5 +76,5 @@ namespace { BOOST_JOIN( inst, _t)& inst = BOOST_JOIN( inst, _t)::instance(); }
 
 #include <boost/test/detail/enable_warnings.hpp>
 
-#endif // MOCK_UTILS_TRIVIAL_SIGNLETON_HPP
+#endif // MOCK_UTILS_TRIVIAL_SINGLETON_HPP
 

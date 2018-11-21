@@ -10,8 +10,7 @@
 #define MOCK_MUTEX_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <turtle/detail/singleton.hpp>
-
+#include <boost/test/utils/trivial_singleton.hpp>
 #include <boost/shared_ptr.hpp>
 
 #ifdef MOCK_THREAD_SAFE
