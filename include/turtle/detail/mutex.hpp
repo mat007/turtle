@@ -10,7 +10,7 @@
 #define MOCK_MUTEX_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <boost/test/utils/trivial_singleton.hpp>
+#include "singleton.hpp"
 #include <boost/shared_ptr.hpp>
 
 #ifdef MOCK_THREAD_SAFE
@@ -93,13 +93,12 @@ namespace mock
 {
 namespace detail
 {
-    class error_mutex_t : public boost::unit_test::singleton< error_mutex_t >,
+    class error_mutex_t : public singleton< error_mutex_t >,
         public mutex
     {
-    private:
-        BOOST_TEST_SINGLETON_CONS( error_mutex_t );
+        MOCK_SINGLETON_CONS( error_mutex_t );
     };
-    BOOST_TEST_SINGLETON_INST( error_mutex )
+    MOCK_SINGLETON_INST( error_mutex )
 
 #ifdef BOOST_MSVC
 #   pragma warning( push )

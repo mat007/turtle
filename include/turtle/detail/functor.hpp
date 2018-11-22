@@ -12,19 +12,19 @@
 #include "../config.hpp"
 #include "function.hpp"
 #include "mutex.hpp"
+#include "singleton.hpp"
 
 namespace mock
 {
 namespace detail
 {
     class functor_mutex_t :
-        public boost::unit_test::singleton< functor_mutex_t >,
+        public singleton< functor_mutex_t >,
         public mutex
     {
-    private:
-        BOOST_TEST_SINGLETON_CONS( functor_mutex_t );
+        MOCK_SINGLETON_CONS( functor_mutex_t );
     };
-    BOOST_TEST_SINGLETON_INST( functor_mutex )
+    MOCK_SINGLETON_INST( functor_mutex )
 
     template< typename Signature >
     struct functor : function< Signature >
