@@ -13,7 +13,9 @@
 #include "log.hpp"
 #include "constraints.hpp"
 #include "detail/is_functor.hpp"
+#include "detail/move_helper.hpp"
 #include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/add_reference.hpp>
 #include <boost/ref.hpp>
 #include <cstring>
 
@@ -26,7 +28,7 @@ namespace mock
         explicit matcher( Expected expected )
             : expected_( expected )
         {}
-        bool operator()( const Actual& actual )
+        bool operator()( typename boost::add_reference< const Actual >::type actual )
         {
             return mock::equal(
                 boost::unwrap_ref( expected_ ) ).c_( actual );
@@ -67,9 +69,9 @@ namespace mock
         explicit matcher( const constraint< Constraint >& c )
             : c_( c.c_ )
         {}
-        bool operator()( BOOST_RV_REF(Actual) actual )
+        bool operator()( typename detail::ref_arg< Actual >::type actual )
         {
-            return c_( boost::forward< Actual >( actual ) );
+            return c_( mock::detail::move_if_not_lvalue_reference< typename detail::ref_arg< Actual >::type >( actual ) );
         }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )
@@ -91,9 +93,9 @@ namespace mock
         explicit matcher( const Functor& f )
             : c_( f )
         {}
-        bool operator()( BOOST_RV_REF(Actual) actual )
+        bool operator()( typename detail::ref_arg< Actual >::type actual )
         {
-            return c_( boost::forward< Actual >( actual ) );
+            return c_( mock::detail::move_if_not_lvalue_reference< typename detail::ref_arg< Actual >::type >( actual ) );
         }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )

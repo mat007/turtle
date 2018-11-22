@@ -12,6 +12,7 @@
 #include "config.hpp"
 #include "constraint.hpp"
 #include "detail/addressof.hpp"
+#include "detail/move_helper.hpp"
 #include <boost/ref.hpp>
 #include <boost/version.hpp>
 #include <boost/utility/enable_if.hpp>
@@ -269,9 +270,9 @@ namespace detail
 }
 
     template< typename T >
-    constraint< detail::equal< T > > equal( BOOST_FWD_REF(T) t )
+    constraint< detail::equal< typename detail::forward_type< T >::type > > equal( BOOST_FWD_REF(T) t )
     {
-        return detail::equal< T >( boost::forward< T >( t ) );
+        return detail::equal< typename detail::forward_type< T >::type >( boost::forward< T >( t ) );
     }
 
     template< typename T >

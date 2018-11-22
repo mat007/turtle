@@ -49,6 +49,10 @@ namespace
     {
         MOCK_METHOD( method, 0 )
     };
+    void set_bool(bool& b)
+    {
+        b = true;
+    }
 }
 
 BOOST_AUTO_TEST_CASE( method_is_called )
@@ -56,7 +60,14 @@ BOOST_AUTO_TEST_CASE( method_is_called )
     mock_base_class m;
     my_class c( m );
     bool done = false;
-    MOCK_EXPECT( m.method ).once().calls( boost::lambda::var( done ) = true ); // when method is called it will set done to true
+    // when method is called it will set done to true
+    // Note: Boost 1.57 introduced a bug preventing usage of the lambda with clang in C++98
+    // See: https://svn.boost.org/trac10/ticket/10785
+#if defined(BOOST_CLANG) && (BOOST_VERSION >= 105700)
+    MOCK_EXPECT( m.method ).once().calls( boost::bind(&set_bool, done) );
+#else
+    MOCK_EXPECT( m.method ).once().calls( boost::lambda::var( done ) = true );
+#endif
     check( done, boost::bind( &my_class::flush, &c ) );                        // just wait on done, flushing from time to time
 }
 //]

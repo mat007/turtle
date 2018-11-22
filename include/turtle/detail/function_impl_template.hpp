@@ -24,6 +24,9 @@
         << ')' \
         << lazy_expectations( this )
 
+#define MOCK_MOVE(z, n, d) \
+    mock::detail::move_if_not_lvalue_reference< T##n >( t##n )
+
 namespace mock
 {
 namespace detail
@@ -217,7 +220,7 @@ namespace detail
             for( expectations_cit it = expectations_.begin();
                 it != expectations_.end(); ++it )
                 if( it->is_valid(
-                    BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) ) )
+                    BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) ) )
                 {
                     if( ! it->invoke() )
                     {
@@ -236,7 +239,7 @@ namespace detail
                         MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
                     if( it->functor() )
                         return it->functor()(
-                            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) );
+                            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) );
                     return it->trigger();
                 }
             error_type::fail( "unexpected call", MOCK_FUNCTION_CONTEXT );
@@ -309,3 +312,4 @@ namespace detail
 
 #undef MOCK_FUNCTION_FORMAT
 #undef MOCK_FUNCTION_CONTEXT
+#undef MOCK_MOVE

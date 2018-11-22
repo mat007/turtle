@@ -87,7 +87,7 @@
     BOOST_PP_COMMA_IF(n) d, n >::type >( p##n )
 #define MOCK_FORWARD_PARAMS(n, S, tpn) \
     BOOST_PP_REPEAT(n, MOCK_FORWARD_PARAM, \
-        boost::forward< MOCK_PARAM(S, tpn))
+        mock::detail::move_if_not_lvalue_reference< MOCK_PARAM(S, tpn))
 #define MOCK_METHOD_AUX(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
     { \
