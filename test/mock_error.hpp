@@ -10,12 +10,12 @@
 #define MOCK_TEST_MOCK_ERROR_HPP_INCLUDED
 
 #define MOCK_ERROR_POLICY mock_error
+#include <turtle/detail/singleton.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/test/utils/trivial_singleton.hpp>
 #include <stdexcept>
 
-struct mock_error_data_t : boost::unit_test::singleton< mock_error_data_t >
+struct mock_error_data_t : mock::detail::singleton< mock_error_data_t >
 {
     void reset()
     {
@@ -52,10 +52,9 @@ struct mock_error_data_t : boost::unit_test::singleton< mock_error_data_t >
     std::string last_context;
     std::string last_file;
     int last_line;
-private:
-    BOOST_TEST_SINGLETON_CONS( mock_error_data_t );
+    MOCK_SINGLETON_CONS( mock_error_data_t );
 };
-BOOST_TEST_SINGLETON_INST( mock_error_data )
+MOCK_SINGLETON_INST( mock_error_data )
 
 template< typename Result >
 struct mock_error
