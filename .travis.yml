@@ -20,11 +20,12 @@ env:
     - CXX_STANDARD=c++17 BRANCH_TO_TEST=master
     - CXX_STANDARD=c++14 BRANCH_TO_TEST=master
     - CXX_STANDARD=c++11 BRANCH_TO_TEST=master
-    - CXX_STANDARD=c++98 BRANCH_TO_TEST=master
     - CXX_STANDARD=c++11 BRANCH_TO_TEST=boost-1.58.0
     - CXX_STANDARD=c++98 BRANCH_TO_TEST=boost-1.58.0
     - CXX_STANDARD=c++11 BRANCH_TO_TEST=boost-1.59.0
     - CXX_STANDARD=c++98 BRANCH_TO_TEST=boost-1.59.0
+    - CXX_STANDARD=c++11 BRANCH_TO_TEST=boost-1.67.0
+    - CXX_STANDARD=c++98 BRANCH_TO_TEST=boost-1.67.0
 
 compiler:
   - clang
