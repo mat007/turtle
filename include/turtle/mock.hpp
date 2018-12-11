@@ -21,6 +21,7 @@
 #include "detail/parameter.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
+#include <boost/preprocessor/variadic/elem.hpp>
 #include <boost/utility/identity_type.hpp>
 #include <boost/mpl/assert.hpp>
 
@@ -179,53 +180,49 @@
 
 #ifdef MOCK_VARIADIC_MACROS
 
-#define MOCK_VARIADIC_ELEM_0(e0, ...) e0
-#define MOCK_VARIADIC_ELEM_1(e0, e1, ...) e1
-#define MOCK_VARIADIC_ELEM_2(e0, e1, e2, ...) e2
-
 #define MOCK_METHOD(M, ...) \
     MOCK_METHOD_EXT(M, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__ ), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M)), \
-        MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M))
+        BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__ ), \
+        BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M)), \
+        BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M))
 #define MOCK_CONST_METHOD(M, n, ...) \
     MOCK_CONST_METHOD_EXT(M, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+        BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__), \
+        BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, M))
 #define MOCK_NON_CONST_METHOD(M, n, ...) \
     MOCK_NON_CONST_METHOD_EXT(M, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+        BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__), \
+        BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, M))
 
 #define MOCK_METHOD_TPL(M, n, ...) \
     MOCK_METHOD_EXT_TPL(M, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+        BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__), \
+        BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, M))
 #define MOCK_CONST_METHOD_TPL(M, n, ...) \
     MOCK_CONST_METHOD_EXT_TPL(M, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+        BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__), \
+        BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, M))
 #define MOCK_NON_CONST_METHOD_TPL(M, n, ...) \
     MOCK_NON_CONST_METHOD_EXT_TPL(M, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+        BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__), \
+        BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, M))
 
 #define MOCK_FUNCTION(F, n, ...) \
     MOCK_FUNCTION_AUX(F, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
+        BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__), \
+        BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, F), \
         inline,)
 
 #define MOCK_STATIC_METHOD(F, n, ...) \
     MOCK_FUNCTION_AUX(F, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
+        BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__), \
+        BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, F), \
         static,)
 
 #define MOCK_STATIC_METHOD_TPL(F, n, ...) \
     MOCK_FUNCTION_AUX(F, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
+        BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__), \
+        BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, F), \
         static, typename)
 
 #else // MOCK_VARIADIC_MACROS
