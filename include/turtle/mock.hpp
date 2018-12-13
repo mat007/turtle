@@ -185,47 +185,47 @@
 
 #define MOCK_METHOD(M, ...) \
     MOCK_METHOD_EXT(M, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__ ), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M)), \
-        MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M))
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M), ), \
+        MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M, ))
 #define MOCK_CONST_METHOD(M, n, ...) \
     MOCK_CONST_METHOD_EXT(M, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M, ))
 #define MOCK_NON_CONST_METHOD(M, n, ...) \
     MOCK_NON_CONST_METHOD_EXT(M, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M, ))
 
 #define MOCK_METHOD_TPL(M, n, ...) \
     MOCK_METHOD_EXT_TPL(M, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M, ))
 #define MOCK_CONST_METHOD_TPL(M, n, ...) \
     MOCK_CONST_METHOD_EXT_TPL(M, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M, ))
 #define MOCK_NON_CONST_METHOD_TPL(M, n, ...) \
     MOCK_NON_CONST_METHOD_EXT_TPL(M, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M, ))
 
 #define MOCK_FUNCTION(F, n, ...) \
     MOCK_FUNCTION_AUX(F, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), \
         inline,)
 
 #define MOCK_STATIC_METHOD(F, n, ...) \
     MOCK_FUNCTION_AUX(F, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), \
         static,)
 
 #define MOCK_STATIC_METHOD_TPL(F, n, ...) \
     MOCK_FUNCTION_AUX(F, n, \
-        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
-        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), \
         static, typename)
 
 #else // MOCK_VARIADIC_MACROS
