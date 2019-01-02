@@ -77,13 +77,14 @@ namespace detail
 
 #endif // BOOST_VERSION < 105900
 
-#ifdef BOOST_MSVC
+#ifdef small
 #   pragma push_macro( "small" )
 #   undef small
+#   define MOCK_SMALL_DEFINED
 #endif
     MOCK_NARY_CONSTRAINT( small, 1, ( tolerance ),
         ( MOCK_SMALL() ) )
-#ifdef BOOST_MSVC
+#ifdef MOCK_SMALL_DEFINED
 #   pragma pop_macro( "small" )
 #endif
 
@@ -96,13 +97,14 @@ namespace detail
 #undef MOCK_PERCENT_TOLERANCE
 #undef MOCK_FRACTION_TOLERANCE
 
-#ifdef BOOST_MSVC
+#ifdef near
 #   pragma push_macro( "near" )
 #   undef near
+#   define MOCK_NEAR_DEFINED
 #endif
     MOCK_NARY_CONSTRAINT( near, 2, ( expected, tolerance ),
         std::abs( actual - expected ) < tolerance )
-#ifdef BOOST_MSVC
+#ifdef MOCK_NEAR_DEFINED
 #   pragma pop_macro( "near" )
 #endif
 
