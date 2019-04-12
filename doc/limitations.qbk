@@ -112,7 +112,7 @@ A workaround would be to add the signature to MOCK_METHOD :
 
 [endsect]
 
-[section Private virtual methods cannot be mocked without specifying the signature]
+[section Protected and private virtual methods cannot be mocked without specifying the signature]
 
 Given :
 

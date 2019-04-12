@@ -15,7 +15,7 @@ namespace
 //[ limitations_protected_private_method_problem
     class base
     {
-    private:
+    protected:
         virtual void method_1() = 0;
     private:
         virtual void method_2() = 0;
