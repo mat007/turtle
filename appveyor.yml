@@ -23,7 +23,10 @@ environment:
       BOOST: 1_67_0
       TOOLSET: msvc-14.1
       CXX_STANDARD: 14
-      # CXX_STANDARD: 17
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019 Preview
+      BOOST: 1_69_0
+      TOOLSET: msvc-14.2
+      CXX_STANDARD: 17
 
 platform:
   - 32
