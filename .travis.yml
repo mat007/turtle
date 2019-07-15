@@ -38,10 +38,10 @@ addons:
     - ubuntu-toolchain-r-test
     - llvm-toolchain-precise
     packages:
-    - gcc-5
-    - g++-5
-    - clang-5.0
-    - lld-5.0
+    - gcc-7
+    - g++-7
+    - clang-7.0
+    - lld-7.0
     - xsltproc
     - docbook-xsl
     - docbook-xml
