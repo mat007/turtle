@@ -14,7 +14,16 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/detail/sp_typeinfo.hpp>
+#include <boost/version.hpp>
+#if BOOST_VERSION >= 107000
+#   include <boost/core/typeinfo.hpp>
+#   define MOCK_TYPEID( t ) BOOST_CORE_TYPEID(t)
+#   define MOCK_TYPEINFO boost::core::typeinfo
+#else
+#   include <boost/detail/sp_typeinfo.hpp>
+#   define MOCK_TYPEID( t ) BOOST_SP_TYPEID(t)
+#   define MOCK_TYPEINFO boost::detail::sp_typeinfo
+#endif
 #include <boost/shared_ptr.hpp>
 #include <stdexcept>
 #include <typeinfo>
@@ -24,7 +33,7 @@
 #include <cstdlib>
 #endif
 
-#define MOCK_TYPE_NAME( t ) mock::detail::type_name( BOOST_SP_TYPEID(t) )
+#define MOCK_TYPE_NAME( t ) mock::detail::type_name( MOCK_TYPEID(t) )
 
 namespace mock
 {
@@ -33,7 +42,7 @@ namespace detail
     class type_name
     {
     public:
-        explicit type_name( const boost::detail::sp_typeinfo& info )
+        explicit type_name( const MOCK_TYPEINFO& info )
             : info_( &info )
         {}
         friend std::ostream& operator<<( std::ostream& s, const type_name& t )
@@ -43,7 +52,7 @@ namespace detail
         }
     private:
         void serialize( std::ostream& s,
-            const boost::detail::sp_typeinfo& info ) const
+            const MOCK_TYPEINFO& info ) const
         {
             const char* name = info.name();
 #ifdef __GNUC__
@@ -108,7 +117,7 @@ namespace detail
             return std::string::npos;
         }
 
-        const boost::detail::sp_typeinfo* info_;
+        const MOCK_TYPEINFO* info_;
     };
 }
 } // mock
