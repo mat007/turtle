@@ -101,4 +101,13 @@
 #   endif
 #endif
 
+#if BOOST_VERSION >= 107000
+#   define MOCK_TYPEID( t ) BOOST_CORE_TYPEID(t)
+#   define MOCK_TYPEINFO boost::core::typeinfo
+#else
+#   define MOCK_TYPEID( t ) BOOST_SP_TYPEID(t)
+#   define MOCK_TYPEINFO boost::detail::sp_typeinfo
+#endif
+
+
 #endif // MOCK_CONFIG_HPP_INCLUDED

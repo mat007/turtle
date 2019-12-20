@@ -28,15 +28,7 @@
 #include <cstdlib>
 #endif
 
-#if BOOST_VERSION >= 107000
-#define MOCK_TYPE_ID( t ) BOOST_CORE_TYPEID(t)
-#define TYPEINFO boost::core::typeinfo
-#else
-#define MOCK_TYPE_ID( t ) BOOST_SP_TYPEID(t)
-#define TYPEINFO boost::detail::sp_typeinfo
-#endif
-
-#define MOCK_TYPE_NAME( t ) mock::detail::type_name( MOCK_TYPE_ID(t) )
+#define MOCK_TYPE_NAME( t ) mock::detail::type_name( MOCK_TYPEID(t) )
 
 namespace mock
 {
@@ -45,7 +37,7 @@ namespace detail
     class type_name
     {
     public:
-        explicit type_name( const TYPEINFO& info )
+        explicit type_name( const MOCK_TYPEINFO& info )
             : info_( &info )
         {}
         friend std::ostream& operator<<( std::ostream& s, const type_name& t )
@@ -55,7 +47,7 @@ namespace detail
         }
     private:
         void serialize( std::ostream& s,
-            const TYPEINFO& info ) const
+            const MOCK_TYPEINFO& info ) const
         {
             const char* name = info.name();
 #ifdef __GNUC__
@@ -120,7 +112,7 @@ namespace detail
             return std::string::npos;
         }
 
-        const TYPEINFO* info_;
+        const MOCK_TYPEINFO* info_;
     };
 }
 } // mock
