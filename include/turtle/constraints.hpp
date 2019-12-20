@@ -19,7 +19,11 @@
 #include <boost/type_traits/common_type.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/type_traits/has_equal_to.hpp>
+#if BOOST_VERSION >= 107000
+#include <boost/test/tools/floating_point_comparison.hpp>
+#else
 #include <boost/test/floating_point_comparison.hpp>
+#endif
 
 namespace mock
 {
