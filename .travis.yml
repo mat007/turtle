@@ -75,6 +75,12 @@ script:
     - export BOOST_ROOT=$BOOST
     # `--coverage` flags required to generate coverage info for Coveralls
     - ./build.sh --toolset=$CC "cxxflags=-std=$CXX_STANDARD -Wno-unused-local-typedefs -Wno-unused-function -Wno-deprecated-declarations --coverage" "linkflags=--coverage"
+    - cd $BOOST && ./b2 --with-test --with-thread --with-chrono --with-system --with-atomic --with-date_time -a -j3 # Build required libs
+    - mkdir $PROJECT_DIR/__build && cd $PROJECT_DIR/__build
+    - export CXXFLAGS="-std=$CXX_STANDARD -Wall -Wextra"
+    - cmake .. -DCMAKE_BUILD_TYPE=Debug
+    - cmake --build . --config Debug
+    - ctest --output-on-failure --build-config Debug
 
 after_success:
     - COVERALS_DIR=$PROJECT_DIR/coverals
