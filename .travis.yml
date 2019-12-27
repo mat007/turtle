@@ -98,6 +98,8 @@ after_success:
 
     # ... erasing /test/ /example/ folder data
     - lcov --remove $COVERALS_DIR/coverage.info "/usr*" "/test/*" $IGNORE_COVERAGE "tests/*" "*/doc/examples/*" -o $COVERALS_DIR/coverage.info
+    # Output what was collected
+    - lcov --list $COVERALS_DIR/coverage.info
 
     # Sending data to Coveralls
     - cd $PROJECT_DIR
