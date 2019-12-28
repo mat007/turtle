@@ -87,14 +87,14 @@ after_success:
 
     # Copying Coveralls data to a separate folder
     - mkdir -p $COVERALS_DIR
-    - find ../test/bin/ -name "*.gcda" -exec cp "{}" $COVERALS_DIR/ \;
-    - find ../test/bin/ -name "*.gcno" -exec cp "{}" $COVERALS_DIR/ \;
+    - find $PROJECT_DIR/test/bin/ -name "*.gcda" -exec cp "{}" $COVERALS_DIR/ \;
+    - find $PROJECT_DIR/test/bin/ -name "*.gcno" -exec cp "{}" $COVERALS_DIR/ \;
 
     # Preparing Coveralls data by
     # ... installing the tools
     - sudo apt-get install -qq python-yaml lcov
     # ... changing data format to a readable one
-    - lcov --directory $COVERALS_DIR --base-directory /home/travis/build/mat007/turtle/test --capture --output-file $COVERALS_DIR/coverage.info
+    - lcov --directory $COVERALS_DIR --base-directory $PROJECT_DIR/test --capture --output-file $COVERALS_DIR/coverage.info
 
     # ... erasing /test/ /example/ folder data
     - lcov --remove $COVERALS_DIR/coverage.info "/usr*" "/test/*" $IGNORE_COVERAGE "tests/*" "*/doc/examples/*" -o $COVERALS_DIR/coverage.info
@@ -102,4 +102,4 @@ after_success:
     # Sending data to Coveralls
     - cd $PROJECT_DIR
     - gem install coveralls-lcov
-    - coveralls-lcov coverals/coverage.info
+    - coveralls-lcov $COVERALS_DIR/coverage.info
