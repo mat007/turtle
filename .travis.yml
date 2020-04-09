@@ -75,25 +75,33 @@ script:
     - export BOOST_ROOT=$BOOST
     # `--coverage` flags required to generate coverage info for Coveralls
     - ./build.sh --toolset=$CC "cxxflags=-std=$CXX_STANDARD -Wno-unused-local-typedefs -Wno-unused-function -Wno-deprecated-declarations --coverage" "linkflags=--coverage"
+    - cd $BOOST && ./b2 --with-test --with-thread --with-chrono --with-system --with-atomic --with-date_time -a -j3 # Build required libs
+    - mkdir $PROJECT_DIR/__build && cd $PROJECT_DIR/__build
+    - export CXXFLAGS="-std=$CXX_STANDARD -Wall -Wextra"
+    - cmake .. -DCMAKE_BUILD_TYPE=Debug
+    - cmake --build . --config Debug
+    - ctest --output-on-failure --build-config Debug
 
 after_success:
     - COVERALS_DIR=$PROJECT_DIR/coverals
 
     # Copying Coveralls data to a separate folder
     - mkdir -p $COVERALS_DIR
-    - find ../test/bin/ -name "*.gcda" -exec cp "{}" $COVERALS_DIR/ \;
-    - find ../test/bin/ -name "*.gcno" -exec cp "{}" $COVERALS_DIR/ \;
+    - find $PROJECT_DIR/test/bin/ -name "*.gcda" -exec cp "{}" $COVERALS_DIR/ \;
+    - find $PROJECT_DIR/test/bin/ -name "*.gcno" -exec cp "{}" $COVERALS_DIR/ \;
 
     # Preparing Coveralls data by
     # ... installing the tools
     - sudo apt-get install -qq python-yaml lcov
     # ... changing data format to a readable one
-    - lcov --directory $COVERALS_DIR --base-directory /home/travis/build/mat007/turtle/test --capture --output-file $COVERALS_DIR/coverage.info
+    - lcov --directory $COVERALS_DIR --base-directory $PROJECT_DIR/test --capture --output-file $COVERALS_DIR/coverage.info
 
     # ... erasing /test/ /example/ folder data
     - lcov --remove $COVERALS_DIR/coverage.info "/usr*" "/test/*" $IGNORE_COVERAGE "tests/*" "*/doc/examples/*" -o $COVERALS_DIR/coverage.info
+    # Output what was collected
+    - lcov --list $COVERALS_DIR/coverage.info
 
     # Sending data to Coveralls
     - cd $PROJECT_DIR
     - gem install coveralls-lcov
-    - coveralls-lcov coverals/coverage.info
+    - coveralls-lcov $COVERALS_DIR/coverage.info
