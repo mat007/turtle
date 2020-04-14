@@ -4,11 +4,25 @@
 
 find_package(Boost 1.58 REQUIRED COMPONENTS unit_test_framework thread)
 
-add_library(TurtleTestMain STATIC main.cpp)
-target_link_libraries(TurtleTestMain PUBLIC Boost::unit_test_framework Boost::disable_autolinking)
+add_library(TurtleTestMain INTERFACE)
+target_link_libraries(TurtleTestMain INTERFACE Boost::unit_test_framework Boost::disable_autolinking)
+target_compile_definitions(TurtleTestMain INTERFACE BOOST_AUTO_TEST_MAIN)
 # Heuristically guess if we are compiling against dynamic boost
 if(NOT Boost_USE_STATIC_LIBS AND Boost_UNIT_TEST_FRAMEWORK_LIBRARY AND NOT Boost_UNIT_TEST_FRAMEWORK_LIBRARY MATCHES "\\${CMAKE_STATIC_LIBRARY_SUFFIX}\$")
-    target_compile_definitions(TurtleTestMain PUBLIC BOOST_TEST_DYN_LINK)
+    target_compile_definitions(TurtleTestMain INTERFACE BOOST_TEST_DYN_LINK)
+endif()
+# Enable warnings
+option(TURTLE_WERROR "Treat warnings as errors" ON)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(TurtleTestMain INTERFACE -Wall -Wextra -pedantic -Wno-long-long)
+  if(TURTLE_WERROR)
+    target_compile_options(TurtleTestMain INTERFACE -Werror)
+  endif()
+elseif(MSVC)
+  target_compile_options(TurtleTestMain INTERFACE /W4)
+  if(TURTLE_WERROR)
+    target_compile_options(TurtleTestMain INTERFACE /WX)
+  endif()
 endif()
 
 file(GLOB_RECURSE testFiles test_*.cpp)
