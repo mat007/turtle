@@ -34,7 +34,7 @@ configuration:
   - release
 
 install:
-  - cd C:\projects\turtle\doc
+  - cd %APPVEYOR_BUILD_FOLDER%\doc
   - appveyor-retry powershell Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/iconv-1.9.2.win32.zip -OutFile iconv.zip
   - 7z e iconv.zip iconv.dll -r
   - appveyor-retry powershell Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/libxml2-2.7.8.win32.zip -OutFile libxml2.zip
@@ -49,6 +49,13 @@ build_script:
   - set BOOST_ROOT=C:\Libraries\boost_%BOOST%
   - cd %BOOST_ROOT%
   - call bootstrap.bat
-  - cd C:\projects\turtle\build
+  - cd %APPVEYOR_BUILD_FOLDER%\build
   - if NOT "%CXX_STANDARD%"=="" set CXX_FLAGS=cxxflags=/std:c++%CXX_STANDARD%
   - call build.bat --toolset=%TOOLSET% address-model=%PLATFORM% %CXX_FLAGS% --build-type=complete %CONFIGURATION%
+  # CMake build
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - mkdir __build
+  - cd __build
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug
+  - cmake --build . --config Debug
+  - ctest --output-on-failure --build-config Debug
