@@ -103,9 +103,9 @@ namespace detail
         {}
         ~lock()
         {}
-        lock( BOOST_RV_REF( lock ) x )
+        lock( BOOST_RV_REF( lock ) )
         {}
-        lock& operator=( BOOST_RV_REF( lock ) x )
+        lock& operator=( BOOST_RV_REF( lock ) )
         {
             return *this;
         }
