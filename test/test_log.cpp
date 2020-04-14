@@ -111,7 +111,7 @@ namespace
 {
     struct streamable
     {};
-    std::ostream& operator<<( std::ostream& s, const streamable& )
+    BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<( std::ostream& s, const streamable& )
     {
         BOOST_FAIL( "should not have been called" );
         return s;
@@ -131,7 +131,7 @@ namespace
 {
     struct mock_streamable
     {};
-    std::ostream& operator<<( std::ostream& s, const mock_streamable& )
+    BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<( std::ostream& s, const mock_streamable& )
     {
         BOOST_FAIL( "should not have been called" );
         return s;
@@ -271,7 +271,7 @@ namespace
         operator streamable() const;
         template< typename T > operator T() const;
     };
-    std::ostream& operator<<( std::ostream& s, const ambiguous_convertible_streamable& )
+    BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<( std::ostream& s, const ambiguous_convertible_streamable& )
     {
         BOOST_FAIL( "should not have been called" );
         return s;
@@ -297,7 +297,7 @@ namespace
         operator streamable() const;
         template< typename T > operator T() const;
     };
-    std::ostream& operator<<( std::ostream& s, const ambiguous_convertible_mock_streamable& )
+    BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<( std::ostream& s, const ambiguous_convertible_mock_streamable& )
     {
         BOOST_FAIL( "should not have been called" );
         return s;
