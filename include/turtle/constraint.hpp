@@ -223,7 +223,7 @@ namespace detail
 
 #ifdef MOCK_VARIADIC_MACROS
 
-#if BOOST_MSVC
+#ifdef BOOST_MSVC
 #   define MOCK_VARIADIC_SIZE(...) \
         BOOST_PP_CAT(MOCK_VARIADIC_SIZE_I(__VA_ARGS__, \
             32, 31, 30, 29, 28, 27, 26, 25, 24, 23, \
