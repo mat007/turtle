@@ -29,6 +29,9 @@
 #define MOCK_REF_ARG(z, n, d) \
     typename ref_arg< T##n >::type a##n
 
+#define MOCK_REF_ARG_T(z, n, d) \
+    typename ref_arg< T##n >::type
+
 namespace mock
 {
 namespace detail
@@ -42,7 +45,7 @@ namespace detail
     {
     private:
         virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _) )
+            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG_T, _) )
         {
             return true;
         }
@@ -269,4 +272,5 @@ namespace detail
 #undef MOCK_EXPECTATION_SERIALIZE_ANY
 #undef MOCK_EXPECTATION_PARAM
 #undef MOCK_REF_ARG
+#undef MOCK_REF_ARG_T
 #undef MOCK_RV_REF
