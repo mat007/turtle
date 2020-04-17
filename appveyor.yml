@@ -3,6 +3,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 # Copyright Mathieu Champlon 2015.
+# Copyright Alexander Grund 2020.
 
 skip_branch_with_pr: true
 
@@ -24,14 +25,12 @@ environment:
       TOOLSET: msvc-14.1
       CXX_STANDARD: 14
       # CXX_STANDARD: 17
-
-platform:
-  - 32
-  - 64
-
-configuration:
-  - debug
-  - release
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      BOOST: 1_60_0
+      CMAKE: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BOOST: 1_71_0
+      CMAKE: true
 
 install:
   - cd %APPVEYOR_BUILD_FOLDER%\doc
@@ -51,11 +50,18 @@ build_script:
   - call bootstrap.bat
   - cd %APPVEYOR_BUILD_FOLDER%\build
   - if NOT "%CXX_STANDARD%"=="" set CXX_FLAGS=cxxflags=/std:c++%CXX_STANDARD%
-  - call build.bat --toolset=%TOOLSET% address-model=%PLATFORM% %CXX_FLAGS% --build-type=complete %CONFIGURATION%
-  # CMake build
-  - cd %APPVEYOR_BUILD_FOLDER%
-  - mkdir __build
-  - cd __build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug
-  - cmake --build . --config Debug
-  - ctest --output-on-failure --build-config Debug
+  - set BUILD_ARGS=address-model=32,64 variant=debug,release
+  - call build.bat --toolset=%TOOLSET% %CXX_FLAGS% -j3
+
+for:
+  - matrix:
+      only: [CMAKE: true]
+    install: true
+    build_script:
+      - set BOOST_ROOT=C:\Libraries\boost_%BOOST%
+      - cd %APPVEYOR_BUILD_FOLDER%
+      - mkdir __build
+      - cd __build
+      - cmake .. -DCMAKE_BUILD_TYPE=Debug
+      - cmake --build . --config Debug
+      - ctest --output-on-failure --build-config Debug

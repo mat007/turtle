@@ -11,7 +11,7 @@ rem error if BOOST_ROOT not set
 set BOOST=%BOOST_ROOT%
 
 pushd ..\test
-%BOOST%\b2.exe -q %*
+%BOOST%\b2.exe -q %BUILD_ARGS% %*
 popd
 if errorlevel 1 exit /b %ERRORLEVEL%
 
