@@ -49,7 +49,7 @@ foreach(testFile IN LISTS testFiles)
   target_compile_definitions(${name}_thread_safe PRIVATE MOCK_THREAD_SAFE BOOST_THREAD_USES_MOVE)
 endforeach()
 
-add_executable(link-test_defined EXCLUDE_FROM_ALL defined_1.cpp defined_2.cpp)
+add_executable(link-test_defined EXCLUDE_FROM_ALL test_exception.cpp defined_1.cpp defined_2.cpp)
 target_link_libraries(link-test_defined PRIVATE turtle::turtle TurtleTestMain)
 add_test(NAME link-test_defined COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target link-test_defined --config $<CONFIG>)
 
