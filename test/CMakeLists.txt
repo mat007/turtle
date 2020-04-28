@@ -4,11 +4,30 @@
 
 find_package(Boost 1.58 REQUIRED COMPONENTS unit_test_framework thread)
 
-add_library(TurtleTestMain STATIC main.cpp)
-target_link_libraries(TurtleTestMain PUBLIC Boost::unit_test_framework Boost::disable_autolinking)
+add_library(TurtleTestMain INTERFACE)
+target_link_libraries(TurtleTestMain INTERFACE Boost::unit_test_framework Boost::disable_autolinking)
+target_compile_definitions(TurtleTestMain INTERFACE BOOST_AUTO_TEST_MAIN)
 # Heuristically guess if we are compiling against dynamic boost
 if(NOT Boost_USE_STATIC_LIBS AND Boost_UNIT_TEST_FRAMEWORK_LIBRARY AND NOT Boost_UNIT_TEST_FRAMEWORK_LIBRARY MATCHES "\\${CMAKE_STATIC_LIBRARY_SUFFIX}\$")
-    target_compile_definitions(TurtleTestMain PUBLIC BOOST_TEST_DYN_LINK)
+    target_compile_definitions(TurtleTestMain INTERFACE BOOST_TEST_DYN_LINK)
+endif()
+# Enable warnings
+option(TURTLE_WERROR "Treat warnings as errors" ON)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(TurtleTestMain INTERFACE -Wall -Wextra -pedantic -Wno-long-long)
+  include(CheckCXXCompilerFlag)
+  check_cxx_compiler_flag(-Wunused-function TURTLE_CXX_UNUSED_FUNCTION)
+  if(TURTLE_CXX_UNUSED_FUNCTION)
+    target_compile_options(TurtleTestMain INTERFACE -Wno-unused-function)
+  endif()
+  if(TURTLE_WERROR)
+    target_compile_options(TurtleTestMain INTERFACE -Werror)
+  endif()
+elseif(MSVC)
+  target_compile_options(TurtleTestMain INTERFACE /W4)
+  if(TURTLE_WERROR)
+    target_compile_options(TurtleTestMain INTERFACE /WX)
+  endif()
 endif()
 
 file(GLOB_RECURSE testFiles test_*.cpp)
@@ -35,7 +54,7 @@ foreach(testFile IN LISTS testFiles)
   target_compile_definitions(${name}_thread_safe PRIVATE MOCK_THREAD_SAFE BOOST_THREAD_USES_MOVE)
 endforeach()
 
-add_executable(link-test_defined EXCLUDE_FROM_ALL defined_1.cpp defined_2.cpp)
+add_executable(link-test_defined EXCLUDE_FROM_ALL test_exception.cpp defined_1.cpp defined_2.cpp)
 target_link_libraries(link-test_defined PRIVATE turtle::turtle TurtleTestMain)
 add_test(NAME link-test_defined COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target link-test_defined --config $<CONFIG>)
 
