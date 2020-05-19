@@ -63,7 +63,7 @@
     mutable mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) > t##_mock_; \
     mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) >& t##_mock( \
         const mock::detail::context&, \
-        boost::unit_test::const_string instance ) const \
+        const boost::unit_test::const_string& instance ) const \
     { \
         mock::detail::configure( *this, t##_mock_, \
             instance.substr( 0, instance.rfind( BOOST_PP_STRINGIZE(t) ) ), \
