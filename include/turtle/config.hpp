@@ -46,12 +46,6 @@
 #   endif
 #endif
 
-#if !defined(BOOST_NO_CXX11_DECLTYPE) && !defined(BOOST_NO_DECLTYPE)
-#   ifndef MOCK_NO_DECLTYPE
-#       define MOCK_DECLTYPE
-#   endif
-#endif
-
 #if !defined(BOOST_NO_CXX11_VARIADIC_MACROS) && !defined(BOOST_NO_VARIADIC_MACROS)
 #   ifndef MOCK_NO_VARIADIC_MACROS
 #      define MOCK_VARIADIC_MACROS

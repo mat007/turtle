@@ -19,7 +19,7 @@
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/array.hpp>
-#include <boost/type_traits/decay.hpp>
+#include <type_traits>
 
 namespace mock
 {
@@ -158,7 +158,7 @@ namespace detail
     Expected_##n expected##n;
 
 #define MOCK_CONSTRAINT_TPL_TYPE(z, n, d) \
-    typename boost::decay< const T##n >::type
+    std::decay_t< const T##n >
 
 #define MOCK_CONSTRAINT_CREF_PARAM(z, n, Args) \
     const typename boost::unwrap_reference< Expected_##n >::type& \

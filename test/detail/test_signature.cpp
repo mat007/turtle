@@ -8,7 +8,7 @@
 
 #include <turtle/detail/signature.hpp>
 #include <boost/test/auto_unit_test.hpp>
-#include <boost/mpl/assert.hpp>
+#include <type_traits>
 
 namespace
 {
@@ -22,8 +22,6 @@ namespace
 
 BOOST_AUTO_TEST_CASE( mock_signature_generates_signature )
 {
-    BOOST_MPL_ASSERT((
-        boost::is_same< void(), MOCK_SIGNATURE(method_1) > ));
-    BOOST_MPL_ASSERT((
-        boost::is_same< float( int ), MOCK_SIGNATURE(method_2) > ));
+    static_assert( std::is_same< void(), MOCK_SIGNATURE(method_1) >::value, "!");
+    static_assert( std::is_same< float( int ), MOCK_SIGNATURE(method_2) >::value, "!");
 }

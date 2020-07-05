@@ -143,11 +143,7 @@ BOOST_AUTO_TEST_CASE( class_with_sig_is_functor )
 BOOST_AUTO_TEST_CASE( cxx11_lambda_is_functor )
 {
     is_not_functor( []() {} );
-#ifdef MOCK_DECLTYPE
     is_functor( []( int ) {} );
-#else
-    is_not_functor( []( int ) {} );
-#endif
     is_not_functor( []( const std::string&, int ) {} );
     is_not_functor( []( int, const std::string& ) {} );
 }

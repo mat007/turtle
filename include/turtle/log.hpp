@@ -12,11 +12,11 @@
 #include "config.hpp"
 #include "stream.hpp"
 #include "format.hpp"
-#include <boost/utility/enable_if.hpp>
 #include <boost/detail/container_fwd.hpp>
 #include <boost/function_types/is_callable_builtin.hpp>
 #include <boost/none.hpp>
 #include <memory>
+#include <type_traits>
 
 namespace boost
 {
@@ -181,19 +181,19 @@ namespace detail
 #endif
 
     template< typename T >
-    typename boost::enable_if<
-        boost::function_types::is_callable_builtin< T >,
+    std::enable_if_t<
+        boost::function_types::is_callable_builtin< T >::value,
         stream&
-    >::type
+    >
     operator<<( stream& s, T* )
     {
         return s << '?';
     }
     template< typename T >
-    typename boost::disable_if<
-        boost::function_types::is_callable_builtin< T >,
+    std::enable_if_t<
+        !boost::function_types::is_callable_builtin< T >::value,
         stream&
-    >::type
+    >
     operator<<( stream& s, T* t )
     {
         *s.s_ << t;
