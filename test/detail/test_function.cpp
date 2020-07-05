@@ -575,8 +575,6 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_valu
 
 #endif // MOCK_AUTO_PTR
 
-#ifdef MOCK_RVALUE_REFERENCES
-
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_lvalue, mock_error_fixture )
 {
     mock::detail::function< int() > f;
@@ -602,8 +600,6 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_rvalue, mock_er
     BOOST_CHECK_NO_THROW( f() );
     CHECK_CALLS( 1 );
 }
-
-#endif
 
 #ifdef MOCK_SMART_PTR
 

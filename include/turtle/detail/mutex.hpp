@@ -11,7 +11,6 @@
 
 #include "../config.hpp"
 #include "singleton.hpp"
-#include <boost/move/move.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -38,9 +37,6 @@ namespace detail
 
     struct lock
     {
-    private:
-        BOOST_MOVABLE_BUT_NOT_COPYABLE(lock)
-
     public:
         lock( const boost::shared_ptr< mutex >& m )
             : m_( m )
@@ -52,13 +48,15 @@ namespace detail
             if( m_ )
                 m_->unlock();
         }
-        lock( BOOST_RV_REF( lock ) x )
+        lock( const lock& ) = delete;
+        lock( lock&& x )
             : m_( x.m_ )
         {
             // Explicit reset to avoid unlock in destructor
             x.m_.reset();
         }
-        lock& operator=( BOOST_RV_REF( lock ) x )
+        lock& operator=( const lock& ) = delete;
+        lock& operator=( lock&& x )
         {
             m_ = x.m_;
             x.m_.reset();
@@ -86,29 +84,24 @@ namespace detail
     };
     // Dummy lock classes.
     // Constructor + Destructor make it RAII classes for compilers and avoid unused variable warnings
-    struct scoped_lock : boost::noncopyable
+    struct scoped_lock
     {
         scoped_lock( mutex& )
         {}
         ~scoped_lock()
         {}
     };
-    class lock : boost::noncopyable
+    class lock
     {
-    private:
-        BOOST_MOVABLE_BUT_NOT_COPYABLE(lock)
-
     public:
         lock( const boost::shared_ptr< mutex >& )
         {}
         ~lock()
         {}
-        lock( BOOST_RV_REF( lock ) )
-        {}
-        lock& operator=( BOOST_RV_REF( lock ) )
-        {
-            return *this;
-        }
+        lock(const lock&) = delete;
+        lock( lock&& ) = default;
+        lock& operator=( const lock& ) = delete;
+        lock& operator=( lock&& ) = default;
     };
 }
 } // mock

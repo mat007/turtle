@@ -14,7 +14,6 @@
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/move/move.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
@@ -105,19 +104,19 @@ namespace detail
         }
 
         template< typename Value >
-        void moves( BOOST_RV_REF(Value) v )
+        void moves( Value&& v )
         {
             this->set(
                 boost::bind(
                     &move< typename boost::remove_reference< Value >::type >,
-                    boost::ref( store( boost::move( v ) ) ) ) );
+                    boost::ref( store( std::move( v ) ) ) ) );
         }
 
     private:
         template< typename Value >
-        static BOOST_RV_REF(Value) move( Value& t )
+        static Value&& move( Value& t )
         {
-            return boost::move( t );
+            return std::move( t );
         }
         struct value : boost::noncopyable
         {
@@ -134,8 +133,8 @@ namespace detail
                     >::type
                 >::type value_type;
 
-            value_imp( BOOST_RV_REF(value_type) t )
-                : t_( boost::move( t ) )
+            value_imp( value_type&& t )
+                : t_( std::move( t ) )
             {}
             value_imp( const value_type& t )
                 : t_( t )
@@ -148,9 +147,9 @@ namespace detail
         };
 
         template< typename T >
-        T& store( BOOST_RV_REF(T) t )
+        T& store( T&& t )
         {
-            v_.reset( new value_imp< T >( boost::move( t ) ) );
+            v_.reset( new value_imp< T >( std::move( t ) ) );
             return static_cast< value_imp< T >& >( *v_ ).t_;
         }
         template< typename T >

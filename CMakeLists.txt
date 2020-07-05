@@ -27,6 +27,8 @@ configure_file(version.hpp.cmake ${CMAKE_CURRENT_BINARY_DIR}/include/turtle/vers
 add_library(turtle INTERFACE)
 add_library(turtle::turtle ALIAS turtle)
 target_include_directories(turtle INTERFACE $<BUILD_INTERFACE:include;${CMAKE_CURRENT_BINARY_DIR}/include>)
+target_compile_features(turtle INTERFACE cxx_std_14)
+
 target_link_libraries(turtle INTERFACE Boost::boost Boost::disable_autolinking)
 if(NOT TURTLE_AUTO_PTR)
   target_compile_definitions(turtle INTERFACE MOCK_NO_AUTO_PTR)

@@ -190,7 +190,7 @@ namespace detail
             return true;
         }
         template< typename Actual >
-        bool operator()( BOOST_RV_REF(Actual) actual,
+        bool operator()( Actual&& actual,
             typename boost::disable_if<
                 boost::is_convertible<
                     const Actual*,
@@ -199,7 +199,7 @@ namespace detail
                 >
             >::type* = 0 ) const
         {
-            *expected_ = boost::move( actual );
+            *expected_ = std::move( actual );
             return true;
         }
         template< typename Actual >
@@ -276,9 +276,9 @@ namespace detail
 }
 
     template< typename T >
-    constraint< detail::equal< typename detail::forward_type< T >::type > > equal( BOOST_FWD_REF(T) t )
+    constraint< detail::equal< T > > equal( T&& t )
     {
-        return detail::equal< typename detail::forward_type< T >::type >( boost::forward< T >( t ) );
+        return detail::equal< T >( std::forward< T >( t ) );
     }
 
     template< typename T >

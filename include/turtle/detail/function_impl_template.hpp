@@ -25,7 +25,7 @@
         << lazy_expectations( this )
 
 #define MOCK_MOVE(z, n, d) \
-    mock::detail::move_if_not_lvalue_reference< T##n >( t##n )
+    std::forward< T##n >( t##n )
 
 namespace mock
 {
@@ -99,21 +99,22 @@ namespace detail
         {
         private:
             typedef wrapper_base< R, expectation_type > base_type;
-            BOOST_MOVABLE_BUT_NOT_COPYABLE(wrapper)
 
         public:
             wrapper( const boost::shared_ptr< mutex >& m, expectation_type& e )
                 : base_type( e )
                 , lock_( m )
             {}
-            wrapper( BOOST_RV_REF( wrapper ) x )
+            wrapper(const wrapper&) = delete;
+            wrapper( wrapper&& x )
                 : base_type( x )
-                , lock_( boost::move( x.lock_) )
+                , lock_( std::move( x.lock_) )
             {}
-            wrapper& operator=( BOOST_RV_REF( wrapper ) x )
+            wrapper& operator=(const wrapper&) = delete;
+            wrapper& operator=( wrapper&& x )
             {
                 static_cast< base_type& >( *this ) = x;
-                lock_ = boost::move( x.lock_ );
+                lock_ = std::move( x.lock_ );
                 return *this;
             }
             wrapper& once()
@@ -200,9 +201,9 @@ namespace detail
                 this->e_->throws( t );
             }
             template< typename TT >
-            void moves( BOOST_RV_REF(TT) t )
+            void moves( TT&& t )
             {
-                this->e_->moves( boost::move( t ) );
+                this->e_->moves( std::move( t ) );
             }
 
             lock lock_;
