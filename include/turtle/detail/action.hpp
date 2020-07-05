@@ -10,13 +10,12 @@
 #define MOCK_ACTION_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <boost/type_traits/remove_reference.hpp>
-#include <boost/type_traits/remove_const.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
+#include <type_traits>
 
 namespace mock
 {
@@ -108,7 +107,7 @@ namespace detail
         {
             this->set(
                 boost::bind(
-                    &move< typename boost::remove_reference< Value >::type >,
+                    &move< std::remove_reference_t< Value > >,
                     boost::ref( store( std::move( v ) ) ) ) );
         }
 
@@ -126,12 +125,7 @@ namespace detail
         template< typename T >
         struct value_imp : value
         {
-            typedef
-                typename boost::remove_const<
-                    typename boost::remove_reference<
-                        T
-                    >::type
-                >::type value_type;
+            typedef std::remove_const_t<std::remove_reference_t<T>> value_type;
 
             value_imp( value_type&& t )
                 : t_( std::move( t ) )
@@ -159,7 +153,7 @@ namespace detail
             return static_cast< value_imp< T >& >( *v_ ).t_;
         }
         template< typename T >
-        typename boost::remove_reference< Result >::type& store( T* t )
+        std::remove_reference_t< Result >& store( T* t )
         {
             v_.reset( new value_imp< Result >( t ) );
             return static_cast< value_imp< Result >& >( *v_ ).t_;

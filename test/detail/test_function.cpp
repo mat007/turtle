@@ -16,6 +16,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <type_traits>
 
 // static
 
@@ -23,14 +24,10 @@ namespace
 {
     boost::function< void() > static_f;
 
-    BOOST_MPL_ASSERT((
-        boost::is_same< void, boost::result_of< mock::detail::function< void() >() >::type > ));
-    BOOST_MPL_ASSERT((
-        boost::is_same< int, boost::result_of< mock::detail::function< int() >() >::type > ));
-    BOOST_MPL_ASSERT((
-        boost::is_same< void, boost::result_of< mock::detail::function< void( float ) >( float ) >::type > ));
-    BOOST_MPL_ASSERT((
-        boost::is_same< int, boost::result_of< mock::detail::function< int( float ) >( float ) >::type > ));
+    static_assert( std::is_same< void, boost::result_of< mock::detail::function< void() >() >::type >::value, "!");
+    static_assert( std::is_same< int, boost::result_of< mock::detail::function< int() >() >::type >::value, "!");
+    static_assert( std::is_same< void, boost::result_of< mock::detail::function< void( float ) >( float ) >::type >::value, "!");
+    static_assert( std::is_same< int, boost::result_of< mock::detail::function< int( float ) >( float ) >::type >::value, "!");
 }
 
 // functor

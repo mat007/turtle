@@ -15,15 +15,13 @@
 #include "detail/move_helper.hpp"
 #include <boost/ref.hpp>
 #include <boost/version.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/common_type.hpp>
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/type_traits/has_equal_to.hpp>
+#include <boost/type_traits/make_void.hpp>
 #if BOOST_VERSION >= 107000
 #include <boost/test/tools/floating_point_comparison.hpp>
 #else
 #include <boost/test/floating_point_comparison.hpp>
 #endif
+#include <type_traits>
 
 namespace mock
 {
@@ -65,7 +63,7 @@ namespace detail
     template< typename T1, typename T2, typename Tolerance >
     bool is_close( const T1& t1, const T2& t2, const Tolerance& tolerance )
     {
-        typedef typename boost::common_type< T1, T2 >::type common_type;
+        typedef std::common_type_t< T1, T2 > common_type;
         return boost::math::fpc::close_at_tolerance< common_type >(
             tolerance, boost::math::fpc::FPC_STRONG )( t1, t2 );
     }
@@ -114,6 +112,14 @@ namespace detail
 
 namespace detail
 {
+    template<class T, class U = T, class = void>
+    struct has_equal_to: std::false_type
+    {};
+
+    template<class T, class U>
+    struct has_equal_to<T, U, boost::void_t<decltype(std::declval<T>() == std::declval<U>())>>: std::true_type
+    {};
+
     template< typename Expected >
     struct equal
     {
@@ -122,25 +128,25 @@ namespace detail
         {}
         template< typename Actual >
         bool operator()( const Actual& actual,
-            typename boost::enable_if<
-                boost::has_equal_to<
+            std::enable_if_t<
+                has_equal_to<
                     Actual,
                     typename
                         boost::unwrap_reference< Expected >::type
-                >
-            >::type* = 0 ) const
+                >::value
+            >* = 0 ) const
         {
             return actual == boost::unwrap_ref( expected_ );
         }
         template< typename Actual >
         bool operator()( const Actual& actual,
-            typename boost::disable_if<
-                boost::has_equal_to<
+            std::enable_if_t<
+                !has_equal_to<
                     Actual,
                     typename
                         boost::unwrap_reference< Expected >::type
-                >
-            >::type* = 0 ) const
+                >::value
+            >* = 0 ) const
         {
             return actual && *actual == boost::unwrap_ref( expected_ );
         }
@@ -178,38 +184,38 @@ namespace detail
         {}
         template< typename Actual >
         bool operator()( const Actual& actual,
-            typename boost::disable_if<
-                boost::is_convertible<
+            std::enable_if_t<
+                !std::is_convertible<
                     const Actual*,
                     typename
                         boost::unwrap_reference< Expected >::type
-                >
-            >::type* = 0 ) const
+                >::value
+            >* = 0 ) const
         {
             *expected_ = actual;
             return true;
         }
         template< typename Actual >
         bool operator()( Actual&& actual,
-            typename boost::disable_if<
-                boost::is_convertible<
+            std::enable_if_t<
+                !std::is_convertible<
                     const Actual*,
                     typename
                         boost::unwrap_reference< Expected >::type
-                >
-            >::type* = 0 ) const
+                >::value
+            >* = 0 ) const
         {
             *expected_ = std::move( actual );
             return true;
         }
         template< typename Actual >
         bool operator()( Actual& actual,
-            typename boost::enable_if<
-                boost::is_convertible< Actual*,
+            std::enable_if_t<
+                std::is_convertible< Actual*,
                     typename
                         boost::unwrap_reference< Expected >::type
-                >
-            >::type* = 0 ) const
+                >::value
+            >* = 0 ) const
         {
             *expected_ = detail::addressof( actual );
             return true;
@@ -236,13 +242,13 @@ namespace detail
         }
         template< typename Actual >
         bool operator()( Actual* actual,
-            typename boost::enable_if<
-                boost::is_convertible<
+            std::enable_if_t<
+                std::is_convertible<
                     typename
                         boost::unwrap_reference< Expected >::type,
                     Actual
-                >
-            >::type* = 0 ) const
+                >::value
+            >* = 0 ) const
         {
             if( ! actual )
                 return false;

@@ -9,22 +9,18 @@
 #ifndef MOCK_MOVE_HELPER_HPP_INCLUDED
 #define MOCK_MOVE_HELPER_HPP_INCLUDED
 
-#include <boost/type_traits/conditional.hpp>
-#include <boost/type_traits/is_reference.hpp>
-#include <boost/type_traits/add_rvalue_reference.hpp>
+#include <type_traits>
 
 namespace mock
 {
 namespace detail
 {
     template< typename T >
-    struct ref_arg
-    {
-        typedef typename boost::conditional<
-          boost::is_reference< T >::value,
+    using ref_arg = std::conditional<
+          std::is_reference< T >::value,
           T,
-          typename boost::add_rvalue_reference< T >::type >::type type;
-    };
+          std::add_rvalue_reference_t< T >
+    >;
 }
 }
 

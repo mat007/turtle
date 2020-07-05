@@ -14,10 +14,9 @@
 #include "constraints.hpp"
 #include "detail/is_functor.hpp"
 #include "detail/move_helper.hpp"
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/add_reference.hpp>
 #include <boost/ref.hpp>
 #include <cstring>
+#include <type_traits>
 
 namespace mock
 {
@@ -28,7 +27,7 @@ namespace mock
         explicit matcher( Expected expected )
             : expected_( expected )
         {}
-        bool operator()( typename boost::add_reference< const Actual >::type actual )
+        bool operator()( std::add_lvalue_reference_t< const Actual > actual )
         {
             return mock::equal(
                 boost::unwrap_ref( expected_ ) ).c_( actual );
@@ -84,9 +83,9 @@ namespace mock
 
     template< typename Actual, typename Functor >
     class matcher< Actual, Functor,
-        typename boost::enable_if<
-            detail::is_functor< Functor, Actual >
-        >::type
+        std::enable_if_t<
+            detail::is_functor< Functor, Actual >::value
+        >
     >
     {
     public:

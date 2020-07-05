@@ -28,7 +28,7 @@
     struct T : mock::object
 
 #define MOCK_FUNCTION_TYPE(S, tpn) \
-    tpn boost::remove_pointer< tpn BOOST_IDENTITY_TYPE(S) >::type
+    std::remove_pointer_t< tpn BOOST_IDENTITY_TYPE(S) >
 
 #ifdef MOCK_VARIADIC_MACROS
 

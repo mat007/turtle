@@ -14,10 +14,9 @@
 #include "detail/type_name.hpp"
 #include "detail/object_impl.hpp"
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
-#include <boost/type_traits/is_base_of.hpp>
-#include <boost/utility/enable_if.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/optional.hpp>
+#include <type_traits>
 
 namespace mock
 {
@@ -36,9 +35,7 @@ namespace detail
         boost::unit_test::const_string instance,
         boost::optional< type_name > type,
         boost::unit_test::const_string name,
-        typename boost::disable_if<
-            typename boost::is_base_of< object, T >
-        >::type* = 0 )
+        std::enable_if_t< !std::is_base_of< object, T >::value >* = 0 )
     {
         e.configure( detail::root, &t, instance, type, name );
         return e;
