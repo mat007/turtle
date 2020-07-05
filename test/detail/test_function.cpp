@@ -12,7 +12,6 @@
 #include <turtle/constraints.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/utility/result_of.hpp>
-#include <boost/mpl/assert.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>

@@ -10,24 +10,56 @@
 #define MOCK_PARAMETER_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <boost/function_types/parameter_types.hpp>
-#include <boost/function_types/function_arity.hpp>
-#include <boost/mpl/at.hpp>
 
 namespace mock
 {
 namespace detail
 {
-    template< typename Signature, int n >
-    struct parameter
+    template< class... >
+    struct tuple;
+
+    template< std::size_t I, class T >
+    struct tuple_element;
+ 
+    template< std::size_t I, class H, class... T >
+    struct tuple_element<I, tuple<H, T...>> : tuple_element<I-1, tuple<T...>>
+    {};
+ 
+    template< class H, class... T >
+    struct tuple_element<0, tuple<H, T...>>
     {
-        typedef typename
-            boost::mpl::at_c<
-                typename
-                    boost::function_types::parameter_types< Signature >,
-                n
-            >::type type;
+       using type = H;
     };
+
+    template< typename Signature >
+    struct result_type;
+
+    template< typename R, typename... Args >
+    struct result_type< R(Args...) >
+    {
+        using type = R;
+    };
+
+    template< typename Signature >
+    struct function_arity;
+
+    template< typename R, typename... Args >
+    struct function_arity< R(Args...) >
+    {
+        static constexpr size_t value = sizeof...(Args);
+    };
+
+    template< typename Signature >
+    struct parameter_types;
+
+    template< typename R, typename... Args >
+    struct parameter_types< R(Args...) >
+    {
+        using type = tuple<Args...>;
+    };
+
+    template< typename Signature, int n >
+    using parameter = tuple_element< n, typename parameter_types<Signature>::type >;
 }
 } // mock
 

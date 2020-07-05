@@ -10,33 +10,47 @@
 #define MOCK_SIGNATURE_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <boost/function_types/parameter_types.hpp>
-#include <boost/function_types/function_type.hpp>
-#include <boost/function_types/result_type.hpp>
-#include <boost/mpl/single_view.hpp>
-#include <boost/mpl/joint_view.hpp>
-#include <boost/mpl/pop_front.hpp>
-#define BOOST_TYPEOF_SILENT
-#include <boost/typeof/typeof.hpp>
+#include <type_traits>
 
 namespace mock
 {
 namespace detail
 {
+#define MOCK_NOARG
+#define MOCK_STRIP_FUNCTION_QUALIFIERS(cv, ref) \
+    template< typename R, typename... Args > \
+    struct strip_function_qualifiers<R(Args...) cv ref > \
+    { using type = R(Args...); }; \
+    template< typename R, typename... Args > \
+    struct strip_function_qualifiers<R(Args..., ...) cv ref > \
+    { using type = R(Args..., ...); };
+
+#define MOCK_STRIP_FUNCTION_QUALIFIERS_REF(cv) \
+    MOCK_STRIP_FUNCTION_QUALIFIERS(cv,) \
+    MOCK_STRIP_FUNCTION_QUALIFIERS(cv, &) \
+    MOCK_STRIP_FUNCTION_QUALIFIERS(cv, &&)
+
+    template<typename>
+    struct strip_function_qualifiers;
+    MOCK_STRIP_FUNCTION_QUALIFIERS_REF(MOCK_NOARG)
+    MOCK_STRIP_FUNCTION_QUALIFIERS_REF(const)
+    MOCK_STRIP_FUNCTION_QUALIFIERS_REF(volatile)
+    MOCK_STRIP_FUNCTION_QUALIFIERS_REF(const volatile)
+#undef MOCK_NOARG
+#undef MOCK_STRIP_FUNCTION_QUALIFIERS
+#undef MOCK_STRIP_FUNCTION_QUALIFIERS_REF
+
     template< typename M >
-    struct signature :
-        boost::function_types::function_type<
-            boost::mpl::joint_view<
-                boost::mpl::single_view<
-                    typename
-                        boost::function_types::result_type< M >::type
-                >,
-                typename boost::mpl::pop_front<
-                    typename
-                        boost::function_types::parameter_types< M >
-                >::type
-            >
-        >
+    struct signature;
+
+    template< typename R, typename... Args>
+    struct signature< R(Args...) >
+    {
+        using type = R(Args...);
+    };
+
+    template< typename Sig, typename C>
+    struct signature< Sig(C::*) >: signature< typename strip_function_qualifiers<Sig>::type >
     {};
 
     template< typename T >
@@ -55,9 +69,9 @@ namespace detail
 
 #define MOCK_SIGNATURE(M) \
     mock::detail::signature< \
-        BOOST_TYPEOF( \
-            mock::detail::ambiguous_method_requires_to_specify_signature( \
-                &base_type::M ) ) \
+        std::remove_cv_t< std::remove_reference_t < decltype( \
+            mock::detail::ambiguous_method_requires_to_specify_signature( &base_type::M ) \
+        ) > > \
     >::type
 
 #endif // MOCK_SIGNATURE_HPP_INCLUDED
