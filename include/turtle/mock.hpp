@@ -22,7 +22,6 @@
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/utility/identity_type.hpp>
-#include <boost/mpl/assert.hpp>
 
 #define MOCK_CLASS(T) \
     struct T : mock::object
@@ -79,7 +78,7 @@
 #define MOCK_DECL_PARAMS(n, S, tpn) \
     BOOST_PP_REPEAT(n, MOCK_DECL_PARAM, MOCK_PARAM(S, tpn))
 #define MOCK_DECL(M, n, S, c, tpn) \
-    tpn boost::function_types::result_type< \
+    tpn mock::detail::result_type< \
         MOCK_FUNCTION_TYPE((S), tpn) >::type M( \
             MOCK_DECL_PARAMS(n, S, tpn) ) c
 
@@ -91,9 +90,7 @@
 #define MOCK_METHOD_AUX(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
     { \
-        BOOST_MPL_ASSERT_RELATION( n, ==, \
-            boost::function_types::function_arity< \
-                MOCK_FUNCTION_TYPE((S), tpn) >::value ); \
+        static_assert( n == mock::detail::function_arity< MOCK_FUNCTION_TYPE((S), tpn) >::value, "Arity mismatch" ); \
         return MOCK_ANONYMOUS_HELPER(t)( \
             MOCK_FORWARD_PARAMS(n, S, tpn) ); \
     }
@@ -171,9 +168,7 @@
     MOCK_FUNCTION_HELPER(S, t, s, tpn) \
     s MOCK_DECL(F, n, S,,tpn) \
     { \
-        BOOST_MPL_ASSERT_RELATION( n, ==, \
-            boost::function_types::function_arity< \
-                MOCK_FUNCTION_TYPE((S), tpn) >::value ); \
+        static_assert( n == mock::detail::function_arity< MOCK_FUNCTION_TYPE((S), tpn) >::value, "Arity mismatch" ); \
         return MOCK_HELPER(t)( MOCK_FORWARD_PARAMS(n, S, tpn) ); \
     }
 

@@ -22,18 +22,17 @@
 namespace
 {
     struct declared_but_not_defined;
-    BOOST_MPL_ASSERT_NOT((
-        mock::detail::is_functor< declared_but_not_defined, int > ));
+    static_assert( !mock::detail::is_functor< declared_but_not_defined, int >::value, "Should not be a functor" );
 
     template< typename T >
     void is_functor( T )
     {
-        BOOST_MPL_ASSERT(( mock::detail::is_functor< T, int > ));
+        static_assert( mock::detail::is_functor< T, int >::value, "Should be functor");
     }
     template< typename T >
     void is_not_functor( T )
     {
-        BOOST_MPL_ASSERT_NOT(( mock::detail::is_functor< T, int > ));
+        static_assert( !mock::detail::is_functor< T, int >::value, "Should not be a functor" );
     }
 
     void f0() {}
@@ -48,41 +47,27 @@ BOOST_AUTO_TEST_CASE( data_is_not_functor )
 
 BOOST_AUTO_TEST_CASE( function_is_functor )
 {
-    is_functor( f0 );
+    is_not_functor( f0 );
     is_functor( f1 );
-    is_functor( f2 );
+    is_not_functor( f2 );
 }
 
 BOOST_AUTO_TEST_CASE( function_pointer_is_functor )
 {
-    is_functor( &f0 );
+    is_not_functor( &f0 );
     is_functor( &f1 );
-    is_functor( &f2 );
+    is_not_functor( &f2 );
 }
 
 BOOST_AUTO_TEST_CASE( std_ptr_fun_is_functor )
 {
     is_functor( std::ptr_fun( &f1 ) );
-    is_functor( std::ptr_fun( &f2 ) );
+    is_not_functor( std::ptr_fun( &f2 ) );
 }
 
 BOOST_AUTO_TEST_CASE( std_bind_first_is_functor )
 {
     is_functor( std::bind1st( std::ptr_fun( &f2 ), "" ) );
-}
-
-namespace
-{
-    struct unary_functor0 : public std::unary_function< void, void >
-    {};
-    struct unary_functor1 : public std::unary_function< int, void >
-    {};
-}
-
-BOOST_AUTO_TEST_CASE( std_unary_functor_is_functor )
-{
-    is_functor( unary_functor0() );
-    is_functor( unary_functor1() );
 }
 
 BOOST_AUTO_TEST_CASE( boost_bind_is_functor )
@@ -105,37 +90,7 @@ BOOST_AUTO_TEST_CASE( boost_phoenix_is_functor )
 
 BOOST_AUTO_TEST_CASE( boost_function_is_functor )
 {
-    is_functor( boost::function< void() >() );
-}
-
-namespace
-{
-    struct result_type_functor
-    {
-        typedef void result_type;
-    };
-}
-
-BOOST_AUTO_TEST_CASE( class_with_result_type_is_functor )
-{
-    is_functor( result_type_functor() );
-}
-
-namespace
-{
-    struct sig_functor
-    {
-        template< typename Args >
-        struct sig
-        {
-            typedef void type;
-        };
-    };
-}
-
-BOOST_AUTO_TEST_CASE( class_with_sig_is_functor )
-{
-    is_functor( sig_functor() );
+    is_functor( boost::function< void(int) >() );
 }
 
 #ifdef MOCK_LAMBDAS
