@@ -71,7 +71,7 @@ namespace mock
         {}
         bool operator()( typename detail::ref_arg< Actual >::type actual )
         {
-            return c_( mock::detail::move_if_not_lvalue_reference< typename detail::ref_arg< Actual >::type >( actual ) );
+            return c_( std::forward< typename detail::ref_arg< Actual >::type >( actual ) );
         }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )
@@ -95,7 +95,7 @@ namespace mock
         {}
         bool operator()( typename detail::ref_arg< Actual >::type actual )
         {
-            return c_( mock::detail::move_if_not_lvalue_reference< typename detail::ref_arg< Actual >::type >( actual ) );
+            return c_( std::forward< typename detail::ref_arg< Actual >::type >( actual ) );
         }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )

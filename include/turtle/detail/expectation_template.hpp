@@ -15,7 +15,7 @@
     matcher< T##n, Constraint_##n > c##n##_;
 
 #define MOCK_EXPECTATION_IS_VALID(z, n, d) \
-    BOOST_PP_IF(n, &&,) c##n##_( mock::detail::move_if_not_lvalue_reference< T##n >( a##n ) )
+    BOOST_PP_IF(n, &&,) c##n##_( std::forward< T##n >( a##n ) )
 
 #define MOCK_EXPECTATION_SERIALIZE(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) c##n##_
@@ -24,7 +24,7 @@
     BOOST_PP_IF(n, << ", " <<,) "any"
 
 #define MOCK_EXPECTATION_PARAM(z, n, Args) \
-    mock::detail::move_if_not_lvalue_reference< T##n >( a##n )
+    std::forward< T##n >( a##n )
 
 #define MOCK_REF_ARG(z, n, d) \
     typename ref_arg< T##n >::type a##n

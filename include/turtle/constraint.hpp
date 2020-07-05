@@ -19,7 +19,6 @@
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/array.hpp>
-#include <boost/move/move.hpp>
 #include <boost/type_traits/decay.hpp>
 
 namespace mock
@@ -147,7 +146,7 @@ namespace detail
     const mock::constraint< detail::Name > Name;
 
 #define MOCK_CONSTRAINT_ASSIGN(z, n, d) \
-    expected##n( boost::forward< T##n >(e##n) )
+    expected##n( std::forward< T##n >(e##n) )
 
 #define MOCK_CONSTRAINT_UNWRAP_REF(z, n, d) \
     boost::unwrap_ref( expected##n )
@@ -166,13 +165,13 @@ namespace detail
         BOOST_PP_ARRAY_ELEM(n, Args)
 
 #define MOCK_CONSTRAINT_ARG(z, n, Args) \
-    BOOST_FWD_REF(T##n) BOOST_PP_ARRAY_ELEM(n, Args)
+    T##n&& BOOST_PP_ARRAY_ELEM(n, Args)
 
 #define MOCK_CONSTRAINT_ARGS(z, n, Args) \
-    BOOST_FWD_REF(T##n) e##n
+    T##n&& e##n
 
 #define MOCK_CONSTRAINT_PARAM(z, n, Args) \
-    boost::forward< T##n >( BOOST_PP_ARRAY_ELEM(n, Args) )
+    std::forward< T##n >( BOOST_PP_ARRAY_ELEM(n, Args) )
 
 #define MOCK_NARY_CONSTRAINT(Name, n, Args, Expr) \
     namespace detail \

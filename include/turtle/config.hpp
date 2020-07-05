@@ -64,12 +64,6 @@
 #   endif
 #endif
 
-#if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_RVALUE_REFERENCES)
-#   ifndef MOCK_NO_RVALUE_REFERENCES
-#      define MOCK_RVALUE_REFERENCES
-#   endif
-#endif
-
 #if !defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #   ifndef MOCK_NO_HDR_FUNCTIONAL
 #      define MOCK_HDR_FUNCTIONAL
