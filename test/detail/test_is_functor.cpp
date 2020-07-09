@@ -99,8 +99,6 @@ BOOST_AUTO_TEST_CASE( std_function_is_functor )
     is_functor( std::function< void(int) >() );
 }
 
-#ifdef MOCK_LAMBDAS
-
 BOOST_AUTO_TEST_CASE( cxx11_lambda_is_functor )
 {
     is_not_functor( []() {} );
@@ -108,5 +106,3 @@ BOOST_AUTO_TEST_CASE( cxx11_lambda_is_functor )
     is_not_functor( []( const std::string&, int ) {} );
     is_not_functor( []( int, const std::string& ) {} );
 }
-
-#endif

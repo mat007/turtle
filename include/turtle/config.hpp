@@ -46,12 +46,6 @@
 #   endif
 #endif
 
-#if !defined(BOOST_NO_CXX11_LAMBDAS) && !defined(BOOST_NO_LAMBDAS)
-#   ifndef MOCK_NO_LAMBDAS
-#      define MOCK_LAMBDAS
-#   endif
-#endif
-
 #if !defined(BOOST_NO_AUTO_PTR)
 #   ifndef MOCK_NO_AUTO_PTR
 #      define MOCK_AUTO_PTR
