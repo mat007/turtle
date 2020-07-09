@@ -360,8 +360,7 @@ namespace
 {
     struct base
     {
-        virtual ~base()
-        {}
+        virtual ~base() = default;
 
         virtual void m1() = 0;
         virtual void m10() const = 0;
@@ -417,8 +416,7 @@ namespace stdcall
 {
     struct base
     {
-        virtual ~base()
-        {}
+        virtual ~base() = default;
 
         virtual void MOCK_STDCALL m1() = 0;
     };

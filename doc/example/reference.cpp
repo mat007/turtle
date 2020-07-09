@@ -121,8 +121,7 @@ namespace member_function_example_1
 //[ member_function_example_1
 struct base_class
 {
-    virtual ~base_class()
-    {}
+    virtual ~base_class() = default;
     virtual void method( int ) = 0;
 };
 
@@ -138,8 +137,7 @@ namespace member_function_example_2
 //[ member_function_example_2
 struct base_class
 {
-    virtual ~base_class()
-    {}
+    virtual ~base_class() = default;
     virtual void method( int, const std::string& ) = 0;
     virtual void method( float ) = 0;
 };
@@ -157,8 +155,7 @@ namespace member_function_example_3
 //[ member_function_example_3
 struct base_class
 {
-    virtual ~base_class()
-    {}
+    virtual ~base_class() = default;
     virtual void method( float ) = 0;
     virtual void method( float ) const = 0;
 };
@@ -175,8 +172,7 @@ namespace member_function_example_4
 //[ member_function_example_4
 struct base_class
 {
-    virtual ~base_class()
-    {}
+    virtual ~base_class() = default;
     virtual void method( float ) = 0;
     virtual void method( float ) const = 0;
 };
@@ -194,8 +190,7 @@ namespace member_function_example_5
 //[ member_function_example_5
 struct base_class
 {
-    virtual ~base_class()
-    {}
+    virtual ~base_class() = default;
     virtual void method( float ) = 0;
 };
 

@@ -26,8 +26,7 @@ namespace mock
     template< typename Constraint >
     struct constraint
     {
-        constraint()
-        {}
+        constraint() {}
         constraint( const Constraint& c )
             : c_( c )
         {}

@@ -10,7 +10,6 @@
 #define MOCK_STREAM_HPP_INCLUDED
 
 #include "config.hpp"
-#include <boost/noncopyable.hpp>
 #include <ostream>
 
 namespace mock
@@ -41,10 +40,13 @@ namespace conversion
         return s << '?';
     }
 
-    struct holder : boost::noncopyable
+    struct holder
     {
-        virtual ~holder()
-        {}
+        holder() = default;
+        holder(const holder&) = delete;
+        holder& operator=(const holder&) = delete;
+
+        virtual ~holder() = default;
         virtual void serialize( std::ostream& s ) const = 0;
     };
 
@@ -64,12 +66,14 @@ namespace conversion
         const T& t_;
     };
 
-    struct any : boost::noncopyable
+    struct any
     {
         template< typename T >
         any( const T& t )
             : h_( new holder_imp< T >( t ) )
         {}
+        any(const any&) = delete;
+        any& operator=(const any&) = delete;
         ~any()
         {
             delete h_;

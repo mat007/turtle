@@ -11,7 +11,6 @@
 
 #include "../config.hpp"
 #include "singleton.hpp"
-#include <boost/noncopyable.hpp>
 #include <memory>
 
 #ifdef MOCK_THREAD_SAFE
@@ -75,8 +74,12 @@ namespace mock
 {
 namespace detail
 {
-    struct mutex : boost::noncopyable
+    struct mutex
     {
+        mutex() = default;
+        mutex(const mutex&) = delete;
+        mutex& operator=(const mutex&) = delete;
+
         void lock()
         {}
         void unlock()
@@ -86,18 +89,17 @@ namespace detail
     // Constructor + Destructor make it RAII classes for compilers and avoid unused variable warnings
     struct scoped_lock
     {
-        scoped_lock( mutex& )
-        {}
-        ~scoped_lock()
-        {}
+        scoped_lock(const scoped_lock&) = delete;
+        scoped_lock& operator=(const scoped_lock&) = delete;
+
+        scoped_lock( mutex& ) {}
+        ~scoped_lock() {}
     };
     class lock
     {
     public:
-        lock( const std::shared_ptr< mutex >& )
-        {}
-        ~lock()
-        {}
+        lock( const std::shared_ptr< mutex >& ) {}
+        ~lock() {}
         lock(const lock&) = delete;
         lock( lock&& ) = default;
         lock& operator=( const lock& ) = delete;

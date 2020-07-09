@@ -14,7 +14,7 @@ namespace
 {
     struct my_base
     {
-        virtual ~my_base() {}
+        virtual ~my_base() = default;
         virtual void my_method( int, int, int, int, int, int, int, int, int, int ) = 0;
     };
 

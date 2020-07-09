@@ -12,7 +12,7 @@ namespace
 {
     struct my_base
     {
-        virtual ~my_base() {}
+        virtual ~my_base() = default;
         virtual void my_method( int ) = 0;
     };
 

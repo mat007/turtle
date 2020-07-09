@@ -12,7 +12,7 @@ namespace
 {
     struct my_base
     {
-        virtual ~my_base() {}
+        virtual ~my_base() = default;
     };
 
     MOCK_BASE_CLASS( my_class, my_base )
