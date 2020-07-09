@@ -356,8 +356,6 @@ namespace
     MOCK_FUNCTION( fun0, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())), fun0 )
 }
 
-#ifdef MOCK_VARIADIC_MACROS
-
 namespace
 {
     struct base
@@ -409,32 +407,6 @@ namespace
     MOCK_FUNCTOR( f_variadic, std::map< int, int >() );
 }
 
-#else // MOCK_VARIADIC_MACROS
-
-namespace
-{
-    struct base
-    {
-        virtual ~base()
-        {}
-
-        virtual void m1() = 0;
-    };
-
-    MOCK_BASE_CLASS( derived, base )
-    {
-        MOCK_METHOD( m1, 0 )
-    };
-
-    template< typename T >
-    MOCK_BASE_CLASS( derived_tpl, base )
-    {
-        MOCK_METHOD_EXT( m1, 0, void(), m1 )
-    };
-}
-
-#endif // MOCK_VARIADIC_MACROS
-
 #ifdef BOOST_MSVC
 #   define MOCK_STDCALL __stdcall
 #else
@@ -458,9 +430,7 @@ namespace stdcall
         MOCK_CONVERSION_OPERATOR( MOCK_STDCALL operator, int, to_int )
         MOCK_METHOD_EXT( MOCK_STDCALL m1, 0, void(), m1 )
         MOCK_METHOD_EXT( MOCK_STDCALL m2, 0, void(), m2 )
-#ifdef MOCK_VARIADIC_MACROS
         MOCK_METHOD( MOCK_STDCALL m3, 0, void(), m3 )
-#endif
         MOCK_STATIC_METHOD( MOCK_STDCALL m4, 0, void(), m4 )
     };
 

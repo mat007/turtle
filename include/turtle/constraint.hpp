@@ -220,8 +220,6 @@ namespace detail
         MOCK_NARY_CONSTRAINT, \
         MOCK_UNARY_CONSTRAINT)(Name, n, Args, Expr)
 
-#ifdef MOCK_VARIADIC_MACROS
-
 #ifdef BOOST_MSVC
 #   define MOCK_VARIADIC_SIZE(...) \
         BOOST_PP_CAT(MOCK_VARIADIC_SIZE_I(__VA_ARGS__, \
@@ -252,7 +250,5 @@ namespace detail
 #define MOCK_CONSTRAINT(Name, ...) \
     MOCK_CONSTRAINT_AUX( \
         Name, MOCK_VARIADIC_SIZE(__VA_ARGS__), (__VA_ARGS__))
-
-#endif // MOCK_VARIADIC_MACROS
 
 #endif // MOCK_CONSTRAINT_HPP_INCLUDED

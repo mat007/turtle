@@ -40,12 +40,6 @@
 #   error BOOST_FT_MAX_ARITY must be set to MOCK_MAX_ARGS + 1 or higher
 #endif
 
-#if !defined(BOOST_NO_CXX11_VARIADIC_MACROS) && !defined(BOOST_NO_VARIADIC_MACROS)
-#   ifndef MOCK_NO_VARIADIC_MACROS
-#      define MOCK_VARIADIC_MACROS
-#   endif
-#endif
-
 #if !defined(BOOST_NO_CXX11_SMART_PTR) && !defined(BOOST_NO_SMART_PTR)
 #   ifndef MOCK_NO_SMART_PTR
 #      define MOCK_SMART_PTR
