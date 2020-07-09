@@ -7,14 +7,14 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //[ invoke_functor_problem
-#include <boost/function.hpp>
+#include <functional>
 
 namespace
 {
     class base_class
     {
     public:
-        virtual void method( const boost::function< void( int ) >& functor ) = 0;
+        virtual void method( const std::function< void( int ) >& functor ) = 0;
     };
 
     void function( base_class& ); // the function will call 'method' with a functor to be applied

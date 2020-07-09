@@ -13,15 +13,15 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/utility/result_of.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <functional>
 #include <type_traits>
 
 // static
 
 namespace
 {
-    boost::function< void() > static_f;
+    std::function< void() > static_f;
 
     static_assert( std::is_same< void, boost::result_of< mock::detail::function< void() >() >::type >::value, "!");
     static_assert( std::is_same< int, boost::result_of< mock::detail::function< int() >() >::type >::value, "!");
@@ -34,13 +34,13 @@ namespace
 BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor, mock_error_fixture )
 {
     mock::detail::function< void() > f;
-    boost::function< void() > functor = f;
+    std::function< void() > functor = f;
 }
 
 BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor_using_boost_bind_and_boost_ref, mock_error_fixture )
 {
     mock::detail::function< void() > f;
-    boost::function< void() > functor = boost::bind( boost::ref( f ) );
+    std::function< void() > functor = boost::bind( boost::ref( f ) );
 }
 
 // invocations

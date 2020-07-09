@@ -14,6 +14,7 @@
 #include <boost/optional.hpp>
 #include <boost/ref.hpp>
 #include <cmath>
+#include <functional>
 
 namespace
 {
@@ -153,7 +154,7 @@ namespace
 
 BOOST_FIXTURE_TEST_CASE( mock_functor_in_namespace_is_supported, mock_error_fixture )
 {
-    boost::function< int( float, const std::string& ) > func;
+    std::function< int( float, const std::string& ) > func;
     MOCK_EXPECT( gf ).once().with( 3, "op" ).returns( 42 );
     func = gf;
     BOOST_CHECK_EQUAL( 42, func( 3, "op" ) );
@@ -162,7 +163,7 @@ BOOST_FIXTURE_TEST_CASE( mock_functor_in_namespace_is_supported, mock_error_fixt
 
 BOOST_FIXTURE_TEST_CASE( mock_functor_in_function_is_supported, mock_error_fixture )
 {
-    boost::function< int( float, const std::string& ) > func;
+    std::function< int( float, const std::string& ) > func;
     {
         MOCK_FUNCTOR( f, int( float, const std::string& ) );
         MOCK_EXPECT( f ).once().with( 3, "op" ).returns( 42 );
