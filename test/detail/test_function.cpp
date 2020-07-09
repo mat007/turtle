@@ -289,10 +289,14 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in
 
 namespace
 {
-    class my_interface : boost::noncopyable
+    class my_interface
     {
     public:
-        virtual ~my_interface() {}
+        my_interface() = default;
+        my_interface(const my_interface&) = delete;
+        my_interface& operator=(const my_interface&) = delete;
+        virtual ~my_interface() = default;
+
     private:
         virtual void my_method() = 0;
     };
@@ -493,8 +497,7 @@ namespace
 {
     struct base
     {
-        virtual ~base()
-        {}
+        virtual ~base() = default;
         virtual void f() = 0;
     };
     struct derived : base

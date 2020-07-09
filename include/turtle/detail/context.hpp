@@ -11,7 +11,6 @@
 
 #include "../config.hpp"
 #include "type_name.hpp"
-#include <boost/noncopyable.hpp>
 #include <boost/optional.hpp>
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <ostream>
@@ -22,11 +21,14 @@ namespace detail
 {
     class verifiable;
 
-    class context : boost::noncopyable
+    class context
     {
     public:
-        context() {}
-        virtual ~context() {}
+        context() = default;
+        context(const context&) = delete;
+        context& operator=(const context&) = delete;
+
+        virtual ~context() = default;
 
         virtual void add( const void* p, verifiable& v,
             boost::unit_test::const_string instance,

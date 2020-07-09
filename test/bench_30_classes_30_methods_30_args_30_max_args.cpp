@@ -17,7 +17,7 @@ namespace
     class base_class
     {
     public:
-        virtual ~base_class() {}
+        virtual ~base_class() = default;
         virtual void f1( int, int, int, int, int, int, int, int, int, int,
                          int, int, int, int, int, int, int, int, int, int,
                          int, int, int, int, int, int, int, int, int, int ) = 0;

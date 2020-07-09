@@ -10,7 +10,6 @@
 #include "undefined.hpp"
 #include <turtle/mock.hpp>
 #include <boost/test/auto_unit_test.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/optional.hpp>
 #include <boost/ref.hpp>
 #include <cmath>
@@ -82,11 +81,13 @@ BOOST_FIXTURE_TEST_CASE( basic_mock_object_usage, mock_error_fixture )
 
 namespace
 {
-    class my_ambiguited_interface : boost::noncopyable
+    class my_ambiguited_interface
     {
     public:
-        virtual ~my_ambiguited_interface()
-        {}
+        my_ambiguited_interface() = default;
+        my_ambiguited_interface(const my_ambiguited_interface&) = delete;
+        my_ambiguited_interface& operator=(const my_ambiguited_interface&) = delete;
+        virtual ~my_ambiguited_interface() = default;
         virtual void my_method() = 0;
         virtual void my_method( int ) = 0;
     };
@@ -108,11 +109,13 @@ BOOST_FIXTURE_TEST_CASE( mock_object_method_disambiguation, mock_error_fixture )
 
 namespace
 {
-    class my_const_ambiguited_interface : boost::noncopyable
+    class my_const_ambiguited_interface
     {
     public:
-        virtual ~my_const_ambiguited_interface()
-        {}
+        my_const_ambiguited_interface() = default;
+        my_const_ambiguited_interface(const my_const_ambiguited_interface&) = delete;
+        my_const_ambiguited_interface& operator=(const my_const_ambiguited_interface&) = delete;
+        virtual ~my_const_ambiguited_interface() = default;
         virtual void my_method() = 0;
         virtual void my_method() const = 0;
     };
@@ -213,8 +216,7 @@ namespace
     template< typename T >
     struct my_template_base_class
     {
-        virtual ~my_template_base_class()
-        {}
+        virtual ~my_template_base_class() = default;
         virtual void my_method( T ) = 0;
         virtual void my_other_method() = 0;
     };
@@ -237,23 +239,27 @@ BOOST_FIXTURE_TEST_CASE( mocking_a_template_base_class_method_is_supported, mock
 
 namespace
 {
-    class my_observer : boost::noncopyable
+    class my_observer
     {
     public:
-        virtual ~my_observer()
-        {}
+        my_observer() = default;
+        my_observer(const my_observer&) = delete;
+        my_observer& operator=(const my_observer&) = delete;
+        virtual ~my_observer() = default;
         virtual void notify( int value ) = 0;
     };
 
-    class my_manager : boost::noncopyable
+    class my_manager
     {
     public:
-        virtual ~my_manager()
-        {}
+        my_manager() = default;
+        my_manager(const my_manager&) = delete;
+        my_manager& operator=(const my_manager&) = delete;
+        virtual ~my_manager() = default;
         virtual my_observer& get_observer() const = 0;
     };
 
-    class my_subject : boost::noncopyable
+    class my_subject
     {
     public:
         explicit my_subject( my_manager& f )

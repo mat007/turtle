@@ -15,8 +15,7 @@ namespace
 //[ limitations_throw_specifier_problem
     struct base_class
     {
-        virtual ~base_class()
-        {}
+        virtual ~base_class() = default;
 
         virtual void method() throw ();
     };

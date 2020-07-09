@@ -22,8 +22,7 @@ namespace detail
     class parent
     {
     public:
-        parent()
-        {}
+        parent() = default;
         parent( boost::unit_test::const_string instance,
             boost::optional< type_name > type )
             : instance_( instance )

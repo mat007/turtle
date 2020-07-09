@@ -11,7 +11,6 @@
 
 #include "../config.hpp"
 #include "mutex.hpp"
-#include <boost/noncopyable.hpp>
 #include <algorithm>
 #include <memory>
 #include <vector>
@@ -20,7 +19,7 @@ namespace mock
 {
 namespace detail
 {
-    class sequence_impl : private boost::noncopyable
+    class sequence_impl
     {
     public:
         sequence_impl()

@@ -10,7 +10,6 @@
 #define MOCK_INVOCATION_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <boost/noncopyable.hpp>
 #include <stdexcept>
 #include <ostream>
 #include <limits>
@@ -19,11 +18,14 @@ namespace mock
 {
 namespace detail
 {
-    class invocation : private boost::noncopyable
+    class invocation
     {
     public:
-        invocation() {}
-        virtual ~invocation() {}
+        invocation() = default;
+        invocation(const invocation&) = delete;
+        invocation& operator=(const invocation&) = delete;
+
+        virtual ~invocation() = default;
 
         virtual bool invoke() = 0;
         virtual bool verify() const = 0;

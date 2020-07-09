@@ -10,7 +10,6 @@
 #define MOCK_ACTION_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <boost/noncopyable.hpp>
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 #include <functional>
@@ -112,10 +111,12 @@ namespace detail
         {
             return std::move( t );
         }
-        struct value : boost::noncopyable
+        struct value
         {
-            virtual ~value()
-            {}
+            value() = default;
+            value(const value&) = delete;
+            value& operator=(const value&) = delete;
+            virtual ~value() = default;
         };
         template< typename T >
         struct value_imp : value
@@ -177,8 +178,7 @@ namespace detail
         : public action_base< std::auto_ptr< Result >, Signature >
     {
     public:
-        action()
-        {}
+        action() = default;
         action( const action& rhs )
             : v_( rhs.v_.release() )
         {

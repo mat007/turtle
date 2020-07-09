@@ -38,7 +38,7 @@ protected:
 #define MOCK_SINGLETON_CONS( type )           \
 private:                                      \
 friend class mock::detail::singleton< type >; \
-type() {}
+type() = default
 
 #define MOCK_SINGLETON_INST( inst ) \
 static BOOST_JOIN( inst, _t )& inst = BOOST_JOIN( inst, _t )::instance();

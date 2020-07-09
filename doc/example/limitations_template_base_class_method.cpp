@@ -17,8 +17,7 @@ namespace
     class base
     {
     public:
-        virtual ~base()
-        {}
+        virtual ~base() = default;
 
         virtual void method() = 0;
     };

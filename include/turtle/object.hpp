@@ -48,8 +48,7 @@ namespace detail
             : impl_( std::make_shared< detail::object_impl >() )
         {}
     protected:
-        ~object()
-        {}
+        ~object() = default;
     public:
         std::shared_ptr< detail::object_impl > impl_;
     };
