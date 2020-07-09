@@ -106,12 +106,10 @@ BOOST_AUTO_TEST_CASE( same_constraint )
         BOOST_CHECK( ! c.c_( j ) );
         BOOST_CHECK( c.c_( i ) );
     }
-#ifdef MOCK_NULLPTR
     {
         std::nullptr_t p;
         BOOST_CHECK( mock::same( p ).c_( p ) );
     }
-#endif
 }
 
 BOOST_AUTO_TEST_CASE( assign_constraint )
@@ -245,14 +243,12 @@ BOOST_AUTO_TEST_CASE( retrieve_constraint )
         BOOST_CHECK( mock::retrieve( boost::ref( i ) ).c_( j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
-#ifdef MOCK_NULLPTR
     {
         std::nullptr_t* i = 0;
         std::nullptr_t j;
         BOOST_CHECK( mock::retrieve( i ).c_( j ) );
         BOOST_CHECK_EQUAL( i, &j );
     }
-#endif
 #ifdef MOCK_SMART_PTR
     {
         std::unique_ptr< int > i;

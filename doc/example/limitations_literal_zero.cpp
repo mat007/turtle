@@ -35,9 +35,7 @@ BOOST_AUTO_TEST_CASE( literal_zero )
 //[ limitations_literal_zero_solution_2
     MOCK_EXPECT( m.method ).with( mock::negate );
 //]
-#ifdef MOCK_NULLPTR
 //[ limitations_literal_zero_solution_3
     MOCK_EXPECT( m.method ).with( nullptr );
 //]
-#endif
 }

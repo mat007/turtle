@@ -40,12 +40,6 @@
 #   error BOOST_FT_MAX_ARITY must be set to MOCK_MAX_ARGS + 1 or higher
 #endif
 
-#if !defined(BOOST_NO_CXX11_NULLPTR) && !defined(BOOST_NO_NULLPTR)
-#   ifndef MOCK_NO_NULLPTR
-#       define MOCK_NULLPTR
-#   endif
-#endif
-
 #if !defined(BOOST_NO_CXX11_VARIADIC_MACROS) && !defined(BOOST_NO_VARIADIC_MACROS)
 #   ifndef MOCK_NO_VARIADIC_MACROS
 #      define MOCK_VARIADIC_MACROS

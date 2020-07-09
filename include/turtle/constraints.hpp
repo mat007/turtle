@@ -11,7 +11,6 @@
 
 #include "config.hpp"
 #include "constraint.hpp"
-#include "detail/addressof.hpp"
 #include "detail/move_helper.hpp"
 #include <boost/ref.hpp>
 #include <boost/version.hpp>
@@ -21,6 +20,7 @@
 #else
 #include <boost/test/floating_point_comparison.hpp>
 #endif
+#include <memory>
 #include <type_traits>
 
 namespace mock
@@ -161,12 +161,12 @@ namespace detail
     struct same
     {
         explicit same( const Expected& expected )
-            : expected_( detail::addressof( boost::unwrap_ref( expected ) ) )
+            : expected_( std::addressof( boost::unwrap_ref( expected ) ) )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
         {
-            return detail::addressof( actual ) == expected_;
+            return std::addressof( actual ) == expected_;
         }
         friend std::ostream& operator<<( std::ostream& os, const same& s )
         {
@@ -180,7 +180,7 @@ namespace detail
     struct retrieve
     {
         explicit retrieve( Expected& expected )
-            : expected_( detail::addressof( boost::unwrap_ref( expected ) ) )
+            : expected_( std::addressof( boost::unwrap_ref( expected ) ) )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual,
@@ -217,7 +217,7 @@ namespace detail
                 >::value
             >* = 0 ) const
         {
-            *expected_ = detail::addressof( actual );
+            *expected_ = std::addressof( actual );
             return true;
         }
         friend std::ostream& operator<<( std::ostream& s, const retrieve& r )
