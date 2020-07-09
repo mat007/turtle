@@ -12,9 +12,9 @@
 #include "../config.hpp"
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
+#include <functional>
 #include <type_traits>
 
 namespace mock
@@ -25,13 +25,8 @@ namespace detail
     class action_base
     {
     private:
-#ifdef MOCK_HDR_FUNCTIONAL
         typedef std::function< Signature > functor_type;
         typedef std::function< Result() > action_type;
-#else
-        typedef boost::function< Signature > functor_type;
-        typedef boost::function< Result() > action_type;
-#endif
 
     public:
         const functor_type& functor() const

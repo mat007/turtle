@@ -18,6 +18,7 @@
 #endif
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <functional>
 
 namespace
 {
@@ -91,6 +92,11 @@ BOOST_AUTO_TEST_CASE( boost_phoenix_is_functor )
 BOOST_AUTO_TEST_CASE( boost_function_is_functor )
 {
     is_functor( boost::function< void(int) >() );
+}
+
+BOOST_AUTO_TEST_CASE( std_function_is_functor )
+{
+    is_functor( std::function< void(int) >() );
 }
 
 #ifdef MOCK_LAMBDAS
