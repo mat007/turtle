@@ -10,7 +10,7 @@
 #include <turtle/mock.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/bind.hpp>
+#include <functional>
 
 namespace
 {
@@ -162,7 +162,8 @@ namespace
 BOOST_FIXTURE_TEST_CASE( MOCK_CONST_METHOD_EXT_macro_defines_a_bindable_method, mock_error_fixture )
 {
     my_mock m;
-    boost::bind( &my_mock::my_method, &m, 42 );
+    const auto f = std::bind( &my_mock::my_method, &m, 42 );
+    (void) f;
 }
 
 BOOST_FIXTURE_TEST_CASE( MOCK_VERIFY_macro, mock_error_fixture )

@@ -572,7 +572,7 @@ bool custom_constraint( int expected, int actual )
 BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_bind )
 {
    mock_class c;
-   MOCK_EXPECT( c.method ).with( boost::bind( &custom_constraint, 42, _1 ) );
+   MOCK_EXPECT( c.method ).with( std::bind( &custom_constraint, 42, _1 ) );
 }
 //]
 }
@@ -722,7 +722,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_configuring_actions )
    MOCK_EXPECT( c.method ).moves( 42 );                               // returns by moving the value
    MOCK_EXPECT( c.method ).throws( std::runtime_error( "error !" ) );
    MOCK_EXPECT( c.method ).calls( &function );                        // forwards 'method' parameter to 'function'
-   MOCK_EXPECT( c.method ).calls( boost::bind( &function, 42 ) );     // drops 'method' parameter and binds 42 as parameter to 'function'
+   MOCK_EXPECT( c.method ).calls( std::bind( &function, 42 ) );     // drops 'method' parameter and binds 42 as parameter to 'function'
    MOCK_EXPECT( c.method ).calls( []( int i ) { return i; } );        // uses a C++11 lambda
 }
 //]

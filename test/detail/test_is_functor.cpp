@@ -71,11 +71,14 @@ BOOST_AUTO_TEST_CASE( std_bind_first_is_functor )
     is_functor( std::bind1st( std::ptr_fun( &f2 ), "" ) );
 }
 
-BOOST_AUTO_TEST_CASE( boost_bind_is_functor )
+BOOST_AUTO_TEST_CASE( bind_is_functor )
 {
     is_functor( boost::bind( &f0 ) );
     is_functor( boost::bind( &f1, _1 ) );
     is_functor( boost::bind( &f2, "", _1 ) );
+    is_functor( std::bind( &f0 ) );
+    is_functor( std::bind( &f1, std::placeholders::_1 ) );
+    is_functor( std::bind( &f2, "", std::placeholders::_1 ) );
 }
 
 BOOST_AUTO_TEST_CASE( boost_lambda_is_functor )
