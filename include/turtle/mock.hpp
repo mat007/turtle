@@ -29,8 +29,6 @@
 #define MOCK_FUNCTION_TYPE(S, tpn) \
     std::remove_pointer_t< tpn BOOST_IDENTITY_TYPE(S) >
 
-#ifdef MOCK_VARIADIC_MACROS
-
 #define MOCK_BASE_CLASS(T, ...) \
     struct T : __VA_ARGS__, mock::object, mock::detail::base< __VA_ARGS__ >
 
@@ -39,19 +37,6 @@
 #define MOCK_FUNCTOR_TPL(f, ...) \
     mock::detail::functor< \
         MOCK_FUNCTION_TYPE((__VA_ARGS__), typename) > f, f##_mock
-
-#else // MOCK_VARIADIC_MACROS
-
-#define MOCK_BASE_CLASS(T, I) \
-    struct T : I, mock::object, mock::detail::base< I >
-
-#define MOCK_FUNCTOR(f, S) \
-    mock::detail::functor< MOCK_FUNCTION_TYPE((S),) > f, f##_mock
-#define MOCK_FUNCTOR_TPL(f, S) \
-    mock::detail::functor< \
-        MOCK_FUNCTION_TYPE((S), typename) > f, f##_mock
-
-#endif // MOCK_VARIADIC_MACROS
 
 #define MOCK_HELPER(t) \
     t##_mock( mock::detail::root, BOOST_PP_STRINGIZE(t) )
@@ -172,8 +157,6 @@
         return MOCK_HELPER(t)( MOCK_FORWARD_PARAMS(n, S, tpn) ); \
     }
 
-#ifdef MOCK_VARIADIC_MACROS
-
 #define MOCK_VARIADIC_ELEM_0(e0, ...) e0
 #define MOCK_VARIADIC_ELEM_1(e0, e1, ...) e1
 #define MOCK_VARIADIC_ELEM_2(e0, e1, e2, ...) e2
@@ -224,22 +207,6 @@
         MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
         MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), \
         static, typename)
-
-#else // MOCK_VARIADIC_MACROS
-
-#define MOCK_METHOD(M, n) \
-    MOCK_METHOD_EXT(M, n, MOCK_SIGNATURE(M), M)
-
-#define MOCK_FUNCTION(F, n, S, t) \
-    MOCK_FUNCTION_AUX(F, n, S, t, inline,)
-
-#define MOCK_STATIC_METHOD(F, n, S, t) \
-    MOCK_FUNCTION_AUX(F, n, S, t, static,)
-
-#define MOCK_STATIC_METHOD_TPL(F, n, S, t) \
-    MOCK_FUNCTION_AUX(F, n, S, t, static, typename)
-
-#endif // MOCK_VARIADIC_MACROS
 
 #define MOCK_EXPECT(t) MOCK_HELPER(t).expect( __FILE__, __LINE__ )
 #define MOCK_RESET(t) MOCK_HELPER(t).reset( __FILE__, __LINE__ )
