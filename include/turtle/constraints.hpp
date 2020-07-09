@@ -12,7 +12,7 @@
 #include "config.hpp"
 #include "constraint.hpp"
 #include "detail/move_helper.hpp"
-#include <boost/ref.hpp>
+#include "detail/unwrap_reference.hpp"
 #include <boost/version.hpp>
 #include <boost/type_traits/make_void.hpp>
 #if BOOST_VERSION >= 107000
@@ -20,6 +20,7 @@
 #else
 #include <boost/test/floating_point_comparison.hpp>
 #endif
+#include <functional>
 #include <memory>
 #include <type_traits>
 
@@ -131,24 +132,22 @@ namespace detail
             std::enable_if_t<
                 has_equal_to<
                     Actual,
-                    typename
-                        boost::unwrap_reference< Expected >::type
+                    unwrap_reference_t< Expected >
                 >::value
             >* = 0 ) const
         {
-            return actual == boost::unwrap_ref( expected_ );
+            return actual == unwrap_ref( expected_ );
         }
         template< typename Actual >
         bool operator()( const Actual& actual,
             std::enable_if_t<
                 !has_equal_to<
                     Actual,
-                    typename
-                        boost::unwrap_reference< Expected >::type
+                    unwrap_reference_t< Expected >
                 >::value
             >* = 0 ) const
         {
-            return actual && *actual == boost::unwrap_ref( expected_ );
+            return actual && *actual == unwrap_ref( expected_ );
         }
         friend std::ostream& operator<<( std::ostream& s, const equal& e )
         {
@@ -161,7 +160,7 @@ namespace detail
     struct same
     {
         explicit same( const Expected& expected )
-            : expected_( std::addressof( boost::unwrap_ref( expected ) ) )
+            : expected_( std::addressof( unwrap_ref( expected ) ) )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual ) const
@@ -172,23 +171,21 @@ namespace detail
         {
             return os << "same( " << mock::format( *s.expected_ ) << " )";
         }
-        const typename
-            boost::unwrap_reference< Expected >::type* expected_;
+        const unwrap_reference_t< Expected >* expected_;
     };
 
     template< typename Expected >
     struct retrieve
     {
         explicit retrieve( Expected& expected )
-            : expected_( std::addressof( boost::unwrap_ref( expected ) ) )
+            : expected_( std::addressof( unwrap_ref( expected ) ) )
         {}
         template< typename Actual >
         bool operator()( const Actual& actual,
             std::enable_if_t<
                 !std::is_convertible<
                     const Actual*,
-                    typename
-                        boost::unwrap_reference< Expected >::type
+                    unwrap_reference_t< Expected >
                 >::value
             >* = 0 ) const
         {
@@ -200,8 +197,7 @@ namespace detail
             std::enable_if_t<
                 !std::is_convertible<
                     const Actual*,
-                    typename
-                        boost::unwrap_reference< Expected >::type
+                    unwrap_reference_t< Expected >
                 >::value
             >* = 0 ) const
         {
@@ -212,8 +208,7 @@ namespace detail
         bool operator()( Actual& actual,
             std::enable_if_t<
                 std::is_convertible< Actual*,
-                    typename
-                        boost::unwrap_reference< Expected >::type
+                    unwrap_reference_t< Expected >
                 >::value
             >* = 0 ) const
         {
@@ -224,8 +219,7 @@ namespace detail
         {
             return s << "retrieve( " << mock::format( *r.expected_ ) << " )";
         }
-        typename
-            boost::unwrap_reference< Expected >::type* expected_;
+        unwrap_reference_t< Expected >* expected_;
     };
 
     template< typename Expected >
@@ -237,22 +231,21 @@ namespace detail
         template< typename Actual >
         bool operator()( Actual& actual ) const
         {
-            actual = boost::unwrap_ref( expected_ );
+            actual = unwrap_ref( expected_ );
             return true;
         }
         template< typename Actual >
         bool operator()( Actual* actual,
             std::enable_if_t<
                 std::is_convertible<
-                    typename
-                        boost::unwrap_reference< Expected >::type,
+                    unwrap_reference_t< Expected >,
                     Actual
                 >::value
             >* = 0 ) const
         {
             if( ! actual )
                 return false;
-            *actual = boost::unwrap_ref( expected_ );
+            *actual = unwrap_ref( expected_ );
             return true;
         }
         friend std::ostream& operator<<( std::ostream& s, const assign& a )
@@ -270,7 +263,7 @@ namespace detail
         {}
         bool operator()( const std::string& actual ) const
         {
-            return actual.find( boost::unwrap_ref( expected_ ) )
+            return actual.find( unwrap_ref( expected_ ) )
                 != std::string::npos;
         }
         friend std::ostream& operator<<( std::ostream& s, const contain& n )

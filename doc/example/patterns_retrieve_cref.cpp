@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE( method_is_called_two_times_with_the_same_value )
     my_class c( mock );
     int value;
     MOCK_EXPECT( mock.method ).once().with( mock::retrieve( value ) ); // on first call retrieve the value, this expectation takes precedence because it can never fail
-    MOCK_EXPECT( mock.method ).once().with( boost::cref( value ) );    // on second call compare the previously retrieved value with the newly received one
+    MOCK_EXPECT( mock.method ).once().with( std::cref( value ) );    // on second call compare the previously retrieved value with the newly received one
     c.process();
 }
 //]

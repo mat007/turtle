@@ -517,11 +517,11 @@ BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized )
     BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( boost::assign::map_list_of( 12, "12" )( 42, "42" ) ) );
 }
 
-BOOST_AUTO_TEST_CASE( boost_reference_wrappers_are_serialized )
+BOOST_AUTO_TEST_CASE( std_reference_wrappers_are_serialized )
 {
     const int i = 3;
-    BOOST_CHECK_EQUAL( "3", to_string( boost::cref( i ) ) );
-    BOOST_CHECK_EQUAL( "\"string\"", to_string( boost::cref( "string" ) ) );
+    BOOST_CHECK_EQUAL( "3", to_string( std::cref( i ) ) );
+    BOOST_CHECK_EQUAL( "\"string\"", to_string( std::cref( "string" ) ) );
 }
 
 namespace

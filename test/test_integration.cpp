@@ -11,7 +11,6 @@
 #include <turtle/mock.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/optional.hpp>
-#include <boost/ref.hpp>
 #include <cmath>
 #include <functional>
 
@@ -294,7 +293,7 @@ namespace
 
 BOOST_FIXTURE_TEST_CASE( basic_mock_object_collaboration_usage, fixture )
 {
-    MOCK_EXPECT( manager.get_observer ).returns( boost::ref( observer ) );
+    MOCK_EXPECT( manager.get_observer ).returns( std::ref( observer ) );
     my_subject subject( manager );
     MOCK_EXPECT( observer.notify ).once().with( 1 );
     subject.increment();
@@ -395,7 +394,7 @@ BOOST_FIXTURE_TEST_CASE( boost_optional_on_base_class_reference_as_return_type_i
 {
     boost_optional b;
     my_mock_observer o;
-    MOCK_EXPECT( b.tag ).once().returns( boost::ref( o ) );
+    MOCK_EXPECT( b.tag ).once().returns( std::ref( o ) );
     b.method();
     CHECK_CALLS( 1 );
 }
@@ -460,7 +459,7 @@ BOOST_FIXTURE_TEST_CASE( boost_reference_wrapper_is_supported_in_value_constrain
 {
     MOCK_FUNCTOR( f, void( const std::string& ) );
     std::string s;
-    MOCK_EXPECT( f ).once().with( boost::cref( s ) );
+    MOCK_EXPECT( f ).once().with( std::cref( s ) );
     s = "string";
     f( "string" );
     CHECK_CALLS( 1 );
@@ -666,7 +665,7 @@ BOOST_FIXTURE_TEST_CASE( mock_class_is_thread_safe, mock_error_fixture )
     my_mock m;
     boost::thread_group group;
     for( int i = 0; i < 100; ++i )
-        group.create_thread( boost::bind( &iterate, boost::ref( m ) ) );
+        group.create_thread( boost::bind( &iterate, std::ref( m ) ) );
     group.join_all();
     CHECK_CALLS( 100 );
 }

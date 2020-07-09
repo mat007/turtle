@@ -76,7 +76,7 @@ namespace detail
             e_->returns( r );
         }
         template< typename Y >
-        void returns( const boost::reference_wrapper< Y >& r )
+        void returns( const std::reference_wrapper< Y >& r )
         {
             e_->returns( r );
         }

@@ -14,8 +14,8 @@
 #include "constraints.hpp"
 #include "detail/is_functor.hpp"
 #include "detail/move_helper.hpp"
-#include <boost/ref.hpp>
 #include <cstring>
+#include <functional>
 #include <type_traits>
 
 namespace mock
@@ -30,7 +30,7 @@ namespace mock
         bool operator()( std::add_lvalue_reference_t< const Actual > actual )
         {
             return mock::equal(
-                boost::unwrap_ref( expected_ ) ).c_( actual );
+                mock::detail::unwrap_ref( expected_ ) ).c_( actual );
         }
         friend std::ostream& operator<<(
             std::ostream& s, const matcher& m )

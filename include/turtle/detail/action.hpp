@@ -11,7 +11,6 @@
 
 #include "../config.hpp"
 #include <boost/bind.hpp>
-#include <boost/ref.hpp>
 #include <functional>
 #include <memory>
 #include <type_traits>
@@ -60,9 +59,9 @@ namespace detail
             a_ = a;
         }
         template< typename Y >
-        void set( const boost::reference_wrapper< Y >& r )
+        void set( const std::reference_wrapper< Y >& r )
         {
-            a_ = boost::bind( &do_ref< Y >, r.get_pointer() );
+            a_ = boost::bind( &do_ref< Y >, &r.get() );
         }
 
     private:
@@ -88,10 +87,10 @@ namespace detail
         template< typename Value >
         void returns( const Value& v )
         {
-            this->set( boost::ref( store( v ) ) );
+            this->set( std::ref( store( v ) ) );
         }
         template< typename Y >
-        void returns( const boost::reference_wrapper< Y >& r )
+        void returns( const std::reference_wrapper< Y >& r )
         {
             this->set( r );
         }
@@ -102,7 +101,7 @@ namespace detail
             this->set(
                 boost::bind(
                     &move< std::remove_reference_t< Value > >,
-                    boost::ref( store( std::move( v ) ) ) ) );
+                    std::ref( store( std::move( v ) ) ) ) );
         }
 
     private:
@@ -183,23 +182,23 @@ namespace detail
             : v_( rhs.v_.release() )
         {
             if( v_.get() )
-                returns( boost::ref( v_ ) );
+                returns( std::ref( v_ ) );
         }
 
         template< typename Y >
         void returns( Y* r )
         {
             v_.reset( r );
-            this->set( boost::ref( v_ ) );
+            this->set( std::ref( v_ ) );
         }
         template< typename Y >
         void returns( std::auto_ptr< Y > r )
         {
             v_ = r;
-            this->set( boost::ref( v_ ) );
+            this->set( std::ref( v_ ) );
         }
         template< typename Y >
-        void returns( const boost::reference_wrapper< Y >& r )
+        void returns( const std::reference_wrapper< Y >& r )
         {
             this->set( r );
         }
