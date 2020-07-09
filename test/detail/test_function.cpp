@@ -358,8 +358,6 @@ BOOST_FIXTURE_TEST_CASE( nullptr_can_be_used_in_place_of_null_pointers_in_constr
     CHECK_CALLS( 1 );
 }
 
-#ifdef MOCK_SMART_PTR
-
 BOOST_FIXTURE_TEST_CASE( unique_ptr_is_supported_as_parameter, mock_error_fixture )
 {
     mock::detail::function< void( std::unique_ptr< int > ) > f;
@@ -368,8 +366,6 @@ BOOST_FIXTURE_TEST_CASE( unique_ptr_is_supported_as_parameter, mock_error_fixtur
     f( std::move( p ) );
     CHECK_CALLS( 1 );
 }
-
-#endif // MOCK_SMART_PTR
 
 // result handling
 
@@ -593,8 +589,6 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_rvalue, mock_er
     CHECK_CALLS( 1 );
 }
 
-#ifdef MOCK_SMART_PTR
-
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_unique_ptr_lvalue, mock_error_fixture )
 {
     mock::detail::function< std::unique_ptr< int >() > f;
@@ -613,8 +607,6 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_unique_ptr_rval
         CHECK_CALLS( 1 );
     }
 }
-
-#endif // MOCK_SMART_PTR
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_shared_ptr_value, mock_error_fixture )
 {

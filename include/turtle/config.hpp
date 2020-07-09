@@ -40,12 +40,6 @@
 #   error BOOST_FT_MAX_ARITY must be set to MOCK_MAX_ARGS + 1 or higher
 #endif
 
-#if !defined(BOOST_NO_CXX11_SMART_PTR) && !defined(BOOST_NO_SMART_PTR)
-#   ifndef MOCK_NO_SMART_PTR
-#      define MOCK_SMART_PTR
-#   endif
-#endif
-
 #if !defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #   ifndef MOCK_NO_HDR_FUNCTIONAL
 #      define MOCK_HDR_FUNCTIONAL

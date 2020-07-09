@@ -144,7 +144,6 @@ namespace detail
         return s << boost::none;
     }
 
-#ifdef MOCK_SMART_PTR
     template< typename T >
     stream& operator<<( stream& s, const std::shared_ptr< T >& t )
     {
@@ -160,7 +159,6 @@ namespace detail
     {
         return s << mock::format( p.get() );
     }
-#endif
 
     template< typename T >
     stream& operator<<( stream& s, const boost::lambda::lambda_functor< T >& )
