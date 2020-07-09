@@ -44,7 +44,7 @@ namespace
 BOOST_FIXTURE_TEST_CASE( mock_addition_operator, mock_error_fixture )
 {
     mock_class_with_operator m;
-    MOCK_EXPECT( m.addition ).once().returns( boost::ref( m ) );
+    MOCK_EXPECT( m.addition ).once().returns( std::ref( m ) );
     m += 1;
     CHECK_CALLS( 1 );
 }

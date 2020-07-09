@@ -740,7 +740,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_configuring_actions_with_references )
 {
    mock_class c;
    int i = 0;
-   MOCK_EXPECT( c.method ).returns( boost::ref( i ) ); // wrap i to store a reference
+   MOCK_EXPECT( c.method ).returns( std::ref( i ) ); // wrap i to store a reference
    c.method() = 42;                                    // really change i and not just the stored copy
    BOOST_CHECK_EQUAL( 42, i );                         // indeed
 }

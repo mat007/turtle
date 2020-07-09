@@ -40,7 +40,7 @@ BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor, mock_error_fixture
 BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor_using_boost_bind_and_boost_ref, mock_error_fixture )
 {
     mock::detail::function< void() > f;
-    std::function< void() > functor = boost::bind( boost::ref( f ) );
+    std::function< void() > functor = boost::bind( std::ref( f ) );
 }
 
 // invocations
@@ -410,7 +410,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_value, mock_e
     {
         mock::detail::function< int() > f;
         int i = 42;
-        f.expect().returns( boost::ref( i ) );
+        f.expect().returns( std::ref( i ) );
         i = 43;
         BOOST_CHECK_EQUAL( 43, f() );
         CHECK_CALLS( 1 );
@@ -439,7 +439,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_value, mock_e
     {
         mock::detail::function< int&() > f;
         int i = 42;
-        f.expect().returns( boost::ref( i ) );
+        f.expect().returns( std::ref( i ) );
         i = 43;
         BOOST_CHECK_EQUAL( 43, f() );
         BOOST_CHECK_EQUAL( 12, f() = 12 );
@@ -514,7 +514,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_valu
     {
         mock::detail::function< std::auto_ptr< int >() > f;
         std::auto_ptr< int > ptr( new int( 3 ) );
-        f.expect().returns( boost::ref( ptr ) );
+        f.expect().returns( std::ref( ptr ) );
         BOOST_CHECK_EQUAL( 3, *ptr );
         BOOST_CHECK_EQUAL( 3, *f() );
         BOOST_CHECK( ! ptr.get() );
@@ -638,7 +638,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_by_reference, mock_er
     {
         mock::detail::function< base&() > f;
         derived b;
-        f.expect().returns( boost::ref( b ) );
+        f.expect().returns( std::ref( b ) );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
@@ -651,7 +651,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_by_reference, mock_er
     }
     {
         mock::detail::function< undefined&() > f;
-        f.expect().returns( boost::ref( get_undefined() ) );
+        f.expect().returns( std::ref( get_undefined() ) );
         f.reset();
     }
 }
@@ -917,7 +917,7 @@ BOOST_FIXTURE_TEST_CASE( function_is_thread_safe, mock_error_fixture )
     mock::detail::function< int() > f;
     boost::thread_group group;
     for( int i = 0; i < 100; ++i )
-        group.create_thread( boost::bind( &iterate, boost::ref( f ) ) );
+        group.create_thread( boost::bind( &iterate, std::ref( f ) ) );
     group.join_all();
     CHECK_CALLS( 100 );
 }

@@ -11,7 +11,7 @@
 
 #include "config.hpp"
 #include "log.hpp"
-#include <boost/ref.hpp>
+#include "detail/unwrap_reference.hpp"
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/variadic/to_array.hpp>
@@ -19,6 +19,7 @@
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/array.hpp>
+#include <functional>
 #include <type_traits>
 
 namespace mock
@@ -148,7 +149,7 @@ namespace detail
     expected##n( std::forward< T##n >(e##n) )
 
 #define MOCK_CONSTRAINT_UNWRAP_REF(z, n, d) \
-    boost::unwrap_ref( expected##n )
+    mock::detail::unwrap_ref( expected##n )
 
 #define MOCK_CONSTRAINT_FORMAT(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) mock::format( c.expected##n )
@@ -160,7 +161,7 @@ namespace detail
     std::decay_t< const T##n >
 
 #define MOCK_CONSTRAINT_CREF_PARAM(z, n, Args) \
-    const typename boost::unwrap_reference< Expected_##n >::type& \
+    const mock::detail::unwrap_reference_t< Expected_##n >& \
         BOOST_PP_ARRAY_ELEM(n, Args)
 
 #define MOCK_CONSTRAINT_ARG(z, n, Args) \

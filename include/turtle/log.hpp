@@ -123,6 +123,11 @@ namespace detail
         return s << mock::format( t.get() );
     }
     template< typename T >
+    stream& operator<<( stream& s, const std::reference_wrapper< T >& t )
+    {
+        return s << mock::format( t.get() );
+    }
+    template< typename T >
     stream& operator<<( stream& s, const boost::shared_ptr< T >& t )
     {
         return s << mock::format( t.get() );
