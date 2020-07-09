@@ -24,8 +24,8 @@
 #   define MOCK_TYPEID( t ) BOOST_SP_TYPEID(t)
 #   define MOCK_TYPEINFO boost::detail::sp_typeinfo
 #endif
-#include <boost/shared_ptr.hpp>
 #include <stdexcept>
+#include <memory>
 #include <typeinfo>
 #include <ostream>
 #ifdef __GNUC__
@@ -57,7 +57,7 @@ namespace detail
             const char* name = info.name();
 #ifdef __GNUC__
             int status = 0;
-            boost::shared_ptr< char > demangled(
+            std::shared_ptr< char > demangled(
                 abi::__cxa_demangle( name, 0, 0, &status ),
                 &std::free );
             if( ! status && demangled )

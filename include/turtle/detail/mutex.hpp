@@ -12,7 +12,7 @@
 #include "../config.hpp"
 #include "singleton.hpp"
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #ifdef MOCK_THREAD_SAFE
 
@@ -38,7 +38,7 @@ namespace detail
     struct lock
     {
     public:
-        lock( const boost::shared_ptr< mutex >& m )
+        lock( const std::shared_ptr< mutex >& m )
             : m_( m )
         {
             m_->lock();
@@ -64,7 +64,7 @@ namespace detail
         }
 
     private:
-        boost::shared_ptr< mutex > m_;
+        std::shared_ptr< mutex > m_;
     };
 }
 } // mock
@@ -94,7 +94,7 @@ namespace detail
     class lock
     {
     public:
-        lock( const boost::shared_ptr< mutex >& )
+        lock( const std::shared_ptr< mutex >& )
         {}
         ~lock()
         {}

@@ -11,10 +11,10 @@
 
 #include "../config.hpp"
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 #include <functional>
+#include <memory>
 #include <type_traits>
 
 namespace mock
@@ -154,7 +154,7 @@ namespace detail
             return static_cast< value_imp< Result >& >( *v_ ).t_;
         }
 
-        boost::shared_ptr< value > v_;
+        std::shared_ptr< value > v_;
     };
 
     template< typename Signature >

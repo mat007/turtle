@@ -9,7 +9,6 @@
 #include <turtle/log.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/assign.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
@@ -30,6 +29,7 @@
 #include <deque>
 #include <list>
 #include <map>
+#include <memory>
 #include <set>
 
 namespace

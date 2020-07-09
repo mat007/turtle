@@ -12,9 +12,9 @@
 #include <turtle/constraints.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/utility/result_of.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/bind.hpp>
 #include <functional>
+#include <memory>
 #include <type_traits>
 
 // static
@@ -611,19 +611,19 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_unique_ptr_rval
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_shared_ptr_value, mock_error_fixture )
 {
     {
-        mock::detail::function< boost::shared_ptr< base >() > f;
+        mock::detail::function< std::shared_ptr< base >() > f;
         f.expect().returns( new derived );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
     {
-        mock::detail::function< const boost::shared_ptr< base >&() > f;
+        mock::detail::function< const std::shared_ptr< base >&() > f;
         f.expect().returns( new derived );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
     {
-        mock::detail::function< boost::shared_ptr< base >&() > f;
+        mock::detail::function< std::shared_ptr< base >&() > f;
         f.expect().returns( new derived );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
@@ -844,7 +844,7 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, moc
 
 BOOST_FIXTURE_TEST_CASE( expectation_with_remaining_untriggered_matches_upon_destruction_calls_untriggered_expectation, mock_error_fixture )
 {
-    boost::scoped_ptr< mock::detail::function< void() > > f( new mock::detail::function< void() > );
+    auto f = std::make_unique<mock::detail::function< void() >>();
     f->expect().once();
     CHECK_ERROR( f.reset(), "untriggered expectation", 0, "?\n. once()" );
 }
@@ -864,7 +864,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_unexpected_call_call_disables_the_automatic_
 
 BOOST_FIXTURE_TEST_CASE( adding_an_expectation_reactivates_the_verification_upon_destruction, mock_error_fixture )
 {
-    boost::scoped_ptr< mock::detail::function< void() > > f( new mock::detail::function< void() > );
+    auto f = std::make_unique<mock::detail::function< void() >>();
     CHECK_ERROR( (*f)(), "unexpected call", 0, "?()" );
     f->expect().once();
     CHECK_ERROR( f.reset(), "untriggered expectation", 0, "?\n. once()" );

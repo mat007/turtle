@@ -17,8 +17,6 @@
 #include "child.hpp"
 #include "mutex.hpp"
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/optional.hpp>
 
 namespace mock
@@ -26,11 +24,11 @@ namespace mock
 namespace detail
 {
     class object_impl : public context, public verifiable,
-        public boost::enable_shared_from_this< object_impl >
+        public std::enable_shared_from_this< object_impl >
     {
     public:
         object_impl()
-            : mutex_( boost::make_shared< mutex >() )
+            : mutex_( std::make_shared< mutex >() )
         {}
 
         virtual void add( const void* /*p*/, verifiable& v,
@@ -75,7 +73,7 @@ namespace detail
         virtual void reset()
         {
             lock _( mutex_ );
-            boost::shared_ptr< object_impl > guard = shared_from_this();
+            std::shared_ptr< object_impl > guard = shared_from_this();
             group_.reset();
         }
 
@@ -86,7 +84,7 @@ namespace detail
         group group_;
         parent parent_;
         children_t children_;
-        const boost::shared_ptr< mutex > mutex_;
+        const std::shared_ptr< mutex > mutex_;
     };
 }
 } // mock

@@ -39,7 +39,7 @@ namespace detail
 
     public:
         function()
-            : impl_( boost::make_shared< impl_type >() )
+            : impl_( std::make_shared< impl_type >() )
         {}
 
         bool verify() const
@@ -98,7 +98,7 @@ namespace detail
         }
 
     private:
-        boost::shared_ptr< impl_type > impl_;
+        std::shared_ptr< impl_type > impl_;
     };
 }
 } // mock
