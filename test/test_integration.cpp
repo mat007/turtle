@@ -646,7 +646,7 @@ BOOST_FIXTURE_TEST_CASE( mock_functor_creation_is_thread_safe, mock_error_fixtur
 {
     boost::thread_group group;
     for( int i = 0; i < 100; ++i )
-        group.create_thread( boost::bind( &create_functor, i ) );
+        group.create_thread( [i](){ create_functor( i ); } );
     group.join_all();
     CHECK_CALLS( 100 );
 }
@@ -665,7 +665,7 @@ BOOST_FIXTURE_TEST_CASE( mock_class_is_thread_safe, mock_error_fixture )
     my_mock m;
     boost::thread_group group;
     for( int i = 0; i < 100; ++i )
-        group.create_thread( boost::bind( &iterate, std::ref( m ) ) );
+        group.create_thread( [&m](){ iterate(m); } );
     group.join_all();
     CHECK_CALLS( 100 );
 }

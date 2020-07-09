@@ -12,7 +12,6 @@
 #include <turtle/constraints.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/utility/result_of.hpp>
-#include <boost/bind.hpp>
 #include <functional>
 #include <memory>
 #include <type_traits>
@@ -37,10 +36,10 @@ BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor, mock_error_fixture
     std::function< void() > functor = f;
 }
 
-BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor_using_boost_bind_and_boost_ref, mock_error_fixture )
+BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor_using_std_bind_and_std_ref, mock_error_fixture )
 {
     mock::detail::function< void() > f;
-    std::function< void() > functor = boost::bind( std::ref( f ) );
+    std::function< void() > functor = std::bind( std::ref( f ) );
 }
 
 // invocations
@@ -688,10 +687,10 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_with
     CHECK_CALLS( 1 );
 }
 
-BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_without_parameters_thanks_to_boost_bind, mock_error_fixture )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_without_parameters_thanks_to_std_bind, mock_error_fixture )
 {
     mock::detail::function< int( int ) > f;
-    f.expect().calls( boost::bind( &custom_result ) );
+    f.expect().calls( std::bind( &custom_result ) );
     BOOST_CHECK_EQUAL( 42, f( 17 ) );
     CHECK_CALLS( 1 );
 }
@@ -917,7 +916,7 @@ BOOST_FIXTURE_TEST_CASE( function_is_thread_safe, mock_error_fixture )
     mock::detail::function< int() > f;
     boost::thread_group group;
     for( int i = 0; i < 100; ++i )
-        group.create_thread( boost::bind( &iterate, std::ref( f ) ) );
+        group.create_thread( [&f](){ iterate(f); } );
     group.join_all();
     CHECK_CALLS( 100 );
 }

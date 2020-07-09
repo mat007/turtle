@@ -24,8 +24,8 @@ namespace
 //[ invoke_functor_solution
 #define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
-#include <boost/bind/apply.hpp>
 #include <turtle/mock.hpp>
+#include <functional>
 
 namespace
 {
@@ -38,7 +38,7 @@ namespace
 BOOST_AUTO_TEST_CASE( how_to_invoke_a_functor_passed_as_parameter_of_a_mock_method )
 {
     mock_class mock;
-    MOCK_EXPECT( mock.method ).calls( boost::bind( boost::apply< void >(), _1, 42 ) ); // whenever 'method' is called, invoke the functor with 42
+    MOCK_EXPECT( mock.method ).calls( [](const auto &functor){ functor(42); } ); // whenever 'method' is called, invoke the functor with 42
     function( mock );
 }
 //]

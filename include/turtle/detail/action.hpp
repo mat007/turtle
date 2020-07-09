@@ -10,7 +10,6 @@
 #define MOCK_ACTION_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <boost/bind.hpp>
 #include <functional>
 #include <memory>
 #include <type_traits>
@@ -50,7 +49,7 @@ namespace detail
         template< typename Exception >
         void throws( Exception e )
         {
-            a_ = boost::bind( &do_throw< Exception >, e );
+            a_ = [e]() -> Result { throw e; };
         }
 
     protected:
@@ -61,21 +60,10 @@ namespace detail
         template< typename Y >
         void set( const std::reference_wrapper< Y >& r )
         {
-            a_ = boost::bind( &do_ref< Y >, &r.get() );
+            a_ = [r]() -> Result { return r.get(); };
         }
 
     private:
-        template< typename T >
-        static T& do_ref( T* t )
-        {
-            return *t;
-        }
-        template< typename T >
-        static Result do_throw( T t )
-        {
-            throw t;
-        }
-
         functor_type f_;
         action_type a_;
     };
@@ -98,10 +86,8 @@ namespace detail
         template< typename Value >
         void moves( Value&& v )
         {
-            this->set(
-                boost::bind(
-                    &move< std::remove_reference_t< Value > >,
-                    std::ref( store( std::move( v ) ) ) ) );
+            auto vRef = std::ref( store( std::move( v ) ) );
+            this->set([vRef](){ return std::move(vRef.get()); });
         }
 
     private:
@@ -163,12 +149,8 @@ namespace detail
     public:
         action()
         {
-            this->set( boost::bind( &do_nothing ) );
+            this->set( [](){} );
         }
-
-    private:
-        static void do_nothing()
-        {}
     };
 
 #ifdef MOCK_AUTO_PTR

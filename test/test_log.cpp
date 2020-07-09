@@ -25,6 +25,7 @@
 #include <boost/lambda/lambda.hpp>
 #endif
 #include <boost/bind.hpp>
+#include <functional>
 #include <vector>
 #include <deque>
 #include <list>
@@ -646,9 +647,10 @@ BOOST_AUTO_TEST_CASE( boost_phoenix_functor_yields_question_mark_when_serialized
     BOOST_CHECK_EQUAL( "?", to_string( boost::phoenix::arg_names::_1 < 42 ) );
 }
 
-BOOST_AUTO_TEST_CASE( boost_bind_functor_yields_question_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( bind_functor_yields_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( boost::bind( &some_function ) ) );
+    BOOST_CHECK_EQUAL( "?", to_string( std::bind( &some_function ) ) );
 }
 
 #ifndef BOOST_MSVC // this produces an ICE with all versions of MSVC
