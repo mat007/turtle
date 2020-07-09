@@ -21,22 +21,26 @@
 #include "detail/parameter.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
-#include <boost/utility/identity_type.hpp>
 
 #define MOCK_CLASS(T) \
     struct T : mock::object
 
-#define MOCK_FUNCTION_TYPE(S, tpn) \
-    std::remove_pointer_t< tpn BOOST_IDENTITY_TYPE(S) >
+#define MOCK_PROTECT_FUNCTION_SIG(...) \
+    mock::detail::parameter_type_t<void (__VA_ARGS__)>
+
+/// Internal compatibility macro if function signature is passed via BOOST_IDENTITY_TYPE
+/// TODO: Remove support for doing that and move remove_pointer_t to MOCK_PROTECT_FUNCTION_SIG
+#define MOCK_FUNCTION_TYPE(...) \
+    std::remove_pointer_t< __VA_ARGS__ >
 
 #define MOCK_BASE_CLASS(T, ...) \
     struct T : __VA_ARGS__, mock::object, mock::detail::base< __VA_ARGS__ >
 
 #define MOCK_FUNCTOR(f, ...) \
-    mock::detail::functor< MOCK_FUNCTION_TYPE((__VA_ARGS__),) > f, f##_mock
+    mock::detail::functor< MOCK_FUNCTION_TYPE(__VA_ARGS__) > f, f##_mock
 #define MOCK_FUNCTOR_TPL(f, ...) \
     mock::detail::functor< \
-        MOCK_FUNCTION_TYPE((__VA_ARGS__), typename) > f, f##_mock
+        MOCK_FUNCTION_TYPE(__VA_ARGS__) > f, f##_mock
 
 #define MOCK_HELPER(t) \
     t##_mock( mock::detail::root, BOOST_PP_STRINGIZE(t) )
@@ -44,8 +48,8 @@
     t##_mock( mock::detail::root, "?." )
 
 #define MOCK_METHOD_HELPER(S, t, tpn) \
-    mutable mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) > t##_mock_; \
-    mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) >& t##_mock( \
+    mutable mock::detail::function< MOCK_FUNCTION_TYPE(S) > t##_mock_; \
+    mock::detail::function< MOCK_FUNCTION_TYPE(S) >& t##_mock( \
         const mock::detail::context&, \
         const boost::unit_test::const_string& instance ) const \
     { \
@@ -57,14 +61,14 @@
     }
 
 #define MOCK_PARAM(S, tpn) \
-    tpn mock::detail::parameter< MOCK_FUNCTION_TYPE((S), tpn)
+    tpn mock::detail::parameter< MOCK_FUNCTION_TYPE(S)
 #define MOCK_DECL_PARAM(z, n, d) \
     BOOST_PP_COMMA_IF(n) d, n >::type p##n
 #define MOCK_DECL_PARAMS(n, S, tpn) \
     BOOST_PP_REPEAT(n, MOCK_DECL_PARAM, MOCK_PARAM(S, tpn))
 #define MOCK_DECL(M, n, S, c, tpn) \
     tpn mock::detail::result_type< \
-        MOCK_FUNCTION_TYPE((S), tpn) >::type M( \
+        MOCK_FUNCTION_TYPE(S) >::type M( \
             MOCK_DECL_PARAMS(n, S, tpn) ) c
 
 #define MOCK_FORWARD_PARAM(z, n, d) \
@@ -75,7 +79,7 @@
 #define MOCK_METHOD_AUX(M, n, S, t, c, tpn) \
     MOCK_DECL(M, n, S, c, tpn) \
     { \
-        static_assert( n == mock::detail::function_arity< MOCK_FUNCTION_TYPE((S), tpn) >::value, "Arity mismatch" ); \
+        static_assert( n == mock::detail::function_arity< MOCK_FUNCTION_TYPE(S) >::value, "Arity mismatch" ); \
         return MOCK_ANONYMOUS_HELPER(t)( \
             MOCK_FORWARD_PARAMS(n, S, tpn) ); \
     }
@@ -125,11 +129,11 @@
     MOCK_METHOD_HELPER(T(), t, typename)
 
 #define MOCK_FUNCTION_HELPER(S, t, s, tpn) \
-    s mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) >& t##_mock( \
+    s mock::detail::function< MOCK_FUNCTION_TYPE(S) >& t##_mock( \
         mock::detail::context& context, \
         boost::unit_test::const_string instance ) \
     { \
-        static mock::detail::function< MOCK_FUNCTION_TYPE((S), tpn) > f; \
+        static mock::detail::function< MOCK_FUNCTION_TYPE(S) > f; \
         return f( context, instance ); \
     }
 
@@ -153,7 +157,7 @@
     MOCK_FUNCTION_HELPER(S, t, s, tpn) \
     s MOCK_DECL(F, n, S,,tpn) \
     { \
-        static_assert( n == mock::detail::function_arity< MOCK_FUNCTION_TYPE((S), tpn) >::value, "Arity mismatch" ); \
+        static_assert( n == mock::detail::function_arity< MOCK_FUNCTION_TYPE(S) >::value, "Arity mismatch" ); \
         return MOCK_HELPER(t)( MOCK_FORWARD_PARAMS(n, S, tpn) ); \
     }
 
