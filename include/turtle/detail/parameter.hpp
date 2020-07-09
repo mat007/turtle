@@ -60,6 +60,16 @@ namespace detail
 
     template< typename Signature, int n >
     using parameter = tuple_element< n, typename parameter_types<Signature>::type >;
+
+    template<typename T>
+    struct parameter_type;
+    template<typename T, typename U>
+    struct parameter_type<T(U)>
+    {
+        using type = U;
+    };
+    template<typename T>
+    using parameter_type_t = typename parameter_type<T>::type;
 }
 } // mock
 
