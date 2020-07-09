@@ -623,8 +623,6 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_phoenix
 //]
 }
 
-#ifdef MOCK_LAMBDAS
-
 namespace constraints_example_7
 {
 //[ constraints_example_7
@@ -640,8 +638,6 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_constraint_with_cxx11_lambda )
 }
 //]
 }
-
-#endif
 
 namespace constraints_example_8
 {
@@ -711,8 +707,6 @@ BOOST_AUTO_TEST_CASE( demonstrates_enforcing_several_expectation_orders )
 //]
 }
 
-#ifdef MOCK_LAMBDAS
-
 namespace action_example_1
 {
 //[ action_example_1
@@ -738,8 +732,6 @@ BOOST_AUTO_TEST_CASE( demonstrates_configuring_actions )
 }
 //]
 }
-
-#endif
 
 namespace action_example_2
 {
