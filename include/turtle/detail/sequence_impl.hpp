@@ -12,8 +12,8 @@
 #include "../config.hpp"
 #include "mutex.hpp"
 #include <boost/noncopyable.hpp>
-#include <boost/make_shared.hpp>
 #include <algorithm>
+#include <memory>
 #include <vector>
 
 namespace mock
@@ -24,7 +24,7 @@ namespace detail
     {
     public:
         sequence_impl()
-            : mutex_( boost::make_shared< mutex >() )
+            : mutex_( std::make_shared< mutex >() )
         {}
 
         void add( void* e )
@@ -59,7 +59,7 @@ namespace detail
         typedef std::vector< void* > elements_type;
 
         elements_type elements_;
-        const boost::shared_ptr< mutex > mutex_;
+        const std::shared_ptr< mutex > mutex_;
     };
 }
 } // mock

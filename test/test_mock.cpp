@@ -231,7 +231,7 @@ BOOST_FIXTURE_TEST_CASE( mock_object_const_auto_pointer_is_named, mock_error_fix
 
 BOOST_FIXTURE_TEST_CASE( mock_object_shared_pointer_is_named, mock_error_fixture )
 {
-    boost::shared_ptr< my_mock > m( new my_mock );
+    std::shared_ptr< my_mock > m( new my_mock );
     BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
     BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
     BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
@@ -240,7 +240,7 @@ BOOST_FIXTURE_TEST_CASE( mock_object_shared_pointer_is_named, mock_error_fixture
 
 BOOST_FIXTURE_TEST_CASE( mock_object_const_shared_pointer_is_named, mock_error_fixture )
 {
-    const boost::shared_ptr< my_mock > m( new my_mock );
+    const std::shared_ptr< my_mock > m( new my_mock );
     BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
     BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
     BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );

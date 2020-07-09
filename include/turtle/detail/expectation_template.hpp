@@ -133,9 +133,9 @@ namespace detail
     {
     public:
         expectation()
-            : invocation_( boost::make_shared< unlimited >() )
+            : invocation_( std::make_shared< unlimited >() )
             , matcher_(
-                boost::make_shared<
+                std::make_shared<
                     default_matcher<
                         void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
                     >
@@ -144,9 +144,9 @@ namespace detail
             , line_( 0 )
         {}
         expectation( const char* file, int line )
-            : invocation_( boost::make_shared< unlimited >() )
+            : invocation_( std::make_shared< unlimited >() )
             , matcher_(
-                boost::make_shared<
+                std::make_shared<
                     default_matcher<
                         void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
                     >
@@ -167,7 +167,7 @@ namespace detail
                 (*it)->remove( this );
         }
 
-        void invoke( const boost::shared_ptr< invocation >& i )
+        void invoke( const std::shared_ptr< invocation >& i )
         {
             invocation_ = i;
         }
@@ -253,12 +253,12 @@ namespace detail
 
     private:
         typedef std::vector<
-            boost::shared_ptr< sequence_impl >
+            std::shared_ptr< sequence_impl >
         > sequences_type;
         typedef sequences_type::const_iterator sequences_cit;
 
-        boost::shared_ptr< invocation > invocation_;
-        boost::shared_ptr<
+        std::shared_ptr< invocation > invocation_;
+        std::shared_ptr<
             matcher_base<
                 void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
             >

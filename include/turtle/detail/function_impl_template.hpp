@@ -36,7 +36,7 @@ namespace detail
     template< typename R
         BOOST_PP_ENUM_TRAILING_PARAMS(MOCK_NUM_ARGS, typename T) >
     class function_impl< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
-        : public verifiable, public boost::enable_shared_from_this<
+        : public verifiable, public std::enable_shared_from_this<
             function_impl< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )> >
     {
     public:
@@ -47,7 +47,7 @@ namespace detail
             : context_( 0 )
             , valid_( true )
             , exceptions_( exceptions() )
-            , mutex_( boost::make_shared< mutex >() )
+            , mutex_( std::make_shared< mutex >() )
         {}
         virtual ~function_impl()
         {
@@ -85,7 +85,7 @@ namespace detail
         {
             lock _( mutex_ );
             valid_ = true;
-            boost::shared_ptr< function_impl > guard =
+            std::shared_ptr< function_impl > guard =
                 this->shared_from_this();
             expectations_.clear();
         }
@@ -101,7 +101,7 @@ namespace detail
             typedef wrapper_base< R, expectation_type > base_type;
 
         public:
-            wrapper( const boost::shared_ptr< mutex >& m, expectation_type& e )
+            wrapper( const std::shared_ptr< mutex >& m, expectation_type& e )
                 : base_type( e )
                 , lock_( m )
             {}
@@ -119,36 +119,36 @@ namespace detail
             }
             wrapper& once()
             {
-                this->e_->invoke( boost::make_shared< detail::once >() );
+                this->e_->invoke( std::make_shared< detail::once >() );
                 return *this;
             }
             wrapper& never()
             {
-                this->e_->invoke( boost::make_shared< detail::never >() );
+                this->e_->invoke( std::make_shared< detail::never >() );
                 return *this;
             }
             wrapper& exactly( std::size_t count )
             {
                 this->e_->invoke(
-                    boost::make_shared< detail::exactly >( count ) );
+                    std::make_shared< detail::exactly >( count ) );
                 return *this;
             }
             wrapper& at_least( std::size_t min )
             {
                 this->e_->invoke(
-                    boost::make_shared< detail::at_least >( min ) );
+                    std::make_shared< detail::at_least >( min ) );
                 return *this;
             }
             wrapper& at_most( std::size_t max )
             {
                 this->e_->invoke(
-                    boost::make_shared< detail::at_most >( max ) );
+                    std::make_shared< detail::at_most >( max ) );
                 return *this;
             }
             wrapper& between( std::size_t min, std::size_t max )
             {
                 this->e_->invoke(
-                    boost::make_shared< detail::between >( min, max ) );
+                    std::make_shared< detail::between >( min, max ) );
                 return *this;
             }
 
@@ -320,7 +320,7 @@ namespace detail
         context* context_;
         mutable bool valid_;
         const int exceptions_;
-        const boost::shared_ptr< mutex > mutex_;
+        const std::shared_ptr< mutex > mutex_;
     };
 }
 } // mock
