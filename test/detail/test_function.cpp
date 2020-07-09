@@ -350,8 +350,6 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_failing_custom_constrain
 //   CHECK_CALLS( 1 );
 //}
 
-#ifdef MOCK_NULLPTR
-
 BOOST_FIXTURE_TEST_CASE( nullptr_can_be_used_in_place_of_null_pointers_in_constraints, mock_error_fixture )
 {
     mock::detail::function< void( int* ) > f;
@@ -359,8 +357,6 @@ BOOST_FIXTURE_TEST_CASE( nullptr_can_be_used_in_place_of_null_pointers_in_constr
     f( 0 );
     CHECK_CALLS( 1 );
 }
-
-#endif
 
 #ifdef MOCK_SMART_PTR
 

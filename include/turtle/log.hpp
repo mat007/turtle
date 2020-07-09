@@ -173,12 +173,10 @@ namespace detail
         return s << '?';
     }
 
-#ifdef MOCK_NULLPTR
     inline stream& operator<<( stream& s, std::nullptr_t )
     {
         return s << "nullptr";
     }
-#endif
 
     template< typename T >
     std::enable_if_t<

@@ -665,14 +665,10 @@ BOOST_AUTO_TEST_CASE( boost_lambda_functor_yields_question_mark_when_serialized 
 
 #endif
 
-#ifdef MOCK_NULLPTR
-
 BOOST_AUTO_TEST_CASE( nullptr_is_serialized )
 {
     BOOST_CHECK_EQUAL( "nullptr", to_string( nullptr ) );
 }
-
-#endif
 
 BOOST_AUTO_TEST_CASE( mock_boost_optional_yields_its_value_when_serialized )
 {
