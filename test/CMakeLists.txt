@@ -35,7 +35,7 @@ set(testsUsingUndefinedCPP test_function test_integration)
 foreach(testFile IN LISTS testFiles)
   get_filename_component(name ${testFile} NAME_WE)
 
-  foreach(testVariant IN ITEMS "" _max_args _use_conversions _no_decltype _no_variadic_macros _thread_safe)
+  foreach(testVariant IN ITEMS "" _max_args _use_conversions _thread_safe)
     set(curName ${name}${testVariant})
     add_executable(${curName} ${testFile})
     if(name IN_LIST testsUsingUndefinedCPP)
@@ -47,8 +47,6 @@ foreach(testFile IN LISTS testFiles)
 
   target_compile_definitions(${name}_max_args PRIVATE MOCK_MAX_ARGS=21)
   target_compile_definitions(${name}_use_conversions PRIVATE MOCK_USE_CONVERSIONS)
-  target_compile_definitions(${name}_no_decltype PRIVATE MOCK_NO_DECLTYPE)
-  target_compile_definitions(${name}_no_variadic_macros PRIVATE MOCK_NO_VARIADIC_MACROS)
 
   target_link_libraries(${name}_thread_safe PRIVATE Boost::thread)
   target_compile_definitions(${name}_thread_safe PRIVATE MOCK_THREAD_SAFE BOOST_THREAD_USES_MOVE)
