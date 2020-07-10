@@ -26,8 +26,6 @@ rule run-test ( name )
   run $(name) defined_1.cpp defined_2.cpp undefined.cpp /boost//unit_test_framework : : : : $(name)_ ;
   run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_MAX_ARGS=21 : $(name)_max_args ;
   run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
-  run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_NO_DECLTYPE : $(name)_no_decltype ;
-  run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_NO_VARIADIC_MACROS : $(name)_no_variadic_macros ;
   run $(name) undefined.cpp /boost//unit_test_framework /boost//thread : : : <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE <threading>multi : $(name)_thread_safe ;
 }
 
