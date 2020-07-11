@@ -6,7 +6,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
 
@@ -15,6 +14,8 @@ namespace
 //[ limitations_protected_private_method_problem
     class base
     {
+    public:
+        void call(){ method_1(); method_2(); }
     protected:
         virtual void method_1() = 0;
     private:
@@ -29,4 +30,12 @@ namespace
         MOCK_METHOD( method_2, 0, void() )
     };
 //]
+}
+
+BOOST_AUTO_TEST_CASE(mocked_methods_are_called)
+{
+    mock_base b;
+    MOCK_EXPECT(b.method_1).once();
+    MOCK_EXPECT(b.method_2).once();
+    static_cast<base*>(&b)->call();
 }

@@ -7,7 +7,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //[ quick_constraint_problem
-#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
 #include <iostream>

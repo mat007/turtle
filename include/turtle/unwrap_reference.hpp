@@ -14,8 +14,6 @@
 
 namespace mock
 {
-namespace detail
-{
     template<class T>
     struct unwrap_reference
     {
@@ -39,7 +37,6 @@ namespace detail
     {
         return t;
     }
-}
 }
 
 #endif  // MOCK_UNWRAP_REFERENCE_HPP_INCLUDED

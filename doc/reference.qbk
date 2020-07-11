@@ -105,8 +105,6 @@ Synopsis :
 
 [note In case of a calling convention specified, all four parameters must be provided.]
 
-[warning For compilers without support for variadic macros the MOCK_METHOD_EXT familly set of macros must be used.]
-
 Synopsis :
  
  MOCK_METHOD_EXT( [calling convention] name, arity, signature, identifier )               // generates both const and non-const methods
@@ -166,8 +164,6 @@ Synopsis :
 [note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test, see the related [link turtle.patterns.managing_static_mock_objects pattern section].]
 
 [note In case of a calling convention specified, all four parameters must be provided.]
-
-[warning For compilers without support for variadic macros the identifier cannot be omitted and must be given explicitly.]
 
 Example :
 
@@ -276,8 +272,6 @@ Synopsis :
 [note A static object is used behind the scene in order to keep track of the expectations of a mock function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test, see the related [link turtle.patterns.managing_static_mock_objects pattern section].]
 
 [note In case of a calling convention specified, all four parameters must be provided.]
-
-[warning For compilers without support for variadic macros the identifier cannot be omitted and must be given explicitly.]
 
 Example :
 
@@ -415,13 +409,13 @@ Constraints :
  [[mock::evaluate]                                    [['actual]()]                                        [evaluates ['actual] as a functor returning a ['bool] and taking no argument]]
 ]
 
-[important When passing ['expected] directly as a shortcut mock::call is implied for a function, a function pointer, an instance of a type with a result_type member typedef (support for standard library, [@http://www.boost.org/libs/bind/bind.html Boost.Bind], [@http://www.boost.org/libs/function Boost.Function] functors), an instance of a type with a sig member (support for [@http://www.boost.org/libs/lambda Boost.Lambda] functors), an instance of a type with a result member (support for [@http://www.boost.org/libs/phoenix Boost.Phoenix] functors); mock::equal is implied for anything else.]
+[important When passing ['expected] directly as a shortcut mock::call is implied for a callable (function, function pointer, functor, ...); mock::equal is implied for anything else.]
 
 [warning Because mock::assign and mock::retrieve have side effects they may modify ['expected] in unexpected ways. For instance they may be called again after their expectations have already been exhausted because of the way the [link turtle.getting_started.expectation_selection_algorithm expectation selection algorithm] works. Therefore it is probably a good idea to use an [link turtle.reference.expectation.actions action] instead.]
 
 [note For mock::assign and mock::retrieve the switch to one form or another is made depending on whichever is the most relevant based on types involved.]
 
-[note All constraints accepting a parameter support the use of boost::ref and boost::cref in order to delay initialization.]
+[note All constraints accepting a parameter support the use of std::ref and std::cref in order to delay initialization.]
 
 [note All constraints can be combined using the && and || operators, as well as negated with the ! operator.]
 
@@ -437,7 +431,7 @@ Example using a standard library functor :
 
 [constraints_example_3]
 
-Example using [@http://www.boost.org/libs/bind Boost.Bind] :
+Example using std::bind :
 
 [constraints_example_4]
 
@@ -497,7 +491,7 @@ Synopsis :
 
 [note The returns and moves actions are not available for mock methods returning void, including constructors and destructors.]
 
-[note Actions are captured by copy, boost::ref and boost::cref can however be used to turn the copies into references.]
+[note Actions are captured by copy, std::ref and std::cref can however be used to turn the copies into references.]
 
 Example :
 
@@ -581,37 +575,17 @@ Synopsis :
 
 The expression manipulates a received parameter ['actual] in order to implement the constraint, as well as extra optional arguments named ['expected_1], ['expected_2], ...
 
-For compilers without support for variadic macros the alternate following macro must be used.
-
-Synopsis :
-
- MOCK_CONSTRAINT_EXT( name, arity, ( expected_1, expected_2, ... ), expression ) // defines a constraint 'name' based on the given 'expression'
-
-Of course this macro is also available for compilers which support variadic macros.
-
 Example without any extra argument :
 
 [helpers_example_1]
-
-or with the alternate more portable macro :
-
-[helpers_example_4]
 
 Example with one extra argument :
 
 [helpers_example_2]
 
-or with the alternate more portable macro :
-
-[helpers_example_5]
-
 Example with two extra arguments :
 
 [helpers_example_3]
-
-or with the alternate more portable macro :
-
-[helpers_example_6]
 
 [endsect]
 

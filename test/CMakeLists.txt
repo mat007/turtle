@@ -30,6 +30,7 @@ elseif(MSVC)
   endif()
 endif()
 
+# Regular unit tests in variations
 file(GLOB_RECURSE testFiles test_*.cpp)
 set(testsUsingUndefinedCPP test_function test_integration)
 foreach(testFile IN LISTS testFiles)
@@ -52,10 +53,12 @@ foreach(testFile IN LISTS testFiles)
   target_compile_definitions(${name}_thread_safe PRIVATE MOCK_THREAD_SAFE BOOST_THREAD_USES_MOVE)
 endforeach()
 
+# Link test only to check for a regression
 add_executable(link-test_defined EXCLUDE_FROM_ALL test_exception.cpp defined_1.cpp defined_2.cpp)
 target_link_libraries(link-test_defined PRIVATE turtle::turtle TurtleTestMain)
 add_test(NAME link-test_defined COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target link-test_defined --config $<CONFIG>)
 
+# Should fail to compile
 file(GLOB_RECURSE compileFailureTestFiles fail_*.cpp)
 foreach(testFile IN LISTS compileFailureTestFiles)
   get_filename_component(name ${testFile} NAME_WE)
@@ -64,4 +67,35 @@ foreach(testFile IN LISTS compileFailureTestFiles)
   target_link_libraries(${name} turtle::turtle)
   add_test(NAME compile-${name} COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target ${name} --config $<CONFIG>)
   set_tests_properties(compile-${name} PROPERTIES WILL_FAIL TRUE)
+endforeach()
+
+# Examples are runnable tests
+file(GLOB_RECURSE exampleFiles ${PROJECT_SOURCE_DIR}/doc/example/*.cpp)
+foreach(testFile IN LISTS exampleFiles)
+  get_filename_component(name ${testFile} NAME_WE)
+  set(name "example_${name}")
+  add_executable(${name} ${testFile})
+  target_link_libraries(${name} PRIVATE turtle::turtle TurtleTestMain)
+  add_test(NAME ${name} COMMAND ${name})
+endforeach()
+
+file(GLOB_RECURSE exampleTargetFiles ${PROJECT_SOURCE_DIR}/doc/example/*.hpp)
+foreach(name IN ITEMS customization getting_started motivation rationale)
+  target_sources(example_${name} PUBLIC ${exampleTargetFiles})
+endforeach()
+
+# Expected to trigger a mock failure
+set_tests_properties(example_rationale PROPERTIES WILL_FAIL TRUE PASS_REGULAR_EXPRESSION "Exception thrown but should not")
+foreach(name IN ITEMS example_patterns_async_call)
+  target_link_libraries(${name} PRIVATE Boost::thread)
+  target_compile_definitions(${name} PRIVATE MOCK_THREAD_SAFE BOOST_THREAD_USES_MOVE)
+endforeach()
+
+# Compile benchmarks
+file(GLOB_RECURSE benchFiles bench_*.cpp)
+foreach(testFile IN LISTS benchFiles)
+  get_filename_component(name ${testFile} NAME_WE)
+  add_executable(${name} EXCLUDE_FROM_ALL ${testFile})
+  target_link_libraries(${name} PRIVATE turtle::turtle TurtleTestMain)
+  add_test(NAME ${name} COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target ${name} --config $<CONFIG>)
 endforeach()

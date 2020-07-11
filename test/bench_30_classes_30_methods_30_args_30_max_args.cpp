@@ -1132,3 +1132,8 @@ namespace
     mock_class_29 c_29;
     mock_class_30 c_30;
 }
+
+int main()
+{
+    return 0;
+}

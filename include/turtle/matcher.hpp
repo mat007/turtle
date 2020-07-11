@@ -29,11 +29,9 @@ namespace mock
         {}
         bool operator()( std::add_lvalue_reference_t< const Actual > actual )
         {
-            return mock::equal(
-                mock::detail::unwrap_ref( expected_ ) ).c_( actual );
+            return mock::equal( mock::unwrap_ref( expected_ ) ).c_( actual );
         }
-        friend std::ostream& operator<<(
-            std::ostream& s, const matcher& m )
+        friend std::ostream& operator<<( std::ostream& s, const matcher& m )
         {
             return s << mock::format( m.expected_ );
         }
@@ -52,8 +50,7 @@ namespace mock
         {
             return std::strcmp( actual, expected_ ) == 0;
         }
-        friend std::ostream& operator<<(
-            std::ostream& s, const matcher& m )
+        friend std::ostream& operator<<( std::ostream& s, const matcher& m )
         {
             return s << mock::format( m.expected_ );
         }
@@ -72,8 +69,7 @@ namespace mock
         {
             return c_( std::forward< typename detail::ref_arg< Actual >::type >( actual ) );
         }
-        friend std::ostream& operator<<(
-            std::ostream& s, const matcher& m )
+        friend std::ostream& operator<<( std::ostream& s, const matcher& m )
         {
             return s << mock::format( m.c_ );
         }
@@ -96,8 +92,7 @@ namespace mock
         {
             return c_( std::forward< typename detail::ref_arg< Actual >::type >( actual ) );
         }
-        friend std::ostream& operator<<(
-            std::ostream& s, const matcher& m )
+        friend std::ostream& operator<<( std::ostream& s, const matcher& m )
         {
             return s << mock::format( m.c_ );
         }

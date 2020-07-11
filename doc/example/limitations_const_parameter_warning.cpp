@@ -6,7 +6,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
 
@@ -35,7 +34,7 @@ namespace limitations_const_parameter_warning_explanation
 //]
 }
 
-namespace limitations_const_parameter_warning_solution
+namespace
 {
 //[ limitations_const_parameter_warning_solution
     MOCK_BASE_CLASS( mock_base, base )
@@ -47,4 +46,11 @@ namespace limitations_const_parameter_warning_solution
         MOCK_METHOD( method_stub, 1, void( int ), method )
     };
 //]
+}
+
+BOOST_AUTO_TEST_CASE(check_method_stub_is_called)
+{
+    mock_base b;
+    MOCK_EXPECT(b.method).once().with(1);
+    static_cast<base*>(&b)->method(1);
 }

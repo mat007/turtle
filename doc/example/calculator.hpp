@@ -9,15 +9,16 @@
 #ifndef CALCULATOR
 #define CALCULATOR
 
-class view;
+#include "view.hpp"
 
 //[ calculator
 class calculator
 {
+    view& v;
 public:
-    calculator( view& v );
+    calculator( view& v ): v(v){}
 
-    void add( int a, int b ); // the result will be sent to the view 'v'
+    void add( int a, int b ){ v.display(a + b); } // the result will be sent to the view 'v'
 };
 //]
 

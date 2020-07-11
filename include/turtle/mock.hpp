@@ -48,7 +48,7 @@
     mock::detail::functor< MOCK_FUNCTION_TYPE(__VA_ARGS__) > f, f##_mock
 /// MOCK_FUNCTOR_TPL( name, signature )
 /// Deprecated. Same as MOCK_FUNCTOR
-#define MOCK_FUNCTOR_TPL(f, ...) MOCK_FUNCTOR(F, __VA_ARGS__)
+#define MOCK_FUNCTOR_TPL(f, ...) MOCK_FUNCTOR(f, __VA_ARGS__)
 
 #define MOCK_HELPER(t) \
     t##_mock( mock::detail::root, BOOST_PP_STRINGIZE(t) )

@@ -129,26 +129,22 @@ namespace detail
             }
             wrapper& exactly( std::size_t count )
             {
-                this->e_->invoke(
-                    std::make_shared< detail::exactly >( count ) );
+                this->e_->invoke( std::make_shared< detail::exactly >( count ) );
                 return *this;
             }
             wrapper& at_least( std::size_t min )
             {
-                this->e_->invoke(
-                    std::make_shared< detail::at_least >( min ) );
+                this->e_->invoke( std::make_shared< detail::at_least >( min ) );
                 return *this;
             }
             wrapper& at_most( std::size_t max )
             {
-                this->e_->invoke(
-                    std::make_shared< detail::at_most >( max ) );
+                this->e_->invoke( std::make_shared< detail::at_most >( max ) );
                 return *this;
             }
             wrapper& between( std::size_t min, std::size_t max )
             {
-                this->e_->invoke(
-                    std::make_shared< detail::between >( min, max ) );
+                this->e_->invoke( std::make_shared< detail::between >( min, max ) );
                 return *this;
             }
 
@@ -250,8 +246,7 @@ namespace detail
                         return error_type::abort();
                     }
                     valid_ = true;
-                    error_type::call(
-                        MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
+                    error_type::call( MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
                     if( it->functor() )
                         return it->functor()(
                             BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) );
@@ -273,8 +268,7 @@ namespace detail
             context_ = &c;
         }
 
-        friend std::ostream& operator<<(
-            std::ostream& s, const function_impl& impl )
+        friend std::ostream& operator<<( std::ostream& s, const function_impl& impl )
         {
             lock _( impl.mutex_ );
             return s << lazy_context( &impl ) << lazy_expectations( &impl );
@@ -285,8 +279,7 @@ namespace detail
             lazy_context( const function_impl* impl )
                 : impl_( impl )
             {}
-            friend std::ostream& operator<<(
-                std::ostream& s, const lazy_context& c )
+            friend std::ostream& operator<<( std::ostream& s, const lazy_context& c )
             {
                 if( c.impl_->context_ )
                     c.impl_->context_->serialize( s, *c.impl_ );
@@ -302,8 +295,7 @@ namespace detail
             lazy_expectations( const function_impl* impl )
                 : impl_( impl )
             {}
-            friend std::ostream& operator<<(
-                std::ostream& s, const lazy_expectations& e )
+            friend std::ostream& operator<<( std::ostream& s, const lazy_expectations& e )
             {
                 for( expectations_cit it = e.impl_->expectations_.begin();
                     it != e.impl_->expectations_.end(); ++it )

@@ -6,8 +6,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+// Used to make this test file pass. Define to empty to see other tests fail
+#define ASSERT_VERIFY_FAIL() mock::reset()
+
 //[ static_objects_problem
-#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
 #include <ostream>
@@ -16,8 +18,7 @@ namespace
 {
     struct my_class
     {
-        my_class( int i )
-            : i_( i )
+        my_class( int i ) : i_( i )
         {}
 
         int i_;
@@ -28,13 +29,14 @@ namespace
         return os << "my_class " << c->i_; // the 'c' pointer must be valid when logging
     }
 
-    MOCK_FUNCTION( f, 1, void( my_class* ) ) // being static 'f' outlive the test case
+    MOCK_FUNCTION( f, 1, void( my_class* ) ) // being static 'f' outlives the test case
 }
 
 BOOST_AUTO_TEST_CASE( static_objects_problem )
 {
     my_class c( 42 );
     MOCK_EXPECT( f ).once().with( &c ); // the set expectation will also outlive the test case and leak into other test cases using 'f'
+    ASSERT_VERIFY_FAIL(); // Check that mock::verify fails, but that means other test fail too
 } // the 'c' instance goes out of scope and the '&c' pointer becomes dangling
 //]
 

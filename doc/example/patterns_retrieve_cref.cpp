@@ -7,7 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //[ retrieve_cref_problem
-namespace
+namespace mock_test
 {
     class base_class
     {
@@ -17,6 +17,7 @@ namespace
 
     class my_class
     {
+        base_class& b;
     public:
         explicit my_class( base_class& );
 
@@ -25,12 +26,22 @@ namespace
 }
 //]
 
+namespace mock_test
+{
+    my_class::my_class( base_class& b): b(b){}
+    void my_class::process()
+    {
+        int secret_value = 42;
+        b.method(secret_value);
+        b.method(secret_value);
+    }
+}
+
 //[ retrieve_cref_solution
-#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
 
-namespace
+namespace mock_test
 {
     MOCK_BASE_CLASS( mock_base_class, base_class )
     {
@@ -40,6 +51,7 @@ namespace
 
 BOOST_AUTO_TEST_CASE( method_is_called_two_times_with_the_same_value )
 {
+    using namespace mock_test;
     mock_base_class mock;
     my_class c( mock );
     int value;
