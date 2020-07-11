@@ -48,8 +48,7 @@ namespace detail
         void invalidate( const void* e )
         {
             lock _( mutex_ );
-            elements_type::iterator it =
-                std::find( elements_.begin(), elements_.end(), e );
+            const auto it = std::find( elements_.begin(), elements_.end(), e );
             if( it != elements_.end() )
                 elements_.erase( elements_.begin(), it );
         }
