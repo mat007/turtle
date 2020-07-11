@@ -33,7 +33,7 @@ namespace
     {
         fixture()
         {
-            mock::detail::configure( o, e, "instance", MOCK_TYPE_NAME(o), "name" );
+            mock::detail::configure( o, e, "instance", mock::detail::make_type_name(o), "name" );
         }
         object o;
         mock::detail::function< void() > e;
@@ -73,7 +73,7 @@ BOOST_FIXTURE_TEST_CASE( an_object_is_assignable_by_sharing_its_state, mock_erro
     mock::detail::function< void() > e;
     {
         object o2;
-        mock::detail::configure( o2, e, "instance", MOCK_TYPE_NAME(o2), "name" );
+        mock::detail::configure( o2, e, "instance", mock::detail::make_type_name(o2), "name" );
         e.expect().once();
         o1 = o2;
         CHECK_ERROR(
@@ -93,7 +93,7 @@ BOOST_FIXTURE_TEST_CASE( an_object_is_copiable_by_sharing_its_state, mock_error_
     auto o2 = std::make_unique<object>();
     const object o1( *o2 );
     mock::detail::function< void() > e;
-    mock::detail::configure( *o2, e, "instance", MOCK_TYPE_NAME(*o2), "name" );
+    mock::detail::configure( *o2, e, "instance", mock::detail::make_type_name(*o2), "name" );
     e.expect().once();
     CHECK_ERROR(
         BOOST_CHECK( ! mock::verify( *o2 ) ),
