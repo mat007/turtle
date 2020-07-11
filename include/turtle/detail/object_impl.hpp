@@ -58,7 +58,7 @@ namespace detail
         virtual void serialize( std::ostream& s, const verifiable& v ) const
         {
             lock _( mutex_ );
-            children_cit it = children_.find( &v );
+            const auto it = children_.find( &v );
             if( it != children_.end() )
                 s << it->second;
             else
@@ -78,12 +78,9 @@ namespace detail
         }
 
     private:
-        typedef std::map< const verifiable*, child > children_t;
-        typedef children_t::const_iterator children_cit;
-
         group group_;
         parent parent_;
-        children_t children_;
+        std::map< const verifiable*, child > children_;
         const std::shared_ptr< mutex > mutex_;
     };
 }

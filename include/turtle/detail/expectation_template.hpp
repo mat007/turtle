@@ -157,9 +157,8 @@ namespace detail
 
         ~expectation()
         {
-            for( sequences_cit it = sequences_.begin();
-                it != sequences_.end(); ++it )
-                (*it)->remove( this );
+            for( auto& sequence: sequences_)
+                sequence->remove( this );
         }
 
         void invoke( const std::shared_ptr< invocation >& i )
@@ -215,14 +214,14 @@ namespace detail
 
         bool invoke() const
         {
-            for( sequences_cit it = sequences_.begin();
-                it != sequences_.end(); ++it )
-                if( ! (*it)->is_valid( this ) )
+            for( auto& sequence: sequences_)
+            {
+                if( ! sequence->is_valid( this ) )
                     return false;
+            }
             bool result = invocation_->invoke();
-            for( sequences_cit it = sequences_.begin();
-                it != sequences_.end(); ++it )
-                (*it)->invalidate( this );
+            for( auto& sequence: sequences_)
+                sequence->invalidate( this );
             return result;
         }
 
@@ -246,18 +245,13 @@ namespace detail
         }
 
     private:
-        typedef std::vector<
-            std::shared_ptr< sequence_impl >
-        > sequences_type;
-        typedef sequences_type::const_iterator sequences_cit;
-
         std::shared_ptr< invocation > invocation_;
         std::shared_ptr<
             matcher_base<
                 void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
             >
         > matcher_;
-        sequences_type sequences_;
+        std::vector< std::shared_ptr<sequence_impl> > sequences_;
         const char* file_;
         int line_;
     };

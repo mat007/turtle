@@ -52,14 +52,19 @@ namespace detail
         virtual ~function_impl()
         {
             if( valid_ && exceptions_ >= exceptions() )
-                for( expectations_cit it = expectations_.begin();
-                    it != expectations_.end(); ++it )
-                    if( ! it->verify() )
+            {
+                for( const auto& expectation: expectations_ )
+                {
+                    if( ! expectation.verify() )
+                    {
                         error_type::fail( "untriggered expectation",
                             boost::unit_test::lazy_ostream::instance()
                                 << lazy_context( this )
                                 << lazy_expectations( this ),
-                            it->file(), it->line() );
+                            expectation.file(), expectation.line() );
+                    }
+                }
+            }
             if( context_ )
                 context_->remove( *this );
         }
@@ -67,17 +72,18 @@ namespace detail
         virtual bool verify() const
         {
             lock _( mutex_ );
-            for( expectations_cit it = expectations_.begin();
-                it != expectations_.end(); ++it )
-                if( ! it->verify() )
+            for( const auto& expectation: expectations_ )
+            {
+                if( ! expectation.verify() )
                 {
                     valid_ = false;
                     error_type::fail( "verification failed",
                         boost::unit_test::lazy_ostream::instance()
                             << lazy_context( this )
                             << lazy_expectations( this ),
-                        it->file(), it->line() );
+                        expectation.file(), expectation.line() );
                 }
+            }
             return valid_;
         }
 
@@ -228,30 +234,31 @@ namespace detail
         {
             lock _( mutex_ );
             valid_ = false;
-            for( expectations_cit it = expectations_.begin();
-                it != expectations_.end(); ++it )
-                if( it->is_valid(
+            for( const auto& expectation: expectations_ )
+            {
+                if( expectation.is_valid(
                     BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) ) )
                 {
-                    if( ! it->invoke() )
+                    if( ! expectation.invoke() )
                     {
                         error_type::fail( "sequence failed",
-                            MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
+                            MOCK_FUNCTION_CONTEXT, expectation.file(), expectation.line() );
                         return error_type::abort();
                     }
-                    if( ! it->valid() )
+                    if( ! expectation.valid() )
                     {
                         error_type::fail( "missing action",
-                            MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
+                            MOCK_FUNCTION_CONTEXT, expectation.file(), expectation.line() );
                         return error_type::abort();
                     }
                     valid_ = true;
-                    error_type::call( MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
-                    if( it->functor() )
-                        return it->functor()(
+                    error_type::call( MOCK_FUNCTION_CONTEXT, expectation.file(), expectation.line() );
+                    if( expectation.functor() )
+                        return expectation.functor()(
                             BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) );
-                    return it->trigger();
+                    return expectation.trigger();
                 }
+            }
             error_type::fail( "unexpected call", MOCK_FUNCTION_CONTEXT );
             return error_type::abort();
         }
@@ -297,18 +304,14 @@ namespace detail
             {}
             friend std::ostream& operator<<( std::ostream& s, const lazy_expectations& e )
             {
-                for( expectations_cit it = e.impl_->expectations_.begin();
-                    it != e.impl_->expectations_.end(); ++it )
-                    s << std::endl << *it;
+                for( const auto& expectation: e.impl_->expectations_ )
+                    s << std::endl << expectation;
                 return s;
             }
             const function_impl* impl_;
         };
 
-        typedef std::list< expectation_type > expectations_type;
-        typedef typename expectations_type::const_iterator expectations_cit;
-
-        expectations_type expectations_;
+        std::list< expectation_type > expectations_;
         context* context_;
         mutable bool valid_;
         const int exceptions_;

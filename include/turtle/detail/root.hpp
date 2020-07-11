@@ -33,7 +33,7 @@ namespace detail
             boost::unit_test::const_string name )
         {
             scoped_lock _( mutex_ );
-            children_t::iterator it = children_.lower_bound( &v );
+            auto it = children_.lower_bound( &v );
             if( it == children_.end() ||
                 children_.key_comp()( &v, it->first ) )
                 it = children_.insert( it,
@@ -67,7 +67,7 @@ namespace detail
         virtual void serialize( std::ostream& s, const verifiable& v ) const
         {
             scoped_lock _( mutex_ );
-            children_cit it = children_.find( &v );
+            const auto it = children_.find( &v );
             if( it != children_.end() )
                 s << it->second;
             else
@@ -120,11 +120,8 @@ namespace detail
             child child_;
         };
 
-        typedef std::map< const verifiable*, counter_child > children_t;
-        typedef children_t::const_iterator children_cit;
-
         parents_t parents_;
-        children_t children_;
+        std::map< const verifiable*, counter_child > children_;
         group group_;
         mutable mutex mutex_;
 
