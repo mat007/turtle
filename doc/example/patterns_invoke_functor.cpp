@@ -9,8 +9,6 @@
 //[ invoke_functor_problem
 #include <functional>
 
-namespace
-{
     class base_class
     {
     public:
@@ -18,14 +16,24 @@ namespace
     };
 
     void function( base_class& ); // the function will call 'method' with a functor to be applied
-}
 //]
 
+namespace
+{
+    int receivedValue = 0;
+    void setx(int newValue)
+    {
+        receivedValue = newValue;
+    }
+}
+void function( base_class& c)
+{
+    c.method(setx);
+}
+
 //[ invoke_functor_solution
-#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
-#include <functional>
 
 namespace
 {
@@ -40,5 +48,6 @@ BOOST_AUTO_TEST_CASE( how_to_invoke_a_functor_passed_as_parameter_of_a_mock_meth
     mock_class mock;
     MOCK_EXPECT( mock.method ).calls( [](const auto &functor){ functor(42); } ); // whenever 'method' is called, invoke the functor with 42
     function( mock );
+    BOOST_CHECK(receivedValue == 42);
 }
 //]

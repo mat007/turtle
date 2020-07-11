@@ -6,7 +6,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
 #include "calculator.hpp"
@@ -21,6 +20,8 @@ public:
     int add( int a, int b );
 };
 //]
+
+int calculator::add( int a, int b ){ return a + b; }
 
 //[ simple_zero_plus_zero_is_zero
 BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
@@ -51,7 +52,7 @@ public:
 //]
 
 //[ zero_plus_zero_is_zero_without_mock_object
-BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero_without_mock_object )
 {
     my_view v;
     calculator c( v );
@@ -65,7 +66,7 @@ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
 namespace with_mock_object
 {
 //[ zero_plus_zero_is_zero_with_mock_object
-BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero_with_mock_object )
 {
     mock_view v;
     calculator c( v );

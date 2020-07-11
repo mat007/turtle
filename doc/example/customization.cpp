@@ -12,6 +12,7 @@
 //]
 #include "calculator.hpp"
 #include "mock_view.hpp"
+#include <boost/test/unit_test.hpp>
 
 //[ mock_stream_user_type
 namespace user_namespace
@@ -36,7 +37,7 @@ bool custom_constraint( int actual )
 //]
 
 //[ custom_constraint_free_function_test
-BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two )
+BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_free_function )
 {
     mock_view v;
     calculator c( v );
@@ -64,7 +65,7 @@ struct custom_constraint
 //]
 
 //[ custom_constraint_functor_test
-BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two )
+BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_custom_constraint )
 {
     mock_view v;
     calculator c( v );
@@ -86,8 +87,7 @@ struct near_constraint
     template< typename Actual >
     bool operator()( Actual actual ) const
     {
-        return std::abs( actual - unwrap_ref( expected_ ) )
-            < unwrap_ref( threshold_ );
+        return std::abs( actual - expected_ ) < threshold_ ;
     }
 
     friend std::ostream& operator<<( std::ostream& s, const near_constraint& c )
@@ -109,7 +109,7 @@ mock::constraint< near_constraint< Expected > > near( Expected expected, Expecte
 namespace near_constraint_test
 {
 //[ near_constraint_test
-BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
+BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one_near )
 {
    mock_view v;
    calculator c( v );
@@ -122,7 +122,7 @@ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
 namespace near_constraint_cref_test
 {
 //[ near_constraint_cref_test
-BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
+BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one_near_cref )
 {
    mock_view v;
    calculator c( v );

@@ -59,7 +59,11 @@ namespace detail
     };
 
     template< typename Signature, int n >
-    using parameter = tuple_element< n, typename parameter_types<Signature>::type >;
+    struct parameter
+    {
+        static_assert(n < function_arity<Signature>::value, "Function signature has not that many parameters");
+        using type = typename tuple_element< n, typename parameter_types<Signature>::type >::type;
+    };
 
     template<typename T>
     struct parameter_type;

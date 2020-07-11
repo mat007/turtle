@@ -11,7 +11,7 @@
 
 #include "config.hpp"
 #include "log.hpp"
-#include "detail/unwrap_reference.hpp"
+#include "unwrap_reference.hpp"
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/variadic/to_array.hpp>
@@ -135,7 +135,7 @@ namespace detail
             template< typename Actual > \
             bool operator()( const Actual& actual ) const \
             { \
-                return Expr; \
+                (void) actual; return Expr; \
             } \
             friend std::ostream& operator<<( std::ostream& s, const Name& ) \
             { \
@@ -149,7 +149,7 @@ namespace detail
     expected##n( std::forward< T##n >(e##n) )
 
 #define MOCK_CONSTRAINT_UNWRAP_REF(z, n, d) \
-    mock::detail::unwrap_ref( expected##n )
+    mock::unwrap_ref( expected##n )
 
 #define MOCK_CONSTRAINT_FORMAT(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) mock::format( c.expected##n )
@@ -161,7 +161,7 @@ namespace detail
     std::decay_t< const T##n >
 
 #define MOCK_CONSTRAINT_CREF_PARAM(z, n, Args) \
-    const mock::detail::unwrap_reference_t< Expected_##n >& \
+    const mock::unwrap_reference_t< Expected_##n >& \
         BOOST_PP_ARRAY_ELEM(n, Args)
 
 #define MOCK_CONSTRAINT_ARG(z, n, Args) \

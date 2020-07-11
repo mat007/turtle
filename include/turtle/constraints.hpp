@@ -12,7 +12,7 @@
 #include "config.hpp"
 #include "constraint.hpp"
 #include "detail/move_helper.hpp"
-#include "detail/unwrap_reference.hpp"
+#include "unwrap_reference.hpp"
 #include <boost/version.hpp>
 #include <boost/type_traits/make_void.hpp>
 #if BOOST_VERSION >= 107000

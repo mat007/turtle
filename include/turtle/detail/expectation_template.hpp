@@ -240,8 +240,7 @@ namespace detail
             return line_;
         }
 
-        friend std::ostream& operator<<(
-            std::ostream& s, const expectation& e )
+        friend std::ostream& operator<<( std::ostream& s, const expectation& e )
         {
             return s << ( e.invocation_->exhausted() ? 'v' : '.' )
                 << ' ' << *e.invocation_

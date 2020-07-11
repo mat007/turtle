@@ -299,7 +299,7 @@ namespace
     template< typename T >
     struct tpl_functor_class
     {
-        MOCK_FUNCTOR_TPL( f, void( T ) );
+        MOCK_FUNCTOR( f, void( T ) );
     };
 }
 

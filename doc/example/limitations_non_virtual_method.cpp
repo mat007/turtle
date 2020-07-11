@@ -6,7 +6,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
 
@@ -25,3 +24,10 @@ MOCK_BASE_CLASS( mock_base, base )
     MOCK_METHOD( method, 0 )
 };
 //]
+
+BOOST_AUTO_TEST_CASE(method_not_called_through_base)
+{
+    mock_base b;
+    MOCK_EXPECT(b.method).never();
+    static_cast<base*>(&b)->method(); // Doesn't call the mocked method
+}

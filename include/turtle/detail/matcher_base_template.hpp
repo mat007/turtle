@@ -28,8 +28,7 @@ namespace detail
         virtual bool operator()(
             BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _) ) = 0;
 
-        friend std::ostream& operator<<(
-            std::ostream& s, const matcher_base& m )
+        friend std::ostream& operator<<( std::ostream& s, const matcher_base& m )
         {
             m.serialize( s );
             return s;

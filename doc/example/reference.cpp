@@ -6,7 +6,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
 
@@ -374,10 +373,11 @@ MOCK_CLASS( mock_class )
 namespace function_example_1
 {
 //[ function_example_1
-MOCK_FUNCTION( f, 1, float( int ) )
+MOCK_FUNCTION( f, 1, void( int ) )
 
 BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_function )
 {
+    MOCK_EXPECT(f).once().with(3);
     f( 3 );
 }
 //]
@@ -398,6 +398,7 @@ namespace functor_example_1
 BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_functor )
 {
    MOCK_FUNCTOR( f, void( int ) );
+   MOCK_EXPECT(f).once().with(3);
    f( 3 );
 }
 //]
@@ -409,12 +410,13 @@ namespace functor_example_2
 template< typename T >
 struct mock_class
 {
-    MOCK_FUNCTOR_TPL( f, void( T ) );
+    MOCK_FUNCTOR( f, void( T ) );
 };
 
-BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_functor )
+BOOST_AUTO_TEST_CASE( demonstrates_instantiating_a_mock_functor_inside_a_class )
 {
     mock_class< int > c;
+    MOCK_EXPECT(c.f).once().with(3);
     c.f( 3 );
 }
 //]
@@ -436,6 +438,9 @@ BOOST_AUTO_TEST_CASE( demonstrates_configuring_mock_objects )
     MOCK_EXPECT( c.method ).once().with( 0 ).in( s ).returns( 42 );
     MOCK_EXPECT( c.method2 ).never().with( "ok", mock::any );
     MOCK_EXPECT( c.method2 ).at_least( 2 ).in( s ).throws( std::runtime_error( "error !" ) );
+    BOOST_CHECK(c.method(0) == 42);
+    BOOST_CHECK_THROW(c.method("notok", 1.f), std::runtime_error);
+    BOOST_CHECK_THROW(c.method("notok", 2.f), std::runtime_error);
 }
 //]
 }
@@ -446,13 +451,18 @@ namespace invocation_example_1
 MOCK_CLASS( mock_class )
 {
     MOCK_METHOD( method, 2, void( int, const std::string& ) )
+    MOCK_METHOD( method2, 1, void( int ) )
 };
 
 BOOST_AUTO_TEST_CASE( demonstrates_setting_up_invocations_on_a_mock_method )
 {
     mock_class c;
     MOCK_EXPECT( c.method ).once(); // can only be called once
-    MOCK_EXPECT( c.method );        // can be called an unlimited number of times
+    MOCK_EXPECT( c.method2 );        // can be called an unlimited number of times
+    c.method(42, "Hello world!");
+    c.method2(42);
+    c.method2(42);
+    c.method2(42);
 }
 //]
 }
@@ -464,6 +474,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_functor )
 {
     MOCK_FUNCTOR( f, void( int, const std::string& ) );
     MOCK_EXPECT( f ).once();
+    f(42, "Hello world!");
 }
 //]
 }
@@ -476,6 +487,7 @@ MOCK_FUNCTION( f, 1, void( int ) )
 BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_function )
 {
     MOCK_EXPECT( f ).once();
+    f(42);
 }
 //]
 }
@@ -485,14 +497,17 @@ namespace invocation_example_4
 //[ invocation_example_4
 MOCK_CLASS( mock_class )
 {
-    MOCK_STATIC_METHOD( method, 1, void( int ) )
+    MOCK_STATIC_METHOD( method1, 1, void( int ) )
+    MOCK_STATIC_METHOD( method2, 1, void( int ) )
 };
 
 BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_static_method )
 {
     mock_class c;
-    MOCK_EXPECT( c.method ).once();
-    MOCK_EXPECT( mock_class::method ).once(); // does the same
+    MOCK_EXPECT( c.method1 ).once();
+    MOCK_EXPECT( mock_class::method2 ).once(); // does the same
+    c.method1(42);
+    c.method2(42);
 }
 //]
 }
@@ -502,14 +517,17 @@ namespace constraints_example_1
 //[ constraints_example_1
 MOCK_CLASS( mock_class )
 {
-    MOCK_METHOD( method, 2, void( int, const std::string& ) )
+    MOCK_METHOD( method1, 2, void( int, const std::string& ) )
+    MOCK_METHOD( method2, 2, void( int, const std::string& ) )
 };
 
 BOOST_AUTO_TEST_CASE( demonstrates_adding_builtin_constraints )
 {
    mock_class c;
-   MOCK_EXPECT( c.method ).with( mock::equal( 3 ), mock::equal( "some string" ) );
-   MOCK_EXPECT( c.method ).with( 3, "some string" );                               // equivalent to the previous one using short-cuts
+   MOCK_EXPECT( c.method1 ).with( mock::equal( 3 ), mock::equal( "some string" ) );
+   MOCK_EXPECT( c.method2 ).with( 3, "some string" );                               // equivalent to the previous one using short-cuts
+   c.method1(3, "some string");
+   c.method2(3, "some string");
 }
 //]
 }
@@ -531,6 +549,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_a_free_functi
 {
    mock_class c;
    MOCK_EXPECT( c.method ).with( &custom_constraint );
+   c.method(42);
 }
 //]
 }
@@ -552,6 +571,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_a_standard_li
 {
    mock_class c;
    MOCK_EXPECT( c.method ).with( std::bind1st( std::ptr_fun( &custom_constraint ), 42 ) ); // std::ptr_fun creates an std::unary_function
+   c.method(42);
 }
 //]
 }
@@ -569,10 +589,12 @@ bool custom_constraint( int expected, int actual )
    return expected == actual;
 }
 
-BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_bind )
+BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_std_bind )
 {
    mock_class c;
+   using namespace std::placeholders;
    MOCK_EXPECT( c.method ).with( std::bind( &custom_constraint, 42, _1 ) );
+   c.method(42);
 }
 //]
 }
@@ -593,6 +615,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_lambda 
 {
    mock_class c;
    MOCK_EXPECT( c.method ).with( boost::lambda::_1 == 42 );
+   c.method(42);
 }
 //]
 }
@@ -606,14 +629,17 @@ namespace constraints_example_6
 //[ constraints_example_6
 MOCK_CLASS( mock_class )
 {
-    MOCK_METHOD( method, 1, void( int ) )
+    MOCK_METHOD( method1, 1, void( int ) )
+    MOCK_METHOD( method2, 1, void( int ) )
 };
 
 BOOST_AUTO_TEST_CASE( demonstrates_adding_a_custom_constraint_with_boost_phoenix )
 {
    mock_class c;
-   MOCK_EXPECT( c.method ).with( boost::phoenix::arg_names::arg1 == 42 );
-   MOCK_EXPECT( c.method ).with( boost::phoenix::arg_names::_1 == 42 );
+   MOCK_EXPECT( c.method1 ).with( boost::phoenix::arg_names::arg1 == 42 );
+   MOCK_EXPECT( c.method2 ).with( boost::phoenix::arg_names::_1 == 42 );
+   c.method1(42);
+   c.method2(42);
 }
 //]
 }
@@ -630,6 +656,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_a_constraint_with_cxx11_lambda )
 {
     mock_class c;
     MOCK_EXPECT( c.method ).with( []( int actual ) { return 42 == actual; } );
+    c.method(42);
 }
 //]
 }
@@ -646,6 +673,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_combining_constraints )
 {
    mock_class c;
    MOCK_EXPECT( c.method ).with( mock::less( 4 ) && mock::greater( 2 ), ! mock::equal( "" ) );
+   c.method(3, "Hello World!");
 }
 //]
 }
@@ -667,6 +695,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_one_constraint_for_all_arguments )
 {
    mock_class c;
    MOCK_EXPECT( c.method ).with( &custom_constraint );
+   c.method("1234", 4);
 }
 //]
 }
@@ -698,6 +727,9 @@ BOOST_AUTO_TEST_CASE( demonstrates_enforcing_several_expectation_orders )
    MOCK_EXPECT( c_1.method_1 ).in( s_1 );
    MOCK_EXPECT( c_2.method_2 ).in( s_2 );      // c_1.method_1 and c_2.method_2 are in different sequences and can be called in any order
    MOCK_EXPECT( c_3.method_3 ).in( s_1, s_2 ); // c_3.method_3 must be called after both c_1.method_1 and c_2.method_2
+   c_2.method_2();
+   c_1.method_1();
+   c_3.method_3();
 }
 //]
 }
@@ -718,12 +750,18 @@ int function( int i )
 BOOST_AUTO_TEST_CASE( demonstrates_configuring_actions )
 {
    mock_class c;
-   MOCK_EXPECT( c.method ).returns( 42 );
-   MOCK_EXPECT( c.method ).moves( 42 );                               // returns by moving the value
-   MOCK_EXPECT( c.method ).throws( std::runtime_error( "error !" ) );
-   MOCK_EXPECT( c.method ).calls( &function );                        // forwards 'method' parameter to 'function'
-   MOCK_EXPECT( c.method ).calls( std::bind( &function, 42 ) );     // drops 'method' parameter and binds 42 as parameter to 'function'
-   MOCK_EXPECT( c.method ).calls( []( int i ) { return i; } );        // uses a C++11 lambda
+   MOCK_EXPECT( c.method ).once().returns( 42 );
+   MOCK_EXPECT( c.method ).once().moves( 42 );                               // returns by moving the value
+   MOCK_EXPECT( c.method ).once().throws( std::runtime_error( "error !" ) );
+   MOCK_EXPECT( c.method ).once().calls( &function );                        // forwards 'method' parameter to 'function'
+   MOCK_EXPECT( c.method ).once().calls( std::bind( &function, 42 ) );     // drops 'method' parameter and binds 42 as parameter to 'function'
+   MOCK_EXPECT( c.method ).once().calls( []( int i ) { return i; } );        // uses a C++11 lambda
+   BOOST_CHECK(c.method(0) == 42);
+   BOOST_CHECK(c.method(1) == 42);
+   BOOST_CHECK_THROW(c.method(0), std::runtime_error);
+   BOOST_CHECK(c.method(2) == 2);
+   BOOST_CHECK(c.method(3) == 42);
+   BOOST_CHECK(c.method(4) == 4);
 }
 //]
 }
@@ -905,49 +943,6 @@ namespace helpers_example_3
 {
 //[ helpers_example_3
 MOCK_CONSTRAINT( near, expected, tolerance, std::abs( actual - expected ) < tolerance ) // this is how mock::near could be defined
-
-BOOST_AUTO_TEST_CASE( mock_constraint_2_arity )
-{
-    MOCK_FUNCTOR( f, void( int ) );
-    MOCK_EXPECT( f ).with( near( 42, 0.001 ) );
-}
-//]
-}
-
-namespace helpers_example_4
-{
-//[ helpers_example_4
-MOCK_CONSTRAINT_EXT( any, 0,, true )               // this is (almost) how mock::any is defined
-MOCK_CONSTRAINT_EXT( forty_two, 0,, actual == 42 ) // this defines a 'forty_two' constraint
-
-BOOST_AUTO_TEST_CASE( mock_constraint_0_arity )
-{
-    MOCK_FUNCTOR( f, void( int ) );
-    MOCK_EXPECT( f ).with( forty_two );
-    MOCK_EXPECT( f ).with( any );
-}
-//]
-}
-
-namespace helpers_example_5
-{
-//[ helpers_example_5
-MOCK_CONSTRAINT_EXT( equal, 1, ( expected ), actual == expected )                  // this is how mock::equal is defined
-MOCK_CONSTRAINT_EXT( near, 1, ( expected ), std::abs( actual - expected ) < 0.01 ) // this defines a 'near' constraint which can be used as 'near( 42 )'
-
-BOOST_AUTO_TEST_CASE( mock_constraint_1_arity )
-{
-    MOCK_FUNCTOR( f, void( int ) );
-    MOCK_EXPECT( f ).with( near( 42 ) );
-    MOCK_EXPECT( f ).with( equal( 42 ) );
-}
-//]
-}
-
-namespace helpers_example_6
-{
-//[ helpers_example_6
-MOCK_CONSTRAINT_EXT( near, 2, ( expected, tolerance ), std::abs( actual - expected ) < tolerance ) // this is how mock::near is defined
 
 BOOST_AUTO_TEST_CASE( mock_constraint_2_arity )
 {
