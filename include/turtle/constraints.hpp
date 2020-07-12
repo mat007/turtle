@@ -13,8 +13,8 @@
 #include "constraint.hpp"
 #include "detail/move_helper.hpp"
 #include "unwrap_reference.hpp"
+#include "detail/void_t.hpp"
 #include <boost/version.hpp>
-#include <boost/type_traits/make_void.hpp>
 #if BOOST_VERSION >= 107000
 #include <boost/test/tools/floating_point_comparison.hpp>
 #else
@@ -118,7 +118,7 @@ namespace detail
     {};
 
     template<class T, class U>
-    struct has_equal_to<T, U, boost::void_t<decltype(std::declval<T>() == std::declval<U>())>>: std::true_type
+    struct has_equal_to<T, U, void_t<decltype(std::declval<T>() == std::declval<U>())>>: std::true_type
     {};
 
     template< typename Expected >
