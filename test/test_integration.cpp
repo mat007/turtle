@@ -9,7 +9,7 @@
 #include "mock_error.hpp"
 #include "undefined.hpp"
 #include <turtle/mock.hpp>
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/optional.hpp>
 #include <cmath>
 #include <functional>

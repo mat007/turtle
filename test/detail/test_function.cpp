@@ -10,7 +10,7 @@
 #include "../undefined.hpp"
 #include <turtle/detail/function.hpp>
 #include <turtle/constraints.hpp>
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <functional>
 #include <memory>
 #include <type_traits>

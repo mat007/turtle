@@ -38,7 +38,7 @@ namespace mock_test
 }
 
 //[ async_call_solution
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/thread.hpp>
 #include <turtle/mock.hpp>
 

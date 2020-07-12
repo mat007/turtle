@@ -7,7 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <turtle/log.hpp>
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/assign.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/optional.hpp>

@@ -50,7 +50,7 @@ struct configurable_mock_error
 #define MOCK_USE_BOOST_TEST
 
 //[ prerequisite
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 //]
 #include "calculator.hpp"

@@ -8,7 +8,7 @@
 
 #include "mock_error.hpp"
 #include <turtle/mock.hpp>
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 
 #define IDENTITY(z, n, d) d

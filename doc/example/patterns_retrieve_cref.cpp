@@ -38,7 +38,7 @@ namespace mock_test
 }
 
 //[ retrieve_cref_solution
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 
 namespace mock_test

@@ -32,7 +32,7 @@ void function( base_class& c)
 }
 
 //[ invoke_functor_solution
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 
 namespace

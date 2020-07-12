@@ -10,7 +10,7 @@
 #define ASSERT_VERIFY_FAIL() mock::reset()
 
 //[ static_objects_problem
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 #include <ostream>
 
