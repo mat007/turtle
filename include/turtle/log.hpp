@@ -13,7 +13,6 @@
 #include "stream.hpp"
 #include "format.hpp"
 #include <boost/detail/container_fwd.hpp>
-#include <boost/function_types/is_callable_builtin.hpp>
 #include <boost/none.hpp>
 #include <memory>
 #include <type_traits>
@@ -51,6 +50,15 @@ namespace detail
             s << (it == begin ? "" : ",") << mock::format( *it );
         s << ')';
     }
+    template<typename T>
+    struct is_callable_impl: std::false_type
+    {};
+    template<typename R, typename... Args>
+    struct is_callable_impl<R(Args...)>: std::true_type
+    {};
+    template<typename T>
+    struct is_callable: is_callable_impl< std::remove_cv_t<T> >
+    {};
 }
 
 #ifdef MOCK_AUTO_PTR
@@ -182,19 +190,13 @@ namespace detail
     }
 
     template< typename T >
-    std::enable_if_t<
-        boost::function_types::is_callable_builtin< T >::value,
-        stream&
-    >
+    std::enable_if_t< detail::is_callable< T >::value, stream& >
     operator<<( stream& s, T* )
     {
         return s << '?';
     }
     template< typename T >
-    std::enable_if_t<
-        !boost::function_types::is_callable_builtin< T >::value,
-        stream&
-    >
+    std::enable_if_t< !detail::is_callable< T >::value, stream& >
     operator<<( stream& s, T* t )
     {
         *s.s_ << t;

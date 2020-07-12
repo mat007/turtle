@@ -17,15 +17,13 @@ namespace mock
 {
 namespace detail
 {
-    template< typename F, typename P, class = void >
-    struct is_callable : std::false_type
+    /// Trait to return true if F is a functor that can be called with a single argument Arg
+    template< typename F, typename Arg, class = void >
+    struct is_functor : std::false_type
     {};
-    template< typename F, typename P >
-    struct is_callable< F, P, boost::void_t<decltype( std::declval<F>()( std::declval<P>() ) )> >: std::true_type
+    template< typename F, typename Arg >
+    struct is_functor< F, Arg, boost::void_t<decltype( std::declval<F>()( std::declval<Arg>() ) )> >: std::true_type
     {};
-
-    template< typename T, typename P >
-    using is_functor = is_callable< T, P >;
 }
 } // mock
 
