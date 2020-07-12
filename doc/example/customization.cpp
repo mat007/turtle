@@ -141,6 +141,11 @@ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one_near_cre
 #include <turtle/mock.hpp>
 //]
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
+
 //[ custom_policy
 template< typename Result >
 struct custom_policy
@@ -166,6 +171,10 @@ struct custom_policy
     }
 };
 //]
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 #undef MOCK_ERROR_POLICY
 //[ define_custom_policy
