@@ -11,7 +11,6 @@
 #include <turtle/detail/function.hpp>
 #include <turtle/constraints.hpp>
 #include <boost/test/auto_unit_test.hpp>
-#include <boost/utility/result_of.hpp>
 #include <functional>
 #include <memory>
 #include <type_traits>
@@ -22,10 +21,10 @@ namespace
 {
     std::function< void() > static_f;
 
-    static_assert( std::is_same< void, boost::result_of< mock::detail::function< void() >() >::type >::value, "!");
-    static_assert( std::is_same< int, boost::result_of< mock::detail::function< int() >() >::type >::value, "!");
-    static_assert( std::is_same< void, boost::result_of< mock::detail::function< void( float ) >( float ) >::type >::value, "!");
-    static_assert( std::is_same< int, boost::result_of< mock::detail::function< int( float ) >( float ) >::type >::value, "!");
+    static_assert( std::is_same< void, decltype( mock::detail::function< void() >{}() ) >::value, "!");
+    static_assert( std::is_same< int, decltype( mock::detail::function< int() >{}() ) >::value, "!");
+    static_assert( std::is_same< void, decltype( mock::detail::function< void( float ) >{}( std::declval<float>() ) ) >::value, "!");
+    static_assert( std::is_same< int, decltype( mock::detail::function< int( float ) >{}( std::declval<float>() ) ) >::value, "!");
 }
 
 // functor
