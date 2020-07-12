@@ -10,7 +10,7 @@
 #define MOCK_IS_FUNCTOR_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <boost/type_traits/make_void.hpp>
+#include "void_t.hpp"
 #include <type_traits>
 
 namespace mock
@@ -22,7 +22,7 @@ namespace detail
     struct is_functor : std::false_type
     {};
     template< typename F, typename Arg >
-    struct is_functor< F, Arg, boost::void_t<decltype( std::declval<F>()( std::declval<Arg>() ) )> >: std::true_type
+    struct is_functor< F, Arg, void_t<decltype( std::declval<F>()( std::declval<Arg>() ) )> >: std::true_type
     {};
 }
 } // mock
