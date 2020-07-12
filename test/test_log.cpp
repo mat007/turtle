@@ -23,7 +23,7 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #endif
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <functional>
 #include <vector>
 #include <deque>

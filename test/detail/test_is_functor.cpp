@@ -17,7 +17,9 @@
 #pragma warning( pop )
 #endif
 #include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
+#include <boost/bind/placeholders.hpp>
+#include <boost/version.hpp>
 #include <functional>
 
 namespace
@@ -73,9 +75,14 @@ BOOST_AUTO_TEST_CASE( std_bind_first_is_functor )
 
 BOOST_AUTO_TEST_CASE( bind_is_functor )
 {
-    is_functor( boost::bind( &f0 ) );
-    is_functor( boost::bind( &f1, _1 ) );
-    is_functor( boost::bind( &f2, "", _1 ) );
+    {
+#if BOOST_VERSION >= 106000
+        using namespace boost::placeholders;
+#endif
+        is_functor( boost::bind( &f0 ) );
+        is_functor( boost::bind( &f1, _1 ) );
+        is_functor( boost::bind( &f2, "", _1 ) );
+    }
     is_functor( std::bind( &f0 ) );
     is_functor( std::bind( &f1, std::placeholders::_1 ) );
     is_functor( std::bind( &f2, "", std::placeholders::_1 ) );
