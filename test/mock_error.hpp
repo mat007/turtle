@@ -11,9 +11,9 @@
 
 #define MOCK_ERROR_POLICY mock_error
 #include <turtle/detail/singleton.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/test/unit_test.hpp>
 #include <stdexcept>
+#include <sstream>
 
 struct mock_error_data_t : mock::detail::singleton< mock_error_data_t >
 {
@@ -68,18 +68,17 @@ struct mock_error
     {}
 
     template< typename Context >
-    static void call( const Context& /*context*/,
-        const char* /*file*/, int /*line*/ )
+    static void call( const Context& /*context*/, const char* /*file*/, int /*line*/ )
     {
         mock_error_data.call();
     }
 
     template< typename Context >
-    static void fail( const std::string& message, const Context& context,
-        const char* file = "", int line = 0 )
+    static void fail( const std::string& message, const Context& context, const char* file = "", int line = 0 )
     {
-        mock_error_data.fail( message,
-            boost::lexical_cast< std::string >( context ), file, line );
+        std::ostringstream s;
+        s << context; // Context can be streamed
+        mock_error_data.fail( message, s.str(), file, line );
     }
 };
 

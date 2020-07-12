@@ -10,7 +10,6 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/assign.hpp>
 #include <boost/weak_ptr.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
 #ifdef BOOST_MSVC
 #pragma warning( push, 0 )
@@ -55,13 +54,19 @@ BOOST_AUTO_TEST_CASE( pointer_yields_its_value_when_serialized )
 {
     {
         int i = 0;
+        std::ostringstream s;
+        s << &i;
+        const std::string pointerValue = s.str();
         BOOST_CHECK_NE( "?", to_string( &i ) );
-        BOOST_CHECK_EQUAL( boost::lexical_cast< std::string >( &i ), to_string( &i ) );
+        BOOST_CHECK_EQUAL( pointerValue, to_string( &i ) );
     }
     {
         const int i = 0;
+        std::ostringstream s;
+        s << &i;
+        const std::string pointerValue = s.str();
         BOOST_CHECK_NE( "?", to_string( &i ) );
-        BOOST_CHECK_EQUAL( boost::lexical_cast< std::string >( &i ), to_string( &i ) );
+        BOOST_CHECK_EQUAL( pointerValue, to_string( &i ) );
     }
 }
 
@@ -630,7 +635,7 @@ BOOST_AUTO_TEST_CASE( mock_detail_template_template_streamable_yields_its_value_
 
 BOOST_AUTO_TEST_CASE( unsigned_char_is_serialized_as_int )
 {
-    BOOST_CHECK_EQUAL( boost::lexical_cast< std::string >( static_cast< int >( 'a' ) ), to_string< unsigned char >( 'a' ) );
+    BOOST_CHECK_EQUAL( std::to_string( static_cast< int >( 'a' ) ), to_string< unsigned char >( 'a' ) );
 }
 
 namespace
