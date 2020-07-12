@@ -593,7 +593,9 @@ namespace
     template< typename T1, typename T2 >
     struct my_base
     {};
-    MOCK_BASE_CLASS( my_comma_mock, my_base< int BOOST_PP_COMMA() int > )
+    MOCK_BASE_CLASS( my_comma_mock, my_base< int, int > )
+    {};
+    MOCK_BASE_CLASS( my_boost_pp_comma_mock, my_base< int BOOST_PP_COMMA() int > )
     {};
 }
 
