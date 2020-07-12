@@ -7,7 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <turtle/detail/is_functor.hpp>
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #ifdef BOOST_MSVC
 #pragma warning( push, 0 )
 #endif

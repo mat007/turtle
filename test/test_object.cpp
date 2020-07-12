@@ -10,7 +10,7 @@
 #include <turtle/reset.hpp>
 #include <turtle/verify.hpp>
 #include <turtle/detail/function.hpp>
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <memory>
 
 namespace
