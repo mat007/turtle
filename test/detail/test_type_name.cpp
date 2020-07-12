@@ -8,14 +8,16 @@
 
 #include <turtle/detail/type_name.hpp>
 #include <boost/test/auto_unit_test.hpp>
-#include <boost/lexical_cast.hpp>
+#include <sstream>
 
 namespace
 {
     template< typename T >
     std::string to_string( const T& t)
     {
-        return boost::lexical_cast< std::string >( mock::detail::make_type_name(t) );
+        std::ostringstream s;
+        s << mock::detail::make_type_name(t); // Typename can be streamed
+        return s.str();
     }
 }
 
@@ -111,7 +113,7 @@ BOOST_AUTO_TEST_CASE( name_of_type_in_unnamed_inner_namespace_is_extracted )
 BOOST_AUTO_TEST_CASE( name_of_local_type_is_extracted )
 {
     struct my_local_type {};
-    BOOST_CHECK_EQUAL( "my_local_type", boost::lexical_cast< std::string >( mock::detail::make_type_name<my_local_type>() ) );
+    BOOST_CHECK_EQUAL( "my_local_type", to_string( my_local_type() ) );
 }
 
 namespace
