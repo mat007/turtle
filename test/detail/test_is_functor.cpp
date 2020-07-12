@@ -28,12 +28,12 @@ namespace
     template< typename T >
     void is_functor( T )
     {
-        static_assert( mock::detail::is_functor< T, int >::value, "Should be functor");
+        static_assert( mock::detail::is_functor< T, int >::value, "Should be a functor taking an int");
     }
     template< typename T >
     void is_not_functor( T )
     {
-        static_assert( !mock::detail::is_functor< T, int >::value, "Should not be a functor" );
+        static_assert( !mock::detail::is_functor< T, int >::value, "Should not be a functor taking an int" );
     }
 
     void f0() {}
