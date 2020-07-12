@@ -14,7 +14,7 @@ endif()
 # Enable warnings
 option(TURTLE_WERROR "Treat warnings as errors" ON)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(TurtleTestMain INTERFACE -Wall -Wextra -pedantic -Wno-long-long)
+  target_compile_options(TurtleTestMain INTERFACE -Wall -Wextra -pedantic)
   include(CheckCXXCompilerFlag)
   check_cxx_compiler_flag(-Wunused-function TURTLE_CXX_UNUSED_FUNCTION)
   if(TURTLE_CXX_UNUSED_FUNCTION)
