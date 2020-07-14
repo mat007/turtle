@@ -124,19 +124,19 @@ namespace detail
         template< typename T >
         T& store( T&& t )
         {
-            v_.reset( new value_imp< T >( std::move( t ) ) );
+            v_ = std::make_shared< value_imp<T> >( std::move( t ) );
             return static_cast< value_imp< T >& >( *v_ ).t_;
         }
         template< typename T >
         T& store( const T& t )
         {
-            v_.reset( new value_imp< T >( t ) );
+            v_ = std::make_shared< value_imp<T> >( t );
             return static_cast< value_imp< T >& >( *v_ ).t_;
         }
         template< typename T >
         std::remove_reference_t< Result >& store( T* t )
         {
-            v_.reset( new value_imp< Result >( t ) );
+            v_ = std::make_shared< value_imp<Result> >( t );
             return static_cast< value_imp< Result >& >( *v_ ).t_;
         }
 
