@@ -39,6 +39,8 @@ addons:
     - xsltproc
     - docbook-xsl
     - docbook-xml
+    - python-yaml
+    - lcov
 
 before_install:
     - DOCBOOK_XSL_DIR=/usr/share/xml/docbook/stylesheet/docbook-xsl
@@ -78,25 +80,14 @@ script:
     - ctest --output-on-failure --build-config Debug
 
 after_success:
-    - COVERALS_DIR=$PROJECT_DIR/coverals
-
-    # Copying Coveralls data to a separate folder
-    - mkdir -p $COVERALS_DIR
-    - find $PROJECT_DIR/test/bin/ -name "*.gcda" -exec cp "{}" $COVERALS_DIR/ \;
-    - find $PROJECT_DIR/test/bin/ -name "*.gcno" -exec cp "{}" $COVERALS_DIR/ \;
-
-    # Preparing Coveralls data by
-    # ... installing the tools
-    - sudo apt-get install -qq python-yaml lcov
-    # ... changing data format to a readable one
-    - lcov --directory $COVERALS_DIR --base-directory $PROJECT_DIR/test --capture --output-file $COVERALS_DIR/coverage.info
-
-    # ... erasing /test/ /example/ folder data
-    - lcov --remove $COVERALS_DIR/coverage.info "/usr*" "/test/*" $IGNORE_COVERAGE "tests/*" "*/doc/examples/*" -o $COVERALS_DIR/coverage.info
-    # Output what was collected
-    - lcov --list $COVERALS_DIR/coverage.info
-
-    # Sending data to Coveralls
     - cd $PROJECT_DIR
+    # Preparing Coveralls data by
+    # ... changing data format to a readable one
+    - lcov --directory "$PROJECT_DIR/test" --capture --output-file coverage.info
+    # ... erasing /test/ /doc/example/ folder data
+    - lcov --remove coverage.info "/usr*" $IGNORE_COVERAGE "*/test/*" "*/doc/example/*" -o coverage.info
+    # Output what was collected
+    - lcov --list coverage.info
+    # Sending data to Coveralls
     - gem install coveralls-lcov
-    - coveralls-lcov $COVERALS_DIR/coverage.info
+    - coveralls-lcov coverage.info
