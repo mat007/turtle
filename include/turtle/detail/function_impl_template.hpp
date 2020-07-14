@@ -112,17 +112,9 @@ namespace detail
                 , lock_( m )
             {}
             wrapper(const wrapper&) = delete;
-            wrapper( wrapper&& x )
-                : base_type( x )
-                , lock_( std::move( x.lock_) )
-            {}
+            wrapper( wrapper&& x ) = default;
             wrapper& operator=(const wrapper&) = delete;
-            wrapper& operator=( wrapper&& x )
-            {
-                static_cast< base_type& >( *this ) = x;
-                lock_ = std::move( x.lock_ );
-                return *this;
-            }
+            wrapper& operator=( wrapper&& x ) = default;
             wrapper& once()
             {
                 this->e_->invoke( std::make_unique< detail::once >() );
