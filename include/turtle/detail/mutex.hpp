@@ -48,19 +48,9 @@ namespace detail
                 m_->unlock();
         }
         lock( const lock& ) = delete;
-        lock( lock&& x )
-            : m_( x.m_ )
-        {
-            // Explicit reset to avoid unlock in destructor
-            x.m_.reset();
-        }
+        lock( lock&& x ) = default;
         lock& operator=( const lock& ) = delete;
-        lock& operator=( lock&& x )
-        {
-            m_ = x.m_;
-            x.m_.reset();
-            return *this;
-        }
+        lock& operator=( lock&& x ) = default;
 
     private:
         std::shared_ptr< mutex > m_;

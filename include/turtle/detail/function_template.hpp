@@ -21,15 +21,6 @@ namespace detail
         BOOST_PP_ENUM_TRAILING_PARAMS(MOCK_NUM_ARGS, typename T) >
     class function< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
     {
-    public:
-        typedef R result_type;
-
-        template< typename Args >
-        struct sig
-        {
-            typedef R type;
-        };
-
     private:
         typedef function_impl<
             R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )

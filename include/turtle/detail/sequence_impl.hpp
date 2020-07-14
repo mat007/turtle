@@ -54,9 +54,7 @@ namespace detail
         }
 
     private:
-        typedef std::vector< void* > elements_type;
-
-        elements_type elements_;
+        std::vector< void* > elements_;
         const std::shared_ptr< mutex > mutex_;
     };
 }
