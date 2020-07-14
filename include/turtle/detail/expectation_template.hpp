@@ -178,22 +178,22 @@ namespace detail
         expectation& with(
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
         {
-            matcher_.reset(
-                new single_matcher<
+            matcher_ = std::make_shared<
+                single_matcher<
                     void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, Constraint_) ),
                     void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-                >( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, c) ) );
+                >>( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, c) );
             return *this;
         }
 #if MOCK_NUM_ARGS > 1
         template< typename Constraint >
         expectation& with( const Constraint& c )
         {
-            matcher_.reset(
-                new multi_matcher<
+            matcher_ = std::make_shared<
+                multi_matcher<
                     Constraint,
                     void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-                >( c ) );
+                >>( c );
             return *this;
         }
 #endif

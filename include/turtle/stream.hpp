@@ -10,6 +10,7 @@
 #define MOCK_STREAM_HPP_INCLUDED
 
 #include "config.hpp"
+#include <memory>
 #include <ostream>
 
 namespace mock
@@ -69,16 +70,9 @@ namespace conversion
     struct any
     {
         template< typename T >
-        any( const T& t )
-            : h_( new holder_imp< T >( t ) )
+        any( const T& t ): h_( std::make_unique< holder_imp<T> >( t ) )
         {}
-        any(const any&) = delete;
-        any& operator=(const any&) = delete;
-        ~any()
-        {
-            delete h_;
-        }
-        holder* h_;
+        std::unique_ptr<holder> h_;
     };
 }
 }
