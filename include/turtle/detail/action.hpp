@@ -25,7 +25,16 @@ namespace detail
         typedef std::function< Signature > functor_type;
         typedef std::function< Result() > action_type;
 
+    protected:
+        // Meant to be subclassed and not be directly used
+        // Non-relocatable (contained functions may wrap references/pointers which could be invalidated)
+        action_base() = default;
+        action_base(const action_base&) = delete;
+        action_base(action_base&&) = delete;
+        action_base& operator=(const action_base&) = delete;
+        action_base& operator=(action_base&&) = delete;
     public:
+
         const functor_type& functor() const
         {
             return f_;
@@ -91,11 +100,6 @@ namespace detail
         }
 
     private:
-        template< typename Value >
-        static Value&& move( Value& t )
-        {
-            return std::move( t );
-        }
         struct value
         {
             value() = default;
@@ -106,41 +110,28 @@ namespace detail
         template< typename T >
         struct value_imp : value
         {
-            typedef std::remove_const_t<std::remove_reference_t<T>> value_type;
+            typedef std::remove_const_t<std::remove_reference_t<T>> type;
 
-            value_imp( value_type&& t )
-                : t_( std::move( t ) )
+            template< typename U >
+            value_imp( U&& t ) : t_( std::forward<U>( t ) )
             {}
-            value_imp( const value_type& t )
-                : t_( t )
-            {}
-            template< typename Y >
-            value_imp( Y* y )
-                : t_( y )
-            {}
-            value_type t_;
+            type t_;
         };
 
         template< typename T >
-        T& store( T&& t )
+        typename value_imp<T>::type& store( T&& t )
         {
-            v_ = std::make_shared< value_imp<T> >( std::move( t ) );
-            return static_cast< value_imp< T >& >( *v_ ).t_;
-        }
-        template< typename T >
-        T& store( const T& t )
-        {
-            v_ = std::make_shared< value_imp<T> >( t );
+            v_ = std::make_unique< value_imp<T> >( std::forward<T>( t ) );
             return static_cast< value_imp< T >& >( *v_ ).t_;
         }
         template< typename T >
         std::remove_reference_t< Result >& store( T* t )
         {
-            v_ = std::make_shared< value_imp<Result> >( t );
+            v_ = std::make_unique< value_imp<Result> >( t );
             return static_cast< value_imp< Result >& >( *v_ ).t_;
         }
 
-        std::shared_ptr< value > v_;
+        std::unique_ptr< value > v_;
     };
 
     template< typename Signature >
@@ -159,14 +150,6 @@ namespace detail
         : public action_base< std::auto_ptr< Result >, Signature >
     {
     public:
-        action() = default;
-        action( const action& rhs )
-            : v_( rhs.v_.release() )
-        {
-            if( v_.get() )
-                returns( std::ref( v_ ) );
-        }
-
         template< typename Y >
         void returns( Y* r )
         {

@@ -125,32 +125,32 @@ namespace detail
             }
             wrapper& once()
             {
-                this->e_->invoke( std::make_shared< detail::once >() );
+                this->e_->invoke( std::make_unique< detail::once >() );
                 return *this;
             }
             wrapper& never()
             {
-                this->e_->invoke( std::make_shared< detail::never >() );
+                this->e_->invoke( std::make_unique< detail::never >() );
                 return *this;
             }
             wrapper& exactly( std::size_t count )
             {
-                this->e_->invoke( std::make_shared< detail::exactly >( count ) );
+                this->e_->invoke( std::make_unique< detail::exactly >( count ) );
                 return *this;
             }
             wrapper& at_least( std::size_t min )
             {
-                this->e_->invoke( std::make_shared< detail::at_least >( min ) );
+                this->e_->invoke( std::make_unique< detail::at_least >( min ) );
                 return *this;
             }
             wrapper& at_most( std::size_t max )
             {
-                this->e_->invoke( std::make_shared< detail::at_most >( max ) );
+                this->e_->invoke( std::make_unique< detail::at_most >( max ) );
                 return *this;
             }
             wrapper& between( std::size_t min, std::size_t max )
             {
-                this->e_->invoke( std::make_shared< detail::between >( min, max ) );
+                this->e_->invoke( std::make_unique< detail::between >( min, max ) );
                 return *this;
             }
 
@@ -217,14 +217,14 @@ namespace detail
         wrapper expect( const char* file, int line )
         {
             lock _( mutex_ );
-            expectations_.push_back( expectation_type( file, line ) );
+            expectations_.emplace_back( file, line );
             valid_ = true;
             return wrapper( mutex_, expectations_.back() );
         }
         wrapper expect()
         {
             lock _( mutex_ );
-            expectations_.push_back( expectation_type() );
+            expectations_.emplace_back( );
             valid_ = true;
             return wrapper( mutex_, expectations_.back() );
         }

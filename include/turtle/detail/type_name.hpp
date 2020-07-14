@@ -45,9 +45,12 @@ namespace detail
             const char* name = info.name();
 #ifdef __GNUC__
             int status = 0;
-            std::shared_ptr< char > demangled(
-                abi::__cxa_demangle( name, 0, 0, &status ),
-                &std::free );
+            struct Deleter
+            {
+                void operator()(const void* p) { std::free(const_cast<void*>(p)); }
+            };
+            std::unique_ptr< const char, Deleter > demangled(
+                abi::__cxa_demangle( name, 0, 0, &status ));
             if( ! status && demangled )
                 serialize( s, demangled.get() );
             else
