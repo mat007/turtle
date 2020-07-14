@@ -537,6 +537,19 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_valu
     }
     {
         mock::detail::function< std::auto_ptr< int >() > f;
+        f.expect().once().returns( new int( 1 ) );
+        f.expect().once().returns( new int( 2 ) );
+        f.expect().once().returns( new int( 3 ) );
+        f.expect().returns( new int( 4 ) );
+        BOOST_CHECK_EQUAL( 1, *f() );
+        BOOST_CHECK_EQUAL( 2, *f() );
+        BOOST_CHECK_EQUAL( 3, *f() );
+        BOOST_CHECK_EQUAL( 4, *f() );
+        BOOST_CHECK( ! f().get() );
+        CHECK_CALLS( 5 );
+    }
+    {
+        mock::detail::function< std::auto_ptr< int >() > f;
         f.expect().returns( std::auto_ptr< int >( new int( 3 ) ) );
         BOOST_CHECK_EQUAL( 3, *f() );
         BOOST_CHECK( ! f().get() );

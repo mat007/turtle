@@ -133,9 +133,9 @@ namespace detail
     {
     public:
         expectation()
-            : invocation_( std::make_shared< unlimited >() )
+            : invocation_( std::make_unique< unlimited >() )
             , matcher_(
-                std::make_shared<
+                std::make_unique<
                     default_matcher<
                         void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
                     >
@@ -144,9 +144,9 @@ namespace detail
             , line_( 0 )
         {}
         expectation( const char* file, int line )
-            : invocation_( std::make_shared< unlimited >() )
+            : invocation_( std::make_unique< unlimited >() )
             , matcher_(
-                std::make_shared<
+                std::make_unique<
                     default_matcher<
                         void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
                     >
@@ -166,9 +166,9 @@ namespace detail
                 sequence->remove( this );
         }
 
-        void invoke( const std::shared_ptr< invocation >& i )
+        void invoke( std::unique_ptr< invocation > i )
         {
-            invocation_ = i;
+            invocation_ = std::move(i);
         }
 
 #ifndef MOCK_NUM_ARGS_0
@@ -178,7 +178,7 @@ namespace detail
         expectation& with(
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
         {
-            matcher_ = std::make_shared<
+            matcher_ = std::make_unique<
                 single_matcher<
                     void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, Constraint_) ),
                     void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
@@ -189,7 +189,7 @@ namespace detail
         template< typename Constraint >
         expectation& with( const Constraint& c )
         {
-            matcher_ = std::make_shared<
+            matcher_ = std::make_unique<
                 multi_matcher<
                     Constraint,
                     void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
@@ -250,8 +250,8 @@ namespace detail
         }
 
     private:
-        std::shared_ptr< invocation > invocation_;
-        std::shared_ptr<
+        std::unique_ptr< invocation > invocation_;
+        std::unique_ptr<
             matcher_base<
                 void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
             >
