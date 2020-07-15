@@ -6,9 +6,11 @@
 
 import modules ;
 
-local boost = [ modules.peek : BOOST ] ;
+if BOOST_ROOT
+{
+    local boost = [ modules.peek : BOOST_ROOT ] ;
 
-project mock : requirements <include>$(boost) <include>. ;
+    project mock : requirements <include>$(boost) ;
 
-# This seems to prevent some Boost.Build errors that otherwise occur :-(
-use-project /boost : $(boost) ;
+    #use-project /boost : $(boost) ;
+}
