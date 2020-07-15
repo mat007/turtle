@@ -1,0 +1,34 @@
+name: Create Release
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  TestDocuCreation:
+    name: TestDocuCreation
+    runs-on: ubuntu-latest
+    env:
+      DEP_DIR: ${{github.workspace}}/dependencies
+      BOOST_VERSION: 1.71.0
+      BOOST_ROOT: boost-root
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: boostorg/boost
+          ref: boost-${{env.BOOST_VERSION}}
+          path: ${{env.BOOST_ROOT}}
+          fetch-depth: 1
+      - name: Prepare boost
+        working-directory: ${{env.BOOST_ROOT}}
+        run: |
+          git submodule update --init --jobs 3 tools/boostdep tools/quickbook tools/boostbook
+          python tools/boostdep/depinst/depinst.py --exclude test --git_args '--jobs 3' ../tools/quickbook
+          ./bootstrap.sh || (cat bootstrap.log && false)
+      - name: Install dependencies
+        run: sudo apt-get install xsltproc docbook-xsl docbook-xml
+      - name: Create documentation
+        run: scripts/build_doc.sh
+      - run: tar -czf doc.tar.gz html
+        working-directory: doc
