@@ -1,0 +1,59 @@
+# Copyright 2020 Alexander Grund
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at http://boost.org/LICENSE_1_0.txt)
+
+name: Create Release
+
+on:
+  push:
+    tags:
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    env:
+      DEP_DIR: ${{github.workspace}}/dependencies
+      BOOST_VERSION: 1.71.0
+      BOOST_ROOT: ${{env.DEP_DIR}}/boost
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: boostorg/boost
+          ref: boost-${{env.BOOST_VERSION}}
+          path: ${{env.BOOST_ROOT}}
+          fetch-depth: 1
+      - name: Prepare boost
+        working-directory: ${{env.BOOST_ROOT}}
+        run: |
+          git submodule update --init --jobs 3 tools/boostdep tools/quickbook tools/boostbook
+          python tools/boostdep/depinst/depinst.py --exclude test --git_args '--jobs 3' ../tools/quickbook
+          ./bootstrap.sh || (cat bootstrap.log && false)
+      - name: Install dependencies
+        run: sudo apt-get install xsltproc docbook-xsl docbook-xml
+      - name: Create documentation
+        run: scripts/build_doc.sh
+      - run: tar -czf doc.tar.gz html
+        working-directory: doc
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            C++ mock object library for Boost 
+          draft: true
+          prerelease: false
+      - name: Upload docs
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: doc/doc.tar.gz
+          asset_name: doc.tar.gz
+          asset_content_type: application/tar.gz

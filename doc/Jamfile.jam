@@ -46,7 +46,15 @@ project example
 
 rule compile-examples
 {
-  for name in [ glob example/*.cpp ] { compile $(name) ; }
+  local examples ;
+  for name in [ glob example/*.cpp ]
+  {
+    local compile-target = [ compile $(name) ] ;
+    explicit $(compile-target) ;
+    examples += $(compile-target) ;
+  }
+  return $(examples) ;
 }
 
 alias mock_examples : [ compile-examples ] ;
+explicit mock_examples ;
