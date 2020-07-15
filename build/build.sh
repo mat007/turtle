@@ -8,25 +8,26 @@
 copy()
 {
     for dir; do true; done
-    mkdir -p $dir
-    cp $@
+    mkdir -p "$dir"
+    cp "$@"
 }
 
-set -ex
+set -eux
 
-export BOOST=$BOOST_ROOT
+export BOOST="$BOOST_ROOT"
+PROJECT_DIR="$(pwd)"
 
-cd ../test
-$BOOST/b2 -q "$@"
-cd ../build
+cd "$BOOST"
+./b2 "$PROJECT_DIR/test" -q "$@"
 
-export BOOSTBOOK_DIR=../bin/turtle/boostbook
-copy -r "$BOOST"/tools/boostbook/xsl $BOOSTBOOK_DIR
-copy -r "$BOOST"/tools/boostbook/dtd $BOOSTBOOK_DIR
-copy -r boostbook/* $BOOSTBOOK_DIR
-copy "$BOOST"/doc/src/boostbook.css ../doc/html
-copy "$BOOST"/doc/src/images/*.png ../doc/html/images
-copy "$BOOST"/doc/src/images/callouts/*.png ../doc/html/images/callouts
-cd ../doc
-$BOOST/b2 -q "$@"
-cd ../build
+cd "$PROJECT_DIR"
+export BOOSTBOOK_DIR="$PROJECT_DIR/bin/turtle/boostbook"
+copy -r "$BOOST"/tools/boostbook/xsl "$BOOSTBOOK_DIR"
+copy -r "$BOOST"/tools/boostbook/dtd "$BOOSTBOOK_DIR"
+copy -r build/boostbook/* "$BOOSTBOOK_DIR"
+copy "$BOOST"/doc/src/boostbook.css doc/html
+copy "$BOOST"/doc/src/images/*.png doc/html/images
+copy "$BOOST"/doc/src/images/callouts/*.png doc/html/images/callouts
+
+cd "$BOOST"
+./b2 "$PROJECT_DIR/doc" -q "$@"

@@ -33,7 +33,8 @@ environment:
       CMAKE: true
 
 install:
-  - cd %APPVEYOR_BUILD_FOLDER%\doc
+  - mkdir %APPVEYOR_BUILD_FOLDER%\bin
+  - cd %APPVEYOR_BUILD_FOLDER%\bin
   - appveyor-retry powershell Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/iconv-1.9.2.win32.zip -OutFile iconv.zip
   - 7z e iconv.zip iconv.dll -r
   - appveyor-retry powershell Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/libxml2-2.7.8.win32.zip -OutFile libxml2.zip
@@ -45,13 +46,14 @@ install:
   - xsltproc -V
 
 build_script:
+  - set PATH=%PATH%;%APPVEYOR_BUILD_FOLDER%\bin
   - set BOOST_ROOT=C:\Libraries\boost_%BOOST%
   - cd %BOOST_ROOT%
   - call bootstrap.bat
-  - cd %APPVEYOR_BUILD_FOLDER%\build
+  - cd %APPVEYOR_BUILD_FOLDER%
   - if NOT "%CXX_STANDARD%"=="" set CXX_FLAGS=cxxflags=/std:c++%CXX_STANDARD%
   - set BUILD_ARGS=address-model=32,64 variant=debug,release
-  - call build.bat --toolset=%TOOLSET% %CXX_FLAGS% -j3
+  - call build\build.bat --toolset=%TOOLSET% %CXX_FLAGS% -j3
 
 for:
   - matrix:
