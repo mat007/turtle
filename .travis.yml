@@ -3,11 +3,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 # Copyright Antony Polukhin 2014.
-
-#
-# See https://svn.boost.org/trac/boost/wiki/TravisCoverals for description of this file
-# and how it can be used with Boost libraries.
-#
+# Copyright Alexander Grund 2020.
 
 language: cpp
 
@@ -48,10 +44,6 @@ before_install:
 
     - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
     - gcc --version
-
-    # Set this to the name of your Boost library
-    # Autodetect library name by using the following code: - PROJECT_TO_TEST=$(basename $(pwd))
-    - PROJECT_TO_TEST=$(basename $(pwd))
 
     # Files, which coverage results must be ignored (files from other projects). Example: - IGNORE_COVERAGE='*/boost/progress.hpp */filesystem/src/path.cpp'
     - IGNORE_COVERAGE='*/boost-local/*'
