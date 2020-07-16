@@ -7,3 +7,4 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #define MOCK_VERSION @MOCK_VERSION@
+#define TURTLE_VERSION "@turtle_VERSION@"

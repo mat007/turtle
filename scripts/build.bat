@@ -19,7 +19,7 @@ cd %PROJECT_DIR%
 set BOOSTBOOK_DIR=%PROJECT_DIR%\bin\turtle\boostbook
 xcopy /Y /S /Q /I %BOOST%\tools\boostbook\xsl %BOOSTBOOK_DIR%\xsl
 xcopy /Y /S /Q /I %BOOST%\tools\boostbook\dtd %BOOSTBOOK_DIR%\dtd
-xcopy /Y /S /Q /I build\boostbook %BOOSTBOOK_DIR%
+xcopy /Y /S /Q /I doc\boostbook %BOOSTBOOK_DIR%
 xcopy /Y /S /Q /I %BOOST%\doc\src\boostbook.css doc\html
 xcopy /Y /S /Q /I %BOOST%\doc\src\images\*.png doc\html\images
 xcopy /Y /S /Q /I %BOOST%\doc\src\images\callouts\*.png doc\html\images\callouts
