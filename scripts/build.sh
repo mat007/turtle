@@ -7,14 +7,14 @@
 
 set -eux
 
-export BOOST="$BOOST_ROOT"
+# Need to set BOOST_ROOT and run from the source root directory
 PROJECT_DIR="$(pwd)"
 
-cd "$BOOST"
+cd "$BOOST_ROOT"
 ./b2 "$PROJECT_DIR/test" -q "$@"
 
 cd "$PROJECT_DIR"
 scripts/build_doc.sh "$@"
 
-cd "$BOOST"
+cd "$BOOST_ROOT"
 ./b2 "$PROJECT_DIR/doc//mock_examples" -q "$@"

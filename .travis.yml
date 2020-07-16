@@ -60,20 +60,20 @@ before_install:
     # Cloning Boost libraries (fast nondeep cloning)
     - PROJECT_DIR=`pwd`
     - git --version
-    - BOOST=$HOME/boost-local
-    - git clone -b $BRANCH_TO_TEST --depth 1 https://github.com/boostorg/boost.git $BOOST
-    - cd $BOOST
+    - BOOST_ROOT=$HOME/boost-local
+    - git clone -b $BRANCH_TO_TEST --depth 1 https://github.com/boostorg/boost.git $BOOST_ROOT
+    - cd $BOOST_ROOT
     - git submodule update --init --depth 1
     - ./bootstrap.sh
     - ./b2 headers
 
 script:
     - cd $PROJECT_DIR
-    - export BOOST_ROOT=$BOOST
+    - export BOOST_ROOT
     # `--coverage` flags required to generate coverage info for Coveralls
     - scripts/build.sh --toolset=$CC "cxxflags=-std=c++$CXX_STANDARD -Wno-unused-local-typedefs -Wno-unused-function -Wno-deprecated-declarations --coverage" "linkflags=--coverage" -j3
     # CMake build
-    - cd $BOOST && ./b2 --with-test --with-thread --with-chrono --with-system --with-atomic --with-date_time -a -j3 # Build required libs
+    - cd $BOOST_ROOT && ./b2 --with-test --with-thread --with-chrono --with-system --with-atomic --with-date_time -a -j3 # Build required libs
     - mkdir $PROJECT_DIR/build && cd $PROJECT_DIR/build
     - cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-std=c++$CXX_STANDARD"
     - cmake --build . --config Debug -- -j3
