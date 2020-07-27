@@ -366,6 +366,8 @@ namespace
         {}
 
         virtual void m1() = 0;
+        virtual void m10() const = 0;
+        virtual void m11() = 0;
     };
 
     MOCK_BASE_CLASS( variadic, base )
@@ -373,8 +375,10 @@ namespace
         MOCK_METHOD( m1, 0 )
         MOCK_METHOD( m2, 0, void() )
         MOCK_METHOD( m3, 0, void(), m3 )
+        MOCK_CONST_METHOD( m10, 0 )
         MOCK_CONST_METHOD( m4, 0, void() )
         MOCK_CONST_METHOD( m5, 0, void(), m5 )
+        MOCK_NON_CONST_METHOD( m11, 0 )
         MOCK_NON_CONST_METHOD( m6, 0, void() )
         MOCK_NON_CONST_METHOD( m7, 0, void(), m7 )
         MOCK_STATIC_METHOD( m8, 0, void() )
