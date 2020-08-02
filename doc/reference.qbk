@@ -87,13 +87,31 @@ Deriving from mock::object is optional but provides the additional following ben
 
 Synopsis :
 
- MOCK_METHOD( [calling convention] name, arity[, signature[, identifier]] )             // generates both const and non-const methods
- MOCK_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )       // generates only the const version of the method
- MOCK_NON_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )   // generates only the non-const version of the method
- 
- MOCK_METHOD_TPL( [calling convention] name, arity, signature[, identifier] )           // must be used if the signature uses a template parameter of the class, generates both const and non-const methods
- MOCK_CONST_METHOD_TPL( [calling convention] name, arity, signature[, identifier] )     // must be used if the signature uses a template parameter of the class, generates only the const version of the method
- MOCK_NON_CONST_METHOD_TPL( [calling convention] name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method
+ MOCK_METHOD( [calling convention] name, arity[, signature[, identifier]] )                            // generates both const and non-const methods
+ MOCK_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )                      // generates only the const version of the method
+ MOCK_NON_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )                  // generates only the non-const version of the method
+ MOCK_OVERRIDE_METHOD( [calling convention] name, arity[, signature[, identifier]]  )                  // generates both const and non-const methods with override specifier
+ MOCK_CONST_OVERRIDE_METHOD( [calling convention] name, arity[, signature[, identifier]] )             // generates only the const version of the method with override specifier
+ MOCK_NON_CONST_OVERRIDE_METHOD( [calling convention] name, arity[, signature[, identifier]] )         // generates only the non-const version of the method with override specifier
+ MOCK_NOEXCEPT_METHOD( [calling convention] name, arity[, signature[, identifier]] )                   // generates both const and non-const methods with noexcept specifier
+ MOCK_CONST_NOEXCEPT_METHOD( [calling convention] name, arity[, signature[, identifier]] )             // generates only the const version of the method with noexcept specifier
+ MOCK_NON_CONST_NOEXCEPT_METHOD( [calling convention] name, arity[, signature[, identifier]] )         // generates only the non-const version of the method with noexcept specifier
+ MOCK_NOEXCEPT_OVERRID_METHOD( [calling convention] name, arity[, signature[, identifier]] )           // generates both const and non-const methods with noexcept and override specifier
+ MOCK_CONST_NOEXCEPT_OVERRID_METHOD( [calling convention] name, arity[, signature[, identifier]] )     // generates only the const version of the method with noexcept and override specifier
+ MOCK_NON_CONST_NOEXCEPT_OVERRID_METHOD( [calling convention] name, arity[, signature[, identifier]] ) // generates only the non-const version of the method with noexcept and override specifier
+
+ MOCK_METHOD_TPL( [calling convention] name, arity, signature[, identifier] )                              // must be used if the signature uses a template parameter of the class, generates both const and non-const methods
+ MOCK_CONST_METHOD_TPL( [calling convention] name, arity, signature[, identifier] )                        // must be used if the signature uses a template parameter of the class, generates only the const version of the method
+ MOCK_NON_CONST_METHOD_TPL( [calling convention] name, arity, signature[, identifier] )                    // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method
+ MOCK_OVERRIDE_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]]  )                  // must be used if the signature uses a template parameter of the class, generates both const and non-const methods with override specifier
+ MOCK_CONST_OVERRIDE_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] )             // must be used if the signature uses a template parameter of the class, generates only the const version of the method with override specifier
+ MOCK_NON_CONST_OVERRIDE_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] )         // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method with override specifier
+ MOCK_NOEXCEPT_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] )                   // must be used if the signature uses a template parameter of the class, generates both const and non-const methods with noexcept specifier
+ MOCK_CONST_NOEXCEPT_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] )             // must be used if the signature uses a template parameter of the class, generates only the const version of the method with noexcept specifier
+ MOCK_NON_CONST_NOEXCEPT_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] )         // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method with noexcept specifier
+ MOCK_NOEXCEPT_OVERRID_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] )           // must be used if the signature uses a template parameter of the class, generates both const and non-const methods with noexcept and override specifier
+ MOCK_CONST_NOEXCEPT_OVERRID_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] )     // must be used if the signature uses a template parameter of the class, generates only the const version of the method with noexcept and override specifier
+ MOCK_NON_CONST_NOEXCEPT_OVERRID_METHOD_TPL( [calling convention] name, arity[, signature[, identifier]] ) // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method with noexcept and override specifier
 
 [note If the identifier is omitted it will default to the method name.]
 
@@ -109,13 +127,31 @@ Synopsis :
 
 Synopsis :
  
- MOCK_METHOD_EXT( [calling convention] name, arity, signature, identifier )               // generates both const and non-const methods
- MOCK_CONST_METHOD_EXT( [calling convention] name, arity, signature, identifier )         // generates only the const version of the method
- MOCK_NON_CONST_METHOD_EXT( [calling convention] name, arity, signature, identifier )     // generates only the non-const version of the method
+ MOCK_METHOD_EXT( [calling convention] name, arity, signature, identifier )                            // generates both const and non-const methods
+ MOCK_CONST_METHOD_EXT( [calling convention] name, arity, signature, identifier )                      // generates only the const version of the method
+ MOCK_NON_CONST_METHOD_EXT( [calling convention] name, arity, signature, identifier )                  // generates only the non-const version of the method
+ MOCK_OVERRIDE_METHOD_EXT( [calling convention] name, arity, signature, identifier )                   // generates both const and non-const methods with override specifier
+ MOCK_CONST_OVERRIDE_METHOD_EXT( [calling convention] name, arity, signature, identifier )             // generates only the const version of the method with override specifier
+ MOCK_NON_CONST_OVERRIDE_METHOD_EXT( [calling convention] name, arity, signature, identifier )         // generates only the non-const version of the method with override specifier
+ MOCK_NOEXCEPT_METHOD_EXT( [calling convention] name, arity, signature, identifier )                   // generates both const and non-const methods with noexcept specifier
+ MOCK_CONST_NOEXCEPT_METHOD_EXT( [calling convention] name, arity, signature, identifier )             // generates only the const version of the method with noexcept specifier
+ MOCK_NON_CONST_NOEXCEPT_METHOD_EXT( [calling convention] name, arity, signature, identifier )         // generates only the non-const version of the method with noexcept specifier
+ MOCK_NOEXCEPT_OVERRID_METHOD_EXT( [calling convention] name, arity, signature, identifier )           // generates both const and non-const methods with noexcept and override specifier
+ MOCK_CONST_NOEXCEPT_OVERRID_METHOD_EXT( [calling convention] name, arity, signature, identifier )     // generates only the const version of the method with noexcept and override specifier
+ MOCK_NON_CONST_NOEXCEPT_OVERRID_METHOD_EXT( [calling convention] name, arity, signature, identifier ) // generates only the non-const version of the method with noexcept and override specifier
  
- MOCK_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )           // must be used if the signature uses a template parameter of the class, generates both const and non-const methods
- MOCK_CONST_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )     // must be used if the signature uses a template parameter of the class, generates only the const version of the method
- MOCK_NON_CONST_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier ) // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method
+ MOCK_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )                            // must be used if the signature uses a template parameter of the class, generates both const and non-const methods
+ MOCK_CONST_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )                      // must be used if the signature uses a template parameter of the class, generates only the const version of the method
+ MOCK_NON_CONST_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )                  // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method
+ MOCK_OVERRIDE_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )                   // must be used if the signature uses a template parameter of the class, generates both const and non-const methods with override specifier
+ MOCK_CONST_OVERRIDE_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )             // must be used if the signature uses a template parameter of the class, generates only the const version of the method with override specifier
+ MOCK_NON_CONST_OVERRIDE_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )         // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method with override specifier
+ MOCK_NOEXCEPT_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )                   // must be used if the signature uses a template parameter of the class, generates both const and non-const methods with noexcept specifier
+ MOCK_CONST_NOEXCEPT_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )             // must be used if the signature uses a template parameter of the class, generates only the const version of the method with noexcept specifier
+ MOCK_NON_CONST_NOEXCEPT_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )         // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method with noexcept specifier
+ MOCK_NOEXCEPT_OVERRID_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )           // must be used if the signature uses a template parameter of the class, generates both const and non-const methods with noexcept and override specifier
+ MOCK_CONST_NOEXCEPT_OVERRID_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )     // must be used if the signature uses a template parameter of the class, generates only the const version of the method with noexcept and override specifier
+ MOCK_NON_CONST_NOEXCEPT_OVERRID_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier ) // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method with noexcept and override specifier
 
 Example :
 
@@ -145,6 +181,14 @@ Example :
 
 [member_function_example_8]
 
+Example :
+
+[member_function_example_11]
+
+Example :
+
+[member_function_example_12]
+
 Example for msvc :
 
 [member_function_example_9]
@@ -159,9 +203,11 @@ Example for gcc :
 
 Synopsis :
 
- MOCK_STATIC_METHOD( [calling convention] name, arity, signature[, identifier] )     // if 'identifier' is omitted it will default to 'name'
+ MOCK_STATIC_METHOD( [calling convention] name, arity, signature[, identifier] )           // if 'identifier' is omitted it will default to 'name'
+ MOCK_STATIC_NOEXCEPT_METHOD( [calling convention] name, arity, signature[, identifier] )  // method is genereted with noexcept specifier, if 'identifier' is omitted it will default to 'name'
  
- MOCK_STATIC_METHOD_TPL( [calling convention] name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
+ MOCK_STATIC_METHOD_TPL( [calling convention] name, arity, signature[, identifier] )          // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
+ MOCK_STATIC_NOEXCEPT_METHOD_TPL( [calling convention] name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, method is generetet with noexcept specifier, if 'identifier' is omitted it will default to 'name'
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test, see the related [link turtle.patterns.managing_static_mock_objects pattern section].]
 
@@ -272,6 +318,7 @@ Example for gcc :
 Synopsis :
 
  MOCK_FUNCTION( [calling convention] name, arity, signature[, identifier] ) // if 'identifier' is omitted it will default to 'name'
+ MOCK_NOEXCEPT_FUNCTION( [calling convention] name, arity, signature[, identifier] ) // function is genereted with noexcept specifier,if 'identifier' is omitted it will default to 'name'
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock function, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the mock function at the end of each test, see the related [link turtle.patterns.managing_static_mock_objects pattern section].]
 

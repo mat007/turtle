@@ -9,6 +9,7 @@
 #define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
+#include "../../include/turtle/mock.hpp"
 
 namespace class_example_1
 {
@@ -251,6 +252,38 @@ MOCK_CLASS( mock_class )
 }
 #endif
 
+namespace member_function_example_11
+{
+//[ member_function_example_11
+struct base_class
+{
+    virtual ~base_class() = default;
+    virtual void method( float ) = 0;
+};
+
+MOCK_BASE_CLASS( mock_class, base_class )
+{
+    MOCK_OVERRIDE_METHOD( method, 1 )
+};
+//]
+}
+
+namespace member_function_example_12
+{
+//[ member_function_example_12
+struct base_class
+{
+    virtual ~base_class() = default;
+    virtual void method( float ) noexcept = 0;
+};
+
+MOCK_BASE_CLASS( mock_class, base_class )
+{
+    MOCK_NOEXCEPT_OVERRIDE_METHOD(method, 1 )
+};
+//]
+}
+
 namespace static_member_function_example_1
 {
 //[ static_member_function_example_1
@@ -289,7 +322,7 @@ namespace constructor_example_1
 //[ constructor_example_1
 MOCK_CLASS( mock_class )
 {
-    MOCK_CONSTRUCTOR( mock_class, 2, ( int, const std::string& ), identifier )
+    MOCK_CONSTRUCTOR( mock_class, 1, ( int, const std::string& ), identifier )
 };
 //]
 }

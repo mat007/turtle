@@ -120,6 +120,83 @@
     MOCK_METHOD_AUX(M, n, S, t,, typename) \
     MOCK_METHOD_HELPER(S, t, typename)
 
+#define MOCK_OVERRIDE_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, override, typename) \
+    MOCK_METHOD_AUX(M, n, S, t, const override, typename) \
+    MOCK_METHOD_HELPER(S, t,)
+#define MOCK_CONST_OVERRIDE_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, const override, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
+#define MOCK_NON_CONST_OVERRIDE_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, override, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
+
+#define MOCK_OVERRIDE_METHOD_EXT(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, override,) \
+    MOCK_METHOD_AUX(M, n, S, t, const override,) \
+    MOCK_METHOD_HELPER(S, t,)
+#define MOCK_CONST_OVERRIDE_METHOD_EXT(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, const override,) \
+    MOCK_METHOD_HELPER(S, t,)
+#define MOCK_NON_CONST_OVERRIDE_METHOD_EXT(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, override,) \
+    MOCK_METHOD_HELPER(S, t,)
+
+#define MOCK_OVERRIDE_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, override, typename) \
+    MOCK_METHOD_AUX(M, n, S, t, const override, typename) \
+    MOCK_METHOD_HELPER(S, t,)
+#define MOCK_CONST_OVERRIDE_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, const override, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
+#define MOCK_NON_CONST_OVERRIDE_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, override, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
+
+#define MOCK_NOEXCEPT_OVERRIDE_METHOD_EXT(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, noexcept override,) \
+    MOCK_METHOD_AUX(M, n, S, t, const noexcept override,) \
+    MOCK_METHOD_HELPER(S, t,)
+#define MOCK_CONST_NOEXCEPT_OVERRIDE_METHOD_EXT(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, const noexcept override,) \
+    MOCK_METHOD_HELPER(S, t,)
+#define MOCK_NON_CONST_NOEXCEPT_OVERRIDE_METHOD_EXT(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, noexcept override,) \
+    MOCK_METHOD_HELPER(S, t,)
+
+#define MOCK_NOEXCEPT_OVERRIDE_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, noexcept override, typename) \
+    MOCK_METHOD_AUX(M, n, S, t, const noexcept override, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
+#define MOCK_CONST_NOEXCEPT_OVERRIDE_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, const noexcept override, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
+#define MOCK_NON_CONST_NOEXCEPT_OVERRIDE_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, noexcept override, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
+
+#define MOCK_NOEXCEPT_METHOD_EXT(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, noexcept,) \
+    MOCK_METHOD_AUX(M, n, S, t, const noexcept,) \
+    MOCK_METHOD_HELPER(S, t,)
+#define MOCK_CONST_NOEXCEPT_METHOD_EXT(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, const noexcept,) \
+    MOCK_METHOD_HELPER(S, t,)
+#define MOCK_NON_CONST_NOEXCEPT_METHOD_EXT(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, noexcept,) \
+    MOCK_METHOD_HELPER(S, t,)
+
+#define MOCK_NOEXCEPT_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, noexcept, typename) \
+    MOCK_METHOD_AUX(M, n, S, t, const noexcept, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
+#define MOCK_CONST_NOEXCEPT_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, const noexcept, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
+#define MOCK_NON_CONST_NOEXCEPT_METHOD_EXT_TPL(M, n, S, t) \
+    MOCK_METHOD_AUX(M, n, S, t, noexcept, typename) \
+    MOCK_METHOD_HELPER(S, t, typename)
+
 #define MOCK_CONVERSION_OPERATOR(M, T, t) \
     M T() const { return MOCK_ANONYMOUS_HELPER(t)(); } \
     M T() { return MOCK_ANONYMOUS_HELPER(t)(); } \
@@ -177,6 +254,15 @@
         return MOCK_HELPER(t)( MOCK_FORWARD_PARAMS(n, S, tpn) ); \
     }
 
+#define MOCK_FUNCTION_NOEXCEPT_AUX(F, n, S, t, s, tpn) \
+    MOCK_FUNCTION_HELPER(S, t, s, tpn) \
+    s MOCK_DECL(F, n, S, noexcept,tpn) \
+    { \
+        BOOST_MPL_ASSERT_RELATION( n, ==, \
+            boost::function_types::function_arity< \
+                MOCK_FUNCTION_TYPE((S), tpn) >::value ); \
+        return MOCK_HELPER(t)( MOCK_FORWARD_PARAMS(n, S, tpn) ); \
+    }
 #ifdef MOCK_VARIADIC_MACROS
 
 #define MOCK_VARIADIC_ELEM_0(e0, ...) e0
@@ -197,6 +283,48 @@
         MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
         MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M, ))
 
+#define MOCK_NOEXCEPT_METHOD(M, ...) \
+    MOCK_NOEXCEPT_METHOD_EXT(M, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__ ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M)), \
+        MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M))
+#define MOCK_CONST_NOEXCEPT_METHOD(M, n, ...) \
+    MOCK_CONST_NOEXCEPT_METHOD_EXT(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+#define MOCK_NON_CONST_NOEXCEPT_METHOD(M, n, ...) \
+    MOCK_NON_CONST_NOEXCEPT_METHOD_EXT(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+
+#define MOCK_NOEXCEPT_OVERRIDE_METHOD(M, ...) \
+    MOCK_NOEXCEPT_OVERRIDE_METHOD_EXT(M, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__ ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M)), \
+        MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M))
+#define MOCK_CONST_NOEXCEPT_OVERRIDE_METHOD(M, n, ...) \
+    MOCK_CONST_NOEXCEPT_OVERRIDE_METHOD_EXT(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+#define MOCK_NON_CONST_NOEXCEPT_OVERRIDE_METHOD(M, n, ...) \
+    MOCK_NON_CONST_NOEXCEPT_OVERRIDE_METHOD_EXT(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+
+#define MOCK_OVERRIDE_METHOD(M, ...) \
+    MOCK_OVERRIDE_METHOD_EXT(M, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__ ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M)), \
+        MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M))
+#define MOCK_CONST_OVERRIDE_METHOD(M, n, ...) \
+    MOCK_CONST_OVERRIDE_METHOD_EXT(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+#define MOCK_NON_CONST_OVERRIDE_METHOD(M, n, ...) \
+    MOCK_NON_CONST_OVERRIDE_METHOD_EXT(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+
 #define MOCK_METHOD_TPL(M, n, ...) \
     MOCK_METHOD_EXT_TPL(M, n, \
         MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
@@ -210,10 +338,58 @@
         MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
         MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M, ))
 
+#define MOCK_NOEXCEPT_METHOD_TPL(M, ...) \
+    MOCK_NOEXCEPT_METHOD_EXT_TPL(M, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__ ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M)), \
+        MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M))
+#define MOCK_CONST_NOEXCEPT_METHOD_TPL(M, n, ...) \
+    MOCK_CONST_NOEXCEPT_METHOD_EXT_TPL(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+#define MOCK_NON_CONST_NOEXCEPT_METHOD_TPL(M, n, ...) \
+    MOCK_NON_CONST_NOEXCEPT_METHOD_EXT_TPL(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+
+#define MOCK_NOEXCEPT_OVERRIDE_METHOD_TPL(M, ...) \
+    MOCK_NOEXCEPT_OVERRIDE_METHOD_EXT_TPL(M, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__ ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M)), \
+        MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M))
+#define MOCK_CONST_NOEXCEPT_OVERRIDE_METHOD_TPL(M, n, ...) \
+    MOCK_CONST_NOEXCEPT_OVERRIDE_METHOD_EXT_TPL(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+#define MOCK_NON_CONST_NOEXCEPT_OVERRIDE_METHOD_TPL(M, n, ...) \
+    MOCK_NON_CONST_NOEXCEPT_OVERRIDE_METHOD_EXT_TPL(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+
+#define MOCK_OVERRIDE_METHOD_TPL(M, ...) \
+    MOCK_OVERRIDE_METHOD_EXT_TPL(M, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__ ), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M)), \
+        MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M))
+#define MOCK_CONST_OVERRIDE_METHOD_TPL(M, n, ...) \
+    MOCK_CONST_OVERRIDE_METHOD_EXT_TPL(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+#define MOCK_NON_CONST_OVERRIDE_METHOD_TPL(M, n, ...) \
+    MOCK_NON_CONST_OVERRIDE_METHOD_EXT_TPL(M, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, M))
+
 #define MOCK_FUNCTION(F, n, ...) \
     MOCK_FUNCTION_AUX(F, n, \
         MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), \
         MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), \
+        inline,)
+
+#define MOCK_NOEXCEPT_FUNCTION(F, n, ...) \
+    MOCK_FUNCTION_NOEXCEPT_AUX(F, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
         inline,)
 
 #define MOCK_STATIC_METHOD(F, n, ...) \
@@ -228,6 +404,17 @@
         MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), \
         static, typename)
 
+#define MOCK_STATIC_NOEXCEPT_METHOD(F, n, ...) \
+    MOCK_FUNCTION_NOEXCEPT_AUX(F, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
+        static,)
+
+#define MOCK_STATIC_NOEXCEPT_METHOD_TPL(F, n, ...) \
+    MOCK_FUNCTION_NOEXCEPT_AUX(F, n, \
+        MOCK_VARIADIC_ELEM_0(__VA_ARGS__), \
+        MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F), \
+        static, typename)
 #else // MOCK_VARIADIC_MACROS
 
 #define MOCK_METHOD(M, n) \

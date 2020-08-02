@@ -366,6 +366,20 @@ namespace
         {}
 
         virtual void m1() = 0;
+
+        virtual void m10() = 0;
+        virtual void m10() const = 0;
+        virtual void m11() = 0;
+        virtual void m11() const = 0;
+        virtual void m12() = 0;
+        virtual void m12() const= 0;
+
+        virtual void m30() noexcept = 0;
+        virtual void m30() const noexcept = 0;
+        virtual void m31() noexcept = 0;
+        virtual void m31() const noexcept = 0;
+        virtual void m32() noexcept = 0;
+        virtual void m32() const noexcept = 0;
     };
 
     MOCK_BASE_CLASS( variadic, base )
@@ -379,6 +393,36 @@ namespace
         MOCK_NON_CONST_METHOD( m7, 0, void(), m7 )
         MOCK_STATIC_METHOD( m8, 0, void() )
         MOCK_STATIC_METHOD( m9, 0, void(), m9 )
+        MOCK_STATIC_NOEXCEPT_METHOD( mA 0, void() )
+        MOCK_STATIC_NOEXCEPT_METHOD( mB, 0, void(), mB )
+
+        MOCK_OVERRIDE_METHOD( m11, 0 )
+        MOCK_OVERRIDE_METHOD( m12, 0, void() )
+        MOCK_OVERRIDE_METHOD( m13, 0, void(), m13 )
+        MOCK_CONST_OVERRIDE_METHOD( m14, 0, void() )
+        MOCK_CONST_OVERRIDE_METHOD( m15, 0, void(), m15 )
+        MOCK_NON_CONST_OVERRIDE_METHOD( m16, 0, void() )
+        MOCK_NON_CONST_OVERRIDE_METHOD( m17, 0, void(), m17 )
+
+        MOCK_NOEXCEPT_METHOD( m21, 0 )
+        MOCK_NOEXCEPT_METHOD( m22, 0, void() )
+        MOCK_NOEXCEPT_METHOD( m23, 0, void(), m23 )
+        MOCK_CONST_NOEXCEPT_METHOD( m24, 0, void() )
+        MOCK_CONST_NOEXCEPT_METHOD( m25, 0, void(), m25 )
+        MOCK_NON_CONST_NOEXCEPT_METHOD( m26, 0, void() )
+        MOCK_NON_CONST_NOEXCEPT_METHOD( m27, 0, void(), m27 )
+        MOCK_STATIC_METHOD( m28, 0, void() )
+        MOCK_STATIC_METHOD( m29, 0, void(), m9 )
+        MOCK_STATIC_NOEXCEPT_METHOD( m2A 0, void() )
+        MOCK_STATIC_NOEXCEPT_METHOD( m2B, 0, void(), m2B )
+
+        MOCK_NOEXCEPT_OVERRIDE_METHOD( m31, 0 )
+        MOCK_NOEXCEPT_OVERRIDE_METHOD( m32, 0, void() )
+        MOCK_NOEXCEPT_OVERRIDE_METHOD( m33, 0, void(), m33 )
+        MOCK_CONST_NOEXCEPT_OVERRIDE_METHOD( m34, 0, void() )
+        MOCK_CONST_NOEXCEPT_OVERRIDE_METHOD( m35, 0, void(), m35 )
+        MOCK_NON_CONST_NOEXCEPT_OVERRIDE_METHOD( m36, 0, void() )
+        MOCK_NON_CONST_NOEXCEPT_OVERRIDE_METHOD( m37, 0, void(), m37 )
     };
 
     template< typename T >
@@ -393,6 +437,32 @@ namespace
         MOCK_NON_CONST_METHOD_TPL( m7, 0, T(), m7 )
         MOCK_STATIC_METHOD_TPL( m8, 0, T() )
         MOCK_STATIC_METHOD_TPL( m9, 0, T(), m9 )
+
+        MOCK_OVERRIDE_METHOD_TPL( m11, 0 )
+        MOCK_OVERRIDE_METHOD_TPL( m12, 0, void() )
+        MOCK_OVERRIDE_METHOD_TPL( m13, 0, void(), m13 )
+        MOCK_CONST_OVERRIDE_METHOD_TPL( m14, 0, void() )
+        MOCK_CONST_OVERRIDE_METHOD_TPL( m15, 0, void(), m15 )
+        MOCK_NON_CONST_OVERRIDE_METHOD_TPL( m16, 0, void() )
+        MOCK_NON_CONST_OVERRIDE_METHOD_TPL( m17, 0, void(), m17 )
+
+        MOCK_NOEXCEPT_METHOD_TPL( m21, 0 )
+        MOCK_NOEXCEPT_METHOD_TPL( m22, 0, void() )
+        MOCK_NOEXCEPT_METHOD_TPL( m23, 0, void(), m23 )
+        MOCK_CONST_NOEXCEPT_METHOD_TPL( m24, 0, void() )
+        MOCK_CONST_NOEXCEPT_METHOD_TPL( m25, 0, void(), m25 )
+        MOCK_NON_CONST_NOEXCEPT_METHOD_TPL( m26, 0, void() )
+        MOCK_NON_CONST_NOEXCEPT_METHOD_TPL( m27, 0, void(), m27 )
+        MOCK_STATIC_NOEXCEPT_METHOD_TPL( m28, 0, void() )
+        MOCK_STATIC_NOEXCEPT_METHOD_TPL( m29, 0, void(), m9 )
+
+        MOCK_NOEXCEPT_OVERRIDE_METHOD_TPL( m31, 0 )
+        MOCK_NOEXCEPT_OVERRIDE_METHOD_TPL( m32, 0, void() )
+        MOCK_NOEXCEPT_OVERRIDE_METHOD_TPL( m33, 0, void(), m33 )
+        MOCK_CONST_NOEXCEPT_OVERRIDE_METHOD_TPL( m34, 0, void() )
+        MOCK_CONST_NOEXCEPT_OVERRIDE_METHOD_TPL( m35, 0, void(), m35 )
+        MOCK_NON_CONST_NOEXCEPT_OVERRIDE_METHOD_TPL( m36, 0, void() )
+        MOCK_NON_CONST_NOEXCEPT_OVERRIDE_METHOD_TPL( m37, 0, void(), m37 )
     };
 
     MOCK_BASE_CLASS( comma_base, std::map< int, int > )
@@ -401,6 +471,9 @@ namespace
     MOCK_FUNCTION( fun1, 0, void() )
     MOCK_FUNCTION( fun2, 0, void(), fun2 )
     MOCK_FUNCTION( fun3, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())) )
+    MOCK_NOEXCEPT_FUNCTION( fun4, 0, void() )
+    MOCK_NOEXCEPT_FUNCTION( fun5, 0, void(), fun2 )
+    MOCK_NOEXCEPT_FUNCTION( fun6, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())) )
 
     MOCK_FUNCTOR( f_variadic, std::map< int, int >() );
 }
