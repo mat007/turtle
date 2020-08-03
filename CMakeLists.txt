@@ -22,7 +22,7 @@ endif()
 find_package(Boost 1.58 REQUIRED)
 
 set(MOCK_VERSION "\"${PROJECT_VERSION}\"")
-configure_file(build/version.hpp ${CMAKE_CURRENT_BINARY_DIR}/include/turtle/version.hpp @ONLY)
+configure_file(version.hpp.cmake ${CMAKE_CURRENT_BINARY_DIR}/include/turtle/version.hpp @ONLY)
 
 add_library(turtle INTERFACE)
 add_library(turtle::turtle ALIAS turtle)

@@ -1,5 +1,5 @@
 .vscode
 bin
 out
-build/xsl
+/build
 __build

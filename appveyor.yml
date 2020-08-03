@@ -53,7 +53,7 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - if NOT "%CXX_STANDARD%"=="" set CXX_FLAGS=cxxflags=/std:c++%CXX_STANDARD%
   - set BUILD_ARGS=address-model=32,64 variant=debug,release
-  - call build\build.bat --toolset=%TOOLSET% %CXX_FLAGS% -j3
+  - call scripts\build.bat --toolset=%TOOLSET% %CXX_FLAGS% -j3
 
 for:
   - matrix:
@@ -62,8 +62,7 @@ for:
     build_script:
       - set BOOST_ROOT=C:\Libraries\boost_%BOOST%
       - cd %APPVEYOR_BUILD_FOLDER%
-      - mkdir __build
-      - cd __build
+      - mkdir build && cd build
       - cmake .. -DCMAKE_BUILD_TYPE=Debug
       - cmake --build . --config Debug
       - ctest --output-on-failure --build-config Debug
