@@ -439,8 +439,8 @@ BOOST_AUTO_TEST_CASE( demonstrates_configuring_mock_objects )
     MOCK_EXPECT( c.method2 ).never().with( "ok", mock::any );
     MOCK_EXPECT( c.method2 ).at_least( 2 ).in( s ).throws( std::runtime_error( "error !" ) );
     BOOST_CHECK(c.method(0) == 42);
-    BOOST_CHECK_THROW(c.method("notok", 1.f), std::runtime_error);
-    BOOST_CHECK_THROW(c.method("notok", 2.f), std::runtime_error);
+    BOOST_CHECK_THROW(c.method("not ok", 1.f), std::runtime_error);
+    BOOST_CHECK_THROW(c.method("not ok", 2.f), std::runtime_error);
 }
 //]
 }
