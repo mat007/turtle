@@ -11,7 +11,7 @@
 
 #include "../config.hpp"
 #include "../stream.hpp"
-#include <memory.h>
+#include <memory>
 
 namespace mock
 {
