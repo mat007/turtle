@@ -7,7 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //[ retrieve_cref_problem
-namespace mock_test
+namespace
 {
     class base_class
     {
@@ -26,7 +26,7 @@ namespace mock_test
 }
 //]
 
-namespace mock_test
+namespace
 {
     my_class::my_class( base_class& b): b(b){}
     void my_class::process()
@@ -41,7 +41,7 @@ namespace mock_test
 #include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 
-namespace mock_test
+namespace
 {
     MOCK_BASE_CLASS( mock_base_class, base_class )
     {
@@ -51,7 +51,6 @@ namespace mock_test
 
 BOOST_AUTO_TEST_CASE( method_is_called_two_times_with_the_same_value )
 {
-    using namespace mock_test;
     mock_base_class mock;
     my_class c( mock );
     int value;
