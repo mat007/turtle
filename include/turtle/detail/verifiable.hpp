@@ -12,10 +12,7 @@
 #include "../config.hpp"
 #include <boost/noncopyable.hpp>
 
-namespace mock
-{
-namespace detail
-{
+namespace mock { namespace detail {
     class verifiable : private boost::noncopyable
     {
     public:
@@ -26,7 +23,6 @@ namespace detail
 
         virtual void reset() = 0;
     };
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_VERIFIABLE_HPP_INCLUDED

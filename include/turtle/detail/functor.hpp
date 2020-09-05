@@ -14,39 +14,32 @@
 #include "mutex.hpp"
 #include "singleton.hpp"
 
-namespace mock
-{
-namespace detail
-{
-    class functor_mutex_t :
-        public singleton< functor_mutex_t >,
-        public mutex
+namespace mock { namespace detail {
+    class functor_mutex_t : public singleton<functor_mutex_t>, public mutex
     {
-        MOCK_SINGLETON_CONS( functor_mutex_t );
+        MOCK_SINGLETON_CONS(functor_mutex_t);
     };
-    MOCK_SINGLETON_INST( functor_mutex )
+    MOCK_SINGLETON_INST(functor_mutex)
 
-    template< typename Signature >
-    struct functor : function< Signature >
+    template<typename Signature>
+    struct functor : function<Signature>
     {
         functor()
         {
-            scoped_lock _( functor_mutex );
+            scoped_lock _(functor_mutex);
             static functor* f = 0;
-            if( f )
+            if(f)
             {
                 *this = *f;
                 f = 0;
                 functor_mutex.unlock();
-            }
-            else
+            } else
             {
                 functor_mutex.lock();
                 f = this;
             }
         }
     };
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_FUNCTOR_HPP_INCLUDED

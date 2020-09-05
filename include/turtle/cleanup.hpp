@@ -10,30 +10,25 @@
 #define MOCK_CLEANUP_HPP_INCLUDED
 
 #include "config.hpp"
-#include "verify.hpp"
 #include "reset.hpp"
+#include "verify.hpp"
 #ifdef MOCK_USE_BOOST_TEST
-#include <boost/test/unit_test_suite.hpp>
+#    include <boost/test/unit_test_suite.hpp>
 #endif
 
-namespace mock
+namespace mock {
+struct cleanup
 {
-    struct cleanup
-    {
-        ~cleanup()
-        {
-            mock::reset();
-        }
-    };
+    ~cleanup() { mock::reset(); }
+};
 
 #ifdef MOCK_USE_BOOST_TEST
-    BOOST_GLOBAL_FIXTURE( cleanup )
-#if BOOST_VERSION >= 105900
-        ;
-#endif
+BOOST_GLOBAL_FIXTURE(cleanup)
+#    if BOOST_VERSION >= 105900
+  ;
+#    endif
 #endif
 
-} // mock
-
+} // namespace mock
 
 #endif // MOCK_CLEANUP_HPP_INCLUDED

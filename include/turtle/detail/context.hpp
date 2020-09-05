@@ -16,10 +16,7 @@
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <ostream>
 
-namespace mock
-{
-namespace detail
-{
+namespace mock { namespace detail {
     class verifiable;
 
     class context : boost::noncopyable
@@ -28,17 +25,13 @@ namespace detail
         context() {}
         virtual ~context() {}
 
-        virtual void add( const void* p, verifiable& v,
-            boost::unit_test::const_string instance,
-            boost::optional< type_name > type,
-            boost::unit_test::const_string name ) = 0;
-        virtual void add( verifiable& v ) = 0;
-        virtual void remove( verifiable& v ) = 0;
+        virtual void add(const void* p, verifiable& v, boost::unit_test::const_string instance,
+                         boost::optional<type_name> type, boost::unit_test::const_string name) = 0;
+        virtual void add(verifiable& v) = 0;
+        virtual void remove(verifiable& v) = 0;
 
-        virtual void serialize( std::ostream& s,
-            const verifiable& v ) const = 0;
+        virtual void serialize(std::ostream& s, const verifiable& v) const = 0;
     };
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_CONTEXT_HPP_INCLUDED

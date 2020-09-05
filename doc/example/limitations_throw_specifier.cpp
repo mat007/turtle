@@ -7,29 +7,24 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #define BOOST_AUTO_TEST_MAIN
-#include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
+#include <boost/test/auto_unit_test.hpp>
 
-namespace
-{
+namespace {
 //[ limitations_throw_specifier_problem
-    struct base_class
-    {
-        virtual ~base_class()
-        {}
+struct base_class
+{
+    virtual ~base_class() {}
 
-        virtual void method() throw ();
-    };
+    virtual void method() throw();
+};
 //]
 
 //[ limitations_throw_specifier_solution
-    MOCK_BASE_CLASS( mock_class, base_class )
-    {
-        void method() throw ()
-        {
-            method_proxy();
-        }
-        MOCK_METHOD( method_proxy, 0, void(), method )
-    };
+MOCK_BASE_CLASS(mock_class, base_class){void method() throw(){method_proxy();
+} // namespace
+MOCK_METHOD(method_proxy, 0, void(), method)
+}
+;
 //]
 }

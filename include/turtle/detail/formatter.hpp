@@ -13,38 +13,29 @@
 #include "../stream.hpp"
 #include "addressof.hpp"
 
-namespace mock
-{
-namespace detail
-{
-    template< typename T >
+namespace mock { namespace detail {
+    template<typename T>
     struct formatter
     {
-        explicit formatter( const T& t )
-            : t_( detail::addressof( t ) )
-        {}
-        void serialize( stream& s ) const
-        {
-            detail::serialize( s, *t_ );
-        }
+        explicit formatter(const T& t) : t_(detail::addressof(t)) {}
+        void serialize(stream& s) const { detail::serialize(s, *t_); }
         const T* t_;
     };
 
-    template< typename T >
-    stream& operator<<( stream& s, const formatter< T >& f )
+    template<typename T>
+    stream& operator<<(stream& s, const formatter<T>& f)
     {
-        f.serialize( s );
+        f.serialize(s);
         return s;
     }
 
-    template< typename T >
-    std::ostream& operator<<( std::ostream& s, const formatter< T >& f )
+    template<typename T>
+    std::ostream& operator<<(std::ostream& s, const formatter<T>& f)
     {
-        stream ss( s );
-        f.serialize( ss );
+        stream ss(s);
+        f.serialize(ss);
         return s;
     }
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_FORMATTER_HPP_INCLUDED

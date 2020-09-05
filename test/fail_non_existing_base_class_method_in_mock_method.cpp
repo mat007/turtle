@@ -8,15 +8,11 @@
 
 #include <turtle/mock.hpp>
 
-namespace
+namespace {
+struct my_base
 {
-    struct my_base
-    {
-        virtual ~my_base() {}
-    };
+    virtual ~my_base() {}
+};
 
-    MOCK_BASE_CLASS( my_class, my_base )
-    {
-        MOCK_METHOD( my_method, 0 )
-    };
-}
+MOCK_BASE_CLASS(my_class, my_base){MOCK_METHOD(my_method, 0)};
+} // namespace

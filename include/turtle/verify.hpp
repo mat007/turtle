@@ -10,25 +10,24 @@
 #define MOCK_VERIFY_HPP_INCLUDED
 
 #include "config.hpp"
-#include "object.hpp"
-#include "detail/root.hpp"
 #include "detail/functor.hpp"
+#include "detail/root.hpp"
+#include "object.hpp"
 
-namespace mock
+namespace mock {
+inline bool verify()
 {
-    inline bool verify()
-    {
-        return detail::root.verify();
-    }
-    inline bool verify( const object& o )
-    {
-        return o.impl_->verify();
-    }
-    template< typename Signature >
-    bool verify( const detail::functor< Signature >& f )
-    {
-        return f.verify();
-    }
-} // mock
+    return detail::root.verify();
+}
+inline bool verify(const object& o)
+{
+    return o.impl_->verify();
+}
+template<typename Signature>
+bool verify(const detail::functor<Signature>& f)
+{
+    return f.verify();
+}
+} // namespace mock
 
 #endif // MOCK_VERIFY_HPP_INCLUDED

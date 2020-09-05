@@ -10,25 +10,16 @@
 #define MOCK_PARAMETER_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_arity.hpp>
+#include <boost/function_types/parameter_types.hpp>
 #include <boost/mpl/at.hpp>
 
-namespace mock
-{
-namespace detail
-{
-    template< typename Signature, int n >
+namespace mock { namespace detail {
+    template<typename Signature, int n>
     struct parameter
     {
-        typedef typename
-            boost::mpl::at_c<
-                typename
-                    boost::function_types::parameter_types< Signature >,
-                n
-            >::type type;
+        typedef typename boost::mpl::at_c<typename boost::function_types::parameter_types<Signature>, n>::type type;
     };
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_PARAMETER_HPP_INCLUDED

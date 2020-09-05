@@ -1,0 +1,17 @@
+name: Static analysis
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  Formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: git submodule update --init
+    - name: Formatting
+      uses: DoozyX/clang-format-lint-action@v0.9
+      with:
+        source: 'include test doc'
+        clangFormatVersion: 10

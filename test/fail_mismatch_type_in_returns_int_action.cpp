@@ -8,15 +8,11 @@
 
 #include <turtle/mock.hpp>
 
-namespace
+namespace {
+MOCK_CLASS(my_class){MOCK_METHOD_EXT(my_method, 0, int(), my_method)};
+void test_case()
 {
-    MOCK_CLASS( my_class )
-    {
-        MOCK_METHOD_EXT( my_method, 0, int(), my_method )
-    };
-    void test_case()
-    {
-        my_class c;
-        MOCK_EXPECT( c.my_method ).returns( std::string() );
-    }
+    my_class c;
+    MOCK_EXPECT(c.my_method).returns(std::string());
 }
+} // namespace

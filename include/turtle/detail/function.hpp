@@ -10,79 +10,67 @@
 #define MOCK_FUNCTION_HPP_INCLUDED
 
 #include "../config.hpp"
+#include "../constraints.hpp"
 #include "../error.hpp"
 #include "../log.hpp"
-#include "../constraints.hpp"
-#include "../sequence.hpp"
 #include "../matcher.hpp"
+#include "../sequence.hpp"
 #include "action.hpp"
-#include "verifiable.hpp"
-#include "invocation.hpp"
-#include "type_name.hpp"
 #include "context.hpp"
-#include "mutex.hpp"
+#include "invocation.hpp"
 #include "move_helper.hpp"
-#include <boost/preprocessor/iteration/iterate.hpp>
-#include <boost/preprocessor/repetition/repeat_from_to.hpp>
-#include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include "mutex.hpp"
+#include "type_name.hpp"
+#include "verifiable.hpp"
+#include <boost/call_traits.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/move/move.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/optional.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
 #include <boost/preprocessor/comparison/greater.hpp>
+#include <boost/preprocessor/iteration/iterate.hpp>
+#include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/preprocessor/repetition/enum_params.hpp>
+#include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/test/utils/lazy_ostream.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/call_traits.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/move/move.hpp>
-#include <boost/optional.hpp>
+#include <list>
 #include <ostream>
 #include <vector>
-#include <list>
 
-namespace mock
-{
-namespace detail
-{
-    template< typename R, typename E >
+namespace mock { namespace detail {
+    template<typename R, typename E>
     struct wrapper_base
     {
-        wrapper_base( E& e )
-            : e_( &e )
-        {}
+        wrapper_base(E& e) : e_(&e) {}
 
-        template< typename T >
-        void returns( T t )
+        template<typename T>
+        void returns(T t)
         {
-            e_->returns( t );
+            e_->returns(t);
         }
 
         E* e_;
     };
-    template< typename E >
-    struct wrapper_base< void, E >
+    template<typename E>
+    struct wrapper_base<void, E>
     {
-        wrapper_base( E& e )
-            : e_( &e )
-        {}
+        wrapper_base(E& e) : e_(&e) {}
 
         E* e_;
     };
-    template< typename R, typename E >
-    struct wrapper_base< R*, E >
+    template<typename R, typename E>
+    struct wrapper_base<R*, E>
     {
-        wrapper_base( E& e )
-            : e_( &e )
-        {}
+        wrapper_base(E& e) : e_(&e) {}
 
-        void returns( R* r )
+        void returns(R* r) { e_->returns(r); }
+        template<typename Y>
+        void returns(const boost::reference_wrapper<Y>& r)
         {
-            e_->returns( r );
-        }
-        template< typename Y >
-        void returns( const boost::reference_wrapper< Y >& r )
-        {
-            e_->returns( r );
+            e_->returns(r);
         }
 
         E* e_;
@@ -97,8 +85,7 @@ namespace detail
         return std::uncaught_exception() ? 1 : 0;
 #endif
     }
-}
-} // mock
+}} // namespace mock::detail
 
 #define MOCK_NUM_ARGS 0
 #define MOCK_NUM_ARGS_0

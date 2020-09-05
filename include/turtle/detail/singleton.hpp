@@ -11,36 +11,34 @@
 
 #include <boost/config.hpp>
 
-namespace mock {
-namespace detail {
+namespace mock { namespace detail {
 
-template< typename Derived >
-class singleton {
-public:
-    static Derived& instance()
+    template<typename Derived>
+    class singleton
     {
-        static Derived the_inst;
-        return the_inst;
-    }
+    public:
+        static Derived& instance()
+        {
+            static Derived the_inst;
+            return the_inst;
+        }
 
-    BOOST_DELETED_FUNCTION(singleton(singleton const&))
-    BOOST_DELETED_FUNCTION(singleton& operator=(singleton const&))
+        BOOST_DELETED_FUNCTION(singleton(singleton const&))
+        BOOST_DELETED_FUNCTION(singleton& operator=(singleton const&))
 
-protected:
-    BOOST_DEFAULTED_FUNCTION(singleton(), {})
-    BOOST_DEFAULTED_FUNCTION(~singleton(), {})
-};
+    protected:
+        BOOST_DEFAULTED_FUNCTION(singleton(), {})
+        BOOST_DEFAULTED_FUNCTION(~singleton(), {})
+    };
 
-} // detail
-} // mock
+}} // namespace mock::detail
 
 // Add a private ctor to the type to prevent misuse
-#define MOCK_SINGLETON_CONS( type )           \
-private:                                      \
-friend class mock::detail::singleton< type >; \
-type() {}
+#define MOCK_SINGLETON_CONS(type)               \
+private:                                        \
+    friend class mock::detail::singleton<type>; \
+    type() {}
 
-#define MOCK_SINGLETON_INST( inst ) \
-static BOOST_JOIN( inst, _t )& inst = BOOST_JOIN( inst, _t )::instance();
+#define MOCK_SINGLETON_INST(inst) static BOOST_JOIN(inst, _t)& inst = BOOST_JOIN(inst, _t)::instance();
 
 #endif // MOCK_SINGLETON_HPP

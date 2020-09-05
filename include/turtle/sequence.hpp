@@ -12,17 +12,14 @@
 #include "config.hpp"
 #include "detail/sequence_impl.hpp"
 
-namespace mock
+namespace mock {
+class sequence
 {
-    class sequence
-    {
-    public:
-        sequence()
-            : impl_( boost::make_shared< detail::sequence_impl >() )
-        {}
+public:
+    sequence() : impl_(boost::make_shared<detail::sequence_impl>()) {}
 
-        boost::shared_ptr< detail::sequence_impl > impl_;
-    };
-} // mock
+    boost::shared_ptr<detail::sequence_impl> impl_;
+};
+} // namespace mock
 
 #endif // MOCK_SEQUENCE_HPP_INCLUDED

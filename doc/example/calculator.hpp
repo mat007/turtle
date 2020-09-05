@@ -15,9 +15,9 @@ class view;
 class calculator
 {
 public:
-    calculator( view& v );
+    calculator(view& v);
 
-    void add( int a, int b ); // the result will be sent to the view 'v'
+    void add(int a, int b); // the result will be sent to the view 'v'
 };
 //]
 

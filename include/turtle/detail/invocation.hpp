@@ -11,14 +11,11 @@
 
 #include "../config.hpp"
 #include <boost/noncopyable.hpp>
-#include <stdexcept>
-#include <ostream>
 #include <limits>
+#include <ostream>
+#include <stdexcept>
 
-namespace mock
-{
-namespace detail
-{
+namespace mock { namespace detail {
     class invocation : private boost::noncopyable
     {
     public:
@@ -30,66 +27,51 @@ namespace detail
 
         virtual bool exhausted() const = 0;
 
-        friend std::ostream& operator<<( std::ostream& s, const invocation& i )
-        {
-            return i.serialize( s );
-        }
+        friend std::ostream& operator<<(std::ostream& s, const invocation& i) { return i.serialize(s); }
 
     private:
-        virtual std::ostream& serialize( std::ostream& s ) const = 0;
+        virtual std::ostream& serialize(std::ostream& s) const = 0;
     };
 
     class between : public invocation
     {
     public:
-        between( std::size_t min, std::size_t max )
-            : min_( min )
-            , max_( max )
-            , count_( 0 )
+        between(std::size_t min, std::size_t max) : min_(min), max_(max), count_(0)
         {
-            if( min > max )
-                throw std::invalid_argument( "'min' > 'max'" );
+            if(min > max)
+                throw std::invalid_argument("'min' > 'max'");
         }
 
         virtual bool invoke()
         {
-            if( count_ == max_ )
+            if(count_ == max_)
                 return false;
             ++count_;
             return true;
         }
 
-        virtual bool exhausted() const
-        {
-            return count_ >= max_;
-        }
+        virtual bool exhausted() const { return count_ >= max_; }
 
-        virtual bool verify() const
-        {
-            return min_ <= count_ && count_ <= max_;
-        }
+        virtual bool verify() const { return min_ <= count_ && count_ <= max_; }
 
     protected:
         const std::size_t min_, max_;
         std::size_t count_;
 
     private:
-        virtual std::ostream& serialize( std::ostream& s ) const
+        virtual std::ostream& serialize(std::ostream& s) const
         {
-            return s << "between( " << count_
-                << "/[" << min_ << ',' << max_ << "] )";
+            return s << "between( " << count_ << "/[" << min_ << ',' << max_ << "] )";
         }
     };
 
     class exactly : public between
     {
     public:
-        explicit exactly( std::size_t count )
-            : between( count, count )
-        {}
+        explicit exactly(std::size_t count) : between(count, count) {}
 
     private:
-        virtual std::ostream& serialize( std::ostream& s ) const
+        virtual std::ostream& serialize(std::ostream& s) const
         {
             return s << "exactly( " << count_ << '/' << max_ << " )";
         }
@@ -98,40 +80,28 @@ namespace detail
     class never : public exactly
     {
     public:
-        never()
-            : exactly( 0 )
-        {}
+        never() : exactly(0) {}
 
     private:
-        virtual std::ostream& serialize( std::ostream& s ) const
-        {
-            return s << "never()";
-        }
+        virtual std::ostream& serialize(std::ostream& s) const { return s << "never()"; }
     };
 
     class once : public exactly
     {
     public:
-        once()
-            : exactly( 1 )
-        {}
+        once() : exactly(1) {}
 
     private:
-        virtual std::ostream& serialize( std::ostream& s ) const
-        {
-            return s << "once()";
-        }
+        virtual std::ostream& serialize(std::ostream& s) const { return s << "once()"; }
     };
 
     class at_least : public between
     {
     public:
-        explicit at_least( std::size_t min )
-            : between( min, (std::numeric_limits< std::size_t >::max)() )
-        {}
+        explicit at_least(std::size_t min) : between(min, (std::numeric_limits<std::size_t>::max)()) {}
 
     private:
-        virtual std::ostream& serialize( std::ostream& s ) const
+        virtual std::ostream& serialize(std::ostream& s) const
         {
             return s << "at_least( " << count_ << '/' << min_ << " )";
         }
@@ -140,12 +110,10 @@ namespace detail
     class at_most : public between
     {
     public:
-        explicit at_most( std::size_t max )
-            : between( 0, max )
-        {}
+        explicit at_most(std::size_t max) : between(0, max) {}
 
     private:
-        virtual std::ostream& serialize( std::ostream& s ) const
+        virtual std::ostream& serialize(std::ostream& s) const
         {
             return s << "at_most( " << count_ << '/' << max_ << " )";
         }
@@ -154,17 +122,11 @@ namespace detail
     class unlimited : public at_least
     {
     public:
-        unlimited()
-            : at_least( 0 )
-        {}
+        unlimited() : at_least(0) {}
 
     private:
-        virtual std::ostream& serialize( std::ostream& s ) const
-        {
-            return s << "unlimited()";
-        }
+        virtual std::ostream& serialize(std::ostream& s) const { return s << "unlimited()"; }
     };
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_INVOCATION_HPP_INCLUDED

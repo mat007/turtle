@@ -10,58 +10,50 @@
 #define MOCK_OBJECT_IMPL_HPP_INCLUDED
 
 #include "../config.hpp"
-#include "root.hpp"
-#include "parent.hpp"
-#include "type_name.hpp"
-#include "context.hpp"
 #include "child.hpp"
+#include "context.hpp"
 #include "mutex.hpp"
-#include <boost/test/utils/basic_cstring/basic_cstring.hpp>
+#include "parent.hpp"
+#include "root.hpp"
+#include "type_name.hpp"
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/optional.hpp>
+#include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 
-namespace mock
-{
-namespace detail
-{
-    class object_impl : public context, public verifiable,
-        public boost::enable_shared_from_this< object_impl >
+namespace mock { namespace detail {
+    class object_impl : public context, public verifiable, public boost::enable_shared_from_this<object_impl>
     {
     public:
-        object_impl()
-            : mutex_( boost::make_shared< mutex >() )
-        {}
+        object_impl() : mutex_(boost::make_shared<mutex>()) {}
 
-        virtual void add( const void* /*p*/, verifiable& v,
-            boost::unit_test::const_string instance,
-            boost::optional< type_name > type,
-            boost::unit_test::const_string name )
+        virtual void add(const void* /*p*/, verifiable& v, boost::unit_test::const_string instance,
+                         boost::optional<type_name> type, boost::unit_test::const_string name)
         {
-            lock _( mutex_ );
-            if( children_.empty() )
-                detail::root.add( *this );
-            children_[ &v ].update( parent_, instance, type, name );
+            lock _(mutex_);
+            if(children_.empty())
+                detail::root.add(*this);
+            children_[&v].update(parent_, instance, type, name);
         }
-        virtual void add( verifiable& v )
+        virtual void add(verifiable& v)
         {
-            lock _( mutex_ );
-            group_.add( v );
+            lock _(mutex_);
+            group_.add(v);
         }
-        virtual void remove( verifiable& v )
+        virtual void remove(verifiable& v)
         {
-            lock _( mutex_ );
-            group_.remove( v );
-            children_.erase( &v );
-            if( children_.empty() )
-                detail::root.remove( *this );
+            lock _(mutex_);
+            group_.remove(v);
+            children_.erase(&v);
+            if(children_.empty())
+                detail::root.remove(*this);
         }
 
-        virtual void serialize( std::ostream& s, const verifiable& v ) const
+        virtual void serialize(std::ostream& s, const verifiable& v) const
         {
-            lock _( mutex_ );
-            children_cit it = children_.find( &v );
-            if( it != children_.end() )
+            lock _(mutex_);
+            children_cit it = children_.find(&v);
+            if(it != children_.end())
                 s << it->second;
             else
                 s << "?";
@@ -69,26 +61,25 @@ namespace detail
 
         virtual bool verify() const
         {
-            lock _( mutex_ );
+            lock _(mutex_);
             return group_.verify();
         }
         virtual void reset()
         {
-            lock _( mutex_ );
-            boost::shared_ptr< object_impl > guard = shared_from_this();
+            lock _(mutex_);
+            boost::shared_ptr<object_impl> guard = shared_from_this();
             group_.reset();
         }
 
     private:
-        typedef std::map< const verifiable*, child > children_t;
+        typedef std::map<const verifiable*, child> children_t;
         typedef children_t::const_iterator children_cit;
 
         group group_;
         parent parent_;
         children_t children_;
-        const boost::shared_ptr< mutex > mutex_;
+        const boost::shared_ptr<mutex> mutex_;
     };
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_OBJECT_IMPL_HPP_INCLUDED

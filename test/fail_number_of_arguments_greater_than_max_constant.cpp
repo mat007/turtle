@@ -8,18 +8,14 @@
 
 #include <turtle/mock.hpp>
 
-BOOST_STATIC_ASSERT( MOCK_MAX_ARGS == 9 );
+BOOST_STATIC_ASSERT(MOCK_MAX_ARGS == 9);
 
-namespace
+namespace {
+struct my_base
 {
-    struct my_base
-    {
-        virtual ~my_base() {}
-        virtual void my_method( int, int, int, int, int, int, int, int, int, int ) = 0;
-    };
+    virtual ~my_base() {}
+    virtual void my_method(int, int, int, int, int, int, int, int, int, int) = 0;
+};
 
-    MOCK_BASE_CLASS( my_class, my_base )
-    {
-        MOCK_METHOD( my_method, 10 )
-    };
-}
+MOCK_BASE_CLASS(my_class, my_base){MOCK_METHOD(my_method, 10)};
+} // namespace

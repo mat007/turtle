@@ -7,28 +7,23 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #define BOOST_AUTO_TEST_MAIN
-#include <boost/test/auto_unit_test.hpp>
 #include <turtle/mock.hpp>
+#include <boost/test/auto_unit_test.hpp>
 
-namespace
-{
+namespace {
 //[ limitations_template_base_class_method_problem
-    template< typename T >
-    class base
-    {
-    public:
-        virtual ~base()
-        {}
+template<typename T>
+class base
+{
+public:
+    virtual ~base() {}
 
-        virtual void method() = 0;
-    };
+    virtual void method() = 0;
+};
 //]
- 
+
 //[ limitations_template_base_class_method_solution
-    template< typename T >
-    MOCK_BASE_CLASS( mock_base, base< T > )
-    {
-        MOCK_METHOD( method, 1, void() )
-    };
+template<typename T>
+MOCK_BASE_CLASS(mock_base, base<T>){MOCK_METHOD(method, 1, void())};
 //]
-}
+} // namespace
