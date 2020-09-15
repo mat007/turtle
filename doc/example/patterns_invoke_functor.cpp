@@ -27,8 +27,11 @@ void function(base_class&); // the function will call 'method' with a functor to
 #include <boost/test/auto_unit_test.hpp>
 
 namespace {
-MOCK_BASE_CLASS(mock_class, base_class){ MOCK_METHOD(method, 1) };
-}
+MOCK_BASE_CLASS(mock_class, base_class)
+{
+    MOCK_METHOD(method, 1)
+};
+} // namespace
 
 BOOST_AUTO_TEST_CASE(how_to_invoke_a_functor_passed_as_parameter_of_a_mock_method)
 {

@@ -34,10 +34,10 @@ void derived::method(int) {}
 
 namespace limitations_const_parameter_warning_solution {
 //[ limitations_const_parameter_warning_solution
-MOCK_BASE_CLASS(mock_base, base){ void method(const int i){ method_stub(i);
-} // namespace limitations_const_parameter_warning_solution
-MOCK_METHOD(method_stub, 1, void(int), method)
-}
-;
+MOCK_BASE_CLASS(mock_base, base)
+{
+    void method(const int i) { method_stub(i); } // namespace limitations_const_parameter_warning_solution
+    MOCK_METHOD(method_stub, 1, void(int), method)
+};
 //]
-}
+} // namespace limitations_const_parameter_warning_solution

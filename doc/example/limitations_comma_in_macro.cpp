@@ -22,14 +22,16 @@ namespace limitations_comma_in_macro_solution_1 {
 //[ limitations_comma_in_macro_solution_1
 typedef my_base_class<int, int> my_base_type;
 
-MOCK_BASE_CLASS(my_mock, my_base_type){};
+MOCK_BASE_CLASS(my_mock, my_base_type)
+{};
 //]
 } // namespace limitations_comma_in_macro_solution_1
 
 namespace limitations_comma_in_macro_solution_2 {
 //[ limitations_comma_in_macro_solution_2
 template<typename T1, typename T2>
-MOCK_BASE_CLASS(my_mock, my_base_class<T1 BOOST_PP_COMMA() T2>){};
+MOCK_BASE_CLASS(my_mock, my_base_class<T1 BOOST_PP_COMMA() T2>)
+{};
 //]
 } // namespace limitations_comma_in_macro_solution_2
 

@@ -21,10 +21,10 @@ struct base_class
 //]
 
 //[ limitations_throw_specifier_solution
-MOCK_BASE_CLASS(mock_class, base_class){ void method() throw(){ method_proxy();
-} // namespace
-MOCK_METHOD(method_proxy, 0, void(), method)
-}
-;
+MOCK_BASE_CLASS(mock_class, base_class)
+{
+    void method() throw() { method_proxy(); } // namespace
+    MOCK_METHOD(method_proxy, 0, void(), method)
+};
 //]
-}
+} // namespace

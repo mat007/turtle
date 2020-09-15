@@ -29,8 +29,11 @@ void function_under_test(T t) // T is supposed to model the previous concept
 //]
 
 //[ limitations_template_method_solution
-MOCK_CLASS(mock_concept){ MOCK_METHOD(method, 1, void(int), method_int)
-                            MOCK_METHOD(method, 1, void(const char*), method_string) };
+MOCK_CLASS(mock_concept)
+{
+    MOCK_METHOD(method, 1, void(int), method_int)
+    MOCK_METHOD(method, 1, void(const char*), method_string)
+};
 //]
 } // namespace limitations_template_method_problem
 

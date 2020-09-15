@@ -20,5 +20,8 @@ public:
 //]
 
 //[ limitations_non_virtual_method_problem_2
-MOCK_BASE_CLASS(mock_base, base){ MOCK_METHOD(method, 0) };
+MOCK_BASE_CLASS(mock_base, base)
+{
+    MOCK_METHOD(method, 0)
+};
 //]

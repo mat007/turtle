@@ -99,7 +99,10 @@ public:
 };
 //]
 
-MOCK_BASE_CLASS(mock_view, view){ MOCK_METHOD(display, 1) };
+MOCK_BASE_CLASS(mock_view, view)
+{
+    MOCK_METHOD(display, 1)
+};
 
 class calculator
 {

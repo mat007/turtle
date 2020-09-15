@@ -15,5 +15,8 @@ struct my_base
     virtual void my_method(int) = 0;
 };
 
-MOCK_BASE_CLASS(my_class, my_base){ MOCK_METHOD(my_method, 2) };
+MOCK_BASE_CLASS(my_class, my_base)
+{
+    MOCK_METHOD(my_method, 2)
+};
 } // namespace

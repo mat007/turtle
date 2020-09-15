@@ -17,6 +17,6 @@ MOCK_BASE_CLASS(mock_view, view) // declare a 'mock_view' class implementing 'vi
 {
     MOCK_METHOD(display, 1) // implement the 'display' method from 'view' (taking 1 argument)
 };
-//]
+    //]
 
 #endif // MOCK_VIEW

@@ -31,8 +31,11 @@ public:
 #include <boost/test/auto_unit_test.hpp>
 
 namespace {
-MOCK_BASE_CLASS(mock_base_class, base_class){ MOCK_METHOD(method, 1) };
-}
+MOCK_BASE_CLASS(mock_base_class, base_class)
+{
+    MOCK_METHOD(method, 1)
+};
+} // namespace
 
 BOOST_AUTO_TEST_CASE(method_is_called_two_times_with_the_same_value)
 {

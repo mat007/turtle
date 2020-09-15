@@ -25,7 +25,8 @@ std::ostream& operator<<(std::ostream& os, const my_class& c) // my_class is ser
     return os << "my_class( " << c.data_ << " )";
 }
 
-MOCK_CLASS(my_mock){
+MOCK_CLASS(my_mock)
+{
     MOCK_METHOD(method, 1, void(const my_class&)) // how to simply write a custom constraint ?
 };
 } // namespace

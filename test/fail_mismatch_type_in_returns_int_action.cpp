@@ -9,7 +9,10 @@
 #include <turtle/mock.hpp>
 
 namespace {
-MOCK_CLASS(my_class){ MOCK_METHOD_EXT(my_method, 0, int(), my_method) };
+MOCK_CLASS(my_class)
+{
+    MOCK_METHOD_EXT(my_method, 0, int(), my_method)
+};
 void test_case()
 {
     my_class c;
