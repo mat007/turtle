@@ -47,14 +47,17 @@
 #define MOCK_HELPER(t) t##_mock(mock::detail::root, BOOST_PP_STRINGIZE(t))
 #define MOCK_ANONYMOUS_HELPER(t) t##_mock(mock::detail::root, "?.")
 
-#define MOCK_METHOD_HELPER(S, t, tpn)                                                                        \
-    mutable mock::detail::function<MOCK_FUNCTION_TYPE((S), tpn)> t##_mock_;                                  \
-    mock::detail::function<MOCK_FUNCTION_TYPE((S), tpn)>& t##_mock(                                          \
-      const mock::detail::context&, const boost::unit_test::const_string& instance) const                    \
-    {                                                                                                        \
-        mock::detail::configure(*this, t##_mock_, instance.substr(0, instance.rfind(BOOST_PP_STRINGIZE(t))), \
-                                MOCK_TYPE_NAME(*this), BOOST_PP_STRINGIZE(t));                               \
-        return t##_mock_;                                                                                    \
+#define MOCK_METHOD_HELPER(S, t, tpn)                                                      \
+    mutable mock::detail::function<MOCK_FUNCTION_TYPE((S), tpn)> t##_mock_;                \
+    mock::detail::function<MOCK_FUNCTION_TYPE((S), tpn)>& t##_mock(                        \
+      const mock::detail::context&, const boost::unit_test::const_string& instance) const  \
+    {                                                                                      \
+        mock::detail::configure(*this,                                                     \
+                                t##_mock_,                                                 \
+                                instance.substr(0, instance.rfind(BOOST_PP_STRINGIZE(t))), \
+                                MOCK_TYPE_NAME(*this),                                     \
+                                BOOST_PP_STRINGIZE(t));                                    \
+        return t##_mock_;                                                                  \
     }
 
 #define MOCK_PARAM(S, tpn) tpn mock::detail::parameter < MOCK_FUNCTION_TYPE((S), tpn)
@@ -158,15 +161,18 @@
 #    define MOCK_VARIADIC_ELEM_2(e0, e1, e2, ...) e2
 
 #    define MOCK_METHOD(M, ...)                                                 \
-        MOCK_METHOD_EXT(M, MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ),                 \
+        MOCK_METHOD_EXT(M,                                                      \
+                        MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ),                    \
                         MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M), ), \
                         MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M, ))
 #    define MOCK_CONST_METHOD(M, ...)                                                 \
-        MOCK_CONST_METHOD_EXT(M, MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ),                 \
+        MOCK_CONST_METHOD_EXT(M,                                                      \
+                              MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ),                    \
                               MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M), ), \
                               MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M, ))
 #    define MOCK_NON_CONST_METHOD(M, ...)                                                 \
-        MOCK_NON_CONST_METHOD_EXT(M, MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ),                 \
+        MOCK_NON_CONST_METHOD_EXT(M,                                                      \
+                                  MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ),                    \
                                   MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M), ), \
                                   MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M, ))
 
@@ -183,9 +189,9 @@
 #    define MOCK_STATIC_METHOD(F, n, ...) \
         MOCK_FUNCTION_AUX(F, n, MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), static, )
 
-#    define MOCK_STATIC_METHOD_TPL(F, n, ...)                                                                        \
-        MOCK_FUNCTION_AUX(F, n, MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), static, \
-                          typename)
+#    define MOCK_STATIC_METHOD_TPL(F, n, ...) \
+        MOCK_FUNCTION_AUX(                    \
+          F, n, MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), static, typename)
 
 #else // MOCK_VARIADIC_MACROS
 

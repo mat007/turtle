@@ -24,11 +24,17 @@ class object;
 
 namespace detail {
     template<typename E>
-    E& configure(const object& o, E& e, boost::unit_test::const_string instance, boost::optional<type_name> type,
+    E& configure(const object& o,
+                 E& e,
+                 boost::unit_test::const_string instance,
+                 boost::optional<type_name> type,
                  boost::unit_test::const_string name);
 
     template<typename T, typename E>
-    E& configure(const T& t, E& e, boost::unit_test::const_string instance, boost::optional<type_name> type,
+    E& configure(const T& t,
+                 E& e,
+                 boost::unit_test::const_string instance,
+                 boost::optional<type_name> type,
                  boost::unit_test::const_string name,
                  typename boost::disable_if<typename boost::is_base_of<object, T>>::type* = 0)
     {
@@ -50,7 +56,10 @@ public:
 
 namespace detail {
     template<typename E>
-    E& configure(const object& o, E& e, boost::unit_test::const_string instance, boost::optional<type_name> type,
+    E& configure(const object& o,
+                 E& e,
+                 boost::unit_test::const_string instance,
+                 boost::optional<type_name> type,
                  boost::unit_test::const_string name)
     {
         e.configure(*o.impl_, o.impl_.get(), instance, type, name);

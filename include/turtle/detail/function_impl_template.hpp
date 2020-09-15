@@ -43,7 +43,8 @@ namespace mock { namespace detail {
                         error_type::fail("untriggered expectation",
                                          boost::unit_test::lazy_ostream::instance()
                                            << lazy_context(this) << lazy_expectations(this),
-                                         it->file(), it->line());
+                                         it->file(),
+                                         it->line());
             if(context_)
                 context_->remove(*this);
         }
@@ -58,7 +59,8 @@ namespace mock { namespace detail {
                     error_type::fail("verification failed",
                                      boost::unit_test::lazy_ostream::instance()
                                        << lazy_context(this) << lazy_expectations(this),
-                                     it->file(), it->line());
+                                     it->file(),
+                                     it->line());
                 }
             return valid_;
         }
@@ -216,7 +218,10 @@ namespace mock { namespace detail {
             return error_type::abort();
         }
 
-        void add(context& c, const void* p, boost::unit_test::const_string instance, boost::optional<type_name> type,
+        void add(context& c,
+                 const void* p,
+                 boost::unit_test::const_string instance,
+                 boost::optional<type_name> type,
                  boost::unit_test::const_string name)
         {
             lock _(mutex_);

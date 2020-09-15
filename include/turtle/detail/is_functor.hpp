@@ -45,7 +45,9 @@ namespace mock { namespace detail {
 #ifdef MOCK_DECLTYPE
                         is_callable<T, P>,
 #endif
-                        has_result_type<T>, has_result<T>, has_sig<T>>
+                        has_result_type<T>,
+                        has_result<T>,
+                        has_sig<T>>
     {};
 }} // namespace mock::detail
 

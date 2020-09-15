@@ -114,7 +114,7 @@ struct base_class
 };
 
 MOCK_BASE_CLASS(mock_class, base_class){
-  MOCK_METHOD(method, 1) // only possible when referring unambiguously to a base class method
+    MOCK_METHOD(method, 1) // only possible when referring unambiguously to a base class method
 };
 //]
 } // namespace member_function_example_1
@@ -129,11 +129,15 @@ struct base_class
 };
 
 MOCK_BASE_CLASS(mock_class, base_class){
-  MOCK_METHOD(
-    method, 2, void(int, const std::string&),
-    identifier_1) // both the signature and identifier must be specified because of ambiguity due to overloading
-  MOCK_METHOD(method, 1, void(float),
-              identifier_2) // the identifier must differ from the previous one in order to fully disambiguate methods
+    MOCK_METHOD(
+      method,
+      2,
+      void(int, const std::string&),
+      identifier_1) // both the signature and identifier must be specified because of ambiguity due to overloading
+    MOCK_METHOD(method,
+                1,
+                void(float),
+                identifier_2) // the identifier must differ from the previous one in order to fully disambiguate methods
 };
 //]
 } // namespace member_function_example_2
@@ -148,7 +152,7 @@ struct base_class
 };
 
 MOCK_BASE_CLASS(mock_class, base_class){
-  MOCK_METHOD(method, 1, void(float)) // this generates both const and non-const versions
+    MOCK_METHOD(method, 1, void(float)) // this generates both const and non-const versions
 };
 //]
 } // namespace member_function_example_3
@@ -163,9 +167,11 @@ struct base_class
 };
 
 MOCK_BASE_CLASS(mock_class, base_class){
-  MOCK_CONST_METHOD(method, 1, void(float), identifier_1) // this generates only the const version
-  MOCK_NON_CONST_METHOD(method, 1, void(float),
-                        identifier_2) // this generates only the non-const version, with a different identifier
+    MOCK_CONST_METHOD(method, 1, void(float), identifier_1) // this generates only the const version
+    MOCK_NON_CONST_METHOD(method,
+                          1,
+                          void(float),
+                          identifier_2) // this generates only the non-const version, with a different identifier
 };
 //]
 } // namespace member_function_example_4
@@ -190,8 +196,10 @@ struct mock_class : base_class
 namespace member_function_example_6 {
 //[ member_function_example_6
 MOCK_CLASS(mock_class){
-  MOCK_NON_CONST_METHOD(operator=, 1, mock_class &(const mock_class&),
-                        assignment) // operators require a custom identifier
+    MOCK_NON_CONST_METHOD(operator=,
+                          1,
+                          mock_class &(const mock_class&),
+                          assignment) // operators require a custom identifier
 };
 //]
 } // namespace member_function_example_6
@@ -200,9 +208,10 @@ namespace member_function_example_7 {
 //[ member_function_example_7
 template<typename T>
 MOCK_CLASS(mock_class){
-  MOCK_METHOD_TPL(
-    method, 1,
-    void(const T&)) // the _TPL variants must be used if the signature includes a template parameter of the class
+    MOCK_METHOD_TPL(
+      method,
+      1,
+      void(const T&)) // the _TPL variants must be used if the signature includes a template parameter of the class
 };
 //]
 } // namespace member_function_example_7
@@ -210,9 +219,10 @@ MOCK_CLASS(mock_class){
 namespace member_function_example_8 {
 //[ member_function_example_8
 MOCK_CLASS(mock_class){
-  MOCK_METHOD(method, 0,
-              BOOST_IDENTITY_TYPE((std::map<int, int>()))) // the signature must be wrapped in BOOST_IDENTITY_TYPE if
-                                                           // the return type contains a comma
+    MOCK_METHOD(method,
+                0,
+                BOOST_IDENTITY_TYPE((std::map<int, int>()))) // the signature must be wrapped in BOOST_IDENTITY_TYPE if
+                                                             // the return type contains a comma
 };
 //]
 } // namespace member_function_example_8
@@ -221,8 +231,10 @@ MOCK_CLASS(mock_class){
 namespace member_function_example_9 {
 //[ member_function_example_9
 MOCK_CLASS(mock_class){
-  MOCK_METHOD(__stdcall method, 0, void(),
-              method) // all parameters must be provided when specifying a different calling convention
+    MOCK_METHOD(__stdcall method,
+                0,
+                void(),
+                method) // all parameters must be provided when specifying a different calling convention
 };
 //]
 } // namespace member_function_example_9
@@ -230,14 +242,14 @@ MOCK_CLASS(mock_class){
 
 namespace static_member_function_example_1 {
 //[ static_member_function_example_1
-MOCK_CLASS(mock_class){MOCK_STATIC_METHOD(method, 1, float(int))};
+MOCK_CLASS(mock_class){ MOCK_STATIC_METHOD(method, 1, float(int)) };
 //]
 } // namespace static_member_function_example_1
 
 namespace static_member_function_example_2 {
 //[ static_member_function_example_2
 template<typename T>
-MOCK_CLASS(mock_class){MOCK_STATIC_METHOD_TPL(method, 1, void(T))};
+MOCK_CLASS(mock_class){ MOCK_STATIC_METHOD_TPL(method, 1, void(T)) };
 //]
 } // namespace static_member_function_example_2
 
@@ -245,8 +257,10 @@ MOCK_CLASS(mock_class){MOCK_STATIC_METHOD_TPL(method, 1, void(T))};
 namespace static_member_function_example_3 {
 //[ static_member_function_example_3
 MOCK_CLASS(mock_class){
-  MOCK_STATIC_METHOD(__stdcall method, 0, void(),
-                     method) // all parameters must be provided when specifying a different calling convention
+    MOCK_STATIC_METHOD(__stdcall method,
+                       0,
+                       void(),
+                       method) // all parameters must be provided when specifying a different calling convention
 };
 //]
 } // namespace static_member_function_example_3
@@ -254,44 +268,44 @@ MOCK_CLASS(mock_class){
 
 namespace constructor_example_1 {
 //[ constructor_example_1
-MOCK_CLASS(mock_class){MOCK_CONSTRUCTOR(mock_class, 2, (int, const std::string&), identifier)};
+MOCK_CLASS(mock_class){ MOCK_CONSTRUCTOR(mock_class, 2, (int, const std::string&), identifier) };
 //]
 } // namespace constructor_example_1
 
 namespace constructor_example_2 {
 //[ constructor_example_2
 template<typename T>
-MOCK_CLASS(mock_class){MOCK_CONSTRUCTOR(mock_class, 2, (int, const std::string&), identifier)
-                         MOCK_CONSTRUCTOR_TPL(mock_class, 2, (T, const std::string&), identifier_2)};
+MOCK_CLASS(mock_class){ MOCK_CONSTRUCTOR(mock_class, 2, (int, const std::string&), identifier)
+                          MOCK_CONSTRUCTOR_TPL(mock_class, 2, (T, const std::string&), identifier_2) };
 //]
 } // namespace constructor_example_2
 
 #ifdef BOOST_MSVC
 namespace constructor_example_3 {
 //[ constructor_example_3
-MOCK_CLASS(mock_class){MOCK_CONSTRUCTOR(__stdcall mock_class, 0, (), constructor)};
+MOCK_CLASS(mock_class){ MOCK_CONSTRUCTOR(__stdcall mock_class, 0, (), constructor) };
 //]
 } // namespace constructor_example_3
 #endif
 
 namespace destructor_example_1 {
 //[ destructor_example_1
-MOCK_CLASS(mock_class){MOCK_DESTRUCTOR(~mock_class, destructor)};
+MOCK_CLASS(mock_class){ MOCK_DESTRUCTOR(~mock_class, destructor) };
 //]
 } // namespace destructor_example_1
 
 #ifdef BOOST_MSVC
 namespace destructor_example_2 {
 //[ destructor_example_2
-MOCK_CLASS(mock_class){MOCK_DESTRUCTOR(__stdcall ~mock_class, destructor)};
+MOCK_CLASS(mock_class){ MOCK_DESTRUCTOR(__stdcall ~mock_class, destructor) };
 //]
 } // namespace destructor_example_2
 #endif
 
 namespace conversion_operator_example_1 {
 //[ conversion_operator_example_1
-MOCK_CLASS(mock_class){MOCK_CONVERSION_OPERATOR(operator, int, conversion_to_int)
-                         MOCK_CONST_CONVERSION_OPERATOR(operator, const std::string&, conversion_to_string)};
+MOCK_CLASS(mock_class){ MOCK_CONVERSION_OPERATOR(operator, int, conversion_to_int)
+                          MOCK_CONST_CONVERSION_OPERATOR(operator, const std::string&, conversion_to_string) };
 //]
 } // namespace conversion_operator_example_1
 
@@ -299,17 +313,18 @@ namespace conversion_operator_example_2 {
 //[ conversion_operator_example_2
 template<typename T>
 MOCK_CLASS(mock_class){
-  MOCK_CONVERSION_OPERATOR_TPL(operator, T, conversion_to_T) // the _TPL variants must be used if the signature includes
-                                                             // a template parameter of the class
-  MOCK_CONST_CONVERSION_OPERATOR(operator, const std::string&, const_conversion_to_string)
-    MOCK_NON_CONST_CONVERSION_OPERATOR(operator, const std::string&, non_const_conversion_to_string)};
+    MOCK_CONVERSION_OPERATOR_TPL(operator, T, conversion_to_T) // the _TPL variants must be used if the signature
+                                                               // includes a template parameter of the class
+    MOCK_CONST_CONVERSION_OPERATOR(operator, const std::string&, const_conversion_to_string)
+      MOCK_NON_CONST_CONVERSION_OPERATOR(operator, const std::string&, non_const_conversion_to_string)
+};
 //]
 } // namespace conversion_operator_example_2
 
 #ifdef BOOST_MSVC
 namespace conversion_operator_example_3 {
 //[ conversion_operator_example_3
-MOCK_CLASS(mock_class){MOCK_CONVERSION_OPERATOR(__stdcall operator, int, conversion_to_int)};
+MOCK_CLASS(mock_class){ MOCK_CONVERSION_OPERATOR(__stdcall operator, int, conversion_to_int) };
 //]
 } // namespace conversion_operator_example_3
 #endif
@@ -328,7 +343,9 @@ BOOST_AUTO_TEST_CASE(demonstrates_instantiating_a_mock_function)
 #ifdef BOOST_MSVC
 namespace function_example_2 {
 //[ function_example_2
-MOCK_FUNCTION(__stdcall f, 0, void(),
+MOCK_FUNCTION(__stdcall f,
+              0,
+              void(),
               f) // all parameters must be provided when specifying a different calling convention
 //]
 } // namespace function_example_2
@@ -362,8 +379,8 @@ BOOST_AUTO_TEST_CASE(demonstrates_instantiating_a_mock_functor)
 
 namespace expectation_example_1 {
 //[ expectation_example_1
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 1, int(int), method)
-                         MOCK_METHOD(method, 2, void(const std::string&, float), method2)};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 1, int(int), method)
+                          MOCK_METHOD(method, 2, void(const std::string&, float), method2) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_configuring_mock_objects)
 {
@@ -378,7 +395,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_configuring_mock_objects)
 
 namespace invocation_example_1 {
 //[ invocation_example_1
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 2, void(int, const std::string&))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 2, void(int, const std::string&)) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_setting_up_invocations_on_a_mock_method)
 {
@@ -412,7 +429,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_setting_up_an_invocation_on_a_mock_function)
 
 namespace invocation_example_4 {
 //[ invocation_example_4
-MOCK_CLASS(mock_class){MOCK_STATIC_METHOD(method, 1, void(int))};
+MOCK_CLASS(mock_class){ MOCK_STATIC_METHOD(method, 1, void(int)) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_setting_up_an_invocation_on_a_mock_static_method)
 {
@@ -425,7 +442,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_setting_up_an_invocation_on_a_mock_static_meth
 
 namespace constraints_example_1 {
 //[ constraints_example_1
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 2, void(int, const std::string&))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 2, void(int, const std::string&)) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_adding_builtin_constraints)
 {
@@ -438,7 +455,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_adding_builtin_constraints)
 
 namespace constraints_example_2 {
 //[ constraints_example_2
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 1, void(int))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 1, void(int)) };
 
 bool custom_constraint(int actual)
 {
@@ -455,7 +472,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_adding_a_custom_constraint_with_a_free_functio
 
 namespace constraints_example_3 {
 //[ constraints_example_3
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 1, void(int))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 1, void(int)) };
 
 bool custom_constraint(int expected, int actual)
 {
@@ -473,7 +490,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_adding_a_custom_constraint_with_a_standard_lib
 
 namespace constraints_example_4 {
 //[ constraints_example_4
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 1, void(int))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 1, void(int)) };
 
 bool custom_constraint(int expected, int actual)
 {
@@ -494,7 +511,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_adding_a_custom_constraint_with_boost_bind)
 
 namespace constraints_example_5 {
 //[ constraints_example_5
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 1, void(int))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 1, void(int)) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_adding_a_custom_constraint_with_boost_lambda)
 {
@@ -510,7 +527,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_adding_a_custom_constraint_with_boost_lambda)
 
 namespace constraints_example_6 {
 //[ constraints_example_6
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 1, void(int))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 1, void(int)) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_adding_a_custom_constraint_with_boost_phoenix)
 {
@@ -525,7 +542,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_adding_a_custom_constraint_with_boost_phoenix)
 
 namespace constraints_example_7 {
 //[ constraints_example_7
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 1, void(int))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 1, void(int)) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_adding_a_constraint_with_cxx11_lambda)
 {
@@ -539,7 +556,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_adding_a_constraint_with_cxx11_lambda)
 
 namespace constraints_example_8 {
 //[ constraints_example_8
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 2, void(int, const std::string&))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 2, void(int, const std::string&)) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_combining_constraints)
 {
@@ -551,7 +568,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_combining_constraints)
 
 namespace constraints_example_9 {
 //[ constraints_example_9
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 2, void(const std::string&, std::size_t))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 2, void(const std::string&, std::size_t)) };
 
 bool custom_constraint(const std::string& actual_1, std::size_t actual_2)
 {
@@ -568,11 +585,11 @@ BOOST_AUTO_TEST_CASE(demonstrates_one_constraint_for_all_arguments)
 
 namespace sequence_example_1 {
 //[ sequence_example_1
-MOCK_CLASS(mock_class_1){MOCK_METHOD(method_1, 0, void())};
+MOCK_CLASS(mock_class_1){ MOCK_METHOD(method_1, 0, void()) };
 
-MOCK_CLASS(mock_class_2){MOCK_METHOD(method_2, 0, void())};
+MOCK_CLASS(mock_class_2){ MOCK_METHOD(method_2, 0, void()) };
 
-MOCK_CLASS(mock_class_3){MOCK_METHOD(method_3, 0, void())};
+MOCK_CLASS(mock_class_3){ MOCK_METHOD(method_3, 0, void()) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_enforcing_several_expectation_orders)
 {
@@ -592,7 +609,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_enforcing_several_expectation_orders)
 
 namespace action_example_1 {
 //[ action_example_1
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 1, int(int))};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 1, int(int)) };
 
 int function(int i)
 {
@@ -617,7 +634,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_configuring_actions)
 
 namespace action_example_2 {
 //[ action_example_2
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 0, int&())};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 0, int&()) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_configuring_actions_with_references)
 {
@@ -632,7 +649,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_configuring_actions_with_references)
 
 namespace verification_example_1 {
 //[ verification_example_1
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 0, void())};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 0, void()) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_verifying_a_mock_method)
 {
@@ -670,7 +687,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_verifying_a_mock_function)
 
 namespace verification_example_4 {
 //[ verification_example_4
-MOCK_CLASS(mock_class){MOCK_STATIC_METHOD(method, 0, void())};
+MOCK_CLASS(mock_class){ MOCK_STATIC_METHOD(method, 0, void()) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_verifying_a_static_mock_method)
 {
@@ -684,7 +701,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_verifying_a_static_mock_method)
 
 namespace reset_example_1 {
 //[ reset_example_1
-MOCK_CLASS(mock_class){MOCK_METHOD(method, 0, void())};
+MOCK_CLASS(mock_class){ MOCK_METHOD(method, 0, void()) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_resetting_a_mock_method)
 {
@@ -722,7 +739,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_resetting_a_mock_function)
 
 namespace reset_example_4 {
 //[ reset_example_4
-MOCK_CLASS(mock_class){MOCK_STATIC_METHOD(method, 0, void())};
+MOCK_CLASS(mock_class){ MOCK_STATIC_METHOD(method, 0, void()) };
 
 BOOST_AUTO_TEST_CASE(demonstrates_resetting_a_static_mock_method)
 {
@@ -751,9 +768,10 @@ BOOST_AUTO_TEST_CASE(mock_constraint_0_arity)
 namespace helpers_example_2 {
 //[ helpers_example_2
 MOCK_CONSTRAINT(equal, expected, actual == expected) // this is how mock::equal could be defined
-MOCK_CONSTRAINT(near, expected,
-                std::abs(actual - expected)
-                  < 0.01) // this defines a 'near' constraint which can be used as 'near( 42 )'
+MOCK_CONSTRAINT(near,
+                expected,
+                std::abs(actual - expected) <
+                  0.01) // this defines a 'near' constraint which can be used as 'near( 42 )'
 
 BOOST_AUTO_TEST_CASE(mock_constraint_1_arity)
 {
@@ -766,7 +784,9 @@ BOOST_AUTO_TEST_CASE(mock_constraint_1_arity)
 
 namespace helpers_example_3 {
 //[ helpers_example_3
-MOCK_CONSTRAINT(near, expected, tolerance,
+MOCK_CONSTRAINT(near,
+                expected,
+                tolerance,
                 std::abs(actual - expected) < tolerance) // this is how mock::near could be defined
 
 BOOST_AUTO_TEST_CASE(mock_constraint_2_arity)
@@ -794,9 +814,11 @@ BOOST_AUTO_TEST_CASE(mock_constraint_0_arity)
 namespace helpers_example_5 {
 //[ helpers_example_5
 MOCK_CONSTRAINT_EXT(equal, 1, (expected), actual == expected) // this is how mock::equal is defined
-MOCK_CONSTRAINT_EXT(near, 1, (expected),
-                    std::abs(actual - expected)
-                      < 0.01) // this defines a 'near' constraint which can be used as 'near( 42 )'
+MOCK_CONSTRAINT_EXT(near,
+                    1,
+                    (expected),
+                    std::abs(actual - expected) <
+                      0.01) // this defines a 'near' constraint which can be used as 'near( 42 )'
 
 BOOST_AUTO_TEST_CASE(mock_constraint_1_arity)
 {
@@ -809,7 +831,9 @@ BOOST_AUTO_TEST_CASE(mock_constraint_1_arity)
 
 namespace helpers_example_6 {
 //[ helpers_example_6
-MOCK_CONSTRAINT_EXT(near, 2, (expected, tolerance),
+MOCK_CONSTRAINT_EXT(near,
+                    2,
+                    (expected, tolerance),
                     std::abs(actual - expected) < tolerance) // this is how mock::near is defined
 
 BOOST_AUTO_TEST_CASE(mock_constraint_2_arity)

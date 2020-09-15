@@ -18,7 +18,7 @@ public:
     virtual void method(int* i) = 0;
 };
 
-MOCK_BASE_CLASS(mock_base, base){MOCK_METHOD(method, 1)};
+MOCK_BASE_CLASS(mock_base, base){ MOCK_METHOD(method, 1) };
 //]
 } // namespace
 

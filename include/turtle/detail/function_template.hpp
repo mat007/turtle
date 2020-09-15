@@ -67,8 +67,11 @@ namespace mock { namespace detail {
             return *this;
         }
 
-        void configure(context& c, const void* p, boost::unit_test::const_string instance,
-                       boost::optional<type_name> type, boost::unit_test::const_string name) const
+        void configure(context& c,
+                       const void* p,
+                       boost::unit_test::const_string instance,
+                       boost::optional<type_name> type,
+                       boost::unit_test::const_string name) const
         {
             impl_->add(c, p, instance, type, name);
         }

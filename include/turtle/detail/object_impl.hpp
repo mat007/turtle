@@ -27,8 +27,11 @@ namespace mock { namespace detail {
     public:
         object_impl() : mutex_(boost::make_shared<mutex>()) {}
 
-        virtual void add(const void* /*p*/, verifiable& v, boost::unit_test::const_string instance,
-                         boost::optional<type_name> type, boost::unit_test::const_string name)
+        virtual void add(const void* /*p*/,
+                         verifiable& v,
+                         boost::unit_test::const_string instance,
+                         boost::optional<type_name> type,
+                         boost::unit_test::const_string name)
         {
             lock _(mutex_);
             if(children_.empty())

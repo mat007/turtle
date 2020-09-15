@@ -21,7 +21,9 @@ namespace mock { namespace detail {
     {
     public:
         child() : parent_(0) {}
-        void update(parent& p, boost::unit_test::const_string instance, boost::optional<type_name> type,
+        void update(parent& p,
+                    boost::unit_test::const_string instance,
+                    boost::optional<type_name> type,
                     boost::unit_test::const_string name)
         {
             if(instance != "?." || name_.empty())

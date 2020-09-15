@@ -267,8 +267,8 @@ BOOST_FIXTURE_TEST_CASE(
     {
         mock::detail::function<int(int, const std::string&)> f;
         f.expect().with(42, "expected");
-        CHECK_ERROR(f(42, "actual"), "unexpected call", 0,
-                    "?( 42, \"actual\" )\n. unlimited().with( 42, \"expected\" )");
+        CHECK_ERROR(
+          f(42, "actual"), "unexpected call", 0, "?( 42, \"actual\" )\n. unlimited().with( 42, \"expected\" )");
     }
 }
 
@@ -745,8 +745,8 @@ BOOST_FIXTURE_TEST_CASE(expecting_twice_a_single_expectation_makes_it_callable_t
         f.expect().once().with("second");
         f("first");
         f("second");
-        CHECK_ERROR(f("third"), "unexpected call", 2,
-                    "?( \"third\" )\nv once().with( \"first\" )\nv once().with( \"second\" )");
+        CHECK_ERROR(
+          f("third"), "unexpected call", 2, "?( \"third\" )\nv once().with( \"first\" )\nv once().with( \"second\" )");
     }
 }
 
@@ -766,8 +766,8 @@ BOOST_FIXTURE_TEST_CASE(best_expectation_is_selected_first, mock_error_fixture)
         f.expect().once().with("second");
         f("second");
         f("first");
-        CHECK_ERROR(f("third"), "unexpected call", 2,
-                    "?( \"third\" )\nv once().with( \"first\" )\nv once().with( \"second\" )");
+        CHECK_ERROR(
+          f("third"), "unexpected call", 2, "?( \"third\" )\nv once().with( \"first\" )\nv once().with( \"second\" )");
     }
 }
 
@@ -869,7 +869,8 @@ BOOST_FIXTURE_TEST_CASE(expectation_with_remaining_untriggered_matches_upon_dest
 }
 
 BOOST_FIXTURE_TEST_CASE(
-  verifying_expectation_with_remaining_matches_disables_the_automatic_verification_upon_destruction, mock_error_fixture)
+  verifying_expectation_with_remaining_matches_disables_the_automatic_verification_upon_destruction,
+  mock_error_fixture)
 {
     mock::detail::function<void()> f;
     f.expect().once();

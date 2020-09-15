@@ -112,7 +112,9 @@ namespace mock { namespace detail {
             return Error::abort();
         }
         template<typename Context>
-        static void fail(const char* message, const Context& context, const char* file = "unknown location",
+        static void fail(const char* message,
+                         const Context& context,
+                         const char* file = "unknown location",
                          int line = 0)
         {
             scoped_lock _(error_mutex);

@@ -43,7 +43,7 @@ void check(bool& condition, F flush, int attempts = 100, int sleep = 100)
     }
 }
 
-MOCK_BASE_CLASS(mock_base_class, base_class){MOCK_METHOD(method, 0)};
+MOCK_BASE_CLASS(mock_base_class, base_class){ MOCK_METHOD(method, 0) };
 void set_bool(bool& b)
 {
     b = true;

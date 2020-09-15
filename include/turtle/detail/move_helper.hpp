@@ -27,8 +27,8 @@ namespace mock { namespace detail {
     template<typename T>
     struct ref_arg
     {
-        typedef typename boost::conditional<boost::is_reference<T>::value, T,
-                                            typename boost::add_rvalue_reference<T>::type>::type type;
+        typedef typename boost::
+          conditional<boost::is_reference<T>::value, T, typename boost::add_rvalue_reference<T>::type>::type type;
     };
 
     template<typename T>
@@ -56,12 +56,12 @@ namespace mock { namespace detail {
     template<typename T>
     struct ref_arg
     {
-        typedef typename boost::conditional<boost::is_reference<T>::value, T,
-                                            const typename boost::add_reference<T>::type>::type type;
+        typedef typename boost::
+          conditional<boost::is_reference<T>::value, T, const typename boost::add_reference<T>::type>::type type;
     };
     template<typename T>
-    inline typename boost::remove_reference<T>::type&
-    move_if_not_lvalue_reference(typename boost::remove_reference<T>::type& t)
+    inline typename boost::remove_reference<T>::type& move_if_not_lvalue_reference(
+      typename boost::remove_reference<T>::type& t)
     {
         return t;
     }

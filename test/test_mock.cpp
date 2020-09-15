@@ -18,7 +18,7 @@ void my_function(T& t)
 {
     t.my_method("some parameter");
 }
-MOCK_CLASS(mock_class){MOCK_METHOD_EXT(my_method, 1, void(const std::string&), my_tag)};
+MOCK_CLASS(mock_class){ MOCK_METHOD_EXT(my_method, 1, void(const std::string&), my_tag) };
 } // namespace
 
 BOOST_FIXTURE_TEST_CASE(mock_object_for_static_polymorphism, mock_error_fixture)
@@ -30,7 +30,7 @@ BOOST_FIXTURE_TEST_CASE(mock_object_for_static_polymorphism, mock_error_fixture)
 }
 
 namespace {
-MOCK_CLASS(mock_class_with_operator){MOCK_CONST_METHOD_EXT(operator+=, 1, mock_class_with_operator &(int), addition)};
+MOCK_CLASS(mock_class_with_operator){ MOCK_CONST_METHOD_EXT(operator+=, 1, mock_class_with_operator &(int), addition) };
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_addition_operator, mock_error_fixture)
@@ -42,7 +42,7 @@ BOOST_FIXTURE_TEST_CASE(mock_addition_operator, mock_error_fixture)
 }
 
 namespace {
-MOCK_CLASS(mock_class_with_conversion_operator){MOCK_CONVERSION_OPERATOR(operator, int, conversion)};
+MOCK_CLASS(mock_class_with_conversion_operator){ MOCK_CONVERSION_OPERATOR(operator, int, conversion) };
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_conversion_operator, mock_error_fixture)
@@ -55,7 +55,7 @@ BOOST_FIXTURE_TEST_CASE(mock_conversion_operator, mock_error_fixture)
 
 namespace {
 template<typename T>
-MOCK_CLASS(mock_template_class_with_conversion_operator){MOCK_CONVERSION_OPERATOR_TPL(operator, T, conversion)};
+MOCK_CLASS(mock_template_class_with_conversion_operator){ MOCK_CONVERSION_OPERATOR_TPL(operator, T, conversion) };
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_template_conversion_operator, mock_error_fixture)
@@ -67,7 +67,7 @@ BOOST_FIXTURE_TEST_CASE(mock_template_conversion_operator, mock_error_fixture)
 }
 
 namespace {
-MOCK_CLASS(mock_class_with_const_conversion_operator){MOCK_CONST_CONVERSION_OPERATOR(operator, int, conversion)};
+MOCK_CLASS(mock_class_with_const_conversion_operator){ MOCK_CONST_CONVERSION_OPERATOR(operator, int, conversion) };
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_const_conversion_operator, mock_error_fixture)
@@ -80,7 +80,7 @@ BOOST_FIXTURE_TEST_CASE(mock_const_conversion_operator, mock_error_fixture)
 }
 
 namespace {
-MOCK_CLASS(mock_class_with_non_const_conversion_operator){MOCK_CONST_CONVERSION_OPERATOR(operator, int, conversion)};
+MOCK_CLASS(mock_class_with_non_const_conversion_operator){ MOCK_CONST_CONVERSION_OPERATOR(operator, int, conversion) };
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_non_const_conversion_operator, mock_error_fixture)
@@ -95,7 +95,8 @@ BOOST_FIXTURE_TEST_CASE(mock_non_const_conversion_operator, mock_error_fixture)
 namespace {
 template<typename T>
 MOCK_CLASS(mock_template_class_with_const_conversion_operator){
-  MOCK_CONST_CONVERSION_OPERATOR_TPL(operator, T, conversion)};
+    MOCK_CONST_CONVERSION_OPERATOR_TPL(operator, T, conversion)
+};
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_template_const_conversion_operator, mock_error_fixture)
@@ -109,7 +110,8 @@ BOOST_FIXTURE_TEST_CASE(mock_template_const_conversion_operator, mock_error_fixt
 namespace {
 template<typename T>
 MOCK_CLASS(mock_template_class_with_non_const_conversion_operator){
-  MOCK_NON_CONST_CONVERSION_OPERATOR_TPL(operator, T, conversion)};
+    MOCK_NON_CONST_CONVERSION_OPERATOR_TPL(operator, T, conversion)
+};
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_template_non_const_conversion_operator, mock_error_fixture)
@@ -121,8 +123,8 @@ BOOST_FIXTURE_TEST_CASE(mock_template_non_const_conversion_operator, mock_error_
 }
 
 namespace {
-MOCK_CLASS(my_mock){MOCK_CONST_METHOD_EXT(my_method, 1, void(int), my_method)
-                      MOCK_CONST_METHOD_EXT(my_method_2, 1, void(int), my_method_2)};
+MOCK_CLASS(my_mock){ MOCK_CONST_METHOD_EXT(my_method, 1, void(int), my_method)
+                       MOCK_CONST_METHOD_EXT(my_method_2, 1, void(int), my_method_2) };
 }
 
 BOOST_FIXTURE_TEST_CASE(MOCK_CONST_METHOD_EXT_macro_defines_a_bindable_method, mock_error_fixture)
@@ -295,7 +297,7 @@ BOOST_FIXTURE_TEST_CASE(mock_function_is_named, mock_error_fixture)
 }
 
 namespace {
-MOCK_CLASS(static_function_class){MOCK_STATIC_METHOD(f, 1, float(int), f)};
+MOCK_CLASS(static_function_class){ MOCK_STATIC_METHOD(f, 1, float(int), f) };
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_static_function_is_named, mock_error_fixture)
@@ -325,18 +327,18 @@ struct base
     virtual void m11() = 0;
 };
 
-MOCK_BASE_CLASS(variadic, base){MOCK_METHOD(m1, 0) MOCK_METHOD(m2, 0, void()) MOCK_METHOD(m3, 0, void(), m3)
-                                  MOCK_CONST_METHOD(m10, 0) MOCK_CONST_METHOD(m4, 0, void())
-                                    MOCK_CONST_METHOD(m5, 0, void(), m5) MOCK_NON_CONST_METHOD(m11, 0)
-                                      MOCK_NON_CONST_METHOD(m6, 0, void()) MOCK_NON_CONST_METHOD(m7, 0, void(), m7)
-                                        MOCK_STATIC_METHOD(m8, 0, void()) MOCK_STATIC_METHOD(m9, 0, void(), m9)};
+MOCK_BASE_CLASS(variadic, base){ MOCK_METHOD(m1, 0) MOCK_METHOD(m2, 0, void()) MOCK_METHOD(m3, 0, void(), m3)
+                                   MOCK_CONST_METHOD(m10, 0) MOCK_CONST_METHOD(m4, 0, void())
+                                     MOCK_CONST_METHOD(m5, 0, void(), m5) MOCK_NON_CONST_METHOD(m11, 0)
+                                       MOCK_NON_CONST_METHOD(m6, 0, void()) MOCK_NON_CONST_METHOD(m7, 0, void(), m7)
+                                         MOCK_STATIC_METHOD(m8, 0, void()) MOCK_STATIC_METHOD(m9, 0, void(), m9) };
 
 template<typename T>
-MOCK_BASE_CLASS(variadic_tpl, base){MOCK_METHOD(m1, 0, void()) MOCK_METHOD_TPL(m2, 0, T())
-                                      MOCK_METHOD_TPL(m3, 0, T(), m3) MOCK_CONST_METHOD_TPL(m4, 0, T())
-                                        MOCK_CONST_METHOD_TPL(m5, 0, T(), m5) MOCK_NON_CONST_METHOD_TPL(m6, 0, T())
-                                          MOCK_NON_CONST_METHOD_TPL(m7, 0, T(), m7) MOCK_STATIC_METHOD_TPL(m8, 0, T())
-                                            MOCK_STATIC_METHOD_TPL(m9, 0, T(), m9)};
+MOCK_BASE_CLASS(variadic_tpl, base){ MOCK_METHOD(m1, 0, void()) MOCK_METHOD_TPL(m2, 0, T())
+                                       MOCK_METHOD_TPL(m3, 0, T(), m3) MOCK_CONST_METHOD_TPL(m4, 0, T())
+                                         MOCK_CONST_METHOD_TPL(m5, 0, T(), m5) MOCK_NON_CONST_METHOD_TPL(m6, 0, T())
+                                           MOCK_NON_CONST_METHOD_TPL(m7, 0, T(), m7) MOCK_STATIC_METHOD_TPL(m8, 0, T())
+                                             MOCK_STATIC_METHOD_TPL(m9, 0, T(), m9) };
 
 MOCK_BASE_CLASS(comma_base, std::map<int, int>){};
 
@@ -357,10 +359,10 @@ struct base
     virtual void m1() = 0;
 };
 
-MOCK_BASE_CLASS(derived, base){MOCK_METHOD(m1, 0)};
+MOCK_BASE_CLASS(derived, base){ MOCK_METHOD(m1, 0) };
 
 template<typename T>
-MOCK_BASE_CLASS(derived_tpl, base){MOCK_METHOD_EXT(m1, 0, void(), m1)};
+MOCK_BASE_CLASS(derived_tpl, base){ MOCK_METHOD_EXT(m1, 0, void(), m1) };
 } // namespace
 
 #endif // MOCK_VARIADIC_MACROS
@@ -379,14 +381,15 @@ struct base
     virtual void MOCK_STDCALL m1() = 0;
 };
 
-MOCK_BASE_CLASS(derived, base){
-  MOCK_CONSTRUCTOR(MOCK_STDCALL derived, 0, (), derived) MOCK_DESTRUCTOR(MOCK_STDCALL ~derived, derived)
-    MOCK_CONVERSION_OPERATOR(MOCK_STDCALL operator, int, to_int) MOCK_METHOD_EXT(MOCK_STDCALL m1, 0, void(), m1)
-      MOCK_METHOD_EXT(MOCK_STDCALL m2, 0, void(), m2)
+MOCK_BASE_CLASS(derived, base){ MOCK_CONSTRUCTOR(MOCK_STDCALL derived, 0, (), derived)
+                                  MOCK_DESTRUCTOR(MOCK_STDCALL ~derived, derived)
+                                    MOCK_CONVERSION_OPERATOR(MOCK_STDCALL operator, int, to_int)
+                                      MOCK_METHOD_EXT(MOCK_STDCALL m1, 0, void(), m1)
+                                        MOCK_METHOD_EXT(MOCK_STDCALL m2, 0, void(), m2)
 #ifdef MOCK_VARIADIC_MACROS
-        MOCK_METHOD(MOCK_STDCALL m3, 0, void(), m3)
+                                          MOCK_METHOD(MOCK_STDCALL m3, 0, void(), m3)
 #endif
-          MOCK_STATIC_METHOD(MOCK_STDCALL m4, 0, void(), m4)};
+                                            MOCK_STATIC_METHOD(MOCK_STDCALL m4, 0, void(), m4) };
 
 MOCK_FUNCTION(MOCK_STDCALL f, 0, void(), f)
 } // namespace stdcall

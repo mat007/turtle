@@ -100,18 +100,18 @@ namespace detail {
     {
         explicit equal(Expected expected) : expected_(expected) {}
         template<typename Actual>
-        bool
-        operator()(const Actual& actual,
-                   typename boost::enable_if<
-                     boost::has_equal_to<Actual, typename boost::unwrap_reference<Expected>::type>>::type* = 0) const
+        bool operator()(
+          const Actual& actual,
+          typename boost::enable_if<
+            boost::has_equal_to<Actual, typename boost::unwrap_reference<Expected>::type>>::type* = 0) const
         {
             return actual == boost::unwrap_ref(expected_);
         }
         template<typename Actual>
-        bool
-        operator()(const Actual& actual,
-                   typename boost::disable_if<
-                     boost::has_equal_to<Actual, typename boost::unwrap_reference<Expected>::type>>::type* = 0) const
+        bool operator()(
+          const Actual& actual,
+          typename boost::disable_if<
+            boost::has_equal_to<Actual, typename boost::unwrap_reference<Expected>::type>>::type* = 0) const
         {
             return actual && *actual == boost::unwrap_ref(expected_);
         }
@@ -161,10 +161,10 @@ namespace detail {
             return true;
         }
         template<typename Actual>
-        bool
-        operator()(Actual& actual,
-                   typename boost::enable_if<
-                     boost::is_convertible<Actual*, typename boost::unwrap_reference<Expected>::type>>::type* = 0) const
+        bool operator()(
+          Actual& actual,
+          typename boost::enable_if<
+            boost::is_convertible<Actual*, typename boost::unwrap_reference<Expected>::type>>::type* = 0) const
         {
             *expected_ = detail::addressof(actual);
             return true;
@@ -187,10 +187,10 @@ namespace detail {
             return true;
         }
         template<typename Actual>
-        bool
-        operator()(Actual* actual,
-                   typename boost::enable_if<
-                     boost::is_convertible<typename boost::unwrap_reference<Expected>::type, Actual>>::type* = 0) const
+        bool operator()(
+          Actual* actual,
+          typename boost::enable_if<
+            boost::is_convertible<typename boost::unwrap_reference<Expected>::type, Actual>>::type* = 0) const
         {
             if(!actual)
                 return false;

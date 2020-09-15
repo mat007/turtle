@@ -46,7 +46,7 @@ BOOST_FIXTURE_TEST_CASE(custom_mock_object_without_macros, mock_error_fixture)
 }
 
 namespace {
-MOCK_CLASS(my_mock){MOCK_METHOD_EXT(my_method, 1, int(int), my_tag)};
+MOCK_CLASS(my_mock){ MOCK_METHOD_EXT(my_method, 1, int(int), my_tag) };
 }
 
 BOOST_FIXTURE_TEST_CASE(basic_mock_object_usage, mock_error_fixture)
@@ -82,8 +82,8 @@ public:
     virtual void my_method(int) = 0;
 };
 
-MOCK_BASE_CLASS(my_ambiguited_mock, my_ambiguited_interface){MOCK_METHOD_EXT(my_method, 0, void(), my_tag1)
-                                                               MOCK_METHOD_EXT(my_method, 1, void(int), my_tag_2)};
+MOCK_BASE_CLASS(my_ambiguited_mock, my_ambiguited_interface){ MOCK_METHOD_EXT(my_method, 0, void(), my_tag1)
+                                                                MOCK_METHOD_EXT(my_method, 1, void(int), my_tag_2) };
 } // namespace
 
 BOOST_FIXTURE_TEST_CASE(mock_object_method_disambiguation, mock_error_fixture)
@@ -103,8 +103,9 @@ public:
     virtual void my_method() const = 0;
 };
 
-MOCK_BASE_CLASS(my_const_ambiguited_mock, my_const_ambiguited_interface){
-  MOCK_NON_CONST_METHOD_EXT(my_method, 0, void(), tag1) MOCK_CONST_METHOD_EXT(my_method, 0, void(), tag_2)};
+MOCK_BASE_CLASS(my_const_ambiguited_mock,
+                my_const_ambiguited_interface){ MOCK_NON_CONST_METHOD_EXT(my_method, 0, void(), tag1)
+                                                  MOCK_CONST_METHOD_EXT(my_method, 0, void(), tag_2) };
 } // namespace
 
 BOOST_FIXTURE_TEST_CASE(mock_object_method_const_disambiguation, mock_error_fixture)
@@ -117,7 +118,7 @@ BOOST_FIXTURE_TEST_CASE(mock_object_method_const_disambiguation, mock_error_fixt
 }
 
 namespace {
-MOCK_CLASS(my_undefined_mock){MOCK_METHOD_EXT(m, 1, void(undefined&), t)};
+MOCK_CLASS(my_undefined_mock){ MOCK_METHOD_EXT(m, 1, void(undefined&), t) };
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_object_method_with_declared_but_not_defined_parameter_is_valid, mock_error_fixture)
@@ -194,8 +195,8 @@ struct my_template_base_class
 };
 template<typename T>
 MOCK_BASE_CLASS(my_template_base_class_mock,
-                my_template_base_class<T>){MOCK_METHOD_EXT_TPL(my_method, 1, void(T), my_method)
-                                             MOCK_METHOD_EXT_TPL(my_other_method, 0, void(), my_other_method)};
+                my_template_base_class<T>){ MOCK_METHOD_EXT_TPL(my_method, 1, void(T), my_method)
+                                              MOCK_METHOD_EXT_TPL(my_other_method, 0, void(), my_other_method) };
 } // namespace
 
 BOOST_FIXTURE_TEST_CASE(mocking_a_template_base_class_method_is_supported, mock_error_fixture)
@@ -233,9 +234,9 @@ private:
     int value_;
 };
 
-MOCK_BASE_CLASS(my_mock_observer, my_observer){MOCK_METHOD(notify, 1)};
+MOCK_BASE_CLASS(my_mock_observer, my_observer){ MOCK_METHOD(notify, 1) };
 
-MOCK_BASE_CLASS(my_mock_manager, my_manager){MOCK_METHOD(get_observer, 0)};
+MOCK_BASE_CLASS(my_mock_manager, my_manager){ MOCK_METHOD(get_observer, 0) };
 
 struct fixture : mock_error_fixture
 {
@@ -258,7 +259,7 @@ BOOST_FIXTURE_TEST_CASE(basic_mock_object_collaboration_usage, fixture)
 }
 
 namespace {
-MOCK_CLASS(my_constructed_class){MOCK_CONSTRUCTOR(my_constructed_class, 2, (int, const std::string&), constructor)};
+MOCK_CLASS(my_constructed_class){ MOCK_CONSTRUCTOR(my_constructed_class, 2, (int, const std::string&), constructor) };
 }
 
 BOOST_FIXTURE_TEST_CASE(mocking_a_constructor, mock_error_fixture)
@@ -272,7 +273,8 @@ BOOST_FIXTURE_TEST_CASE(mocking_a_constructor, mock_error_fixture)
 namespace {
 template<typename T>
 MOCK_CLASS(my_constructed_template_class){
-  MOCK_CONSTRUCTOR_TPL(my_constructed_template_class, 2, (T, const std::string&), constructor)};
+    MOCK_CONSTRUCTOR_TPL(my_constructed_template_class, 2, (T, const std::string&), constructor)
+};
 }
 
 BOOST_FIXTURE_TEST_CASE(mocking_a_template_class_constructor, mock_error_fixture)
@@ -284,7 +286,7 @@ BOOST_FIXTURE_TEST_CASE(mocking_a_template_class_constructor, mock_error_fixture
 }
 
 namespace {
-MOCK_CLASS(my_destroyed_class){MOCK_DESTRUCTOR(~my_destroyed_class, destructor)};
+MOCK_CLASS(my_destroyed_class){ MOCK_DESTRUCTOR(~my_destroyed_class, destructor) };
 }
 
 BOOST_FIXTURE_TEST_CASE(mocking_a_destructor, mock_error_fixture)
@@ -303,7 +305,9 @@ BOOST_FIXTURE_TEST_CASE(failed_expectation_in_mocked_destructor_does_not_throw, 
           my_destroyed_class c;
           throw std::runtime_error("should not crash");
       } catch(std::runtime_error&){},
-      "unexpected call", 0, "?.my_destroyed_class::destructor()");
+      "unexpected call",
+      0,
+      "?.my_destroyed_class::destructor()");
 }
 
 BOOST_FIXTURE_TEST_CASE(failed_sequence_in_mocked_destructor_does_not_throw, mock_error_fixture)
@@ -317,11 +321,13 @@ BOOST_FIXTURE_TEST_CASE(failed_sequence_in_mocked_destructor_does_not_throw, moc
           MOCK_EXPECT(m.my_tag).once().in(s);
           m.my_method();
       },
-      "sequence failed", 1, "c.my_destroyed_class::destructor()\n. once()");
+      "sequence failed",
+      1,
+      "c.my_destroyed_class::destructor()\n. once()");
 }
 
 namespace {
-MOCK_CLASS(boost_optional){MOCK_METHOD_EXT(method, 0, boost::optional<my_observer&>(), tag)};
+MOCK_CLASS(boost_optional){ MOCK_METHOD_EXT(method, 0, boost::optional<my_observer&>(), tag) };
 }
 
 BOOST_FIXTURE_TEST_CASE(boost_optional_on_base_class_reference_as_return_type_is_supported, mock_error_fixture)
@@ -421,8 +427,8 @@ MOCK_FUNCTION(free_function, 1, void(int), free_function)
 BOOST_FIXTURE_TEST_CASE(a_free_function_can_be_mocked, mock_error_fixture)
 {
     MOCK_EXPECT(free_function).once();
-    CHECK_ERROR(BOOST_CHECK(!MOCK_VERIFY(free_function)), "verification failed", 0,
-                "free_function\n. once().with( any )");
+    CHECK_ERROR(
+      BOOST_CHECK(!MOCK_VERIFY(free_function)), "verification failed", 0, "free_function\n. once().with( any )");
     free_function(42);
     CHECK_CALLS(1);
     BOOST_CHECK(MOCK_VERIFY(free_function));
@@ -439,7 +445,9 @@ struct some_class : mock::object
 BOOST_FIXTURE_TEST_CASE(a_static_method_can_be_mocked, mock_error_fixture)
 {
     MOCK_EXPECT(some_class::some_static_method).once();
-    CHECK_ERROR(BOOST_CHECK(!MOCK_VERIFY(some_class::some_static_method)), "verification failed", 0,
+    CHECK_ERROR(BOOST_CHECK(!MOCK_VERIFY(some_class::some_static_method)),
+                "verification failed",
+                0,
                 "some_class::some_static_method\n. once().with( any )");
     some_class::some_static_method(42);
     CHECK_CALLS(1);
@@ -452,7 +460,9 @@ BOOST_FIXTURE_TEST_CASE(a_static_method_is_not_reset_when_resetting_an_instance_
     MOCK_EXPECT(some_class::some_static_method).once();
     some_class c;
     mock::reset(c);
-    CHECK_ERROR(BOOST_CHECK(!MOCK_VERIFY(some_class::some_static_method)), "verification failed", 0,
+    CHECK_ERROR(BOOST_CHECK(!MOCK_VERIFY(some_class::some_static_method)),
+                "verification failed",
+                0,
                 "some_class::some_static_method\n. once().with( any )");
     MOCK_RESET(some_class::some_static_method);
 }
@@ -468,7 +478,9 @@ struct some_template_class
 BOOST_FIXTURE_TEST_CASE(a_static_method_in_a_template_class_can_be_mocked, mock_error_fixture)
 {
     MOCK_EXPECT(some_template_class<int>::some_static_method).once();
-    CHECK_ERROR(BOOST_CHECK(!MOCK_VERIFY(some_template_class<int>::some_static_method)), "verification failed", 0,
+    CHECK_ERROR(BOOST_CHECK(!MOCK_VERIFY(some_template_class<int>::some_static_method)),
+                "verification failed",
+                0,
                 "some_template_class< int >::some_static_method\n. once().with( any )");
     some_template_class<int>::some_static_method(42);
     BOOST_CHECK(mock::verify());

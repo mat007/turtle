@@ -24,6 +24,6 @@ public:
 
 //[ limitations_template_base_class_method_solution
 template<typename T>
-MOCK_BASE_CLASS(mock_base, base<T>){MOCK_METHOD(method, 1, void())};
+MOCK_BASE_CLASS(mock_base, base<T>){ MOCK_METHOD(method, 1, void()) };
 //]
 } // namespace

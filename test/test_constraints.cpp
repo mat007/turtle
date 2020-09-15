@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(equal_constraint)
 #endif
 }
 
-BOOST_AUTO_TEST_CASE(equal_constraint_deref){{int i = 3;
+BOOST_AUTO_TEST_CASE(equal_constraint_deref){ { int i = 3;
 BOOST_CHECK(mock::equal(3).c_(&i));
 BOOST_CHECK(!mock::equal(7).c_(&i));
 }
@@ -82,7 +82,7 @@ BOOST_CHECK(!mock::equal(7).c_(&i));
 #endif // MOCK_SMART_PTR
 }
 
-BOOST_AUTO_TEST_CASE(same_constraint){{int i = 0;
+BOOST_AUTO_TEST_CASE(same_constraint){ { int i = 0;
 int j = 0;
 BOOST_CHECK_EQUAL(i, j);
 BOOST_CHECK(!mock::same(i).c_(j));

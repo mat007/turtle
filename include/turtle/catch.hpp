@@ -21,7 +21,9 @@ struct catch_mock_error_policy
     }
 
     template<typename Context>
-    static void fail(const char* message, const Context& context, const char* file = "file://unknown-location",
+    static void fail(const char* message,
+                     const Context& context,
+                     const char* file = "file://unknown-location",
                      int line = 0)
     {
         CAPTURE(context);

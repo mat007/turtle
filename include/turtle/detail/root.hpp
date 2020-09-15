@@ -24,8 +24,11 @@ namespace mock { namespace detail {
     class root_t : public singleton<root_t>, public context
     {
     public:
-        virtual void add(const void* p, verifiable& v, boost::unit_test::const_string instance,
-                         boost::optional<type_name> type, boost::unit_test::const_string name)
+        virtual void add(const void* p,
+                         verifiable& v,
+                         boost::unit_test::const_string instance,
+                         boost::optional<type_name> type,
+                         boost::unit_test::const_string name)
         {
             scoped_lock _(mutex_);
             children_t::iterator it = children_.lower_bound(&v);
@@ -87,7 +90,8 @@ namespace mock { namespace detail {
                 if(--it_->second.second == 0)
                     parents_->erase(it_);
             }
-            void update(boost::unit_test::const_string instance, boost::optional<type_name> type,
+            void update(boost::unit_test::const_string instance,
+                        boost::optional<type_name> type,
                         boost::unit_test::const_string name)
             {
                 child_.update(it_->second.first, instance, type, name);
