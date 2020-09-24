@@ -24,7 +24,7 @@
         << ')' \
         << lazy_expectations( this )
 
-#define MOCK_MOVE(z, n, d) \
+#define MOCK_FORWARD(z, n, d) \
     std::forward< T##n >( t##n )
 
 namespace mock
@@ -229,7 +229,7 @@ namespace detail
             for( const auto& expectation: expectations_ )
             {
                 if( expectation.is_valid(
-                    BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) ) )
+                    BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) ) )
                 {
                     if( ! expectation.invoke() )
                     {
@@ -247,7 +247,7 @@ namespace detail
                     error_type::call( MOCK_FUNCTION_CONTEXT, expectation.file(), expectation.line() );
                     if( expectation.functor() )
                         return expectation.functor()(
-                            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) );
+                            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) );
                     return expectation.trigger();
                 }
             }
@@ -314,4 +314,4 @@ namespace detail
 
 #undef MOCK_FUNCTION_FORMAT
 #undef MOCK_FUNCTION_CONTEXT
-#undef MOCK_MOVE
+#undef MOCK_FORWARD

@@ -17,7 +17,6 @@ namespace
 
     class my_class
     {
-        base_class& b;
     public:
         explicit my_class( base_class& );
 
@@ -28,12 +27,13 @@ namespace
 
 namespace
 {
-    my_class::my_class( base_class& b): b(b){}
+    static base_class* global_b = nullptr;
+    my_class::my_class( base_class& b){ global_b = &b; }
     void my_class::process()
     {
         int secret_value = 42;
-        b.method(secret_value);
-        b.method(secret_value);
+        global_b->method(secret_value);
+        global_b->method(secret_value);
     }
 }
 

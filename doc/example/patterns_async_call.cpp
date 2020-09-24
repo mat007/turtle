@@ -31,8 +31,8 @@ namespace mock_test
     my_class::my_class( base_class& b): b(b){}
     void my_class::flush()
     {
-        static int secret_value = 7;
-        if(--secret_value == 0)
+        static int counter = 7;
+        if(--counter == 0)
             b.method();
     }
 }
@@ -59,15 +59,16 @@ namespace mock_test
     {
         MOCK_METHOD( method, 0 )
     };
-}
 
 BOOST_AUTO_TEST_CASE( method_is_called )
 {
-    using namespace mock_test;
     mock_base_class m;
     my_class c( m );
     bool done = false;
     MOCK_EXPECT( m.method ).once().calls( [&done](){ done = true; } );
     check( done, [&c](){ c.flush(); } );                        // just wait on done, flushing from time to time
 }
+
+}
+
 //]

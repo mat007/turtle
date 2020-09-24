@@ -29,5 +29,5 @@ BOOST_AUTO_TEST_CASE(method_not_called_through_base)
 {
     mock_base b;
     MOCK_EXPECT(b.method).never();
-    static_cast<base*>(&b)->method(); // Doesn't call the mocked method
+    static_cast<base*>(&b)->method(); // Doesn't call the mocked method as asserted above
 }
