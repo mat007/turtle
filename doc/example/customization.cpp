@@ -87,7 +87,7 @@ struct near_constraint
     template< typename Actual >
     bool operator()( Actual actual ) const
     {
-        return std::abs( actual - expected_ ) < threshold_ ;
+        return std::abs( actual - mock::unwrap_ref(expected_) ) < mock::unwrap_ref(threshold_) ;
     }
 
     friend std::ostream& operator<<( std::ostream& s, const near_constraint& c )
@@ -133,6 +133,32 @@ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one_near_cre
    c.add( 41, 1 );
 }
 //]
+
+// Example of a "strong type" float
+struct float_wrapper{
+    float value;
+    float_wrapper(float value): value(value){}
+    operator float() const { return value; }
+    friend std::ostream& operator<<( std::ostream& s, const float_wrapper& f)
+    {
+        return s << f.value;
+    }
+};
+
+BOOST_AUTO_TEST_CASE( near_constraint_works_with_with_float_wrapper_and_cref )
+{
+   mock_view v;
+   calculator c( v );
+   float_wrapper expected = 0, threshold = 0;
+   // This works even without the unwrap_ref
+   MOCK_EXPECT( v.display ).once().with( near( expected, threshold ) );
+   // This requires 2 implicit conversion: from reference_wrapper to float_wrapper, then to float
+   // so unwrap_ref in near is required as C++ allows only 1 implicit conversion
+   MOCK_EXPECT( v.display ).once().with( near( std::cref( expected ), std::cref( threshold ) ) );
+   expected = 42;
+   threshold = 1;
+   c.add( 41, 1 );
+}
 }
 
 #undef MOCK_MAX_ARGS
