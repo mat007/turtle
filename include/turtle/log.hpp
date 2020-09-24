@@ -61,14 +61,6 @@ namespace detail
     {};
 }
 
-#ifdef MOCK_AUTO_PTR
-    template< typename T >
-    stream& operator<<( stream& s, const std::auto_ptr< T >& t )
-    {
-        return s << mock::format( t.get() );
-    }
-#endif // MOCK_AUTO_PTR
-
     template< typename T1, typename T2 >
     stream& operator<<( stream& s, const std::pair< T1, T2 >& p )
     {

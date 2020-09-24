@@ -32,12 +32,6 @@
 #   endif
 #endif
 
-#if !defined(BOOST_NO_AUTO_PTR)
-#   ifndef MOCK_NO_AUTO_PTR
-#      define MOCK_AUTO_PTR
-#   endif
-#endif
-
 #if defined(__cpp_lib_uncaught_exceptions) || \
     defined(_MSC_VER) && (_MSC_VER >= 1900)
 #   ifndef MOCK_NO_UNCAUGHT_EXCEPTIONS

@@ -393,16 +393,6 @@ BOOST_AUTO_TEST_CASE( std_pairs_are_serialized )
     BOOST_CHECK_EQUAL( "(3,42)", to_string( std::make_pair( 3, 42.f ) ) );
 }
 
-#ifdef MOCK_AUTO_PTR
-
-BOOST_AUTO_TEST_CASE( std_auto_ptr_are_serialized )
-{
-    BOOST_CHECK_NE( "?", to_string( std::auto_ptr< int >() ) );
-    BOOST_CHECK_NE( "?", to_string( std::auto_ptr< int >( new int( 42 ) ) ) );
-}
-
-#endif // MOCK_AUTO_PTR
-
 BOOST_AUTO_TEST_CASE( boost_shared_ptr_are_serialized )
 {
     BOOST_CHECK_NE( "?", to_string( boost::shared_ptr< int >() ) );
