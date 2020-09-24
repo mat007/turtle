@@ -10,27 +10,21 @@
 #include "../undefined.hpp"
 #include <turtle/detail/function.hpp>
 #include <turtle/constraints.hpp>
-#include <boost/test/auto_unit_test.hpp>
-#include <boost/utility/result_of.hpp>
-#include <boost/mpl/assert.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <boost/test/unit_test.hpp>
+#include <functional>
+#include <memory>
+#include <type_traits>
 
 // static
 
 namespace
 {
-    boost::function< void() > static_f;
+    std::function< void() > static_f;
 
-    BOOST_MPL_ASSERT((
-        boost::is_same< void, boost::result_of< mock::detail::function< void() >() >::type > ));
-    BOOST_MPL_ASSERT((
-        boost::is_same< int, boost::result_of< mock::detail::function< int() >() >::type > ));
-    BOOST_MPL_ASSERT((
-        boost::is_same< void, boost::result_of< mock::detail::function< void( float ) >( float ) >::type > ));
-    BOOST_MPL_ASSERT((
-        boost::is_same< int, boost::result_of< mock::detail::function< int( float ) >( float ) >::type > ));
+    static_assert( std::is_same< void, decltype( mock::detail::function< void() >{}() ) >::value, "!");
+    static_assert( std::is_same< int, decltype( mock::detail::function< int() >{}() ) >::value, "!");
+    static_assert( std::is_same< void, decltype( mock::detail::function< void( float ) >{}( std::declval<float>() ) ) >::value, "!");
+    static_assert( std::is_same< int, decltype( mock::detail::function< int( float ) >{}( std::declval<float>() ) ) >::value, "!");
 }
 
 // functor
@@ -38,13 +32,13 @@ namespace
 BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor, mock_error_fixture )
 {
     mock::detail::function< void() > f;
-    boost::function< void() > functor = f;
+    std::function< void() > functor = f;
 }
 
-BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor_using_boost_bind_and_boost_ref, mock_error_fixture )
+BOOST_FIXTURE_TEST_CASE( a_function_can_be_passed_as_functor_using_std_bind_and_std_ref, mock_error_fixture )
 {
     mock::detail::function< void() > f;
-    boost::function< void() > functor = boost::bind( boost::ref( f ) );
+    std::function< void() > functor = std::bind( std::ref( f ) );
 }
 
 // invocations
@@ -293,10 +287,14 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_wrong_parameter_value_in
 
 namespace
 {
-    class my_interface : boost::noncopyable
+    class my_interface
     {
     public:
-        virtual ~my_interface() {}
+        my_interface() = default;
+        my_interface(const my_interface&) = delete;
+        my_interface& operator=(const my_interface&) = delete;
+        virtual ~my_interface() = default;
+
     private:
         virtual void my_method() = 0;
     };
@@ -354,8 +352,6 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_with_failing_custom_constrain
 //   CHECK_CALLS( 1 );
 //}
 
-#ifdef MOCK_NULLPTR
-
 BOOST_FIXTURE_TEST_CASE( nullptr_can_be_used_in_place_of_null_pointers_in_constraints, mock_error_fixture )
 {
     mock::detail::function< void( int* ) > f;
@@ -363,10 +359,6 @@ BOOST_FIXTURE_TEST_CASE( nullptr_can_be_used_in_place_of_null_pointers_in_constr
     f( 0 );
     CHECK_CALLS( 1 );
 }
-
-#endif
-
-#ifdef MOCK_SMART_PTR
 
 BOOST_FIXTURE_TEST_CASE( unique_ptr_is_supported_as_parameter, mock_error_fixture )
 {
@@ -376,8 +368,6 @@ BOOST_FIXTURE_TEST_CASE( unique_ptr_is_supported_as_parameter, mock_error_fixtur
     f( std::move( p ) );
     CHECK_CALLS( 1 );
 }
-
-#endif // MOCK_SMART_PTR
 
 // result handling
 
@@ -418,7 +408,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_value, mock_e
     {
         mock::detail::function< int() > f;
         int i = 42;
-        f.expect().returns( boost::ref( i ) );
+        f.expect().returns( std::ref( i ) );
         i = 43;
         BOOST_CHECK_EQUAL( 43, f() );
         CHECK_CALLS( 1 );
@@ -447,7 +437,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_value, mock_e
     {
         mock::detail::function< int&() > f;
         int i = 42;
-        f.expect().returns( boost::ref( i ) );
+        f.expect().returns( std::ref( i ) );
         i = 43;
         BOOST_CHECK_EQUAL( 43, f() );
         BOOST_CHECK_EQUAL( 12, f() = 12 );
@@ -505,8 +495,7 @@ namespace
 {
     struct base
     {
-        virtual ~base()
-        {}
+        virtual ~base() = default;
         virtual void f() = 0;
     };
     struct derived : base
@@ -515,67 +504,6 @@ namespace
         {}
     };
 }
-
-#ifdef MOCK_AUTO_PTR
-
-BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_auto_ptr_value, mock_error_fixture )
-{
-    {
-        mock::detail::function< std::auto_ptr< int >() > f;
-        std::auto_ptr< int > ptr( new int( 3 ) );
-        f.expect().returns( boost::ref( ptr ) );
-        BOOST_CHECK_EQUAL( 3, *ptr );
-        BOOST_CHECK_EQUAL( 3, *f() );
-        BOOST_CHECK( ! ptr.get() );
-        BOOST_CHECK( ! f().get() );
-        CHECK_CALLS( 2 );
-    }
-    {
-        mock::detail::function< std::auto_ptr< int >() > f;
-        std::auto_ptr< int > ptr( new int( 3 ) );
-        f.expect().returns( ptr );
-        BOOST_CHECK( ! ptr.get() );
-        BOOST_CHECK_EQUAL( 3, *f() );
-        BOOST_CHECK( ! f().get() );
-        CHECK_CALLS( 2 );
-    }
-    {
-        mock::detail::function< std::auto_ptr< int >() > f;
-        f.expect().returns( new int( 3 ) );
-        BOOST_CHECK_EQUAL( 3, *f() );
-        BOOST_CHECK( ! f().get() );
-        CHECK_CALLS( 2 );
-    }
-    {
-        mock::detail::function< std::auto_ptr< int >() > f;
-        f.expect().returns( std::auto_ptr< int >( new int( 3 ) ) );
-        BOOST_CHECK_EQUAL( 3, *f() );
-        BOOST_CHECK( ! f().get() );
-        CHECK_CALLS( 2 );
-    }
-    {
-        mock::detail::function< std::auto_ptr< base >() > f;
-        f.expect().returns( new derived );
-        BOOST_CHECK_NO_THROW( f() );
-        CHECK_CALLS( 1 );
-    }
-    {
-        mock::detail::function< std::auto_ptr< base >() > f;
-        f.expect().returns( std::auto_ptr< base >( new derived ) );
-        BOOST_CHECK_NO_THROW( f() );
-        CHECK_CALLS( 1 );
-    }
-    {
-        mock::detail::function< std::auto_ptr< base >() > f;
-        f.expect().returns( std::auto_ptr< derived >( new derived ) );
-        BOOST_CHECK_NO_THROW( f() );
-        CHECK_CALLS( 1 );
-    }
-}
-
-#endif // MOCK_AUTO_PTR
-
-#ifdef MOCK_RVALUE_REFERENCES
 
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_lvalue, mock_error_fixture )
 {
@@ -603,10 +531,6 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_rvalue, mock_er
     CHECK_CALLS( 1 );
 }
 
-#endif
-
-#ifdef MOCK_SMART_PTR
-
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_unique_ptr_lvalue, mock_error_fixture )
 {
     mock::detail::function< std::unique_ptr< int >() > f;
@@ -626,24 +550,22 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_moves_the_set_unique_ptr_rval
     }
 }
 
-#endif // MOCK_SMART_PTR
-
 BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_the_set_shared_ptr_value, mock_error_fixture )
 {
     {
-        mock::detail::function< boost::shared_ptr< base >() > f;
+        mock::detail::function< std::shared_ptr< base >() > f;
         f.expect().returns( new derived );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
     {
-        mock::detail::function< const boost::shared_ptr< base >&() > f;
+        mock::detail::function< const std::shared_ptr< base >&() > f;
         f.expect().returns( new derived );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
     {
-        mock::detail::function< boost::shared_ptr< base >&() > f;
+        mock::detail::function< std::shared_ptr< base >&() > f;
         f.expect().returns( new derived );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
@@ -655,7 +577,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_by_reference, mock_er
     {
         mock::detail::function< base&() > f;
         derived b;
-        f.expect().returns( boost::ref( b ) );
+        f.expect().returns( std::ref( b ) );
         BOOST_CHECK_NO_THROW( f() );
         CHECK_CALLS( 1 );
     }
@@ -668,7 +590,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_returns_by_reference, mock_er
     }
     {
         mock::detail::function< undefined&() > f;
-        f.expect().returns( boost::ref( get_undefined() ) );
+        f.expect().returns( std::ref( get_undefined() ) );
         f.reset();
     }
 }
@@ -705,10 +627,10 @@ BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_with
     CHECK_CALLS( 1 );
 }
 
-BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_without_parameters_thanks_to_boost_bind, mock_error_fixture )
+BOOST_FIXTURE_TEST_CASE( triggering_an_expectation_calls_the_custom_functor_without_parameters_thanks_to_std_bind, mock_error_fixture )
 {
     mock::detail::function< int( int ) > f;
-    f.expect().calls( boost::bind( &custom_result ) );
+    f.expect().calls( std::bind( &custom_result ) );
     BOOST_CHECK_EQUAL( 42, f( 17 ) );
     CHECK_CALLS( 1 );
 }
@@ -864,7 +786,7 @@ BOOST_FIXTURE_TEST_CASE( expectation_can_be_serialized_to_be_human_readable, moc
 
 BOOST_FIXTURE_TEST_CASE( expectation_with_remaining_untriggered_matches_upon_destruction_calls_untriggered_expectation, mock_error_fixture )
 {
-    boost::scoped_ptr< mock::detail::function< void() > > f( new mock::detail::function< void() > );
+    auto f = std::make_unique<mock::detail::function< void() >>();
     f->expect().once();
     CHECK_ERROR( f.reset(), "untriggered expectation", 0, "?\n. once()" );
 }
@@ -884,7 +806,7 @@ BOOST_FIXTURE_TEST_CASE( triggering_unexpected_call_call_disables_the_automatic_
 
 BOOST_FIXTURE_TEST_CASE( adding_an_expectation_reactivates_the_verification_upon_destruction, mock_error_fixture )
 {
-    boost::scoped_ptr< mock::detail::function< void() > > f( new mock::detail::function< void() > );
+    auto f = std::make_unique<mock::detail::function< void() >>();
     CHECK_ERROR( (*f)(), "unexpected call", 0, "?()" );
     f->expect().once();
     CHECK_ERROR( f.reset(), "untriggered expectation", 0, "?\n. once()" );
@@ -934,7 +856,7 @@ BOOST_FIXTURE_TEST_CASE( function_is_thread_safe, mock_error_fixture )
     mock::detail::function< int() > f;
     boost::thread_group group;
     for( int i = 0; i < 100; ++i )
-        group.create_thread( boost::bind( &iterate, boost::ref( f ) ) );
+        group.create_thread( [&f](){ iterate(f); } );
     group.join_all();
     CHECK_CALLS( 100 );
 }

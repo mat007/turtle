@@ -16,7 +16,7 @@ namespace
     class base_class
     {
     public:
-        virtual ~base_class() {}
+        virtual ~base_class() = default;
         virtual void f1( int, int, int, int, int, int, int, int, int ) = 0;
         virtual void f2( int, int, int, int, int, int, int, int, int ) = 0;
         virtual void f3( int, int, int, int, int, int, int, int, int ) = 0;
@@ -1070,4 +1070,9 @@ namespace
     mock_class_28 c_28;
     mock_class_29 c_29;
     mock_class_30 c_30;
+}
+
+int main()
+{
+    return 0;
 }

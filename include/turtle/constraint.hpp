@@ -11,7 +11,7 @@
 
 #include "config.hpp"
 #include "log.hpp"
-#include <boost/ref.hpp>
+#include "unwrap_reference.hpp"
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/variadic/to_array.hpp>
@@ -19,16 +19,15 @@
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/array.hpp>
-#include <boost/move/move.hpp>
-#include <boost/type_traits/decay.hpp>
+#include <functional>
+#include <type_traits>
 
 namespace mock
 {
     template< typename Constraint >
     struct constraint
     {
-        constraint()
-        {}
+        constraint() {}
         constraint( const Constraint& c )
             : c_( c )
         {}
@@ -136,7 +135,7 @@ namespace detail
             template< typename Actual > \
             bool operator()( const Actual& actual ) const \
             { \
-                return Expr; \
+                (void) actual; return Expr; \
             } \
             friend std::ostream& operator<<( std::ostream& s, const Name& ) \
             { \
@@ -147,10 +146,10 @@ namespace detail
     const mock::constraint< detail::Name > Name;
 
 #define MOCK_CONSTRAINT_ASSIGN(z, n, d) \
-    expected##n( boost::forward< T##n >(e##n) )
+    expected##n( std::forward< T##n >(e##n) )
 
 #define MOCK_CONSTRAINT_UNWRAP_REF(z, n, d) \
-    boost::unwrap_ref( expected##n )
+    mock::unwrap_ref( expected##n )
 
 #define MOCK_CONSTRAINT_FORMAT(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) mock::format( c.expected##n )
@@ -159,20 +158,20 @@ namespace detail
     Expected_##n expected##n;
 
 #define MOCK_CONSTRAINT_TPL_TYPE(z, n, d) \
-    typename boost::decay< const T##n >::type
+    std::decay_t< const T##n >
 
 #define MOCK_CONSTRAINT_CREF_PARAM(z, n, Args) \
-    const typename boost::unwrap_reference< Expected_##n >::type& \
+    const mock::unwrap_reference_t< Expected_##n >& \
         BOOST_PP_ARRAY_ELEM(n, Args)
 
 #define MOCK_CONSTRAINT_ARG(z, n, Args) \
-    BOOST_FWD_REF(T##n) BOOST_PP_ARRAY_ELEM(n, Args)
+    T##n&& BOOST_PP_ARRAY_ELEM(n, Args)
 
 #define MOCK_CONSTRAINT_ARGS(z, n, Args) \
-    BOOST_FWD_REF(T##n) e##n
+    T##n&& e##n
 
 #define MOCK_CONSTRAINT_PARAM(z, n, Args) \
-    boost::forward< T##n >( BOOST_PP_ARRAY_ELEM(n, Args) )
+    std::forward< T##n >( BOOST_PP_ARRAY_ELEM(n, Args) )
 
 #define MOCK_NARY_CONSTRAINT(Name, n, Args, Expr) \
     namespace detail \
@@ -221,8 +220,6 @@ namespace detail
         MOCK_NARY_CONSTRAINT, \
         MOCK_UNARY_CONSTRAINT)(Name, n, Args, Expr)
 
-#ifdef MOCK_VARIADIC_MACROS
-
 #ifdef BOOST_MSVC
 #   define MOCK_VARIADIC_SIZE(...) \
         BOOST_PP_CAT(MOCK_VARIADIC_SIZE_I(__VA_ARGS__, \
@@ -253,7 +250,5 @@ namespace detail
 #define MOCK_CONSTRAINT(Name, ...) \
     MOCK_CONSTRAINT_AUX( \
         Name, MOCK_VARIADIC_SIZE(__VA_ARGS__), (__VA_ARGS__))
-
-#endif // MOCK_VARIADIC_MACROS
 
 #endif // MOCK_CONSTRAINT_HPP_INCLUDED

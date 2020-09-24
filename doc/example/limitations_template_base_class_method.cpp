@@ -6,8 +6,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define BOOST_AUTO_TEST_MAIN
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 
 namespace
@@ -17,8 +16,7 @@ namespace
     class base
     {
     public:
-        virtual ~base()
-        {}
+        virtual ~base() = default;
 
         virtual void method() = 0;
     };
@@ -28,7 +26,14 @@ namespace
     template< typename T >
     MOCK_BASE_CLASS( mock_base, base< T > )
     {
-        MOCK_METHOD( method, 1, void() )
+        MOCK_METHOD( method, 0, void() )
     };
 //]
+}
+
+BOOST_AUTO_TEST_CASE(call_method_from_templated_class)
+{
+    mock_base<int> b;
+    MOCK_EXPECT(b.method).once();
+    static_cast<base<int>*>(&b)->method();
 }

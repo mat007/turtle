@@ -98,7 +98,7 @@ The purpose of the 'near' template function is to :
 * remove the burden of specifying the template parameter when instantiating near_constraint
 * wrap the constraint in a mock::constraint so that it plays nicely with !, && and ||.
 
-The use of boost::unwrap_ref provides support for passing arguments as references with boost::ref and boost::cref and delaying their initialization, for instance :
+The use of mock::unwrap_ref provides support for passing arguments as references with std::ref and std::cref and delaying their initialization, for instance :
 
 [near_constraint_cref_test]
 

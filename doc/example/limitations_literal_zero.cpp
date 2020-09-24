@@ -6,8 +6,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define BOOST_AUTO_TEST_MAIN
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 
 namespace
@@ -35,9 +34,7 @@ BOOST_AUTO_TEST_CASE( literal_zero )
 //[ limitations_literal_zero_solution_2
     MOCK_EXPECT( m.method ).with( mock::negate );
 //]
-#ifdef MOCK_NULLPTR
 //[ limitations_literal_zero_solution_3
     MOCK_EXPECT( m.method ).with( nullptr );
 //]
-#endif
 }

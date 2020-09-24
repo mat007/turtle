@@ -7,8 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //[ quick_constraint_problem
-#define BOOST_AUTO_TEST_MAIN
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 #include <iostream>
 
@@ -36,13 +35,15 @@ namespace
 //]
 
 //[ quick_constraint_solution
-#include <boost/lexical_cast.hpp>
+#include <sstream>
 
 namespace // in the same namespace as 'my_class'
 {
     bool operator==( const my_class& actual, const std::string& expected ) // the first part of the trick is to compare to a string
     {
-        return boost::lexical_cast< std::string >( actual ) == expected;
+        std::ostringstream s;
+        s << actual;
+        return s.str() == expected;
     }
 } // mock
 

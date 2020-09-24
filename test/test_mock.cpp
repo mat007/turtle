@@ -8,9 +8,8 @@
 
 #include "mock_error.hpp"
 #include <turtle/mock.hpp>
-#include <boost/test/auto_unit_test.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/bind.hpp>
+#include <boost/test/unit_test.hpp>
+#include <functional>
 
 namespace
 {
@@ -44,7 +43,7 @@ namespace
 BOOST_FIXTURE_TEST_CASE( mock_addition_operator, mock_error_fixture )
 {
     mock_class_with_operator m;
-    MOCK_EXPECT( m.addition ).once().returns( boost::ref( m ) );
+    MOCK_EXPECT( m.addition ).once().returns( std::ref( m ) );
     m += 1;
     CHECK_CALLS( 1 );
 }
@@ -162,7 +161,8 @@ namespace
 BOOST_FIXTURE_TEST_CASE( MOCK_CONST_METHOD_EXT_macro_defines_a_bindable_method, mock_error_fixture )
 {
     my_mock m;
-    boost::bind( &my_mock::my_method, &m, 42 );
+    const auto f = std::bind( &my_mock::my_method, &m, 42 );
+    (void) f;
 }
 
 BOOST_FIXTURE_TEST_CASE( MOCK_VERIFY_macro, mock_error_fixture )
@@ -207,31 +207,9 @@ BOOST_FIXTURE_TEST_CASE( mock_object_is_named, mock_error_fixture )
     BOOST_CHECK_EQUAL( "m.my_mock::my_method", to_string( MOCK_HELPER( m.my_method ) ) );
 }
 
-#ifdef MOCK_AUTO_PTR
-
-BOOST_FIXTURE_TEST_CASE( mock_object_auto_pointer_is_named, mock_error_fixture )
-{
-    std::auto_ptr< my_mock > m( new my_mock );
-    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
-}
-
-BOOST_FIXTURE_TEST_CASE( mock_object_const_auto_pointer_is_named, mock_error_fixture )
-{
-    const std::auto_ptr< my_mock > m( new my_mock );
-    BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
-    BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
-}
-
-#endif // MOCK_AUTO_PTR
-
 BOOST_FIXTURE_TEST_CASE( mock_object_shared_pointer_is_named, mock_error_fixture )
 {
-    boost::shared_ptr< my_mock > m( new my_mock );
+    std::shared_ptr< my_mock > m( new my_mock );
     BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
     BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
     BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
@@ -240,7 +218,7 @@ BOOST_FIXTURE_TEST_CASE( mock_object_shared_pointer_is_named, mock_error_fixture
 
 BOOST_FIXTURE_TEST_CASE( mock_object_const_shared_pointer_is_named, mock_error_fixture )
 {
-    const boost::shared_ptr< my_mock > m( new my_mock );
+    const std::shared_ptr< my_mock > m( new my_mock );
     BOOST_CHECK_EQUAL( "?.my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
     BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_HELPER( m->my_method ) ) );
     BOOST_CHECK_EQUAL( "m->my_mock::my_method", to_string( MOCK_ANONYMOUS_HELPER( m->my_method ) ) );
@@ -298,7 +276,7 @@ namespace
     template< typename T >
     struct tpl_functor_class
     {
-        MOCK_FUNCTOR_TPL( f, void( T ) );
+        MOCK_FUNCTOR( f, void( T ) );
     };
 }
 
@@ -349,21 +327,18 @@ namespace
 {
     MOCK_CLASS( round_parenthesized_signature )
     {
-        MOCK_METHOD_EXT( m0, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())), m0 )
-        MOCK_STATIC_METHOD( m1, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())), m1 )
-        MOCK_FUNCTOR( f0, BOOST_IDENTITY_TYPE((std::map< int, int >())) );
+        MOCK_METHOD_EXT( m0, 0, MOCK_PROTECT_FUNCTION_SIG(std::map< int, int >()), m0 )
+        MOCK_STATIC_METHOD( m1, 0, MOCK_PROTECT_FUNCTION_SIG(std::map< int, int >()), m1 )
+        MOCK_FUNCTOR( f0, MOCK_PROTECT_FUNCTION_SIG(std::map< int, int >()) );
     };
-    MOCK_FUNCTION( fun0, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())), fun0 )
+    MOCK_FUNCTION( fun0, 0, MOCK_PROTECT_FUNCTION_SIG(std::map< int, int >()), fun0 )
 }
-
-#ifdef MOCK_VARIADIC_MACROS
 
 namespace
 {
     struct base
     {
-        virtual ~base()
-        {}
+        virtual ~base() = default;
 
         virtual void m1() = 0;
         virtual void m10() const = 0;
@@ -404,36 +379,10 @@ namespace
 
     MOCK_FUNCTION( fun1, 0, void() )
     MOCK_FUNCTION( fun2, 0, void(), fun2 )
-    MOCK_FUNCTION( fun3, 0, BOOST_IDENTITY_TYPE((std::map< int, int >())) )
+    MOCK_FUNCTION( fun3, 0, MOCK_PROTECT_FUNCTION_SIG(std::map< int, int >()) )
 
     MOCK_FUNCTOR( f_variadic, std::map< int, int >() );
 }
-
-#else // MOCK_VARIADIC_MACROS
-
-namespace
-{
-    struct base
-    {
-        virtual ~base()
-        {}
-
-        virtual void m1() = 0;
-    };
-
-    MOCK_BASE_CLASS( derived, base )
-    {
-        MOCK_METHOD( m1, 0 )
-    };
-
-    template< typename T >
-    MOCK_BASE_CLASS( derived_tpl, base )
-    {
-        MOCK_METHOD_EXT( m1, 0, void(), m1 )
-    };
-}
-
-#endif // MOCK_VARIADIC_MACROS
 
 #ifdef BOOST_MSVC
 #   define MOCK_STDCALL __stdcall
@@ -445,8 +394,7 @@ namespace stdcall
 {
     struct base
     {
-        virtual ~base()
-        {}
+        virtual ~base() = default;
 
         virtual void MOCK_STDCALL m1() = 0;
     };
@@ -458,9 +406,7 @@ namespace stdcall
         MOCK_CONVERSION_OPERATOR( MOCK_STDCALL operator, int, to_int )
         MOCK_METHOD_EXT( MOCK_STDCALL m1, 0, void(), m1 )
         MOCK_METHOD_EXT( MOCK_STDCALL m2, 0, void(), m2 )
-#ifdef MOCK_VARIADIC_MACROS
         MOCK_METHOD( MOCK_STDCALL m3, 0, void(), m3 )
-#endif
         MOCK_STATIC_METHOD( MOCK_STDCALL m4, 0, void(), m4 )
     };
 

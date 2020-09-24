@@ -11,9 +11,7 @@
 
 #include "../config.hpp"
 #include "singleton.hpp"
-#include <boost/move/move.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #ifdef MOCK_THREAD_SAFE
 
@@ -38,11 +36,8 @@ namespace detail
 
     struct lock
     {
-    private:
-        BOOST_MOVABLE_BUT_NOT_COPYABLE(lock)
-
     public:
-        lock( const boost::shared_ptr< mutex >& m )
+        lock( const std::shared_ptr< mutex >& m )
             : m_( m )
         {
             m_->lock();
@@ -52,21 +47,13 @@ namespace detail
             if( m_ )
                 m_->unlock();
         }
-        lock( BOOST_RV_REF( lock ) x )
-            : m_( x.m_ )
-        {
-            // Explicit reset to avoid unlock in destructor
-            x.m_.reset();
-        }
-        lock& operator=( BOOST_RV_REF( lock ) x )
-        {
-            m_ = x.m_;
-            x.m_.reset();
-            return *this;
-        }
+        lock( const lock& ) = delete;
+        lock( lock&& x ) = default;
+        lock& operator=( const lock& ) = delete;
+        lock& operator=( lock&& x ) = default;
 
     private:
-        boost::shared_ptr< mutex > m_;
+        std::shared_ptr< mutex > m_;
     };
 }
 } // mock
@@ -77,8 +64,12 @@ namespace mock
 {
 namespace detail
 {
-    struct mutex : boost::noncopyable
+    struct mutex
     {
+        mutex() = default;
+        mutex(const mutex&) = delete;
+        mutex& operator=(const mutex&) = delete;
+
         void lock()
         {}
         void unlock()
@@ -86,29 +77,23 @@ namespace detail
     };
     // Dummy lock classes.
     // Constructor + Destructor make it RAII classes for compilers and avoid unused variable warnings
-    struct scoped_lock : boost::noncopyable
+    struct scoped_lock
     {
-        scoped_lock( mutex& )
-        {}
-        ~scoped_lock()
-        {}
-    };
-    class lock : boost::noncopyable
-    {
-    private:
-        BOOST_MOVABLE_BUT_NOT_COPYABLE(lock)
+        scoped_lock(const scoped_lock&) = delete;
+        scoped_lock& operator=(const scoped_lock&) = delete;
 
+        scoped_lock( mutex& ) {}
+        ~scoped_lock() {}
+    };
+    class lock
+    {
     public:
-        lock( const boost::shared_ptr< mutex >& )
-        {}
-        ~lock()
-        {}
-        lock( BOOST_RV_REF( lock ) )
-        {}
-        lock& operator=( BOOST_RV_REF( lock ) )
-        {
-            return *this;
-        }
+        lock( const std::shared_ptr< mutex >& ) {}
+        ~lock() {}
+        lock(const lock&) = delete;
+        lock( lock&& ) = default;
+        lock& operator=( const lock& ) = delete;
+        lock& operator=( lock&& ) = default;
     };
 }
 } // mock

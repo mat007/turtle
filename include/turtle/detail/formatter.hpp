@@ -11,7 +11,7 @@
 
 #include "../config.hpp"
 #include "../stream.hpp"
-#include "addressof.hpp"
+#include <memory>
 
 namespace mock
 {
@@ -21,7 +21,7 @@ namespace detail
     struct formatter
     {
         explicit formatter( const T& t )
-            : t_( detail::addressof( t ) )
+            : t_( std::addressof( t ) )
         {}
         void serialize( stream& s ) const
         {

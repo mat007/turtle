@@ -13,7 +13,6 @@ else()
 endif()
 
 option(TURTLE_INSTALL "Enable to add install target" ${IS_ROOT_PROJECT})
-option(TURTLE_AUTO_PTR "Enable support for auto_ptr" OFF)
 
 # Default boost libs are static on windows and dynamic on linux
 if(WIN32 AND NOT DEFINED Boost_USE_STATIC_LIBS)
@@ -27,10 +26,9 @@ configure_file(version.hpp.cmake ${CMAKE_CURRENT_BINARY_DIR}/include/turtle/vers
 add_library(turtle INTERFACE)
 add_library(turtle::turtle ALIAS turtle)
 target_include_directories(turtle INTERFACE $<BUILD_INTERFACE:include;${CMAKE_CURRENT_BINARY_DIR}/include>)
+target_compile_features(turtle INTERFACE cxx_std_14)
+
 target_link_libraries(turtle INTERFACE Boost::boost Boost::disable_autolinking)
-if(NOT TURTLE_AUTO_PTR)
-  target_compile_definitions(turtle INTERFACE MOCK_NO_AUTO_PTR)
-endif()
 
 if(BUILD_TESTING)
   add_subdirectory(test)
