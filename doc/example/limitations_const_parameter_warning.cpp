@@ -52,5 +52,7 @@ BOOST_AUTO_TEST_CASE(check_method_stub_is_called)
 {
     mock_base b;
     MOCK_EXPECT(b.method).once().with(1);
-    static_cast<base*>(&b)->method(1);
+    // Example user code taking a base* (or smart pointer variant)
+    auto callMethod = [](base* bPtr){ bPtr->method(1); };
+    callMethod(&b);
 }

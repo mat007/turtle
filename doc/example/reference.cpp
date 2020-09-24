@@ -438,7 +438,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_configuring_mock_objects )
     MOCK_EXPECT( c.method ).once().with( 0 ).in( s ).returns( 42 );
     MOCK_EXPECT( c.method2 ).never().with( "ok", mock::any );
     MOCK_EXPECT( c.method2 ).at_least( 2 ).in( s ).throws( std::runtime_error( "error !" ) );
-    BOOST_CHECK(c.method(0) == 42);
+    BOOST_TEST(c.method(0) == 42);
     BOOST_CHECK_THROW(c.method("not ok", 1.f), std::runtime_error);
     BOOST_CHECK_THROW(c.method("not ok", 2.f), std::runtime_error);
 }
@@ -505,7 +505,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_setting_up_an_invocation_on_a_mock_static_met
 {
     mock_class c;
     MOCK_EXPECT( c.method1 ).once();
-    MOCK_EXPECT( mock_class::method2 ).once(); // does the same
+    MOCK_EXPECT( mock_class::method2 ).once(); // does the same (but for the other method)
     c.method1(42);
     c.method2(42);
 }
@@ -525,7 +525,7 @@ BOOST_AUTO_TEST_CASE( demonstrates_adding_builtin_constraints )
 {
    mock_class c;
    MOCK_EXPECT( c.method1 ).with( mock::equal( 3 ), mock::equal( "some string" ) );
-   MOCK_EXPECT( c.method2 ).with( 3, "some string" );                               // equivalent to the previous one using short-cuts
+   MOCK_EXPECT( c.method2 ).with( 3, "some string" );                               // similar to the previous one using short-cuts
    c.method1(3, "some string");
    c.method2(3, "some string");
 }
@@ -756,12 +756,12 @@ BOOST_AUTO_TEST_CASE( demonstrates_configuring_actions )
    MOCK_EXPECT( c.method ).once().calls( &function );                        // forwards 'method' parameter to 'function'
    MOCK_EXPECT( c.method ).once().calls( std::bind( &function, 42 ) );     // drops 'method' parameter and binds 42 as parameter to 'function'
    MOCK_EXPECT( c.method ).once().calls( []( int i ) { return i; } );        // uses a C++11 lambda
-   BOOST_CHECK(c.method(0) == 42);
-   BOOST_CHECK(c.method(1) == 42);
+   BOOST_TEST(c.method(0) == 42);
+   BOOST_TEST(c.method(1) == 42);
    BOOST_CHECK_THROW(c.method(0), std::runtime_error);
-   BOOST_CHECK(c.method(2) == 2);
-   BOOST_CHECK(c.method(3) == 42);
-   BOOST_CHECK(c.method(4) == 4);
+   BOOST_TEST(c.method(2) == 2);
+   BOOST_TEST(c.method(3) == 42);
+   BOOST_TEST(c.method(4) == 4);
 }
 //]
 }

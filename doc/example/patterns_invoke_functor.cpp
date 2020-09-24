@@ -21,14 +21,14 @@
 namespace
 {
     int receivedValue = 0;
-    void setx(int newValue)
+    void setValue(int newValue)
     {
         receivedValue = newValue;
     }
 }
 void function( base_class& c)
 {
-    c.method(setx);
+    c.method(setValue);
 }
 
 //[ invoke_functor_solution
@@ -48,6 +48,6 @@ BOOST_AUTO_TEST_CASE( how_to_invoke_a_functor_passed_as_parameter_of_a_mock_meth
     mock_class mock;
     MOCK_EXPECT( mock.method ).calls( [](const auto &functor){ functor(42); } ); // whenever 'method' is called, invoke the functor with 42
     function( mock );
-    BOOST_CHECK(receivedValue == 42);
+    BOOST_CHECK(receivedValue == 42); // functor was called and received the value 42
 }
 //]

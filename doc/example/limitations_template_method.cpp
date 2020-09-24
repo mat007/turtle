@@ -90,8 +90,8 @@ std::string mock_concept::create< std::string >()
 BOOST_AUTO_TEST_CASE(dispatch_methods_are_called)
 {
     mock_concept b;
-    MOCK_EXPECT(b.create_int).once().returns(int{});
-    MOCK_EXPECT(b.create_string).once().returns(std::string{});
+    MOCK_EXPECT(b.create_int).once().returns(0);
+    MOCK_EXPECT(b.create_string).once().returns("");
     function_under_test(b);
 }
 }

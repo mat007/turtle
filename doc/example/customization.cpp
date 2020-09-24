@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one_near_cre
 {
    mock_view v;
    calculator c( v );
-   int expected, threshold;
+   int expected = 0, threshold = 0;
    MOCK_EXPECT( v.display ).with( near( std::cref( expected ), std::cref( threshold ) ) );
    expected = 42;
    threshold = 1;

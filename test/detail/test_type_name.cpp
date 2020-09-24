@@ -16,7 +16,7 @@ namespace
     std::string to_string( const T& t)
     {
         std::ostringstream s;
-        s << mock::detail::make_type_name(t); // Typename can be streamed
+        s << mock::detail::make_type_name(t);
         return s.str();
     }
 }
