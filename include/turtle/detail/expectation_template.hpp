@@ -155,6 +155,11 @@ namespace detail
             , line_( line )
         {}
 
+        expectation(expectation &&) = default;
+        expectation(expectation const&) = default;
+        expectation& operator=(expectation &&) = default;
+        expectation& operator=(expectation const&) = default;
+
         ~expectation()
         {
             for( sequences_cit it = sequences_.begin();
