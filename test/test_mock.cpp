@@ -10,7 +10,7 @@
 #include <turtle/mock.hpp>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 
 namespace
 {

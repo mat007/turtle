@@ -17,7 +17,7 @@
 #pragma warning( pop )
 #endif
 #include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 
 namespace
 {

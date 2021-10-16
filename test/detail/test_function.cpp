@@ -15,7 +15,7 @@
 #include <boost/mpl/assert.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 
 // static
 
