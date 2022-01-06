@@ -106,7 +106,7 @@ namespace detail
 #   define MOCK_NEAR_DEFINED
 #endif
     MOCK_NARY_CONSTRAINT( near, 2, ( expected, tolerance ),
-        std::abs( actual - expected ) < tolerance )
+        std::abs( actual - expected ) <= tolerance )
 #ifdef MOCK_NEAR_DEFINED
 #   pragma pop_macro( "near" )
 #endif

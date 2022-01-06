@@ -87,7 +87,7 @@ struct near_constraint
     template< typename Actual >
     bool operator()( Actual actual ) const
     {
-        return std::abs( actual - mock::unwrap_ref(expected_) ) < mock::unwrap_ref(threshold_) ;
+        return std::abs( actual - mock::unwrap_ref(expected_) ) <= mock::unwrap_ref(threshold_) ;
     }
 
     friend std::ostream& operator<<( std::ostream& s, const near_constraint& c )
@@ -157,7 +157,8 @@ BOOST_AUTO_TEST_CASE( near_constraint_works_with_with_float_wrapper_and_cref )
    MOCK_EXPECT( v.display ).once().with( near( std::cref( expected ), std::cref( threshold ) ) );
    expected = 42;
    threshold = 1;
-   c.add( 41, 1 );
+   c.add(0, 0);
+   c.add(41, 1);
 }
 }
 
