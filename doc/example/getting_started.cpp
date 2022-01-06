@@ -149,6 +149,7 @@ BOOST_AUTO_TEST_CASE( add_several_numbers_in_sequences )
 }
 //]
 }
+BOOST_AUTO_TEST_SUITE_END()
 
 namespace action
 {
@@ -174,7 +175,7 @@ public:
     void add( int a, int b ){ v.display(a + b); }
 };
 
-struct CatchFailureFixture
+struct CatchFailureFixture: Fixture
 {
     static bool aborted;
     static std::string fail_msg;
@@ -200,14 +201,20 @@ struct CatchFailureFixture
 bool CatchFailureFixture::aborted = false;
 std::string CatchFailureFixture::fail_msg;
 
+struct AssertMissingAction: CatchFailureFixture{
+    void teardown(){
+        assert_failure("missing action");
+    }
+};
+
+BOOST_FIXTURE_TEST_SUITE( MissingReturnActionSuite, AssertMissingAction)
 //[ action_test
-BOOST_FIXTURE_TEST_CASE( zero_plus_zero_is_zero_with_action, CatchFailureFixture )
+BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero_with_action )
 {
    mock_view v;
    calculator c( v );
    MOCK_EXPECT( v.display ).once().with( 0 ); // missing returns( true )
    c.add( 0, 0 );
-   assert_failure("missing action");
 }
 //]
 }
