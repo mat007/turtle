@@ -6,8 +6,15 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-// Used to make this test file pass. Define to empty to see other tests fail
-#define ASSERT_VERIFY_FAIL() mock::reset()
+#include <boost/test/unit_test.hpp>
+
+// Used to make this test file pass. Define to 0 to see other tests fail
+#define MOCK_MAKE_TEST_PASS 1
+
+#if MOCK_MAKE_TEST_PASS
+#undef BOOST_AUTO_TEST_CASE
+#define BOOST_AUTO_TEST_CASE(name) BOOST_FIXTURE_TEST_CASE(name, mock::cleanup)
+#endif
 
 //[ static_objects_problem
 #include <boost/test/unit_test.hpp>
@@ -36,7 +43,6 @@ BOOST_AUTO_TEST_CASE( static_objects_problem )
 {
     my_class c( 42 );
     MOCK_EXPECT( f ).once().with( &c ); // the set expectation will also outlive the test case and leak into other test cases using 'f'
-    ASSERT_VERIFY_FAIL(); // Check that mock::verify fails, but that means other test fail too
 } // the 'c' instance goes out of scope and the '&c' pointer becomes dangling
 //]
 
