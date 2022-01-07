@@ -12,7 +12,7 @@
 namespace limitations_template_method_problem
 {
 //[ limitations_template_method_problem
-class concept
+class concept_class
 {
 public:
     template< typename T >
@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE(mocked_templated_methods_are_called)
 namespace limitations_template_method_problem_2
 {
 //[ limitations_template_method_problem_2
-class concept
+class concept_class
 {
 public:
     template< typename T >

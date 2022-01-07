@@ -75,7 +75,7 @@ Given :
 
 [limitations_template_method_problem]
 
-writing a mock object modeling 'concept' requires to list all the possible versions of 'method' :
+writing a mock object modeling the 'concept class' requires to list all the possible versions of 'method' :
 
 [limitations_template_method_solution]
 
