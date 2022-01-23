@@ -6,13 +6,68 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <functional>
+#include <string>
+#include <sstream>
+
+std::function<void()> error_handler_abort;
+std::function<void(const char*, int)> error_handler_pass;
+std::function<void(const std::string&, const char*, int)> error_handler_call;
+std::function<void(const char* message, const std::string&, const char*, int)> error_handler_fail;
+
+template< typename Result >
+struct configurable_mock_error
+{
+    static Result abort()
+    {
+        error_handler_abort();
+        return Result();
+    }
+
+    static void pass( const char* file, int line )
+    {
+        error_handler_pass(file, line);
+    }
+
+    template< typename Context >
+    static void call( const Context& context,  const char* file, int line )
+    {
+        std::stringstream s;
+        s << context;
+        error_handler_call( s.str(), file, line );
+    }
+
+    template< typename Context >
+    static void fail( const char* message, const Context& context, const char* file = "", int line = 0 )
+    {
+        std::stringstream s;
+        s << context;
+        error_handler_fail( message, s.str(), file, line );
+    }
+};
+
+#define MOCK_ERROR_POLICY configurable_mock_error
+#define MOCK_USE_BOOST_TEST
+
 //[ prerequisite
-#define BOOST_AUTO_TEST_MAIN
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 //]
 #include "calculator.hpp"
 #include "mock_view.hpp"
+
+struct Fixture
+{
+    Fixture()
+    {
+        error_handler_abort = mock::error<void>::abort;
+        error_handler_pass = mock::error<void>::pass;
+        error_handler_call = mock::error<void>::call<std::string>;
+        error_handler_fail = mock::error<void>::fail<std::string>;
+    }
+};
+
+BOOST_FIXTURE_TEST_SUITE(GettingStarted, Fixture)
 
 namespace phases
 {
@@ -30,7 +85,7 @@ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
 namespace verify_reset
 {
 //[ verify_reset
-BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero_reset )
 {
     mock_view v;
     calculator c( v );
@@ -49,7 +104,7 @@ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
 namespace expectations
 {
 //[ expectations
-BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero_expect )
 {
     mock_view v;
     calculator c( v );
@@ -63,7 +118,7 @@ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
 namespace sequence
 {
 //[ sequence
-BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero_then_1_plus_0_is_1 )
 {
     mock_view v;
     calculator c( v );
@@ -79,7 +134,7 @@ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
 namespace several_sequences
 {
 //[ several_sequences
-BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+BOOST_AUTO_TEST_CASE( add_several_numbers_in_sequences )
 {
     mock_view v;
     calculator c( v );
@@ -94,6 +149,7 @@ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
 }
 //]
 }
+BOOST_AUTO_TEST_SUITE_END()
 
 namespace action
 {
@@ -112,13 +168,48 @@ MOCK_BASE_CLASS( mock_view, view )
 
 class calculator
 {
+    view& v;
 public:
-    calculator( view& v );
+    calculator( view& v ): v(v) {}
 
-    void add( int a, int b );
+    void add( int a, int b ){ v.display(a + b); }
 };
+
+struct CatchFailureFixture: Fixture
+{
+    static bool aborted;
+    static std::string fail_msg;
+
+    static void abort()
+    {
+        aborted = true;
+    }
+    static void fail( const std::string& message, const std::string&, const char* = "", int = 0 ){
+        fail_msg = message;
+    }
+    CatchFailureFixture()
+    {
+        error_handler_abort = abort;
+        error_handler_fail = fail;
+    }
+    void assert_failure(const std::string& required_message)
+    {
+        BOOST_CHECK(aborted);
+        BOOST_CHECK(fail_msg.find(required_message) != std::string::npos);
+    }
+};
+bool CatchFailureFixture::aborted = false;
+std::string CatchFailureFixture::fail_msg;
+
+struct AssertMissingAction: CatchFailureFixture{
+    void teardown(){
+        assert_failure("missing action");
+    }
+};
+
+BOOST_FIXTURE_TEST_SUITE( MissingReturnActionSuite, AssertMissingAction)
 //[ action_test
-BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
+BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero_with_action )
 {
    mock_view v;
    calculator c( v );
@@ -127,3 +218,5 @@ BOOST_AUTO_TEST_CASE( zero_plus_zero_is_zero )
 }
 //]
 }
+
+BOOST_AUTO_TEST_SUITE_END()

@@ -9,11 +9,10 @@
 #include "mock_error.hpp"
 #include "undefined.hpp"
 #include <turtle/mock.hpp>
-#include <boost/test/auto_unit_test.hpp>
-#include <boost/noncopyable.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/optional.hpp>
-#include <boost/ref.hpp>
 #include <cmath>
+#include <functional>
 
 namespace
 {
@@ -81,11 +80,13 @@ BOOST_FIXTURE_TEST_CASE( basic_mock_object_usage, mock_error_fixture )
 
 namespace
 {
-    class my_ambiguited_interface : boost::noncopyable
+    class my_ambiguited_interface
     {
     public:
-        virtual ~my_ambiguited_interface()
-        {}
+        my_ambiguited_interface() = default;
+        my_ambiguited_interface(const my_ambiguited_interface&) = delete;
+        my_ambiguited_interface& operator=(const my_ambiguited_interface&) = delete;
+        virtual ~my_ambiguited_interface() = default;
         virtual void my_method() = 0;
         virtual void my_method( int ) = 0;
     };
@@ -107,11 +108,13 @@ BOOST_FIXTURE_TEST_CASE( mock_object_method_disambiguation, mock_error_fixture )
 
 namespace
 {
-    class my_const_ambiguited_interface : boost::noncopyable
+    class my_const_ambiguited_interface
     {
     public:
-        virtual ~my_const_ambiguited_interface()
-        {}
+        my_const_ambiguited_interface() = default;
+        my_const_ambiguited_interface(const my_const_ambiguited_interface&) = delete;
+        my_const_ambiguited_interface& operator=(const my_const_ambiguited_interface&) = delete;
+        virtual ~my_const_ambiguited_interface() = default;
         virtual void my_method() = 0;
         virtual void my_method() const = 0;
     };
@@ -153,7 +156,7 @@ namespace
 
 BOOST_FIXTURE_TEST_CASE( mock_functor_in_namespace_is_supported, mock_error_fixture )
 {
-    boost::function< int( float, const std::string& ) > func;
+    std::function< int( float, const std::string& ) > func;
     MOCK_EXPECT( gf ).once().with( 3, "op" ).returns( 42 );
     func = gf;
     BOOST_CHECK_EQUAL( 42, func( 3, "op" ) );
@@ -162,7 +165,7 @@ BOOST_FIXTURE_TEST_CASE( mock_functor_in_namespace_is_supported, mock_error_fixt
 
 BOOST_FIXTURE_TEST_CASE( mock_functor_in_function_is_supported, mock_error_fixture )
 {
-    boost::function< int( float, const std::string& ) > func;
+    std::function< int( float, const std::string& ) > func;
     {
         MOCK_FUNCTOR( f, int( float, const std::string& ) );
         MOCK_EXPECT( f ).once().with( 3, "op" ).returns( 42 );
@@ -212,8 +215,7 @@ namespace
     template< typename T >
     struct my_template_base_class
     {
-        virtual ~my_template_base_class()
-        {}
+        virtual ~my_template_base_class() = default;
         virtual void my_method( T ) = 0;
         virtual void my_other_method() = 0;
     };
@@ -236,23 +238,27 @@ BOOST_FIXTURE_TEST_CASE( mocking_a_template_base_class_method_is_supported, mock
 
 namespace
 {
-    class my_observer : boost::noncopyable
+    class my_observer
     {
     public:
-        virtual ~my_observer()
-        {}
+        my_observer() = default;
+        my_observer(const my_observer&) = delete;
+        my_observer& operator=(const my_observer&) = delete;
+        virtual ~my_observer() = default;
         virtual void notify( int value ) = 0;
     };
 
-    class my_manager : boost::noncopyable
+    class my_manager
     {
     public:
-        virtual ~my_manager()
-        {}
+        my_manager() = default;
+        my_manager(const my_manager&) = delete;
+        my_manager& operator=(const my_manager&) = delete;
+        virtual ~my_manager() = default;
         virtual my_observer& get_observer() const = 0;
     };
 
-    class my_subject : boost::noncopyable
+    class my_subject
     {
     public:
         explicit my_subject( my_manager& f )
@@ -287,7 +293,7 @@ namespace
 
 BOOST_FIXTURE_TEST_CASE( basic_mock_object_collaboration_usage, fixture )
 {
-    MOCK_EXPECT( manager.get_observer ).returns( boost::ref( observer ) );
+    MOCK_EXPECT( manager.get_observer ).returns( std::ref( observer ) );
     my_subject subject( manager );
     MOCK_EXPECT( observer.notify ).once().with( 1 );
     subject.increment();
@@ -388,7 +394,7 @@ BOOST_FIXTURE_TEST_CASE( boost_optional_on_base_class_reference_as_return_type_i
 {
     boost_optional b;
     my_mock_observer o;
-    MOCK_EXPECT( b.tag ).once().returns( boost::ref( o ) );
+    MOCK_EXPECT( b.tag ).once().returns( std::ref( o ) );
     b.method();
     CHECK_CALLS( 1 );
 }
@@ -453,7 +459,7 @@ BOOST_FIXTURE_TEST_CASE( boost_reference_wrapper_is_supported_in_value_constrain
 {
     MOCK_FUNCTOR( f, void( const std::string& ) );
     std::string s;
-    MOCK_EXPECT( f ).once().with( boost::cref( s ) );
+    MOCK_EXPECT( f ).once().with( std::cref( s ) );
     s = "string";
     f( "string" );
     CHECK_CALLS( 1 );
@@ -587,7 +593,9 @@ namespace
     template< typename T1, typename T2 >
     struct my_base
     {};
-    MOCK_BASE_CLASS( my_comma_mock, my_base< int BOOST_PP_COMMA() int > )
+    MOCK_BASE_CLASS( my_comma_mock, my_base< int, int > )
+    {};
+    MOCK_BASE_CLASS( my_boost_pp_comma_mock, my_base< int BOOST_PP_COMMA() int > )
     {};
 }
 
@@ -640,7 +648,7 @@ BOOST_FIXTURE_TEST_CASE( mock_functor_creation_is_thread_safe, mock_error_fixtur
 {
     boost::thread_group group;
     for( int i = 0; i < 100; ++i )
-        group.create_thread( boost::bind( &create_functor, i ) );
+        group.create_thread( [i](){ create_functor( i ); } );
     group.join_all();
     CHECK_CALLS( 100 );
 }
@@ -659,7 +667,7 @@ BOOST_FIXTURE_TEST_CASE( mock_class_is_thread_safe, mock_error_fixture )
     my_mock m;
     boost::thread_group group;
     for( int i = 0; i < 100; ++i )
-        group.create_thread( boost::bind( &iterate, boost::ref( m ) ) );
+        group.create_thread( [&m](){ iterate(m); } );
     group.join_all();
     CHECK_CALLS( 100 );
 }
@@ -704,8 +712,6 @@ BOOST_FIXTURE_TEST_CASE( mock_method_accepts_polymorphic_multi_constraint, mock_
     m.m2( 1, 2 );
     CHECK_CALLS( 1 );
 }
-
-#ifdef MOCK_SMART_PTR
 
 BOOST_FIXTURE_TEST_CASE( std_unique_ptr_argument_is_supported_in_action, mock_error_fixture )
 {
@@ -775,5 +781,3 @@ struct my_unique_ptr_class
     MOCK_METHOD_EXT( m, 1, void( std::unique_ptr< int > ), m )
     MOCK_STATIC_METHOD( ms, 1, void( std::unique_ptr< int > ), ms )
 };
-
-#endif

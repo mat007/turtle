@@ -10,17 +10,18 @@
 #define MOCK_VERIFIABLE_HPP_INCLUDED
 
 #include "../config.hpp"
-#include <boost/noncopyable.hpp>
 
 namespace mock
 {
 namespace detail
 {
-    class verifiable : private boost::noncopyable
+    class verifiable
     {
     public:
-        verifiable() {}
-        virtual ~verifiable() {}
+        verifiable() = default;
+        verifiable(const verifiable&) = delete;
+        verifiable& operator=(const verifiable&) = delete;
+        virtual ~verifiable() = default;
 
         virtual bool verify() const = 0;
 

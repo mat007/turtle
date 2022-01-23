@@ -8,8 +8,8 @@
 
 #include "function_impl_template.hpp"
 
-#define MOCK_MOVE(z, n, d) \
-    mock::detail::move_if_not_lvalue_reference< T##n >( t##n )
+#define MOCK_FORWARD(z, n, d) \
+    std::forward< T##n >( t##n )
 
 namespace mock
 {
@@ -21,15 +21,6 @@ namespace detail
         BOOST_PP_ENUM_TRAILING_PARAMS(MOCK_NUM_ARGS, typename T) >
     class function< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
     {
-    public:
-        typedef R result_type;
-
-        template< typename Args >
-        struct sig
-        {
-            typedef R type;
-        };
-
     private:
         typedef function_impl<
             R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
@@ -39,7 +30,7 @@ namespace detail
 
     public:
         function()
-            : impl_( boost::make_shared< impl_type >() )
+            : impl_( std::make_shared< impl_type >() )
         {}
 
         bool verify() const
@@ -74,7 +65,7 @@ namespace detail
         R operator()(
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, T, t) ) const
         {
-            return (*impl_)( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) );
+            return (*impl_)( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) );
         }
 
         friend std::ostream& operator<<( std::ostream& s, const function& f )
@@ -98,9 +89,9 @@ namespace detail
         }
 
     private:
-        boost::shared_ptr< impl_type > impl_;
+        std::shared_ptr< impl_type > impl_;
     };
 }
 } // mock
 
-#undef MOCK_MOVE
+#undef MOCK_FORWARD

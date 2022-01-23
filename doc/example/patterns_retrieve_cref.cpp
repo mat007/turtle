@@ -25,9 +25,20 @@ namespace
 }
 //]
 
+namespace
+{
+    static base_class* global_b = nullptr;
+    my_class::my_class( base_class& b){ global_b = &b; }
+    void my_class::process()
+    {
+        int secret_value = 42;
+        global_b->method(secret_value);
+        global_b->method(secret_value);
+    }
+}
+
 //[ retrieve_cref_solution
-#define BOOST_AUTO_TEST_MAIN
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 
 namespace
@@ -44,7 +55,7 @@ BOOST_AUTO_TEST_CASE( method_is_called_two_times_with_the_same_value )
     my_class c( mock );
     int value;
     MOCK_EXPECT( mock.method ).once().with( mock::retrieve( value ) ); // on first call retrieve the value, this expectation takes precedence because it can never fail
-    MOCK_EXPECT( mock.method ).once().with( boost::cref( value ) );    // on second call compare the previously retrieved value with the newly received one
+    MOCK_EXPECT( mock.method ).once().with( std::cref( value ) );    // on second call compare the previously retrieved value with the newly received one
     c.process();
 }
 //]

@@ -12,6 +12,7 @@
 //]
 #include "calculator.hpp"
 #include "mock_view.hpp"
+#include <boost/test/unit_test.hpp>
 
 //[ mock_stream_user_type
 namespace user_namespace
@@ -36,7 +37,7 @@ bool custom_constraint( int actual )
 //]
 
 //[ custom_constraint_free_function_test
-BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two )
+BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_free_function )
 {
     mock_view v;
     calculator c( v );
@@ -64,7 +65,7 @@ struct custom_constraint
 //]
 
 //[ custom_constraint_functor_test
-BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two )
+BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_custom_constraint )
 {
     mock_view v;
     calculator c( v );
@@ -86,8 +87,7 @@ struct near_constraint
     template< typename Actual >
     bool operator()( Actual actual ) const
     {
-        return std::abs( actual - boost::unwrap_ref( expected_ ) )
-            < boost::unwrap_ref( threshold_ );
+        return std::abs( actual - mock::unwrap_ref(expected_) ) <= mock::unwrap_ref(threshold_) ;
     }
 
     friend std::ostream& operator<<( std::ostream& s, const near_constraint& c )
@@ -109,7 +109,7 @@ mock::constraint< near_constraint< Expected > > near( Expected expected, Expecte
 namespace near_constraint_test
 {
 //[ near_constraint_test
-BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
+BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one_near )
 {
    mock_view v;
    calculator c( v );
@@ -122,17 +122,44 @@ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
 namespace near_constraint_cref_test
 {
 //[ near_constraint_cref_test
-BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
+BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one_near_cref )
 {
    mock_view v;
    calculator c( v );
-   int expected, threshold;
-   MOCK_EXPECT( v.display ).with( near( boost::cref( expected ), boost::cref( threshold ) ) );
+   int expected = 0, threshold = 0;
+   MOCK_EXPECT( v.display ).with( near( std::cref( expected ), std::cref( threshold ) ) );
    expected = 42;
    threshold = 1;
    c.add( 41, 1 );
 }
 //]
+
+// Example of a "strong type" float
+struct float_wrapper{
+    float value;
+    float_wrapper(float value): value(value){}
+    operator float() const { return value; }
+    friend std::ostream& operator<<( std::ostream& s, const float_wrapper& f)
+    {
+        return s << f.value;
+    }
+};
+
+BOOST_AUTO_TEST_CASE( near_constraint_works_with_with_float_wrapper_and_cref )
+{
+   mock_view v;
+   calculator c( v );
+   float_wrapper expected = 0, threshold = 0;
+   // This works even without the unwrap_ref
+   MOCK_EXPECT( v.display ).once().with( near( expected, threshold ) );
+   // This requires 2 implicit conversion: from reference_wrapper to float_wrapper, then to float
+   // so unwrap_ref in near is required as C++ allows only 1 implicit conversion
+   MOCK_EXPECT( v.display ).once().with( near( std::cref( expected ), std::cref( threshold ) ) );
+   expected = 42;
+   threshold = 1;
+   c.add(0, 0);
+   c.add(41, 1);
+}
 }
 
 #undef MOCK_MAX_ARGS
@@ -140,6 +167,11 @@ BOOST_AUTO_TEST_CASE( forty_one_plus_one_is_forty_two_plus_or_minus_one )
 #define MOCK_MAX_ARGS 20
 #include <turtle/mock.hpp>
 //]
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
 
 //[ custom_policy
 template< typename Result >
@@ -166,6 +198,10 @@ struct custom_policy
     }
 };
 //]
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 #undef MOCK_ERROR_POLICY
 //[ define_custom_policy

@@ -30,11 +30,6 @@
 #include <boost/preprocessor/comparison/greater.hpp>
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/test/utils/lazy_ostream.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/call_traits.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/move/move.hpp>
 #include <boost/optional.hpp>
 #include <ostream>
 #include <vector>
@@ -80,7 +75,7 @@ namespace detail
             e_->returns( r );
         }
         template< typename Y >
-        void returns( const boost::reference_wrapper< Y >& r )
+        void returns( const std::reference_wrapper< Y >& r )
         {
             e_->returns( r );
         }

@@ -6,19 +6,17 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define BOOST_AUTO_TEST_MAIN
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 
 namespace limitations_template_method_problem
 {
 //[ limitations_template_method_problem
-class concept
+class concept_class
 {
 public:
     template< typename T >
-    void method( T t )
-    {}
+    void method( T t );
 };
 
 template< typename T >
@@ -36,12 +34,20 @@ MOCK_CLASS( mock_concept )
     MOCK_METHOD( method, 1, void( const char* ), method_string )
 };
 //]
+
+BOOST_AUTO_TEST_CASE(mocked_templated_methods_are_called)
+{
+    mock_concept b;
+    MOCK_EXPECT(b.method_int).once().with(42);
+    MOCK_EXPECT(b.method_string).once().with(mock::equal(std::string("string")));
+    function_under_test(b);
+}
 }
 
 namespace limitations_template_method_problem_2
 {
 //[ limitations_template_method_problem_2
-class concept
+class concept_class
 {
 public:
     template< typename T >
@@ -80,4 +86,12 @@ std::string mock_concept::create< std::string >()
     return create_string();
 }
 //]
+
+BOOST_AUTO_TEST_CASE(dispatch_methods_are_called)
+{
+    mock_concept b;
+    MOCK_EXPECT(b.create_int).once().returns(0);
+    MOCK_EXPECT(b.create_string).once().returns("");
+    function_under_test(b);
+}
 }

@@ -15,25 +15,14 @@
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/version.hpp>
-#if BOOST_VERSION >= 107000
-#   include <boost/core/typeinfo.hpp>
-#   define MOCK_TYPEID( t ) BOOST_CORE_TYPEID(t)
-#   define MOCK_TYPEINFO boost::core::typeinfo
-#else
-#   include <boost/detail/sp_typeinfo.hpp>
-#   define MOCK_TYPEID( t ) BOOST_SP_TYPEID(t)
-#   define MOCK_TYPEINFO boost::detail::sp_typeinfo
-#endif
-#include <boost/shared_ptr.hpp>
 #include <stdexcept>
+#include <memory>
 #include <typeinfo>
 #include <ostream>
 #ifdef __GNUC__
 #include <cxxabi.h>
 #include <cstdlib>
 #endif
-
-#define MOCK_TYPE_NAME( t ) mock::detail::type_name( MOCK_TYPEID(t) )
 
 namespace mock
 {
@@ -42,7 +31,7 @@ namespace detail
     class type_name
     {
     public:
-        explicit type_name( const MOCK_TYPEINFO& info )
+        explicit type_name( const std::type_info& info )
             : info_( &info )
         {}
         friend std::ostream& operator<<( std::ostream& s, const type_name& t )
@@ -51,15 +40,17 @@ namespace detail
             return s;
         }
     private:
-        void serialize( std::ostream& s,
-            const MOCK_TYPEINFO& info ) const
+        static void serialize( std::ostream& s, const std::type_info& info )
         {
             const char* name = info.name();
 #ifdef __GNUC__
             int status = 0;
-            boost::shared_ptr< char > demangled(
-                abi::__cxa_demangle( name, 0, 0, &status ),
-                &std::free );
+            struct Deleter
+            {
+                void operator()(const void* p) { std::free(const_cast<void*>(p)); }
+            };
+            std::unique_ptr< const char, Deleter > demangled(
+                abi::__cxa_demangle( name, 0, 0, &status ));
             if( ! status && demangled )
                 serialize( s, demangled.get() );
             else
@@ -69,7 +60,7 @@ namespace detail
 
         typedef std::string::size_type size_type;
 
-        void serialize( std::ostream& s, std::string name ) const
+        static void serialize( std::ostream& s, std::string name )
         {
             const size_type nm = rfind( name, ':' ) + 1;
             const size_type tpl = name.find( '<', nm );
@@ -80,7 +71,7 @@ namespace detail
             list( s, name.substr( tpl + 1, name.rfind( '>' ) - tpl - 1 ) );
             s << '>';
         }
-        void list( std::ostream& s, const std::string& name ) const
+        static void list( std::ostream& s, const std::string& name )
         {
             const size_type comma = rfind( name, ',' );
             if( comma != std::string::npos )
@@ -90,7 +81,7 @@ namespace detail
             }
             serialize( s, name.substr( comma + 1 ) );
         }
-        std::string clean( std::string name ) const
+        static std::string clean( std::string name )
         {
             boost::algorithm::trim( name );
             boost::algorithm::erase_all( name, "class " );
@@ -102,7 +93,7 @@ namespace detail
             boost::algorithm::replace_all( name, "* ", "*" );
             return name;
         }
-        size_type rfind( const std::string& name, char c ) const
+        static size_type rfind( const std::string& name, char c )
         {
             size_type count = 0;
             for( size_type i = name.size() - 1; i > 0; --i )
@@ -117,8 +108,18 @@ namespace detail
             return std::string::npos;
         }
 
-        const MOCK_TYPEINFO* info_;
+        const std::type_info* info_;
     };
+    template< typename T >
+    type_name make_type_name()
+    {
+        return type_name( typeid(T) );
+    }
+    template< typename T >
+    type_name make_type_name( const T& )
+    {
+        return type_name( typeid(T) );
+    }
 }
 } // mock
 

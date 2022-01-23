@@ -6,25 +6,43 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-//[ invoke_functor_problem
-#include <boost/function.hpp>
+// Intentionally duplicate to have complete examples and minimal user visible, yet tested test code
+#include <boost/test/unit_test.hpp>
 
-namespace
-{
+static void someFunctor(int newValue);
+//[ invoke_functor_problem
+#include <functional>
+
     class base_class
     {
     public:
-        virtual void method( const boost::function< void( int ) >& functor ) = 0;
+        virtual void method( const std::function< void( int ) >& functor ) = 0;
     };
 
-    void function( base_class& ); // the function will call 'method' with a functor to be applied
-}
+    // the function will call 'method' with a functor to be applied
+    void function(base_class& c) { c.method(someFunctor); } 
 //]
 
+// Some test-only code to verify what is described
+static int receivedValue = 0;
+static void someFunctor(int newValue)
+{
+    receivedValue = newValue;
+}
+// Check that the functor was called with 42
+struct CheckReceivedValue
+{
+    void teardown()
+    {
+        BOOST_CHECK(receivedValue == 42); // functor was called and received the value 42
+    }
+};
+// And force using it w/o showing that in the docs
+#undef BOOST_AUTO_TEST_CASE
+#define BOOST_AUTO_TEST_CASE(name) BOOST_FIXTURE_TEST_CASE(name, CheckReceivedValue)
+
 //[ invoke_functor_solution
-#define BOOST_AUTO_TEST_MAIN
-#include <boost/test/auto_unit_test.hpp>
-#include <boost/bind/apply.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 
 namespace
@@ -38,7 +56,7 @@ namespace
 BOOST_AUTO_TEST_CASE( how_to_invoke_a_functor_passed_as_parameter_of_a_mock_method )
 {
     mock_class mock;
-    MOCK_EXPECT( mock.method ).calls( boost::bind( boost::apply< void >(), _1, 42 ) ); // whenever 'method' is called, invoke the functor with 42
+    MOCK_EXPECT( mock.method ).calls( [](const auto &functor){ functor(42); } ); // whenever 'method' is called, invoke the functor with 42
     function( mock );
 }
 //]

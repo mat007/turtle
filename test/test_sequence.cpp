@@ -9,7 +9,7 @@
 #include "mock_error.hpp"
 #include <turtle/sequence.hpp>
 #include <turtle/detail/function.hpp>
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 BOOST_FIXTURE_TEST_CASE( registering_to_a_sequence_and_calling_out_of_order_throws, mock_error_fixture )
 {

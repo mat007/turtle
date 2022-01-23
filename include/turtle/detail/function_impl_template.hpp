@@ -24,8 +24,8 @@
         << ')' \
         << lazy_expectations( this )
 
-#define MOCK_MOVE(z, n, d) \
-    mock::detail::move_if_not_lvalue_reference< T##n >( t##n )
+#define MOCK_FORWARD(z, n, d) \
+    std::forward< T##n >( t##n )
 
 namespace mock
 {
@@ -36,7 +36,7 @@ namespace detail
     template< typename R
         BOOST_PP_ENUM_TRAILING_PARAMS(MOCK_NUM_ARGS, typename T) >
     class function_impl< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
-        : public verifiable, public boost::enable_shared_from_this<
+        : public verifiable, public std::enable_shared_from_this<
             function_impl< R ( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )> >
     {
     public:
@@ -47,19 +47,24 @@ namespace detail
             : context_( 0 )
             , valid_( true )
             , exceptions_( exceptions() )
-            , mutex_( boost::make_shared< mutex >() )
+            , mutex_( std::make_shared< mutex >() )
         {}
         virtual ~function_impl()
         {
             if( valid_ && exceptions_ >= exceptions() )
-                for( expectations_cit it = expectations_.begin();
-                    it != expectations_.end(); ++it )
-                    if( ! it->verify() )
+            {
+                for( const auto& expectation: expectations_ )
+                {
+                    if( ! expectation.verify() )
+                    {
                         error_type::fail( "untriggered expectation",
                             boost::unit_test::lazy_ostream::instance()
                                 << lazy_context( this )
                                 << lazy_expectations( this ),
-                            it->file(), it->line() );
+                            expectation.file(), expectation.line() );
+                    }
+                }
+            }
             if( context_ )
                 context_->remove( *this );
         }
@@ -67,17 +72,18 @@ namespace detail
         virtual bool verify() const
         {
             lock _( mutex_ );
-            for( expectations_cit it = expectations_.begin();
-                it != expectations_.end(); ++it )
-                if( ! it->verify() )
+            for( const auto& expectation: expectations_ )
+            {
+                if( ! expectation.verify() )
                 {
                     valid_ = false;
                     error_type::fail( "verification failed",
                         boost::unit_test::lazy_ostream::instance()
                             << lazy_context( this )
                             << lazy_expectations( this ),
-                        it->file(), it->line() );
+                        expectation.file(), expectation.line() );
                 }
+            }
             return valid_;
         }
 
@@ -85,7 +91,7 @@ namespace detail
         {
             lock _( mutex_ );
             valid_ = true;
-            boost::shared_ptr< function_impl > guard =
+            std::shared_ptr< function_impl > guard =
                 this->shared_from_this();
             expectations_.clear();
         }
@@ -99,55 +105,44 @@ namespace detail
         {
         private:
             typedef wrapper_base< R, expectation_type > base_type;
-            BOOST_MOVABLE_BUT_NOT_COPYABLE(wrapper)
 
         public:
-            wrapper( const boost::shared_ptr< mutex >& m, expectation_type& e )
+            wrapper( const std::shared_ptr< mutex >& m, expectation_type& e )
                 : base_type( e )
                 , lock_( m )
             {}
-            wrapper( BOOST_RV_REF( wrapper ) x )
-                : base_type( x )
-                , lock_( boost::move( x.lock_) )
-            {}
-            wrapper& operator=( BOOST_RV_REF( wrapper ) x )
-            {
-                static_cast< base_type& >( *this ) = x;
-                lock_ = boost::move( x.lock_ );
-                return *this;
-            }
+            wrapper(const wrapper&) = delete;
+            wrapper( wrapper&& x ) = default;
+            wrapper& operator=(const wrapper&) = delete;
+            wrapper& operator=( wrapper&& x ) = default;
             wrapper& once()
             {
-                this->e_->invoke( boost::make_shared< detail::once >() );
+                this->e_->invoke( std::make_unique< detail::once >() );
                 return *this;
             }
             wrapper& never()
             {
-                this->e_->invoke( boost::make_shared< detail::never >() );
+                this->e_->invoke( std::make_unique< detail::never >() );
                 return *this;
             }
             wrapper& exactly( std::size_t count )
             {
-                this->e_->invoke(
-                    boost::make_shared< detail::exactly >( count ) );
+                this->e_->invoke( std::make_unique< detail::exactly >( count ) );
                 return *this;
             }
             wrapper& at_least( std::size_t min )
             {
-                this->e_->invoke(
-                    boost::make_shared< detail::at_least >( min ) );
+                this->e_->invoke( std::make_unique< detail::at_least >( min ) );
                 return *this;
             }
             wrapper& at_most( std::size_t max )
             {
-                this->e_->invoke(
-                    boost::make_shared< detail::at_most >( max ) );
+                this->e_->invoke( std::make_unique< detail::at_most >( max ) );
                 return *this;
             }
             wrapper& between( std::size_t min, std::size_t max )
             {
-                this->e_->invoke(
-                    boost::make_shared< detail::between >( min, max ) );
+                this->e_->invoke( std::make_unique< detail::between >( min, max ) );
                 return *this;
             }
 
@@ -200,9 +195,9 @@ namespace detail
                 this->e_->throws( t );
             }
             template< typename TT >
-            void moves( BOOST_RV_REF(TT) t )
+            void moves( TT&& t )
             {
-                this->e_->moves( boost::move( t ) );
+                this->e_->moves( std::move( t ) );
             }
 
             lock lock_;
@@ -214,14 +209,14 @@ namespace detail
         wrapper expect( const char* file, int line )
         {
             lock _( mutex_ );
-            expectations_.push_back( expectation_type( file, line ) );
+            expectations_.emplace_back( file, line );
             valid_ = true;
             return wrapper( mutex_, expectations_.back() );
         }
         wrapper expect()
         {
             lock _( mutex_ );
-            expectations_.push_back( expectation_type() );
+            expectations_.emplace_back( );
             valid_ = true;
             return wrapper( mutex_, expectations_.back() );
         }
@@ -231,31 +226,31 @@ namespace detail
         {
             lock _( mutex_ );
             valid_ = false;
-            for( expectations_cit it = expectations_.begin();
-                it != expectations_.end(); ++it )
-                if( it->is_valid(
-                    BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) ) )
+            for( const auto& expectation: expectations_ )
+            {
+                if( expectation.is_valid(
+                    BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) ) )
                 {
-                    if( ! it->invoke() )
+                    if( ! expectation.invoke() )
                     {
                         error_type::fail( "sequence failed",
-                            MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
+                            MOCK_FUNCTION_CONTEXT, expectation.file(), expectation.line() );
                         return error_type::abort();
                     }
-                    if( ! it->valid() )
+                    if( ! expectation.valid() )
                     {
                         error_type::fail( "missing action",
-                            MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
+                            MOCK_FUNCTION_CONTEXT, expectation.file(), expectation.line() );
                         return error_type::abort();
                     }
                     valid_ = true;
-                    error_type::call(
-                        MOCK_FUNCTION_CONTEXT, it->file(), it->line() );
-                    if( it->functor() )
-                        return it->functor()(
-                            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_MOVE, _) );
-                    return it->trigger();
+                    error_type::call( MOCK_FUNCTION_CONTEXT, expectation.file(), expectation.line() );
+                    if( expectation.functor() )
+                        return expectation.functor()(
+                            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_FORWARD, _) );
+                    return expectation.trigger();
                 }
+            }
             error_type::fail( "unexpected call", MOCK_FUNCTION_CONTEXT );
             return error_type::abort();
         }
@@ -272,8 +267,7 @@ namespace detail
             context_ = &c;
         }
 
-        friend std::ostream& operator<<(
-            std::ostream& s, const function_impl& impl )
+        friend std::ostream& operator<<( std::ostream& s, const function_impl& impl )
         {
             lock _( impl.mutex_ );
             return s << lazy_context( &impl ) << lazy_expectations( &impl );
@@ -284,8 +278,7 @@ namespace detail
             lazy_context( const function_impl* impl )
                 : impl_( impl )
             {}
-            friend std::ostream& operator<<(
-                std::ostream& s, const lazy_context& c )
+            friend std::ostream& operator<<( std::ostream& s, const lazy_context& c )
             {
                 if( c.impl_->context_ )
                     c.impl_->context_->serialize( s, *c.impl_ );
@@ -301,29 +294,24 @@ namespace detail
             lazy_expectations( const function_impl* impl )
                 : impl_( impl )
             {}
-            friend std::ostream& operator<<(
-                std::ostream& s, const lazy_expectations& e )
+            friend std::ostream& operator<<( std::ostream& s, const lazy_expectations& e )
             {
-                for( expectations_cit it = e.impl_->expectations_.begin();
-                    it != e.impl_->expectations_.end(); ++it )
-                    s << std::endl << *it;
+                for( const auto& expectation: e.impl_->expectations_ )
+                    s << std::endl << expectation;
                 return s;
             }
             const function_impl* impl_;
         };
 
-        typedef std::list< expectation_type > expectations_type;
-        typedef typename expectations_type::const_iterator expectations_cit;
-
-        expectations_type expectations_;
+        std::list< expectation_type > expectations_;
         context* context_;
         mutable bool valid_;
         const int exceptions_;
-        const boost::shared_ptr< mutex > mutex_;
+        const std::shared_ptr< mutex > mutex_;
     };
 }
 } // mock
 
 #undef MOCK_FUNCTION_FORMAT
 #undef MOCK_FUNCTION_CONTEXT
-#undef MOCK_MOVE
+#undef MOCK_FORWARD

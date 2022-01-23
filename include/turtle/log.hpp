@@ -12,11 +12,10 @@
 #include "config.hpp"
 #include "stream.hpp"
 #include "format.hpp"
-#include <boost/utility/enable_if.hpp>
 #include <boost/detail/container_fwd.hpp>
-#include <boost/function_types/is_callable_builtin.hpp>
 #include <boost/none.hpp>
 #include <memory>
+#include <type_traits>
 
 namespace boost
 {
@@ -51,15 +50,16 @@ namespace detail
             s << (it == begin ? "" : ",") << mock::format( *it );
         s << ')';
     }
+    template<typename T>
+    struct is_callable_impl: std::false_type
+    {};
+    template<typename R, typename... Args>
+    struct is_callable_impl<R(Args...)>: std::true_type
+    {};
+    template<typename T>
+    struct is_callable: is_callable_impl< std::remove_cv_t<T> >
+    {};
 }
-
-#ifdef MOCK_AUTO_PTR
-    template< typename T >
-    stream& operator<<( stream& s, const std::auto_ptr< T >& t )
-    {
-        return s << mock::format( t.get() );
-    }
-#endif // MOCK_AUTO_PTR
 
     template< typename T1, typename T2 >
     stream& operator<<( stream& s, const std::pair< T1, T2 >& p )
@@ -123,6 +123,11 @@ namespace detail
         return s << mock::format( t.get() );
     }
     template< typename T >
+    stream& operator<<( stream& s, const std::reference_wrapper< T >& t )
+    {
+        return s << mock::format( t.get() );
+    }
+    template< typename T >
     stream& operator<<( stream& s, const boost::shared_ptr< T >& t )
     {
         return s << mock::format( t.get() );
@@ -144,7 +149,6 @@ namespace detail
         return s << boost::none;
     }
 
-#ifdef MOCK_SMART_PTR
     template< typename T >
     stream& operator<<( stream& s, const std::shared_ptr< T >& t )
     {
@@ -160,7 +164,6 @@ namespace detail
     {
         return s << mock::format( p.get() );
     }
-#endif
 
     template< typename T >
     stream& operator<<( stream& s, const boost::lambda::lambda_functor< T >& )
@@ -173,27 +176,19 @@ namespace detail
         return s << '?';
     }
 
-#ifdef MOCK_NULLPTR
     inline stream& operator<<( stream& s, std::nullptr_t )
     {
         return s << "nullptr";
     }
-#endif
 
     template< typename T >
-    typename boost::enable_if<
-        boost::function_types::is_callable_builtin< T >,
-        stream&
-    >::type
+    std::enable_if_t< detail::is_callable< T >::value, stream& >
     operator<<( stream& s, T* )
     {
         return s << '?';
     }
     template< typename T >
-    typename boost::disable_if<
-        boost::function_types::is_callable_builtin< T >,
-        stream&
-    >::type
+    std::enable_if_t< !detail::is_callable< T >::value, stream& >
     operator<<( stream& s, T* t )
     {
         *s.s_ << t;

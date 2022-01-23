@@ -15,7 +15,7 @@
     matcher< T##n, Constraint_##n > c##n##_;
 
 #define MOCK_EXPECTATION_IS_VALID(z, n, d) \
-    BOOST_PP_IF(n, &&,) c##n##_( mock::detail::move_if_not_lvalue_reference< T##n >( a##n ) )
+    BOOST_PP_IF(n, &&,) c##n##_( std::forward< T##n >( a##n ) )
 
 #define MOCK_EXPECTATION_SERIALIZE(z, n, d) \
     BOOST_PP_IF(n, << ", " <<,) c##n##_
@@ -24,7 +24,7 @@
     BOOST_PP_IF(n, << ", " <<,) "any"
 
 #define MOCK_EXPECTATION_PARAM(z, n, Args) \
-    mock::detail::move_if_not_lvalue_reference< T##n >( a##n )
+    std::forward< T##n >( a##n )
 
 #define MOCK_REF_ARG(z, n, d) \
     typename ref_arg< T##n >::type a##n
@@ -133,9 +133,9 @@ namespace detail
     {
     public:
         expectation()
-            : invocation_( boost::make_shared< unlimited >() )
+            : invocation_( std::make_unique< unlimited >() )
             , matcher_(
-                boost::make_shared<
+                std::make_unique<
                     default_matcher<
                         void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
                     >
@@ -144,9 +144,9 @@ namespace detail
             , line_( 0 )
         {}
         expectation( const char* file, int line )
-            : invocation_( boost::make_shared< unlimited >() )
+            : invocation_( std::make_unique< unlimited >() )
             , matcher_(
-                boost::make_shared<
+                std::make_unique<
                     default_matcher<
                         void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
                     >
@@ -162,14 +162,13 @@ namespace detail
 
         ~expectation()
         {
-            for( sequences_cit it = sequences_.begin();
-                it != sequences_.end(); ++it )
-                (*it)->remove( this );
+            for( auto& sequence: sequences_)
+                sequence->remove( this );
         }
 
-        void invoke( const boost::shared_ptr< invocation >& i )
+        void invoke( std::unique_ptr< invocation > i )
         {
-            invocation_ = i;
+            invocation_ = std::move(i);
         }
 
 #ifndef MOCK_NUM_ARGS_0
@@ -179,22 +178,22 @@ namespace detail
         expectation& with(
             BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
         {
-            matcher_.reset(
-                new single_matcher<
+            matcher_ = std::make_unique<
+                single_matcher<
                     void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, Constraint_) ),
                     void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-                >( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, c) ) );
+                >>( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, c) );
             return *this;
         }
 #if MOCK_NUM_ARGS > 1
         template< typename Constraint >
         expectation& with( const Constraint& c )
         {
-            matcher_.reset(
-                new multi_matcher<
+            matcher_ = std::make_unique<
+                multi_matcher<
                     Constraint,
                     void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-                >( c ) );
+                >>( c );
             return *this;
         }
 #endif
@@ -220,14 +219,14 @@ namespace detail
 
         bool invoke() const
         {
-            for( sequences_cit it = sequences_.begin();
-                it != sequences_.end(); ++it )
-                if( ! (*it)->is_valid( this ) )
+            for( auto& sequence: sequences_)
+            {
+                if( ! sequence->is_valid( this ) )
                     return false;
+            }
             bool result = invocation_->invoke();
-            for( sequences_cit it = sequences_.begin();
-                it != sequences_.end(); ++it )
-                (*it)->invalidate( this );
+            for( auto& sequence: sequences_)
+                sequence->invalidate( this );
             return result;
         }
 
@@ -240,8 +239,7 @@ namespace detail
             return line_;
         }
 
-        friend std::ostream& operator<<(
-            std::ostream& s, const expectation& e )
+        friend std::ostream& operator<<( std::ostream& s, const expectation& e )
         {
             return s << ( e.invocation_->exhausted() ? 'v' : '.' )
                 << ' ' << *e.invocation_
@@ -252,18 +250,13 @@ namespace detail
         }
 
     private:
-        typedef std::vector<
-            boost::shared_ptr< sequence_impl >
-        > sequences_type;
-        typedef sequences_type::const_iterator sequences_cit;
-
-        boost::shared_ptr< invocation > invocation_;
-        boost::shared_ptr<
+        std::unique_ptr< invocation > invocation_;
+        std::unique_ptr<
             matcher_base<
                 void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
             >
         > matcher_;
-        sequences_type sequences_;
+        std::vector< std::shared_ptr<sequence_impl> > sequences_;
         const char* file_;
         int line_;
     };

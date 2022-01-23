@@ -7,11 +7,9 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <turtle/log.hpp>
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/assign.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
 #ifdef BOOST_MSVC
 #pragma warning( push, 0 )
@@ -25,11 +23,13 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #endif
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
+#include <functional>
 #include <vector>
 #include <deque>
 #include <list>
 #include <map>
+#include <memory>
 #include <set>
 
 namespace
@@ -54,13 +54,19 @@ BOOST_AUTO_TEST_CASE( pointer_yields_its_value_when_serialized )
 {
     {
         int i = 0;
+        std::ostringstream s;
+        s << &i;
+        const std::string pointerValue = s.str();
         BOOST_CHECK_NE( "?", to_string( &i ) );
-        BOOST_CHECK_EQUAL( boost::lexical_cast< std::string >( &i ), to_string( &i ) );
+        BOOST_CHECK_EQUAL( pointerValue, to_string( &i ) );
     }
     {
         const int i = 0;
+        std::ostringstream s;
+        s << &i;
+        const std::string pointerValue = s.str();
         BOOST_CHECK_NE( "?", to_string( &i ) );
-        BOOST_CHECK_EQUAL( boost::lexical_cast< std::string >( &i ), to_string( &i ) );
+        BOOST_CHECK_EQUAL( pointerValue, to_string( &i ) );
     }
 }
 
@@ -387,16 +393,6 @@ BOOST_AUTO_TEST_CASE( std_pairs_are_serialized )
     BOOST_CHECK_EQUAL( "(3,42)", to_string( std::make_pair( 3, 42.f ) ) );
 }
 
-#ifdef MOCK_AUTO_PTR
-
-BOOST_AUTO_TEST_CASE( std_auto_ptr_are_serialized )
-{
-    BOOST_CHECK_NE( "?", to_string( std::auto_ptr< int >() ) );
-    BOOST_CHECK_NE( "?", to_string( std::auto_ptr< int >( new int( 42 ) ) ) );
-}
-
-#endif // MOCK_AUTO_PTR
-
 BOOST_AUTO_TEST_CASE( boost_shared_ptr_are_serialized )
 {
     BOOST_CHECK_NE( "?", to_string( boost::shared_ptr< int >() ) );
@@ -408,8 +404,6 @@ BOOST_AUTO_TEST_CASE( boost_weak_ptr_are_serialized )
     BOOST_CHECK_NE( "?", to_string( boost::weak_ptr< int >( boost::shared_ptr< int >() ) ) );
     BOOST_CHECK_NE( "?", to_string( boost::weak_ptr< int >( boost::shared_ptr< int >( new int( 42 ) ) ) ) );
 }
-
-#ifdef MOCK_SMART_PTR
 
 BOOST_AUTO_TEST_CASE( std_shared_ptr_are_serialized )
 {
@@ -428,8 +422,6 @@ BOOST_AUTO_TEST_CASE( std_unique_ptr_are_serialized )
     BOOST_CHECK_NE( "?", to_string( std::unique_ptr< int >() ) );
     BOOST_CHECK_NE( "?", to_string( std::unique_ptr< int >( new int( 42 ) ) ) );
 }
-
-#endif
 
 BOOST_AUTO_TEST_CASE( std_deques_are_serialized )
 {
@@ -521,11 +513,11 @@ BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized )
     BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( boost::assign::map_list_of( 12, "12" )( 42, "42" ) ) );
 }
 
-BOOST_AUTO_TEST_CASE( boost_reference_wrappers_are_serialized )
+BOOST_AUTO_TEST_CASE( std_reference_wrappers_are_serialized )
 {
     const int i = 3;
-    BOOST_CHECK_EQUAL( "3", to_string( boost::cref( i ) ) );
-    BOOST_CHECK_EQUAL( "\"string\"", to_string( boost::cref( "string" ) ) );
+    BOOST_CHECK_EQUAL( "3", to_string( std::cref( i ) ) );
+    BOOST_CHECK_EQUAL( "\"string\"", to_string( std::cref( "string" ) ) );
 }
 
 namespace
@@ -633,7 +625,7 @@ BOOST_AUTO_TEST_CASE( mock_detail_template_template_streamable_yields_its_value_
 
 BOOST_AUTO_TEST_CASE( unsigned_char_is_serialized_as_int )
 {
-    BOOST_CHECK_EQUAL( boost::lexical_cast< std::string >( static_cast< int >( 'a' ) ), to_string< unsigned char >( 'a' ) );
+    BOOST_CHECK_EQUAL( std::to_string( static_cast< int >( 'a' ) ), to_string< unsigned char >( 'a' ) );
 }
 
 namespace
@@ -650,9 +642,10 @@ BOOST_AUTO_TEST_CASE( boost_phoenix_functor_yields_question_mark_when_serialized
     BOOST_CHECK_EQUAL( "?", to_string( boost::phoenix::arg_names::_1 < 42 ) );
 }
 
-BOOST_AUTO_TEST_CASE( boost_bind_functor_yields_question_mark_when_serialized )
+BOOST_AUTO_TEST_CASE( bind_functor_yields_question_mark_when_serialized )
 {
     BOOST_CHECK_EQUAL( "?", to_string( boost::bind( &some_function ) ) );
+    BOOST_CHECK_EQUAL( "?", to_string( std::bind( &some_function ) ) );
 }
 
 #ifndef BOOST_MSVC // this produces an ICE with all versions of MSVC
@@ -665,14 +658,10 @@ BOOST_AUTO_TEST_CASE( boost_lambda_functor_yields_question_mark_when_serialized 
 
 #endif
 
-#ifdef MOCK_NULLPTR
-
 BOOST_AUTO_TEST_CASE( nullptr_is_serialized )
 {
     BOOST_CHECK_EQUAL( "nullptr", to_string( nullptr ) );
 }
-
-#endif
 
 BOOST_AUTO_TEST_CASE( mock_boost_optional_yields_its_value_when_serialized )
 {

@@ -9,6 +9,19 @@
 #include <turtle/mock.hpp>
 #include "calculator.hpp"
 #include "mock_view.hpp"
+#include <boost/test/unit_test.hpp>
+#include <iostream>
+#include <limits>
+#include <stdexcept>
+
+// Dummy to detect if the assertion unexpectedly succeeded to test what is explained
+#undef BOOST_CHECK_THROW
+#define BOOST_CHECK_THROW(expr, exc) \
+  try { \
+    expr; \
+  } catch(const exc&) { \
+      std::cerr << "Exception thrown but should not"; \
+  }
 
 //[ overflow_throws
 BOOST_AUTO_TEST_CASE( overflow_throws )

@@ -1,0 +1,160 @@
+# Copyright 2022 Alexander Grund
+#
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at http://boost.org/LICENSE_1_0.txt)
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - develop
+      - feature/**
+
+concurrency:
+  group: ${{format('{0}:{1}', github.repository, github.ref)}}
+  cancel-in-progress: true
+
+env:
+  NET_RETRY_COUNT: 5
+  DOCBOOK_XSL_DIR: /usr/share/xml/docbook/stylesheet/docbook-xsl
+  DOCBOOK_DTD_DIR: /usr/share/xml/docbook/schema/dtd/4.2
+
+jobs:
+  posix:
+    defaults:
+      run:
+        shell: bash
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux, gcc
+          - { compiler: gcc-5, cxxstd: '14',       boostBranch: boost-1.65.0, os: ubuntu-18.04 }
+          - { compiler: gcc-5, cxxstd: '14',       boostBranch: boost-1.77.0, os: ubuntu-18.04 }
+          - { compiler: gcc-5, cxxstd: '14,1z',    boostBranch: master,       os: ubuntu-18.04 }
+          - { compiler: gcc-11,cxxstd: '14,17,20', boostBranch: master,       os: ubuntu-20.04 }
+          
+          # Linux, clang
+          - { compiler: clang-5.0, cxxstd: '14',       boostBranch: boost-1.65.0, os: ubuntu-18.04 }
+          - { compiler: clang-5.0, cxxstd: '14',       boostBranch: boost-1.77.0, os: ubuntu-18.04 }
+          - { compiler: clang-5.0, cxxstd: '14,1z',    boostBranch: master,       os: ubuntu-18.04 }
+          - { compiler: clang-12,  cxxstd: '14,17,20', boostBranch: master,       os: ubuntu-20.04 }
+
+          - { name: Collect coverage, coverage: yes,
+              compiler: gcc-8,     cxxstd: '14',       boostBranch: master,       os: ubuntu-20.04 }
+
+    timeout-minutes: 120
+    runs-on: ${{matrix.os}}
+    env:
+      BOOST_ROOT: ${{github.workspace}}/boost-root
+      PROJECT_DIR: ${{github.workspace}}/repo
+
+    steps:
+      - uses: actions/checkout@v2
+        if: '!matrix.coverage'
+        with:
+          path: ${{env.PROJECT_DIR}}
+      - uses: actions/checkout@v2
+        if: 'matrix.coverage'
+        with:
+          path: ${{env.PROJECT_DIR}}
+          fetch-depth: 0
+      # Checking out Boost and all its submodules takes ages...
+      - name: Cache Boost
+        uses: actions/cache@v2
+        with:
+          path: boost-root
+          key: boost-${{matrix.boostBranch}}
+      - name: Checkout Boost
+        uses: actions/checkout@v2
+        with:
+          repository: boostorg/boost
+          ref: ${{matrix.boostBranch}}
+          submodules: true
+          path: boost-root
+          persist-credentials: false
+
+      - name: Install packages and setup env
+        run: |
+            sudo apt-get -o Acquire::Retries=$NET_RETRY_COUNT update
+            CXX=${{matrix.compiler}}
+            CXX="${CXX/gcc-/g++-}"
+            # Package names are g++-* and clang-*, so set this before correcting CXX for Clang
+            pkgs="$CXX xsltproc docbook-xsl docbook-xml lcov ccache"
+            sudo apt-get -o Acquire::Retries=$NET_RETRY_COUNT install -y $pkgs
+            CXX="ccache ${CXX/clang-/clang++-}"
+            echo "CXX=$CXX" >> $GITHUB_ENV
+            echo "CC=${{matrix.compiler}}" >> $GITHUB_ENV
+            if [[ "$CXX" =~ clang ]]; then
+              B2_TOOLSET=clang
+            else
+              B2_TOOLSET=gcc
+            fi
+            echo "B2_TOOLSET=$B2_TOOLSET" >> $GITHUB_ENV
+            echo "using $B2_TOOLSET : : $CXX ;" > ~/user-config.jam
+
+      - name: Cache ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{matrix.os}}-${{matrix.compiler}}-${{matrix.boostBranch}}
+
+      - name: Prepare boost
+        working-directory: boost-root
+        run: ./bootstrap.sh && ./b2 headers
+
+      - name: Boost build
+        working-directory: ${{env.PROJECT_DIR}}
+        run: |
+          if [[ "${{matrix.boostBranch}}" == "master" ]]; then
+            B2_FLAGS="cxxstd=${{matrix.cxxstd}}"
+          else
+            B2_FLAGS="cxxflags=-std=c++${{matrix.cxxstd}}"
+          fi
+          if [[ "${{matrix.coverage}}" == "yes" ]]; then
+            B2_FLAGS="$B2_FLAGS cxxflags=--coverage linkflags=--coverage"
+          fi
+          scripts/build.sh --toolset=$B2_TOOLSET $B2_FLAGS -j3
+
+      - name: Collect coverage
+        if: matrix.coverage
+        working-directory: ${{env.PROJECT_DIR}}
+        run: |
+          lcov --version
+          lcov --gcov-tool=gcov-8 --directory "$PROJECT_DIR/test" --base-directory "$BOOST_ROOT" --capture --output-file all.info
+          # dump a summary on the console
+          lcov --list all.info
+          # Limit to our files (header-only in this case)
+          lcov --extract all.info "$PROJECT_DIR/include/*" --output-file coverage.info
+          # Output what was collected
+          lcov --list coverage.info
+      - name: Upload coverage
+        if: matrix.coverage
+        uses: coverallsapp/github-action@master
+        with:
+          path-to-lcov: ${{env.PROJECT_DIR}}/coverage.info
+          github-token: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Build required boost libs
+        working-directory: boost-root
+        run: |
+          ./b2 --toolset=$B2_TOOLSET --with-test --with-thread --with-chrono --with-system --with-atomic --with-date_time -a -j3
+          # Add lib folder to LD_LIBRARY_PATH, so the tests can load them
+          echo "LD_LIBRARY_PATH=$PWD/stage/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+
+      - name: CMake build
+        working-directory: ${{env.PROJECT_DIR}}
+        run: |
+          mkdir build && cd build
+          CXX_STANDARD="${{matrix.cxxstd}}"
+          cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-std=c++${CXX_STANDARD##*,}" -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_VERBOSE_MAKEFILE=ON
+          cmake --build . --config Debug -- -j3
+          ctest --output-on-failure --build-config Debug -j3
+
+      - name: Cleanup Boost folder
+        if: ${{ always() }}
+        working-directory: boost-root
+        run: git clean -fxd

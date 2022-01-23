@@ -8,3 +8,8 @@
 
 #define MOCK_MAX_ARGS 30
 #include <turtle/mock.hpp>
+
+int main()
+{
+    return 0;
+}

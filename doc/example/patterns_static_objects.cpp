@@ -6,9 +6,18 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/test/unit_test.hpp>
+
+// Used to make this test file pass. Define to 0 to see other tests fail
+#define MOCK_MAKE_TEST_PASS 1
+
+#if MOCK_MAKE_TEST_PASS
+#undef BOOST_AUTO_TEST_CASE
+#define BOOST_AUTO_TEST_CASE(name) BOOST_FIXTURE_TEST_CASE(name, mock::cleanup)
+#endif
+
 //[ static_objects_problem
-#define BOOST_AUTO_TEST_MAIN
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 #include <ostream>
 
@@ -16,8 +25,7 @@ namespace
 {
     struct my_class
     {
-        my_class( int i )
-            : i_( i )
+        my_class( int i ) : i_( i )
         {}
 
         int i_;
@@ -28,7 +36,7 @@ namespace
         return os << "my_class " << c->i_; // the 'c' pointer must be valid when logging
     }
 
-    MOCK_FUNCTION( f, 1, void( my_class* ) ) // being static 'f' outlive the test case
+    MOCK_FUNCTION( f, 1, void( my_class* ) ) // being static 'f' outlives the test case
 }
 
 BOOST_AUTO_TEST_CASE( static_objects_problem )

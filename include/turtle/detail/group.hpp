@@ -36,27 +36,21 @@ namespace detail
         bool verify() const
         {
             bool valid = true;
-            for( verifiables_cit it = verifiables_.begin();
-                    it != verifiables_.end(); ++it )
-                if( ! (*it)->verify() )
+            for( const auto* verifiable: verifiables_ )
+                if( ! verifiable->verify() )
                     valid = false;
             return valid;
         }
         void reset()
         {
-            const verifiables_t verifiables = verifiables_;
-            for( verifiables_cit it = verifiables.begin();
-                it != verifiables.end(); ++it )
-                if( std::find( verifiables_.begin(), verifiables_.end(), *it )
-                    != verifiables_.end() )
-                    (*it)->reset();
+            const auto verifiables = verifiables_;
+            for( auto* verifiable: verifiables )
+                if( std::find( verifiables_.begin(), verifiables_.end(), verifiable ) != verifiables_.end() )
+                    verifiable->reset();
         }
 
     private:
-        typedef std::vector< verifiable* > verifiables_t;
-        typedef verifiables_t::const_iterator verifiables_cit;
-
-        verifiables_t verifiables_;
+        std::vector< verifiable* > verifiables_;
     };
 }
 } // mock

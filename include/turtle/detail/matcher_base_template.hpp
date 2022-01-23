@@ -18,16 +18,17 @@ namespace detail
     template<
         BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T) >
     class matcher_base< void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
-        : boost::noncopyable
     {
     public:
-        virtual ~matcher_base() {}
+        matcher_base() = default;
+        matcher_base(const matcher_base&) = delete;
+        matcher_base& operator=(const matcher_base&) = delete;
+        virtual ~matcher_base() = default;
 
         virtual bool operator()(
             BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _) ) = 0;
 
-        friend std::ostream& operator<<(
-            std::ostream& s, const matcher_base& m )
+        friend std::ostream& operator<<( std::ostream& s, const matcher_base& m )
         {
             m.serialize( s );
             return s;

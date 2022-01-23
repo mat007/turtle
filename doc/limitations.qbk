@@ -12,7 +12,6 @@
 [import example/limitations_template_base_class_method.cpp]
 [import example/limitations_template_method.cpp]
 [import example/limitations_protected_private_method.cpp]
-[import example/limitations_comma_in_macro.cpp]
 [import example/limitations_const_parameter_warning.cpp]
 
 This section lists the library known limitations.
@@ -76,7 +75,7 @@ Given :
 
 [limitations_template_method_problem]
 
-writing a mock object modeling 'concept' requires to list all the possible versions of 'method' :
+writing a mock object modeling the 'concept class' requires to list all the possible versions of 'method' :
 
 [limitations_template_method_solution]
 
@@ -148,43 +147,6 @@ the following code does not compile :
 A workaround would be to write a proxy member function :
 
 [limitations_throw_specifier_solution]
-
-[endsect]
-
-[section Compilers without support for variadic macros fail on commas in MOCK_BASE_CLASS]
-
-For compilers without support for variadic macros given :
-
-[limitations_comma_in_macro_problem]
-
-the following code does not compile : 
-
- MOCK_BASE_CLASS( my_mock, my_base_class< int, int > ) // this fails because the pre-processor believes the macro to be called with 3 arguments
- {};
-
-One workaround is :
-
-[limitations_comma_in_macro_solution_1]
-
-Of course this is not always possible, as in :
-
- template< typename T1, typename T2 >
- MOCK_BASE_CLASS( my_mock, my_base_type< T1, T2 > )
- {};
-
-Another workaround would make use of [@http://www.boost.org/libs/preprocessor Boost.Preprocessor] :
-
-[limitations_comma_in_macro_solution_2]
-
-Actually BOOST_PP_COMMA implementation is quite trivial, being only :
-
- #define BOOST_PP_COMMA() ,
-
-Finally another workaround would be to not use the macro at all :
-
-[limitations_comma_in_macro_solution_3]
-
-Note that [@http://www.boost.org/libs/utility/identity_type/doc/html/index.html Boost.IdentityType] is of little help here because the type is by essence very often abstract, which doesn't work well for some compilers (e.g. gcc).
 
 [endsect]
 
