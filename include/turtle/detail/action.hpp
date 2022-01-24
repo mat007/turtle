@@ -14,16 +14,13 @@
 #include <memory>
 #include <type_traits>
 
-namespace mock
-{
-namespace detail
-{
-    template< typename Result, typename Signature >
+namespace mock { namespace detail {
+    template<typename Result, typename Signature>
     class action_base
     {
     private:
-        typedef std::function< Signature > functor_type;
-        typedef std::function< Result() > action_type;
+        typedef std::function<Signature> functor_type;
+        typedef std::function<Result()> action_type;
 
     protected:
         // Meant to be subclassed and not be directly used
@@ -33,41 +30,29 @@ namespace detail
         action_base(action_base&&) = delete;
         action_base& operator=(const action_base&) = delete;
         action_base& operator=(action_base&&) = delete;
+
     public:
+        const functor_type& functor() const { return f_; }
+        bool valid() const { return f_ || a_; }
+        Result trigger() const { return a_(); }
 
-        const functor_type& functor() const
+        void calls(const functor_type& f)
         {
-            return f_;
-        }
-        bool valid() const
-        {
-            return f_ || a_;
-        }
-        Result trigger() const
-        {
-            return a_();
-        }
-
-        void calls( const functor_type& f )
-        {
-            if( ! f )
-                throw std::invalid_argument( "null functor" );
+            if(!f)
+                throw std::invalid_argument("null functor");
             f_ = f;
         }
 
-        template< typename Exception >
-        void throws( Exception e )
+        template<typename Exception>
+        void throws(Exception e)
         {
             a_ = [e]() -> Result { throw e; };
         }
 
     protected:
-        void set( const action_type& a )
-        {
-            a_ = a;
-        }
-        template< typename Y >
-        void set( const std::reference_wrapper< Y >& r )
+        void set(const action_type& a) { a_ = a; }
+        template<typename Y>
+        void set(const std::reference_wrapper<Y>& r)
         {
             a_ = [r]() -> Result { return r.get(); };
         }
@@ -77,26 +62,26 @@ namespace detail
         action_type a_;
     };
 
-    template< typename Result, typename Signature >
-    class action : public action_base< Result, Signature >
+    template<typename Result, typename Signature>
+    class action : public action_base<Result, Signature>
     {
     public:
-        template< typename Value >
-        void returns( const Value& v )
+        template<typename Value>
+        void returns(const Value& v)
         {
-            this->set( std::ref( store( v ) ) );
+            this->set(std::ref(store(v)));
         }
-        template< typename Y >
-        void returns( const std::reference_wrapper< Y >& r )
+        template<typename Y>
+        void returns(const std::reference_wrapper<Y>& r)
         {
-            this->set( r );
+            this->set(r);
         }
 
-        template< typename Value >
-        void moves( Value&& v )
+        template<typename Value>
+        void moves(Value&& v)
         {
-            auto vRef = std::ref( store( std::move( v ) ) );
-            this->set([vRef](){ return std::move(vRef.get()); });
+            auto vRef = std::ref(store(std::move(v)));
+            this->set([vRef]() { return std::move(vRef.get()); });
         }
 
     private:
@@ -107,44 +92,43 @@ namespace detail
             value& operator=(const value&) = delete;
             virtual ~value() = default;
         };
-        template< typename T >
+        template<typename T>
         struct value_imp : value
         {
             typedef std::remove_const_t<std::remove_reference_t<T>> type;
 
-            template< typename U >
-            value_imp( U&& t ) : t_( std::forward<U>( t ) )
+            template<typename U>
+            value_imp(U&& t) : t_(std::forward<U>(t))
             {}
             type t_;
         };
 
-        template< typename T >
-        typename value_imp<T>::type& store( T&& t )
+        template<typename T>
+        typename value_imp<T>::type& store(T&& t)
         {
-            v_ = std::make_unique< value_imp<T> >( std::forward<T>( t ) );
-            return static_cast< value_imp< T >& >( *v_ ).t_;
+            v_ = std::make_unique<value_imp<T>>(std::forward<T>(t));
+            return static_cast<value_imp<T>&>(*v_).t_;
         }
-        template< typename T >
-        std::remove_reference_t< Result >& store( T* t )
+        template<typename T>
+        std::remove_reference_t<Result>& store(T* t)
         {
-            v_ = std::make_unique< value_imp<Result> >( t );
-            return static_cast< value_imp< Result >& >( *v_ ).t_;
+            v_ = std::make_unique<value_imp<Result>>(t);
+            return static_cast<value_imp<Result>&>(*v_).t_;
         }
 
-        std::unique_ptr< value > v_;
+        std::unique_ptr<value> v_;
     };
 
-    template< typename Signature >
-    class action< void, Signature > : public action_base< void, Signature >
+    template<typename Signature>
+    class action<void, Signature> : public action_base<void, Signature>
     {
     public:
         action()
         {
-            this->set( [](){} );
+            this->set([]() {});
         }
     };
 
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_ACTION_HPP_INCLUDED

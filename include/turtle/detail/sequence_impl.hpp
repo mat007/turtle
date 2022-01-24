@@ -15,49 +15,41 @@
 #include <memory>
 #include <vector>
 
-namespace mock
-{
-namespace detail
-{
+namespace mock { namespace detail {
     class sequence_impl
     {
     public:
-        sequence_impl()
-            : mutex_( std::make_shared< mutex >() )
-        {}
+        sequence_impl() : mutex_(std::make_shared<mutex>()) {}
 
-        void add( void* e )
+        void add(void* e)
         {
-            lock _( mutex_ );
-            elements_.push_back( e );
+            lock _(mutex_);
+            elements_.push_back(e);
         }
-        void remove( void* e )
+        void remove(void* e)
         {
-            lock _( mutex_ );
-            elements_.erase( std::remove( elements_.begin(),
-                elements_.end(), e ), elements_.end() );
+            lock _(mutex_);
+            elements_.erase(std::remove(elements_.begin(), elements_.end(), e), elements_.end());
         }
 
-        bool is_valid( const void* e ) const
+        bool is_valid(const void* e) const
         {
-            lock _( mutex_ );
-            return std::find( elements_.begin(), elements_.end(), e )
-                != elements_.end();
+            lock _(mutex_);
+            return std::find(elements_.begin(), elements_.end(), e) != elements_.end();
         }
 
-        void invalidate( const void* e )
+        void invalidate(const void* e)
         {
-            lock _( mutex_ );
-            const auto it = std::find( elements_.begin(), elements_.end(), e );
-            if( it != elements_.end() )
-                elements_.erase( elements_.begin(), it );
+            lock _(mutex_);
+            const auto it = std::find(elements_.begin(), elements_.end(), e);
+            if(it != elements_.end())
+                elements_.erase(elements_.begin(), it);
         }
 
     private:
-        std::vector< void* > elements_;
-        const std::shared_ptr< mutex > mutex_;
+        std::vector<void*> elements_;
+        const std::shared_ptr<mutex> mutex_;
     };
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_SEQUENCE_IMPL_HPP_INCLUDED

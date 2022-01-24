@@ -7,31 +7,28 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //[ quick_constraint_problem
-#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
+#include <boost/test/unit_test.hpp>
 #include <iostream>
 
-namespace
+namespace {
+class my_class
 {
-    class my_class
-    {
-    public:
-        explicit my_class( int data )
-            : data_( data )
-        {}
-        int data_;
-    };
+public:
+    explicit my_class(int data) : data_(data) {}
+    int data_;
+};
 
-    std::ostream& operator<<( std::ostream& os, const my_class& c ) // my_class is serializable to an std::ostream
-    {
-        return os << "my_class( " << c.data_ << " )";
-    }
-
-    MOCK_CLASS( my_mock )
-    {
-        MOCK_METHOD( method, 1, void( const my_class& ) ) // how to simply write a custom constraint ?
-    };
+std::ostream& operator<<(std::ostream& os, const my_class& c) // my_class is serializable to an std::ostream
+{
+    return os << "my_class( " << c.data_ << " )";
 }
+
+MOCK_CLASS(my_mock)
+{
+    MOCK_METHOD(method, 1, void(const my_class&)) // how to simply write a custom constraint ?
+};
+} // namespace
 //]
 
 //[ quick_constraint_solution
@@ -39,18 +36,21 @@ namespace
 
 namespace // in the same namespace as 'my_class'
 {
-    bool operator==( const my_class& actual, const std::string& expected ) // the first part of the trick is to compare to a string
-    {
-        std::ostringstream s;
-        s << actual;
-        return s.str() == expected;
-    }
-} // mock
+bool operator==(const my_class& actual,
+                const std::string& expected) // the first part of the trick is to compare to a string
+{
+    std::ostringstream s;
+    s << actual;
+    return s.str() == expected;
+}
+} // namespace
 
-BOOST_AUTO_TEST_CASE( method_is_called )
+BOOST_AUTO_TEST_CASE(method_is_called)
 {
     my_mock mock;
-    MOCK_EXPECT( mock.method ).once().with( "my_class( 42 )" ); // the second part of the trick is to express the constraint as a string
-    mock.method( my_class( 42 ) );
+    MOCK_EXPECT(mock.method)
+      .once()
+      .with("my_class( 42 )"); // the second part of the trick is to express the constraint as a string
+    mock.method(my_class(42));
 }
 //]

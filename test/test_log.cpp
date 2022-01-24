@@ -7,667 +7,638 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <turtle/log.hpp>
-#include <boost/test/unit_test.hpp>
 #include <boost/assign.hpp>
-#include <boost/weak_ptr.hpp>
 #include <boost/optional.hpp>
+#include <boost/test/unit_test.hpp>
+#include <boost/weak_ptr.hpp>
 #ifdef BOOST_MSVC
-#pragma warning( push, 0 )
+#    pragma warning(push, 0)
 #endif
-#include <boost/phoenix/phoenix.hpp>
 #include <boost/phoenix/bind.hpp>
+#include <boost/phoenix/phoenix.hpp>
 #ifdef BOOST_MSVC
-#pragma warning( pop )
+#    pragma warning(pop)
 #endif
 #ifndef BOOST_MSVC // this produces an ICE with all versions of MSVC
-#include <boost/lambda/bind.hpp>
-#include <boost/lambda/lambda.hpp>
+#    include <boost/lambda/bind.hpp>
+#    include <boost/lambda/lambda.hpp>
 #endif
 #include <boost/bind/bind.hpp>
-#include <functional>
-#include <vector>
 #include <deque>
+#include <functional>
 #include <list>
 #include <map>
 #include <memory>
 #include <set>
+#include <vector>
 
-namespace
+namespace {
+template<typename T>
+std::string to_string(const T& t)
 {
-    template< typename T >
-    std::string to_string( const T& t )
-    {
-        std::stringstream s;
-        s << mock::format( t );
-        return s.str();
-    }
-    template< typename T >
-    std::string to_string( T* t )
-    {
-        std::stringstream s;
-        s << mock::format( t );
-        return s.str();
-    }
+    std::stringstream s;
+    s << mock::format(t);
+    return s.str();
 }
+template<typename T>
+std::string to_string(T* t)
+{
+    std::stringstream s;
+    s << mock::format(t);
+    return s.str();
+}
+} // namespace
 
-BOOST_AUTO_TEST_CASE( pointer_yields_its_value_when_serialized )
+BOOST_AUTO_TEST_CASE(pointer_yields_its_value_when_serialized)
 {
     {
         int i = 0;
         std::ostringstream s;
         s << &i;
         const std::string pointerValue = s.str();
-        BOOST_CHECK_NE( "?", to_string( &i ) );
-        BOOST_CHECK_EQUAL( pointerValue, to_string( &i ) );
+        BOOST_CHECK_NE("?", to_string(&i));
+        BOOST_CHECK_EQUAL(pointerValue, to_string(&i));
     }
     {
         const int i = 0;
         std::ostringstream s;
         s << &i;
         const std::string pointerValue = s.str();
-        BOOST_CHECK_NE( "?", to_string( &i ) );
-        BOOST_CHECK_EQUAL( pointerValue, to_string( &i ) );
+        BOOST_CHECK_NE("?", to_string(&i));
+        BOOST_CHECK_EQUAL(pointerValue, to_string(&i));
     }
 }
 
-BOOST_AUTO_TEST_CASE( base_type_yields_its_value_when_serialized )
+BOOST_AUTO_TEST_CASE(base_type_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL( "42", to_string( 42 ) );
+    BOOST_CHECK_EQUAL("42", to_string(42));
 }
 
-BOOST_AUTO_TEST_CASE( booleans_are_serialized_as_bool_alpha )
+BOOST_AUTO_TEST_CASE(booleans_are_serialized_as_bool_alpha)
 {
-    BOOST_CHECK_EQUAL( "true", to_string( true ) );
-    BOOST_CHECK_EQUAL( "false", to_string( false ) );
+    BOOST_CHECK_EQUAL("true", to_string(true));
+    BOOST_CHECK_EQUAL("false", to_string(false));
 }
 
-BOOST_AUTO_TEST_CASE( strings_are_serialized_with_double_quotes )
+BOOST_AUTO_TEST_CASE(strings_are_serialized_with_double_quotes)
 {
-    BOOST_CHECK_EQUAL( "\"string\"", to_string( "string" ) );
-    BOOST_CHECK_EQUAL( "\"string\"", to_string( std::string( "string" ) ) );
+    BOOST_CHECK_EQUAL("\"string\"", to_string("string"));
+    BOOST_CHECK_EQUAL("\"string\"", to_string(std::string("string")));
 }
 
-namespace
+namespace {
+struct non_serializable
+{};
+} // namespace
+
+BOOST_AUTO_TEST_CASE(non_serializable_type_yields_a_question_mark_when_serialized)
 {
-    struct non_serializable
-    {};
+    BOOST_CHECK_EQUAL("?", to_string(non_serializable()));
 }
 
-BOOST_AUTO_TEST_CASE( non_serializable_type_yields_a_question_mark_when_serialized )
+namespace {
+struct serializable
+{};
+std::ostream& operator<<(std::ostream& s, const serializable&)
 {
-    BOOST_CHECK_EQUAL( "?", to_string( non_serializable() ) );
+    return s << "serializable";
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(serializable_type_yields_its_value_when_serialized)
+{
+    BOOST_CHECK_EQUAL("serializable", to_string(serializable()));
 }
 
-namespace
+namespace {
+struct streamable
+{};
+BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<(std::ostream& s, const streamable&)
 {
-    struct serializable
-    {};
-    std::ostream& operator<<( std::ostream& s, const serializable& )
-    {
-        return s << "serializable";
-    }
+    BOOST_FAIL("should not have been called");
+    return s;
+}
+mock::stream& operator<<(mock::stream& s, const streamable&)
+{
+    return s << "streamable";
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(streamable_type_yields_its_value_when_serialized)
+{
+    BOOST_CHECK_EQUAL("streamable", to_string(streamable()));
 }
 
-BOOST_AUTO_TEST_CASE( serializable_type_yields_its_value_when_serialized )
+namespace {
+struct mock_streamable
+{};
+BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<(std::ostream& s, const mock_streamable&)
 {
-    BOOST_CHECK_EQUAL( "serializable", to_string( serializable() ) );
+    BOOST_FAIL("should not have been called");
+    return s;
+}
+} // namespace
+namespace mock {
+stream& operator<<(stream& s, const mock_streamable&)
+{
+    return s << "mock_streamable";
+}
+} // namespace mock
+
+BOOST_AUTO_TEST_CASE(mock_streamable_type_yields_its_value_when_serialized)
+{
+    BOOST_CHECK_EQUAL("mock_streamable", to_string(mock_streamable()));
 }
 
-namespace
-{
-    struct streamable
-    {};
-    BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<( std::ostream& s, const streamable& )
-    {
-        BOOST_FAIL( "should not have been called" );
-        return s;
-    }
-    mock::stream& operator<<( mock::stream& s, const streamable& )
-    {
-        return s << "streamable";
-    }
-}
+namespace {
+struct derived_from_serializable : serializable
+{};
+} // namespace
 
-BOOST_AUTO_TEST_CASE( streamable_type_yields_its_value_when_serialized )
-{
-    BOOST_CHECK_EQUAL( "streamable", to_string( streamable() ) );
-}
-
-namespace
-{
-    struct mock_streamable
-    {};
-    BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<( std::ostream& s, const mock_streamable& )
-    {
-        BOOST_FAIL( "should not have been called" );
-        return s;
-    }
-}
-namespace mock
-{
-    stream& operator<<( stream& s, const mock_streamable& )
-    {
-        return s << "mock_streamable";
-    }
-} // mock
-
-BOOST_AUTO_TEST_CASE( mock_streamable_type_yields_its_value_when_serialized )
-{
-    BOOST_CHECK_EQUAL( "mock_streamable", to_string( mock_streamable() ) );
-}
-
-namespace
-{
-    struct derived_from_serializable : serializable
-    {};
-}
-
-BOOST_AUTO_TEST_CASE( type_derived_from_serializable_yields_a_question_mark_when_serialized )
+BOOST_AUTO_TEST_CASE(type_derived_from_serializable_yields_a_question_mark_when_serialized)
 {
 #ifdef MOCK_USE_CONVERSIONS
-    BOOST_CHECK_EQUAL( "serializable", to_string( derived_from_serializable() ) );
+    BOOST_CHECK_EQUAL("serializable", to_string(derived_from_serializable()));
 #else
-    BOOST_CHECK_EQUAL( "?", to_string( derived_from_serializable() ) );
+    BOOST_CHECK_EQUAL("?", to_string(derived_from_serializable()));
 #endif
 }
 
-namespace
-{
-    struct derived_from_streamable : streamable
-    {};
-}
+namespace {
+struct derived_from_streamable : streamable
+{};
+} // namespace
 
-BOOST_AUTO_TEST_CASE( type_derived_from_streamable_yields_a_question_mark_when_serialized )
+BOOST_AUTO_TEST_CASE(type_derived_from_streamable_yields_a_question_mark_when_serialized)
 {
 #ifdef MOCK_USE_CONVERSIONS
-    BOOST_CHECK_EQUAL( "streamable", to_string( derived_from_streamable() ) );
+    BOOST_CHECK_EQUAL("streamable", to_string(derived_from_streamable()));
 #else
-    BOOST_CHECK_EQUAL( "?", to_string( derived_from_streamable() ) );
+    BOOST_CHECK_EQUAL("?", to_string(derived_from_streamable()));
 #endif
 }
 
-#ifndef MOCK_USE_CONVERSIONS // all this does not compile with conversions activated, which is precisely the purpose of having this compilation flag
+#ifndef MOCK_USE_CONVERSIONS // all this does not compile with conversions activated, which is precisely the purpose of
+                             // having this compilation flag
 
-namespace
+namespace {
+struct convertible_to_base
 {
-    struct convertible_to_base
-    {
-        operator int() const;
-    };
+    operator int() const;
+};
+} // namespace
+
+BOOST_AUTO_TEST_CASE(type_convertible_to_base_yields_a_question_mark_when_serialized)
+{
+    BOOST_CHECK_EQUAL("?", to_string(convertible_to_base()));
 }
 
-BOOST_AUTO_TEST_CASE( type_convertible_to_base_yields_a_question_mark_when_serialized )
+namespace {
+struct convertible_to_serializable
 {
-    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_base() ) );
+    operator serializable() const;
+};
+} // namespace
+
+BOOST_AUTO_TEST_CASE(type_convertible_to_serializable_yields_a_question_mark_when_serialized)
+{
+    BOOST_CHECK_EQUAL("?", to_string(convertible_to_serializable()));
 }
 
-namespace
+namespace {
+struct convertible_to_streamable
 {
-    struct convertible_to_serializable
-    {
-        operator serializable() const;
-    };
+    operator streamable() const;
+};
+} // namespace
+
+BOOST_AUTO_TEST_CASE(type_convertible_to_streamable_yields_a_question_mark_when_serialized)
+{
+    BOOST_CHECK_EQUAL("?", to_string(convertible_to_streamable()));
 }
 
-BOOST_AUTO_TEST_CASE( type_convertible_to_serializable_yields_a_question_mark_when_serialized )
+namespace {
+struct ambiguous_convertible
 {
-    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_serializable() ) );
+    operator float() const;
+    operator int() const;
+    operator serializable() const;
+    operator streamable() const;
+    template<typename T>
+    operator T() const;
+};
+} // namespace
+
+BOOST_AUTO_TEST_CASE(type_ambiguous_convertible_yields_a_question_mark_when_serialized)
+{
+    BOOST_CHECK_EQUAL("?", to_string(ambiguous_convertible()));
 }
 
-namespace
+namespace {
+struct ambiguous_convertible_serializable
 {
-    struct convertible_to_streamable
-    {
-        operator streamable() const;
-    };
+    operator float() const;
+    operator int() const;
+    operator serializable() const;
+    operator streamable() const;
+    template<typename T>
+    operator T() const;
+};
+std::ostream& operator<<(std::ostream& s, const ambiguous_convertible_serializable&)
+{
+    return s << "ambiguous_convertible_serializable";
 }
+} // namespace
 
-BOOST_AUTO_TEST_CASE( type_convertible_to_streamable_yields_a_question_mark_when_serialized )
+BOOST_AUTO_TEST_CASE(type_convertible_serializable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL( "?", to_string( convertible_to_streamable() ) );
-}
-
-namespace
-{
-    struct ambiguous_convertible
-    {
-        operator float() const;
-        operator int() const;
-        operator serializable() const;
-        operator streamable() const;
-        template< typename T > operator T() const;
-    };
-}
-
-BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_yields_a_question_mark_when_serialized )
-{
-    BOOST_CHECK_EQUAL( "?", to_string( ambiguous_convertible() ) );
-}
-
-namespace
-{
-    struct ambiguous_convertible_serializable
-    {
-        operator float() const;
-        operator int() const;
-        operator serializable() const;
-        operator streamable() const;
-        template< typename T > operator T() const;
-    };
-    std::ostream& operator<<( std::ostream& s, const ambiguous_convertible_serializable& )
-    {
-        return s << "ambiguous_convertible_serializable";
-    }
-}
-
-BOOST_AUTO_TEST_CASE( type_convertible_serializable_yields_its_value_when_serialized )
-{
-    BOOST_CHECK_EQUAL( "ambiguous_convertible_serializable", to_string( ambiguous_convertible_serializable() ) );
+    BOOST_CHECK_EQUAL("ambiguous_convertible_serializable", to_string(ambiguous_convertible_serializable()));
 }
 
 #endif // MOCK_USE_CONVERSIONS
 
-namespace
+namespace {
+struct ambiguous_convertible_streamable
 {
-    struct ambiguous_convertible_streamable
-    {
-        operator float() const;
-        operator int() const;
-        operator serializable() const;
-        operator streamable() const;
-        template< typename T > operator T() const;
-    };
-    BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<( std::ostream& s, const ambiguous_convertible_streamable& )
-    {
-        BOOST_FAIL( "should not have been called" );
-        return s;
-    }
-    mock::stream& operator<<( mock::stream& s, const ambiguous_convertible_streamable& )
-    {
-        return s << "ambiguous_convertible_streamable";
-    }
+    operator float() const;
+    operator int() const;
+    operator serializable() const;
+    operator streamable() const;
+    template<typename T>
+    operator T() const;
+};
+BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<(std::ostream& s, const ambiguous_convertible_streamable&)
+{
+    BOOST_FAIL("should not have been called");
+    return s;
+}
+mock::stream& operator<<(mock::stream& s, const ambiguous_convertible_streamable&)
+{
+    return s << "ambiguous_convertible_streamable";
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(type_ambiguous_convertible_streamable_yields_its_value_when_serialized)
+{
+    BOOST_CHECK_EQUAL("ambiguous_convertible_streamable", to_string(ambiguous_convertible_streamable()));
 }
 
-BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_streamable_yields_its_value_when_serialized )
+namespace {
+struct ambiguous_convertible_mock_streamable
 {
-    BOOST_CHECK_EQUAL( "ambiguous_convertible_streamable", to_string( ambiguous_convertible_streamable() ) );
+    operator float() const;
+    operator int() const;
+    operator serializable() const;
+    operator streamable() const;
+    template<typename T>
+    operator T() const;
+};
+BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<(std::ostream& s, const ambiguous_convertible_mock_streamable&)
+{
+    BOOST_FAIL("should not have been called");
+    return s;
+}
+} // namespace
+namespace mock {
+stream& operator<<(stream& s, const ambiguous_convertible_mock_streamable&)
+{
+    return s << "ambiguous_convertible_mock_streamable";
+}
+} // namespace mock
+
+BOOST_AUTO_TEST_CASE(type_ambiguous_convertible_mock_streamable_yields_its_value_when_serialized)
+{
+    BOOST_CHECK_EQUAL("ambiguous_convertible_mock_streamable", to_string(ambiguous_convertible_mock_streamable()));
 }
 
-namespace
+namespace {
+template<typename T>
+struct template_serializable
+{};
+template<typename T>
+std::ostream& operator<<(std::ostream& s, const template_serializable<T>&)
 {
-    struct ambiguous_convertible_mock_streamable
-    {
-        operator float() const;
-        operator int() const;
-        operator serializable() const;
-        operator streamable() const;
-        template< typename T > operator T() const;
-    };
-    BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<( std::ostream& s, const ambiguous_convertible_mock_streamable& )
-    {
-        BOOST_FAIL( "should not have been called" );
-        return s;
-    }
+    return s << "template_serializable";
 }
-namespace mock
-{
-    stream& operator<<( stream& s, const ambiguous_convertible_mock_streamable& )
-    {
-        return s << "ambiguous_convertible_mock_streamable";
-    }
-} // mock
+} // namespace
 
-BOOST_AUTO_TEST_CASE( type_ambiguous_convertible_mock_streamable_yields_its_value_when_serialized )
+BOOST_AUTO_TEST_CASE(template_type_serializable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL( "ambiguous_convertible_mock_streamable", to_string( ambiguous_convertible_mock_streamable() ) );
+    BOOST_CHECK_EQUAL("template_serializable", to_string(template_serializable<int>()));
 }
 
-namespace
+namespace {
+template<typename T>
+struct template_streamable
+{};
+template<typename T>
+std::ostream& operator<<(std::ostream& s, const template_streamable<T>&)
 {
-    template< typename T >
-    struct template_serializable
-    {};
-    template< typename T >
-    std::ostream& operator<<( std::ostream& s, const template_serializable< T >& )
-    {
-        return s << "template_serializable";
-    }
+    BOOST_FAIL("should not have been called");
+    return s;
+}
+template<typename T>
+mock::stream& operator<<(mock::stream& s, const template_streamable<T>&)
+{
+    return s << "template_streamable";
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(template_template_streamable_yields_its_value_when_serialized)
+{
+    BOOST_CHECK_EQUAL("template_streamable", to_string(template_streamable<int>()));
 }
 
-BOOST_AUTO_TEST_CASE( template_type_serializable_yields_its_value_when_serialized )
+namespace {
+template<typename T>
+struct template_mock_streamable
+{};
+template<typename T>
+std::ostream& operator<<(std::ostream& s, const template_mock_streamable<T>&)
 {
-    BOOST_CHECK_EQUAL( "template_serializable", to_string( template_serializable< int >() ) );
+    BOOST_FAIL("should not have been called");
+    return s;
+}
+} // namespace
+namespace mock {
+template<typename T>
+stream& operator<<(stream& s, const template_mock_streamable<T>&)
+{
+    return s << "template_mock_streamable";
+}
+} // namespace mock
+
+BOOST_AUTO_TEST_CASE(template_mock_streamable_yields_its_value_when_serialized)
+{
+    BOOST_CHECK_EQUAL("template_mock_streamable", to_string(template_mock_streamable<int>()));
 }
 
-namespace
+BOOST_AUTO_TEST_CASE(std_pairs_are_serialized)
 {
-    template< typename T >
-    struct template_streamable
-    {};
-    template< typename T >
-    std::ostream& operator<<( std::ostream& s, const template_streamable< T >& )
-    {
-        BOOST_FAIL( "should not have been called" );
-        return s;
-    }
-    template< typename T >
-    mock::stream& operator<<( mock::stream& s, const template_streamable< T >& )
-    {
-        return s << "template_streamable";
-    }
+    BOOST_CHECK_EQUAL("(3,42)", to_string(std::make_pair(3, 42.f)));
 }
 
-BOOST_AUTO_TEST_CASE( template_template_streamable_yields_its_value_when_serialized )
+BOOST_AUTO_TEST_CASE(boost_shared_ptr_are_serialized)
 {
-    BOOST_CHECK_EQUAL( "template_streamable", to_string( template_streamable< int >() ) );
+    BOOST_CHECK_NE("?", to_string(boost::shared_ptr<int>()));
+    BOOST_CHECK_NE("?", to_string(boost::shared_ptr<int>(new int(42))));
 }
 
-namespace
+BOOST_AUTO_TEST_CASE(boost_weak_ptr_are_serialized)
 {
-    template< typename T >
-    struct template_mock_streamable
-    {};
-    template< typename T >
-    std::ostream& operator<<( std::ostream& s, const template_mock_streamable< T >& )
-    {
-        BOOST_FAIL( "should not have been called" );
-        return s;
-    }
-}
-namespace mock
-{
-    template< typename T >
-    stream& operator<<( stream& s, const template_mock_streamable< T >& )
-    {
-        return s << "template_mock_streamable";
-    }
-} // mock
-
-BOOST_AUTO_TEST_CASE( template_mock_streamable_yields_its_value_when_serialized )
-{
-    BOOST_CHECK_EQUAL( "template_mock_streamable", to_string( template_mock_streamable< int >() ) );
+    BOOST_CHECK_NE("?", to_string(boost::weak_ptr<int>(boost::shared_ptr<int>())));
+    BOOST_CHECK_NE("?", to_string(boost::weak_ptr<int>(boost::shared_ptr<int>(new int(42)))));
 }
 
-BOOST_AUTO_TEST_CASE( std_pairs_are_serialized )
+BOOST_AUTO_TEST_CASE(std_shared_ptr_are_serialized)
 {
-    BOOST_CHECK_EQUAL( "(3,42)", to_string( std::make_pair( 3, 42.f ) ) );
+    BOOST_CHECK_NE("?", to_string(std::shared_ptr<int>()));
+    BOOST_CHECK_NE("?", to_string(std::shared_ptr<int>(new int(42))));
 }
 
-BOOST_AUTO_TEST_CASE( boost_shared_ptr_are_serialized )
+BOOST_AUTO_TEST_CASE(std_weak_ptr_are_serialized)
 {
-    BOOST_CHECK_NE( "?", to_string( boost::shared_ptr< int >() ) );
-    BOOST_CHECK_NE( "?", to_string( boost::shared_ptr< int >( new int( 42 ) ) ) );
+    BOOST_CHECK_NE("?", to_string(std::weak_ptr<int>(std::shared_ptr<int>())));
+    BOOST_CHECK_NE("?", to_string(std::weak_ptr<int>(std::shared_ptr<int>(new int(42)))));
 }
 
-BOOST_AUTO_TEST_CASE( boost_weak_ptr_are_serialized )
+BOOST_AUTO_TEST_CASE(std_unique_ptr_are_serialized)
 {
-    BOOST_CHECK_NE( "?", to_string( boost::weak_ptr< int >( boost::shared_ptr< int >() ) ) );
-    BOOST_CHECK_NE( "?", to_string( boost::weak_ptr< int >( boost::shared_ptr< int >( new int( 42 ) ) ) ) );
+    BOOST_CHECK_NE("?", to_string(std::unique_ptr<int>()));
+    BOOST_CHECK_NE("?", to_string(std::unique_ptr<int>(new int(42))));
 }
 
-BOOST_AUTO_TEST_CASE( std_shared_ptr_are_serialized )
+BOOST_AUTO_TEST_CASE(std_deques_are_serialized)
 {
-    BOOST_CHECK_NE( "?", to_string( std::shared_ptr< int >() ) );
-    BOOST_CHECK_NE( "?", to_string( std::shared_ptr< int >( new int( 42 ) ) ) );
+    std::deque<int> d;
+    d.push_back(12);
+    d.push_back(42);
+    BOOST_CHECK_EQUAL("(12,42)", to_string(d));
 }
 
-BOOST_AUTO_TEST_CASE( std_weak_ptr_are_serialized )
+BOOST_AUTO_TEST_CASE(std_lists_are_serialized)
 {
-    BOOST_CHECK_NE( "?", to_string( std::weak_ptr< int >( std::shared_ptr< int >() ) ) );
-    BOOST_CHECK_NE( "?", to_string( std::weak_ptr< int >( std::shared_ptr< int >( new int( 42 ) ) ) ) );
+    std::list<int> l;
+    l.push_back(12);
+    l.push_back(42);
+    BOOST_CHECK_EQUAL("(12,42)", to_string(l));
 }
 
-BOOST_AUTO_TEST_CASE( std_unique_ptr_are_serialized )
+BOOST_AUTO_TEST_CASE(std_vectors_are_serialized)
 {
-    BOOST_CHECK_NE( "?", to_string( std::unique_ptr< int >() ) );
-    BOOST_CHECK_NE( "?", to_string( std::unique_ptr< int >( new int( 42 ) ) ) );
+    std::vector<int> v;
+    v.push_back(12);
+    v.push_back(42);
+    BOOST_CHECK_EQUAL("(12,42)", to_string(v));
 }
 
-BOOST_AUTO_TEST_CASE( std_deques_are_serialized )
+BOOST_AUTO_TEST_CASE(std_maps_are_serialized)
 {
-    std::deque< int > d;
-    d.push_back( 12 );
-    d.push_back( 42 );
-    BOOST_CHECK_EQUAL( "(12,42)", to_string( d ) );
+    std::map<int, std::string> m;
+    m[12] = "12";
+    m[42] = "42";
+    BOOST_CHECK_EQUAL("((12,\"12\"),(42,\"42\"))", to_string(m));
 }
 
-BOOST_AUTO_TEST_CASE( std_lists_are_serialized )
+BOOST_AUTO_TEST_CASE(std_multimaps_are_serialized)
 {
-    std::list< int > l;
-    l.push_back( 12 );
-    l.push_back( 42 );
-    BOOST_CHECK_EQUAL( "(12,42)", to_string( l ) );
+    std::multimap<int, std::string> m;
+    m.insert(std::make_pair(12, "12"));
+    m.insert(std::make_pair(42, "42"));
+    BOOST_CHECK_EQUAL("((12,\"12\"),(42,\"42\"))", to_string(m));
 }
 
-BOOST_AUTO_TEST_CASE( std_vectors_are_serialized )
+BOOST_AUTO_TEST_CASE(std_sets_are_serialized)
 {
-    std::vector< int > v;
-    v.push_back( 12 );
-    v.push_back( 42 );
-    BOOST_CHECK_EQUAL( "(12,42)", to_string( v ) );
+    std::set<int> s;
+    s.insert(12);
+    s.insert(42);
+    BOOST_CHECK_EQUAL("(12,42)", to_string(s));
 }
 
-BOOST_AUTO_TEST_CASE( std_maps_are_serialized )
+BOOST_AUTO_TEST_CASE(std_multisets_are_serialized)
 {
-    std::map< int, std::string > m;
-    m[ 12 ] = "12";
-    m[ 42 ] = "42";
-    BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( m ) );
+    std::multiset<int> s;
+    s.insert(12);
+    s.insert(42);
+    BOOST_CHECK_EQUAL("(12,42)", to_string(s));
 }
 
-BOOST_AUTO_TEST_CASE( std_multimaps_are_serialized )
+BOOST_AUTO_TEST_CASE(std_deques_of_vectors_are_serialized)
 {
-    std::multimap< int, std::string > m;
-    m.insert( std::make_pair( 12, "12" ));
-    m.insert( std::make_pair( 42, "42" ));
-    BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( m ) );
+    std::deque<std::vector<int>> v;
+    std::vector<int> v1, v2;
+    v1.push_back(12);
+    v2.push_back(42);
+    v2.push_back(77);
+    v.push_back(v1);
+    v.push_back(v2);
+    BOOST_CHECK_EQUAL("((12),(42,77))", to_string(v));
 }
 
-BOOST_AUTO_TEST_CASE( std_sets_are_serialized )
+BOOST_AUTO_TEST_CASE(std_vectors_of_deques_are_serialized)
 {
-    std::set< int > s;
-    s.insert( 12 );
-    s.insert( 42 );
-    BOOST_CHECK_EQUAL( "(12,42)", to_string( s ) );
+    std::vector<std::deque<int>> v;
+    std::deque<int> v1, v2;
+    v1.push_back(12);
+    v2.push_back(42);
+    v2.push_back(77);
+    v.push_back(v1);
+    v.push_back(v2);
+    BOOST_CHECK_EQUAL("((12),(42,77))", to_string(v));
 }
 
-BOOST_AUTO_TEST_CASE( std_multisets_are_serialized )
+BOOST_AUTO_TEST_CASE(boost_assign_list_of_are_serialized)
 {
-    std::multiset< int > s;
-    s.insert( 12 );
-    s.insert( 42 );
-    BOOST_CHECK_EQUAL( "(12,42)", to_string( s ) );
+    BOOST_CHECK_EQUAL("(12,42)", to_string(boost::assign::list_of(12)(42)));
 }
 
-BOOST_AUTO_TEST_CASE( std_deques_of_vectors_are_serialized )
+BOOST_AUTO_TEST_CASE(boost_assign_map_list_of_are_serialized)
 {
-    std::deque< std::vector< int > > v;
-    std::vector< int > v1, v2;
-    v1.push_back( 12 );
-    v2.push_back( 42 );
-    v2.push_back( 77 );
-    v.push_back( v1 );
-    v.push_back( v2 );
-    BOOST_CHECK_EQUAL( "((12),(42,77))", to_string( v ) );
+    BOOST_CHECK_EQUAL("((12,\"12\"),(42,\"42\"))", to_string(boost::assign::map_list_of(12, "12")(42, "42")));
 }
 
-BOOST_AUTO_TEST_CASE( std_vectors_of_deques_are_serialized )
-{
-    std::vector< std::deque< int > > v;
-    std::deque< int > v1, v2;
-    v1.push_back( 12 );
-    v2.push_back( 42 );
-    v2.push_back( 77 );
-    v.push_back( v1 );
-    v.push_back( v2 );
-    BOOST_CHECK_EQUAL( "((12),(42,77))", to_string( v ) );
-}
-
-BOOST_AUTO_TEST_CASE( boost_assign_list_of_are_serialized )
-{
-    BOOST_CHECK_EQUAL( "(12,42)", to_string( boost::assign::list_of( 12 )( 42 ) ) );
-}
-
-BOOST_AUTO_TEST_CASE( boost_assign_map_list_of_are_serialized )
-{
-    BOOST_CHECK_EQUAL( "((12,\"12\"),(42,\"42\"))", to_string( boost::assign::map_list_of( 12, "12" )( 42, "42" ) ) );
-}
-
-BOOST_AUTO_TEST_CASE( std_reference_wrappers_are_serialized )
+BOOST_AUTO_TEST_CASE(std_reference_wrappers_are_serialized)
 {
     const int i = 3;
-    BOOST_CHECK_EQUAL( "3", to_string( std::cref( i ) ) );
-    BOOST_CHECK_EQUAL( "\"string\"", to_string( std::cref( "string" ) ) );
+    BOOST_CHECK_EQUAL("3", to_string(std::cref(i)));
+    BOOST_CHECK_EQUAL("\"string\"", to_string(std::cref("string")));
 }
 
-namespace
+namespace {
+void callable_builtin() {}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(callable_builtin_yields_a_question_mark_when_serialized)
 {
-    void callable_builtin()
-    {}
+    BOOST_CHECK_EQUAL("?", to_string(callable_builtin));
+    BOOST_CHECK_EQUAL("?", to_string(&callable_builtin));
 }
 
-BOOST_AUTO_TEST_CASE( callable_builtin_yields_a_question_mark_when_serialized )
+namespace {
+struct serialized_using_format
+{};
+std::ostream& operator<<(std::ostream& s, const serialized_using_format&)
 {
-    BOOST_CHECK_EQUAL( "?", to_string( callable_builtin ) );
-    BOOST_CHECK_EQUAL( "?", to_string( &callable_builtin ) );
+    return s << mock::format("string");
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(type_can_use_format_when_serialized)
+{
+    BOOST_CHECK_EQUAL("\"string\"", to_string(serialized_using_format()));
 }
 
-namespace
+namespace {
+struct streamed_using_format
+{};
+mock::stream& operator<<(mock::stream& s, const streamed_using_format&)
 {
-    struct serialized_using_format
-    {};
-    std::ostream& operator<<( std::ostream& s, const serialized_using_format& )
-    {
-        return s << mock::format( "string" );
-    }
+    return s << mock::format("string");
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(type_can_use_format_when_streamed)
+{
+    BOOST_CHECK_EQUAL("\"string\"", to_string(streamed_using_format()));
 }
 
-BOOST_AUTO_TEST_CASE( type_can_use_format_when_serialized )
+namespace {
+struct std_string_streamed
+{};
+mock::stream& operator<<(mock::stream& s, const std_string_streamed&)
 {
-    BOOST_CHECK_EQUAL( "\"string\"", to_string( serialized_using_format() ) );
+    return s << std::string("string");
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(std_string_streamed_is_not_a_container)
+{
+    BOOST_CHECK_EQUAL("string", to_string(std_string_streamed()));
 }
 
-namespace
-{
-    struct streamed_using_format
-    {};
-    mock::stream& operator<<( mock::stream& s, const streamed_using_format& )
-    {
-        return s << mock::format( "string" );
-    }
-}
-
-BOOST_AUTO_TEST_CASE( type_can_use_format_when_streamed )
-{
-    BOOST_CHECK_EQUAL( "\"string\"", to_string( streamed_using_format() ) );
-}
-
-namespace
-{
-    struct std_string_streamed
-    {};
-    mock::stream& operator<<( mock::stream& s, const std_string_streamed& )
-    {
-        return s << std::string( "string" );
-    }
-}
-
-BOOST_AUTO_TEST_CASE( std_string_streamed_is_not_a_container )
-{
-    BOOST_CHECK_EQUAL( "string", to_string( std_string_streamed() ) );
-}
-
-namespace mock
-{
-namespace detail
-{
-    template< typename T >
+namespace mock { namespace detail {
+    template<typename T>
     struct template_serializable
     {};
-    template< typename T >
-    std::ostream& operator<<( std::ostream& s, const template_serializable< T >& )
+    template<typename T>
+    std::ostream& operator<<(std::ostream& s, const template_serializable<T>&)
     {
         return s << "mock::detail::template_serializable";
     }
-}
-} // mock
+}} // namespace mock::detail
 
-BOOST_AUTO_TEST_CASE( mock_detail_template_type_serializable_yields_its_value_when_serialized )
+BOOST_AUTO_TEST_CASE(mock_detail_template_type_serializable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL( "mock::detail::template_serializable", to_string( mock::detail::template_serializable< int >() ) );
+    BOOST_CHECK_EQUAL("mock::detail::template_serializable", to_string(mock::detail::template_serializable<int>()));
 }
 
-namespace mock
-{
-namespace detail
-{
-    template< typename T >
+namespace mock { namespace detail {
+    template<typename T>
     struct template_streamable
     {};
-    template< typename T >
-    std::ostream& operator<<( std::ostream& s, const template_streamable< T >& )
+    template<typename T>
+    std::ostream& operator<<(std::ostream& s, const template_streamable<T>&)
     {
-        BOOST_FAIL( "should not have been called" );
+        BOOST_FAIL("should not have been called");
         return s;
     }
-    template< typename T >
-    mock::stream& operator<<( mock::stream& s, const template_streamable< T >& )
+    template<typename T>
+    mock::stream& operator<<(mock::stream& s, const template_streamable<T>&)
     {
         return s << "mock::detail::template_streamable";
     }
-}
-} // mock
+}} // namespace mock::detail
 
-BOOST_AUTO_TEST_CASE( mock_detail_template_template_streamable_yields_its_value_when_serialized )
+BOOST_AUTO_TEST_CASE(mock_detail_template_template_streamable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL( "mock::detail::template_streamable", to_string( mock::detail::template_streamable< int >() ) );
-}
-
-BOOST_AUTO_TEST_CASE( unsigned_char_is_serialized_as_int )
-{
-    BOOST_CHECK_EQUAL( std::to_string( static_cast< int >( 'a' ) ), to_string< unsigned char >( 'a' ) );
+    BOOST_CHECK_EQUAL("mock::detail::template_streamable", to_string(mock::detail::template_streamable<int>()));
 }
 
-namespace
+BOOST_AUTO_TEST_CASE(unsigned_char_is_serialized_as_int)
 {
-    bool some_function()
-    {
-        return false;
-    }
+    BOOST_CHECK_EQUAL(std::to_string(static_cast<int>('a')), to_string<unsigned char>('a'));
 }
 
-BOOST_AUTO_TEST_CASE( boost_phoenix_functor_yields_question_mark_when_serialized )
+namespace {
+bool some_function()
 {
-    BOOST_CHECK_EQUAL( "?", to_string( boost::phoenix::bind( &some_function ) ) );
-    BOOST_CHECK_EQUAL( "?", to_string( boost::phoenix::arg_names::_1 < 42 ) );
+    return false;
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(boost_phoenix_functor_yields_question_mark_when_serialized)
+{
+    BOOST_CHECK_EQUAL("?", to_string(boost::phoenix::bind(&some_function)));
+    BOOST_CHECK_EQUAL("?", to_string(boost::phoenix::arg_names::_1 < 42));
 }
 
-BOOST_AUTO_TEST_CASE( bind_functor_yields_question_mark_when_serialized )
+BOOST_AUTO_TEST_CASE(bind_functor_yields_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL( "?", to_string( boost::bind( &some_function ) ) );
-    BOOST_CHECK_EQUAL( "?", to_string( std::bind( &some_function ) ) );
+    BOOST_CHECK_EQUAL("?", to_string(boost::bind(&some_function)));
+    BOOST_CHECK_EQUAL("?", to_string(std::bind(&some_function)));
 }
 
 #ifndef BOOST_MSVC // this produces an ICE with all versions of MSVC
 
-BOOST_AUTO_TEST_CASE( boost_lambda_functor_yields_question_mark_when_serialized )
+BOOST_AUTO_TEST_CASE(boost_lambda_functor_yields_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL( "?", to_string( boost::lambda::bind( &some_function ) ) );
-    BOOST_CHECK_EQUAL( "?", to_string( boost::lambda::_1 < 42 ) );
+    BOOST_CHECK_EQUAL("?", to_string(boost::lambda::bind(&some_function)));
+    BOOST_CHECK_EQUAL("?", to_string(boost::lambda::_1 < 42));
 }
 
 #endif
 
-BOOST_AUTO_TEST_CASE( nullptr_is_serialized )
+BOOST_AUTO_TEST_CASE(nullptr_is_serialized)
 {
-    BOOST_CHECK_EQUAL( "nullptr", to_string( nullptr ) );
+    BOOST_CHECK_EQUAL("nullptr", to_string(nullptr));
 }
 
-BOOST_AUTO_TEST_CASE( mock_boost_optional_yields_its_value_when_serialized )
+BOOST_AUTO_TEST_CASE(mock_boost_optional_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL( "7", to_string( boost::optional< int >( 7 ) ) );
-    BOOST_CHECK_EQUAL( "?", to_string( boost::optional< non_serializable >( non_serializable() ) ) );
-    BOOST_CHECK_EQUAL( "none", to_string( boost::optional< int >() ) );
-    BOOST_CHECK_EQUAL( "none", to_string( boost::optional< non_serializable >() ) );
-    BOOST_CHECK_EQUAL( "none", to_string( boost::none ) );
+    BOOST_CHECK_EQUAL("7", to_string(boost::optional<int>(7)));
+    BOOST_CHECK_EQUAL("?", to_string(boost::optional<non_serializable>(non_serializable())));
+    BOOST_CHECK_EQUAL("none", to_string(boost::optional<int>()));
+    BOOST_CHECK_EQUAL("none", to_string(boost::optional<non_serializable>()));
+    BOOST_CHECK_EQUAL("none", to_string(boost::none));
 }

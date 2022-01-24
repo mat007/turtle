@@ -10,25 +10,24 @@
 #define MOCK_RESET_HPP_INCLUDED
 
 #include "config.hpp"
-#include "object.hpp"
-#include "detail/root.hpp"
 #include "detail/functor.hpp"
+#include "detail/root.hpp"
+#include "object.hpp"
 
-namespace mock
+namespace mock {
+inline void reset()
 {
-    inline void reset()
-    {
-        detail::root.reset();
-    }
-    inline void reset( const object& o )
-    {
-        o.impl_->reset();
-    }
-    template< typename Signature >
-    void reset( detail::functor< Signature >& f )
-    {
-        f.reset();
-    }
-} // mock
+    detail::root.reset();
+}
+inline void reset(const object& o)
+{
+    o.impl_->reset();
+}
+template<typename Signature>
+void reset(detail::functor<Signature>& f)
+{
+    f.reset();
+}
+} // namespace mock
 
 #endif // MOCK_RESET_HPP_INCLUDED

@@ -6,18 +6,14 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define MOCK_REF_ARG(z, n, d) \
-    typename ref_arg< T##n >::type
+#define MOCK_REF_ARG(z, n, d) typename ref_arg<T##n>::type
 
-namespace mock
-{
-namespace detail
-{
-    template< typename Signature > class matcher_base;
+namespace mock { namespace detail {
+    template<typename Signature>
+    class matcher_base;
 
-    template<
-        BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T) >
-    class matcher_base< void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
+    template<BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T)>
+    class matcher_base<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>
     {
     public:
         matcher_base() = default;
@@ -25,19 +21,17 @@ namespace detail
         matcher_base& operator=(const matcher_base&) = delete;
         virtual ~matcher_base() = default;
 
-        virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _) ) = 0;
+        virtual bool operator()(BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _)) = 0;
 
-        friend std::ostream& operator<<( std::ostream& s, const matcher_base& m )
+        friend std::ostream& operator<<(std::ostream& s, const matcher_base& m)
         {
-            m.serialize( s );
+            m.serialize(s);
             return s;
         }
 
     private:
-        virtual void serialize( std::ostream& ) const = 0;
+        virtual void serialize(std::ostream&) const = 0;
     };
-}
-} // mock
+}} // namespace mock::detail
 
 #undef MOCK_REF_ARG

@@ -8,115 +8,83 @@
 
 #include "matcher_base_template.hpp"
 
-#define MOCK_EXPECTATION_INITIALIZE(z, n, d) \
-    BOOST_PP_COMMA_IF(n) c##n##_( c##n )
+#define MOCK_EXPECTATION_INITIALIZE(z, n, d) BOOST_PP_COMMA_IF(n) c##n##_(c##n)
 
-#define MOCK_EXPECTATION_MEMBER(z, n, d) \
-    matcher< T##n, Constraint_##n > c##n##_;
+#define MOCK_EXPECTATION_MEMBER(z, n, d) matcher<T##n, Constraint_##n> c##n##_;
 
-#define MOCK_EXPECTATION_IS_VALID(z, n, d) \
-    BOOST_PP_IF(n, &&,) c##n##_( std::forward< T##n >( a##n ) )
+#define MOCK_EXPECTATION_IS_VALID(z, n, d) BOOST_PP_IF(n, &&, ) c##n##_(std::forward<T##n>(a##n))
 
-#define MOCK_EXPECTATION_SERIALIZE(z, n, d) \
-    BOOST_PP_IF(n, << ", " <<,) c##n##_
+#define MOCK_EXPECTATION_SERIALIZE(z, n, d) BOOST_PP_IF(n, << ", " <<, ) c##n##_
 
-#define MOCK_EXPECTATION_SERIALIZE_ANY(z, n, d) \
-    BOOST_PP_IF(n, << ", " <<,) "any"
+#define MOCK_EXPECTATION_SERIALIZE_ANY(z, n, d) BOOST_PP_IF(n, << ", " <<, ) "any"
 
-#define MOCK_EXPECTATION_PARAM(z, n, Args) \
-    std::forward< T##n >( a##n )
+#define MOCK_EXPECTATION_PARAM(z, n, Args) std::forward<T##n>(a##n)
 
-#define MOCK_REF_ARG(z, n, d) \
-    typename ref_arg< T##n >::type a##n
+#define MOCK_REF_ARG(z, n, d) typename ref_arg<T##n>::type a##n
 
-#define MOCK_REF_ARG_T(z, n, d) \
-    typename ref_arg< T##n >::type
+#define MOCK_REF_ARG_T(z, n, d) typename ref_arg<T##n>::type
 
-namespace mock
-{
-namespace detail
-{
-    template< typename Signature > class default_matcher;
+namespace mock { namespace detail {
+    template<typename Signature>
+    class default_matcher;
 
-    template<
-        BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T) >
-    class default_matcher< void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
-        : public matcher_base< void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
+    template<BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T)>
+    class default_matcher<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))> :
+        public matcher_base<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>
     {
     private:
-        virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG_T, _) )
+        virtual bool operator()(BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG_T, _)) { return true; }
+        virtual void serialize(std::ostream& s) const
         {
-            return true;
-        }
-        virtual void serialize( std::ostream& s ) const
-        {
-            s << "" BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                MOCK_EXPECTATION_SERIALIZE_ANY, _);
+            s << "" BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_EXPECTATION_SERIALIZE_ANY, _);
         }
     };
 
 #ifndef MOCK_NUM_ARGS_0
 
-    template< typename Constraint, typename Signature > class single_matcher;
+    template<typename Constraint, typename Signature>
+    class single_matcher;
 
-    template<
-        BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_),
-        BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T)
-    >
-    class single_matcher<
-        void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, Constraint_) ),
-        void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-    >
-        : public matcher_base< void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
+    template<BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_), BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T)>
+    class single_matcher<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, Constraint_)),
+                         void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))> :
+        public matcher_base<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>
     {
     public:
-        single_matcher(
-            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
-        : BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-            MOCK_EXPECTATION_INITIALIZE, _)
+        single_matcher(BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c))
+            : BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_EXPECTATION_INITIALIZE, _)
         {}
 
     private:
-        virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _) )
+        virtual bool operator()(BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _))
         {
-            return BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                MOCK_EXPECTATION_IS_VALID, _);
+            return BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_EXPECTATION_IS_VALID, _);
         }
-        virtual void serialize( std::ostream& s ) const
+        virtual void serialize(std::ostream& s) const
         {
-            s << BOOST_PP_REPEAT(MOCK_NUM_ARGS,
-                MOCK_EXPECTATION_SERIALIZE, _);
+            s << BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_EXPECTATION_SERIALIZE, _);
         }
 
     private:
-        BOOST_PP_REPEAT(
-            MOCK_NUM_ARGS, MOCK_EXPECTATION_MEMBER, _)
-};
+        BOOST_PP_REPEAT(MOCK_NUM_ARGS, MOCK_EXPECTATION_MEMBER, _)
+    };
 
-    template< typename F, typename Signature > class multi_matcher;
+    template<typename F, typename Signature>
+    class multi_matcher;
 
-    template< typename F,
-        BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T) >
-    class multi_matcher< F, void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
-        : public matcher_base< void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) ) >
+    template<typename F, BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T)>
+    class multi_matcher<F, void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))> :
+        public matcher_base<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>
     {
     public:
-        multi_matcher( const F& f )
-            : f_( f )
-        {}
+        multi_matcher(const F& f) : f_(f) {}
 
     private:
-        virtual bool operator()(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _) )
+        virtual bool operator()(BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _))
         {
-            return f_( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _) );
+            return f_(BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _));
         }
-        virtual void serialize( std::ostream& s ) const
-        {
-            s << mock::format( f_ );
-        }
+        virtual void serialize(std::ostream& s) const { s << mock::format(f_); }
 
     private:
         F f_;
@@ -124,144 +92,103 @@ namespace detail
 
 #endif
 
-    template< typename Signature > class expectation;
+    template<typename Signature>
+    class expectation;
 
-    template< typename R
-        BOOST_PP_ENUM_TRAILING_PARAMS(MOCK_NUM_ARGS, typename T) >
-    class expectation< R (BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS,T)) >
-        : public action< R, R (BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS,T)) >
+    template<typename R BOOST_PP_ENUM_TRAILING_PARAMS(MOCK_NUM_ARGS, typename T)>
+    class expectation<R(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))> :
+        public action<R, R(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>
     {
     public:
         expectation()
-            : invocation_( std::make_unique< unlimited >() )
-            , matcher_(
-                std::make_unique<
-                    default_matcher<
-                        void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-                    >
-                > () )
-            , file_( "unknown location" )
-            , line_( 0 )
+            : invocation_(std::make_unique<unlimited>()),
+              matcher_(std::make_unique<default_matcher<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>>()),
+              file_("unknown location"), line_(0)
         {}
-        expectation( const char* file, int line )
-            : invocation_( std::make_unique< unlimited >() )
-            , matcher_(
-                std::make_unique<
-                    default_matcher<
-                        void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-                    >
-                > () )
-            , file_( file )
-            , line_( line )
+        expectation(const char* file, int line)
+            : invocation_(std::make_unique<unlimited>()),
+              matcher_(std::make_unique<default_matcher<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>>()), file_(file),
+              line_(line)
         {}
 
-        expectation(expectation &&) = default;
+        expectation(expectation&&) = default;
         expectation(expectation const&) = default;
-        expectation& operator=(expectation &&) = default;
+        expectation& operator=(expectation&&) = default;
         expectation& operator=(expectation const&) = default;
 
         ~expectation()
         {
-            for( auto& sequence: sequences_)
-                sequence->remove( this );
+            for(auto& sequence : sequences_)
+                sequence->remove(this);
         }
 
-        void invoke( std::unique_ptr< invocation > i )
-        {
-            invocation_ = std::move(i);
-        }
+        void invoke(std::unique_ptr<invocation> i) { invocation_ = std::move(i); }
 
 #ifndef MOCK_NUM_ARGS_0
-        template<
-            BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_)
-        >
-        expectation& with(
-            BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c) )
+        template<BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename Constraint_)>
+        expectation& with(BOOST_PP_ENUM_BINARY_PARAMS(MOCK_NUM_ARGS, Constraint_, c))
         {
-            matcher_ = std::make_unique<
-                single_matcher<
-                    void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, Constraint_) ),
-                    void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-                >>( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, c) );
+            matcher_ = std::make_unique<single_matcher<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, Constraint_)),
+                                                       void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>>(
+              BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, c));
             return *this;
         }
-#if MOCK_NUM_ARGS > 1
-        template< typename Constraint >
-        expectation& with( const Constraint& c )
+#    if MOCK_NUM_ARGS > 1
+        template<typename Constraint>
+        expectation& with(const Constraint& c)
         {
-            matcher_ = std::make_unique<
-                multi_matcher<
-                    Constraint,
-                    void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-                >>( c );
+            matcher_ = std::make_unique<multi_matcher<Constraint, void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>>(c);
             return *this;
         }
-#endif
+#    endif
 #endif
 
-        void add( sequence& s )
+        void add(sequence& s)
         {
-            s.impl_->add( this );
-            sequences_.push_back( s.impl_ );
+            s.impl_->add(this);
+            sequences_.push_back(s.impl_);
         }
 
-        bool verify() const
-        {
-            return invocation_->verify();
-        }
+        bool verify() const { return invocation_->verify(); }
 
-        bool is_valid(
-            BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _) ) const
+        bool is_valid(BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _)) const
         {
-            return !invocation_->exhausted()
-                && (*matcher_)( BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _) );
+            return !invocation_->exhausted() && (*matcher_)(BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_EXPECTATION_PARAM, _));
         }
 
         bool invoke() const
         {
-            for( auto& sequence: sequences_)
+            for(auto& sequence : sequences_)
             {
-                if( ! sequence->is_valid( this ) )
+                if(!sequence->is_valid(this))
                     return false;
             }
             bool result = invocation_->invoke();
-            for( auto& sequence: sequences_)
-                sequence->invalidate( this );
+            for(auto& sequence : sequences_)
+                sequence->invalidate(this);
             return result;
         }
 
-        const char* file() const
-        {
-            return file_;
-        }
-        int line() const
-        {
-            return line_;
-        }
+        const char* file() const { return file_; }
+        int line() const { return line_; }
 
-        friend std::ostream& operator<<( std::ostream& s, const expectation& e )
+        friend std::ostream& operator<<(std::ostream& s, const expectation& e)
         {
-            return s << ( e.invocation_->exhausted() ? 'v' : '.' )
-                << ' ' << *e.invocation_
+            return s << (e.invocation_->exhausted() ? 'v' : '.') << ' ' << *e.invocation_
 #ifndef MOCK_NUM_ARGS_0
-                << ".with( " << *e.matcher_ << " )"
+                     << ".with( " << *e.matcher_ << " )"
 #endif
-                ;
+              ;
         }
 
     private:
-        std::unique_ptr< invocation > invocation_;
-        std::unique_ptr<
-            matcher_base<
-                void( BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T) )
-            >
-        > matcher_;
-        std::vector< std::shared_ptr<sequence_impl> > sequences_;
+        std::unique_ptr<invocation> invocation_;
+        std::unique_ptr<matcher_base<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>> matcher_;
+        std::vector<std::shared_ptr<sequence_impl>> sequences_;
         const char* file_;
         int line_;
     };
-}
-} // mock
+}} // namespace mock::detail
 
 #undef MOCK_EXPECTATION_INITIALIZE
 #undef MOCK_EXPECTATION_MEMBER

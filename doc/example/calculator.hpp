@@ -15,10 +15,11 @@
 class calculator
 {
     view& v;
-public:
-    calculator( view& v ): v(v){}
 
-    void add( int a, int b ){ v.display(a + b); } // the result will be sent to the view 'v'
+public:
+    calculator(view& v) : v(v) {}
+
+    void add(int a, int b) { v.display(a + b); } // the result will be sent to the view 'v'
 };
 //]
 

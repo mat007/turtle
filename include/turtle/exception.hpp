@@ -11,13 +11,12 @@
 
 #include "config.hpp"
 #ifdef MOCK_USE_BOOST_TEST
-#include <boost/test/execution_monitor.hpp>
+#    include <boost/test/execution_monitor.hpp>
 
-namespace mock
-{
-    struct exception : virtual boost::execution_aborted
-    {};
-} // mock
+namespace mock {
+struct exception : virtual boost::execution_aborted
+{};
+} // namespace mock
 
 #endif // MOCK_USE_BOOST_TEST
 

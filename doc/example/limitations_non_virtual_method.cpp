@@ -6,8 +6,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
+#include <boost/test/unit_test.hpp>
 
 //[ limitations_non_virtual_method_problem
 class base
@@ -19,9 +19,9 @@ public:
 //]
 
 //[ limitations_non_virtual_method_problem_2
-MOCK_BASE_CLASS( mock_base, base )
+MOCK_BASE_CLASS(mock_base, base)
 {
-    MOCK_METHOD( method, 0 )
+    MOCK_METHOD(method, 0)
 };
 //]
 

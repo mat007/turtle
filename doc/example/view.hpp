@@ -13,7 +13,7 @@
 class view
 {
 public:
-    virtual void display( int result ) = 0;
+    virtual void display(int result) = 0;
 };
 //]
 

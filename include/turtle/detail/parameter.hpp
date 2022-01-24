@@ -11,58 +11,55 @@
 
 #include "../config.hpp"
 
-namespace mock
-{
-namespace detail
-{
-    template< class... >
+namespace mock { namespace detail {
+    template<class...>
     struct tuple;
 
-    template< std::size_t I, class T >
+    template<std::size_t I, class T>
     struct tuple_element;
- 
-    template< std::size_t I, class H, class... T >
-    struct tuple_element<I, tuple<H, T...>> : tuple_element<I-1, tuple<T...>>
+
+    template<std::size_t I, class H, class... T>
+    struct tuple_element<I, tuple<H, T...>> : tuple_element<I - 1, tuple<T...>>
     {};
- 
-    template< class H, class... T >
+
+    template<class H, class... T>
     struct tuple_element<0, tuple<H, T...>>
     {
-       using type = H;
+        using type = H;
     };
 
-    template< typename Signature >
+    template<typename Signature>
     struct result_type;
 
-    template< typename R, typename... Args >
-    struct result_type< R(Args...) >
+    template<typename R, typename... Args>
+    struct result_type<R(Args...)>
     {
         using type = R;
     };
 
-    template< typename Signature >
+    template<typename Signature>
     struct function_arity;
 
-    template< typename R, typename... Args >
-    struct function_arity< R(Args...) >
+    template<typename R, typename... Args>
+    struct function_arity<R(Args...)>
     {
         static constexpr size_t value = sizeof...(Args);
     };
 
-    template< typename Signature >
+    template<typename Signature>
     struct parameter_types;
 
-    template< typename R, typename... Args >
-    struct parameter_types< R(Args...) >
+    template<typename R, typename... Args>
+    struct parameter_types<R(Args...)>
     {
         using type = tuple<Args...>;
     };
 
-    template< typename Signature, int n >
+    template<typename Signature, int n>
     struct parameter
     {
         static_assert(n < function_arity<Signature>::value, "Function signature has not that many parameters");
-        using type = typename tuple_element< n, typename parameter_types<Signature>::type >::type;
+        using type = typename tuple_element<n, typename parameter_types<Signature>::type>::type;
     };
 
     template<typename T>
@@ -74,7 +71,6 @@ namespace detail
     };
     template<typename T>
     using parameter_type_t = typename parameter_type<T>::type;
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_PARAMETER_HPP_INCLUDED
