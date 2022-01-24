@@ -17,6 +17,8 @@
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
+#define MOCK_REPLACED_MACRO_ERROR(oldName, newName) static_assert(false, #oldName " has been replaced by " #newName)
+
 // Internal compatibility macro if function signature is passed via BOOST_IDENTITY_TYPE
 // TODO: Remove support for doing that and move remove_pointer_t to MOCK_PROTECT_FUNCTION_SIG
 #define MOCK_FUNCTION_TYPE(...) std::remove_pointer_t<__VA_ARGS__>

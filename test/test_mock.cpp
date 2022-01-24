@@ -19,7 +19,7 @@ void my_function(T& t)
 }
 MOCK_CLASS(mock_class)
 {
-    MOCK_METHOD_EXT(my_method, 1, void(const std::string&), my_tag)
+    MOCK_METHOD(my_method, 1, void(const std::string&), my_tag)
 };
 } // namespace
 
@@ -34,7 +34,7 @@ BOOST_FIXTURE_TEST_CASE(mock_object_for_static_polymorphism, mock_error_fixture)
 namespace {
 MOCK_CLASS(mock_class_with_operator)
 {
-    MOCK_CONST_METHOD_EXT(operator+=, 1, mock_class_with_operator &(int), addition)
+    MOCK_CONST_METHOD(operator+=, 1, mock_class_with_operator &(int), addition)
 };
 } // namespace
 
@@ -144,12 +144,12 @@ BOOST_FIXTURE_TEST_CASE(mock_template_non_const_conversion_operator, mock_error_
 namespace {
 MOCK_CLASS(my_mock)
 {
-    MOCK_CONST_METHOD_EXT(my_method, 1, void(int), my_method)
-    MOCK_CONST_METHOD_EXT(my_method_2, 1, void(int), my_method_2)
+    MOCK_CONST_METHOD(my_method, 1, void(int), my_method)
+    MOCK_CONST_METHOD(my_method_2, 1, void(int), my_method_2)
 };
 } // namespace
 
-BOOST_FIXTURE_TEST_CASE(MOCK_CONST_METHOD_EXT_macro_defines_a_bindable_method, mock_error_fixture)
+BOOST_FIXTURE_TEST_CASE(MOCK_CONST_METHOD_macro_defines_a_bindable_method, mock_error_fixture)
 {
     my_mock m;
     const auto f = std::bind(&my_mock::my_method, &m, 42);
@@ -218,8 +218,8 @@ BOOST_FIXTURE_TEST_CASE(mock_object_const_shared_pointer_is_named, mock_error_fi
 namespace {
 struct my_custom_mock
 {
-    MOCK_METHOD_EXT(my_method, 0, void(), my_tag)
-    MOCK_METHOD_EXT(my_method_2, 0, void(), my_tag_2)
+    MOCK_METHOD(my_method, 0, void(), my_tag)
+    MOCK_METHOD(my_method_2, 0, void(), my_tag_2)
 };
 } // namespace
 
@@ -238,8 +238,8 @@ BOOST_FIXTURE_TEST_CASE(custom_mock_object_without_macros_and_without_inheriting
 namespace {
 struct my_custom_mock_object : mock::object
 {
-    MOCK_METHOD_EXT(my_method, 0, void(), my_tag)
-    MOCK_METHOD_EXT(my_method_2, 0, void(), my_tag_2)
+    MOCK_METHOD(my_method, 0, void(), my_tag)
+    MOCK_METHOD(my_method_2, 0, void(), my_tag_2)
 };
 } // namespace
 
@@ -312,7 +312,7 @@ BOOST_FIXTURE_TEST_CASE(mock_static_function_is_named, mock_error_fixture)
 namespace {
 MOCK_CLASS(round_parenthesized_signature)
 {
-    MOCK_METHOD_EXT(m0, 0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()), m0)
+    MOCK_METHOD(m0, 0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()), m0)
     MOCK_STATIC_METHOD(m1, 0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()), m1)
     MOCK_FUNCTOR(f0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()));
 };
@@ -387,8 +387,8 @@ MOCK_BASE_CLASS(derived, base)
     MOCK_CONSTRUCTOR(MOCK_STDCALL derived, 0, (), derived)
     MOCK_DESTRUCTOR(MOCK_STDCALL ~derived, derived)
     MOCK_CONVERSION_OPERATOR(MOCK_STDCALL operator, int, to_int)
-    MOCK_METHOD_EXT(MOCK_STDCALL m1, 0, void(), m1)
-    MOCK_METHOD_EXT(MOCK_STDCALL m2, 0, void(), m2)
+    MOCK_METHOD(MOCK_STDCALL m1, 0, void(), m1)
+    MOCK_METHOD(MOCK_STDCALL m2, 0, void(), m2)
     MOCK_METHOD(MOCK_STDCALL m3, 0, void(), m3)
     MOCK_STATIC_METHOD(MOCK_STDCALL m4, 0, void(), m4)
 };

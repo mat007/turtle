@@ -10,7 +10,7 @@
 
 MOCK_CLASS(my_class)
 {
-    MOCK_METHOD_EXT(my_method, 1, void(int), my_method)
+    MOCK_METHOD(my_method, 1, void(int), my_method)
 };
 void test_case()
 {
