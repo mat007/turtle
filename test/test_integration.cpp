@@ -187,8 +187,8 @@ template<typename T>
 struct my_template_mock
 {
     MOCK_METHOD_EXT(my_method, 0, void(), my_tag)
-    MOCK_METHOD_EXT_TPL(my_method, 2, void(T, std::string), my_tpl_tag)
-    MOCK_METHOD_EXT_TPL(my_other_method, 0, void(), my_other_tag)
+    MOCK_METHOD_EXT(my_method, 2, void(T, std::string), my_tpl_tag)
+    MOCK_METHOD_EXT(my_other_method, 0, void(), my_other_tag)
 };
 } // namespace
 
@@ -212,8 +212,8 @@ struct my_template_base_class
 template<typename T>
 MOCK_BASE_CLASS(my_template_base_class_mock, my_template_base_class<T>)
 {
-    MOCK_METHOD_EXT_TPL(my_method, 1, void(T), my_method)
-    MOCK_METHOD_EXT_TPL(my_other_method, 0, void(), my_other_method)
+    MOCK_METHOD_EXT(my_method, 1, void(T), my_method)
+    MOCK_METHOD_EXT(my_other_method, 0, void(), my_other_method)
 };
 } // namespace
 
@@ -307,7 +307,7 @@ namespace {
 template<typename T>
 MOCK_CLASS(my_constructed_template_class)
 {
-    MOCK_CONSTRUCTOR_TPL(my_constructed_template_class, 2, (T, const std::string&), constructor)
+    MOCK_CONSTRUCTOR(my_constructed_template_class, 2, (T, const std::string&), constructor)
 };
 } // namespace
 
@@ -511,7 +511,7 @@ namespace {
 template<typename T>
 struct some_template_class
 {
-    MOCK_STATIC_METHOD_TPL(some_static_method, 1, void(T), some_static_method)
+    MOCK_STATIC_METHOD(some_static_method, 1, void(T), some_static_method)
 };
 } // namespace
 

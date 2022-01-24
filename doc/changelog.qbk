@@ -12,7 +12,7 @@ Released -
 
 * Allow auto-deducing signature in `MOCK_METHOD_(NON_)CONST`
 * Replaced Boost facilities with std:: equivalents where existing in C++14
-* Deprecated MOCK_FUNCTOR_TPL as no longer required, use the non _TPL variant even for templates
+* Deprecated MOCK_*_TPL as no longer required, use the non _TPL variant even for templates
 * Added MOCK_PROTECT_FUNCTION_SIG to pass function signatures with commas in the return type
 
 [endsect]

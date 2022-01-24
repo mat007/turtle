@@ -36,6 +36,8 @@ namespace mock { namespace detail {
     {
         using type = R;
     };
+    template<typename Signature>
+    using result_type_t = typename result_type<Signature>::type;
 
     template<typename Signature>
     struct function_arity;
@@ -55,12 +57,14 @@ namespace mock { namespace detail {
         using type = tuple<Args...>;
     };
 
-    template<typename Signature, int n>
+    template<typename Signature, std::size_t n>
     struct parameter
     {
         static_assert(n < function_arity<Signature>::value, "Function signature has not that many parameters");
         using type = typename tuple_element<n, typename parameter_types<Signature>::type>::type;
     };
+    template<typename T, std::size_t n>
+    using parameter_t = typename parameter<T, n>::type;
 
     template<typename T>
     struct parameter_type;

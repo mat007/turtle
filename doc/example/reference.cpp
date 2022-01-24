@@ -215,10 +215,8 @@ namespace member_function_example_7 {
 template<typename T>
 MOCK_CLASS(mock_class)
 {
-    MOCK_METHOD_TPL(
-      method,
-      1,
-      void(const T&)) // the _TPL variants must be used if the signature includes a template parameter of the class
+    MOCK_METHOD(method, 1,
+                void(const T&)) // includes a template parameter of the class
 };
 //]
 } // namespace member_function_example_7
@@ -262,7 +260,7 @@ namespace static_member_function_example_2 {
 template<typename T>
 MOCK_CLASS(mock_class)
 {
-    MOCK_STATIC_METHOD_TPL(method, 1, void(T))
+    MOCK_STATIC_METHOD(method, 1, void(T)) // includes a template parameter of the class
 };
 //]
 } // namespace static_member_function_example_2
@@ -296,7 +294,7 @@ template<typename T>
 MOCK_CLASS(mock_class)
 {
     MOCK_CONSTRUCTOR(mock_class, 2, (int, const std::string&), identifier)
-    MOCK_CONSTRUCTOR_TPL(mock_class, 2, (T, const std::string&), identifier_2)
+    MOCK_CONSTRUCTOR(mock_class, 2, (T, const std::string&), identifier_2) // includes a template parameter of the class
 };
 //]
 } // namespace constructor_example_2
@@ -347,8 +345,7 @@ namespace conversion_operator_example_2 {
 template<typename T>
 MOCK_CLASS(mock_class)
 {
-    MOCK_CONVERSION_OPERATOR_TPL(operator, T, conversion_to_T) // the _TPL variants must be used if the signature
-                                                               // includes a template parameter of the class
+    MOCK_CONVERSION_OPERATOR(operator, T, conversion_to_T) // includes a template parameter of the class
     MOCK_CONST_CONVERSION_OPERATOR(operator, const std::string&, const_conversion_to_string)
     MOCK_NON_CONST_CONVERSION_OPERATOR(operator, const std::string&, non_const_conversion_to_string)
 };
