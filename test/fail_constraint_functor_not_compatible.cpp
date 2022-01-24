@@ -12,7 +12,10 @@ MOCK_CLASS(my_class)
 {
     MOCK_METHOD_EXT(my_method, 1, void(int), my_method)
 };
-bool constraint(int, int) { return true; }
+bool constraint(int, int)
+{
+    return true;
+}
 
 void test_case()
 {

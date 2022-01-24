@@ -13,14 +13,17 @@ static void someFunctor(int newValue);
 //[ invoke_functor_problem
 #include <functional>
 
-    class base_class
-    {
-    public:
-        virtual void method( const std::function< void( int ) >& functor ) = 0;
-    };
+class base_class
+{
+public:
+    virtual void method(const std::function<void(int)>& functor) = 0;
+};
 
-    // the function will call 'method' with a functor to be applied
-    void function(base_class& c) { c.method(someFunctor); } 
+// the function will call 'method' with a functor to be applied
+void function(base_class& c)
+{
+    c.method(someFunctor);
+}
 //]
 
 // Some test-only code to verify what is described
@@ -42,21 +45,22 @@ struct CheckReceivedValue
 #define BOOST_AUTO_TEST_CASE(name) BOOST_FIXTURE_TEST_CASE(name, CheckReceivedValue)
 
 //[ invoke_functor_solution
-#include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
+#include <boost/test/unit_test.hpp>
 
-namespace
+namespace {
+MOCK_BASE_CLASS(mock_class, base_class)
 {
-    MOCK_BASE_CLASS( mock_class, base_class )
-    {
-        MOCK_METHOD( method, 1 )
-    };
-}
+    MOCK_METHOD(method, 1)
+};
+} // namespace
 
-BOOST_AUTO_TEST_CASE( how_to_invoke_a_functor_passed_as_parameter_of_a_mock_method )
+BOOST_AUTO_TEST_CASE(how_to_invoke_a_functor_passed_as_parameter_of_a_mock_method)
 {
     mock_class mock;
-    MOCK_EXPECT( mock.method ).calls( [](const auto &functor){ functor(42); } ); // whenever 'method' is called, invoke the functor with 42
-    function( mock );
+    MOCK_EXPECT(mock.method).calls([](const auto& functor) {
+        functor(42);
+    }); // whenever 'method' is called, invoke the functor with 42
+    function(mock);
 }
 //]

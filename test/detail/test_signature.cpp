@@ -10,18 +10,17 @@
 #include <boost/test/unit_test.hpp>
 #include <type_traits>
 
-namespace
+namespace {
+struct base
 {
-    struct base
-    {
-        void method_1();
-        float method_2( int ) const;
-    };
-    typedef base base_type;
-}
+    void method_1();
+    float method_2(int) const;
+};
+typedef base base_type;
+} // namespace
 
-BOOST_AUTO_TEST_CASE( mock_signature_generates_signature )
+BOOST_AUTO_TEST_CASE(mock_signature_generates_signature)
 {
-    static_assert( std::is_same< void(), MOCK_SIGNATURE(method_1) >::value, "!");
-    static_assert( std::is_same< float( int ), MOCK_SIGNATURE(method_2) >::value, "!");
+    static_assert(std::is_same<void(), MOCK_SIGNATURE(method_1)>::value, "!");
+    static_assert(std::is_same<float(int), MOCK_SIGNATURE(method_2)>::value, "!");
 }

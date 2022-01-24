@@ -10,95 +10,71 @@
 #define MOCK_MATCHER_HPP_INCLUDED
 
 #include "config.hpp"
-#include "log.hpp"
 #include "constraints.hpp"
 #include "detail/is_functor.hpp"
 #include "detail/move_helper.hpp"
+#include "log.hpp"
 #include <cstring>
 #include <functional>
 #include <type_traits>
 
-namespace mock
+namespace mock {
+template<typename Actual, typename Expected, typename Enable = void>
+class matcher
 {
-    template< typename Actual, typename Expected, typename Enable = void >
-    class matcher
+public:
+    explicit matcher(Expected expected) : expected_(expected) {}
+    bool operator()(std::add_lvalue_reference_t<const Actual> actual)
     {
-    public:
-        explicit matcher( Expected expected )
-            : expected_( expected )
-        {}
-        bool operator()( std::add_lvalue_reference_t< const Actual > actual )
-        {
-            return mock::equal( mock::unwrap_ref( expected_ ) ).c_( actual );
-        }
-        friend std::ostream& operator<<( std::ostream& s, const matcher& m )
-        {
-            return s << mock::format( m.expected_ );
-        }
-    private:
-        Expected expected_;
-    };
+        return mock::equal(mock::unwrap_ref(expected_)).c_(actual);
+    }
+    friend std::ostream& operator<<(std::ostream& s, const matcher& m) { return s << mock::format(m.expected_); }
 
-    template<>
-    class matcher< const char*, const char* >
-    {
-    public:
-        explicit matcher( const char* expected )
-            : expected_( expected )
-        {}
-        bool operator()( const char* actual )
-        {
-            return std::strcmp( actual, expected_ ) == 0;
-        }
-        friend std::ostream& operator<<( std::ostream& s, const matcher& m )
-        {
-            return s << mock::format( m.expected_ );
-        }
-    private:
-        const char* expected_;
-    };
+private:
+    Expected expected_;
+};
 
-    template< typename Actual, typename Constraint >
-    class matcher< Actual, mock::constraint< Constraint > >
-    {
-    public:
-        explicit matcher( const constraint< Constraint >& c )
-            : c_( c.c_ )
-        {}
-        bool operator()( typename detail::ref_arg< Actual >::type actual )
-        {
-            return c_( std::forward< typename detail::ref_arg< Actual >::type >( actual ) );
-        }
-        friend std::ostream& operator<<( std::ostream& s, const matcher& m )
-        {
-            return s << mock::format( m.c_ );
-        }
-    private:
-        Constraint c_;
-    };
+template<>
+class matcher<const char*, const char*>
+{
+public:
+    explicit matcher(const char* expected) : expected_(expected) {}
+    bool operator()(const char* actual) { return std::strcmp(actual, expected_) == 0; }
+    friend std::ostream& operator<<(std::ostream& s, const matcher& m) { return s << mock::format(m.expected_); }
 
-    template< typename Actual, typename Functor >
-    class matcher< Actual, Functor,
-        std::enable_if_t<
-            detail::is_functor< Functor, Actual >::value
-        >
-    >
+private:
+    const char* expected_;
+};
+
+template<typename Actual, typename Constraint>
+class matcher<Actual, mock::constraint<Constraint>>
+{
+public:
+    explicit matcher(const constraint<Constraint>& c) : c_(c.c_) {}
+    bool operator()(typename detail::ref_arg<Actual>::type actual)
     {
-    public:
-        explicit matcher( const Functor& f )
-            : c_( f )
-        {}
-        bool operator()( typename detail::ref_arg< Actual >::type actual )
-        {
-            return c_( std::forward< typename detail::ref_arg< Actual >::type >( actual ) );
-        }
-        friend std::ostream& operator<<( std::ostream& s, const matcher& m )
-        {
-            return s << mock::format( m.c_ );
-        }
-    private:
-        Functor c_;
-    };
-} // mock
+        return c_(std::forward<typename detail::ref_arg<Actual>::type>(actual));
+    }
+    friend std::ostream& operator<<(std::ostream& s, const matcher& m) { return s << mock::format(m.c_); }
+
+private:
+    Constraint c_;
+};
+
+template<typename Actual, typename Functor>
+class matcher<Actual, Functor, std::enable_if_t<detail::is_functor<Functor, Actual>::value>>
+{
+public:
+    explicit matcher(const Functor& f) : c_(f) {}
+    bool operator()(typename detail::ref_arg<Actual>::type actual)
+    {
+        return c_(std::forward<typename detail::ref_arg<Actual>::type>(actual));
+    }
+    friend std::ostream& operator<<(std::ostream& s, const matcher& m) { return s << mock::format(m.c_); }
+
+private:
+    Functor c_;
+};
+} // namespace mock
 
 #endif // MOCK_MATCHER_HPP_INCLUDED

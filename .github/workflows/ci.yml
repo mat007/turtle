@@ -23,6 +23,15 @@ env:
   DOCBOOK_DTD_DIR: /usr/share/xml/docbook/schema/dtd/4.2
 
 jobs:
+  Formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Formatting
+      uses: DoozyX/clang-format-lint-action@v0.13
+      with:
+        clangFormatVersion: 10
+
   posix:
     defaults:
       run:

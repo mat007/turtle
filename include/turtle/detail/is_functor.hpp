@@ -13,18 +13,14 @@
 #include "void_t.hpp"
 #include <type_traits>
 
-namespace mock
-{
-namespace detail
-{
+namespace mock { namespace detail {
     /// Trait to return true if F is a functor that can be called with a single argument Arg
-    template< typename F, typename Arg, class = void >
+    template<typename F, typename Arg, class = void>
     struct is_functor : std::false_type
     {};
-    template< typename F, typename Arg >
-    struct is_functor< F, Arg, void_t<decltype( std::declval<F>()( std::declval<Arg>() ) )> >: std::true_type
+    template<typename F, typename Arg>
+    struct is_functor<F, Arg, void_t<decltype(std::declval<F>()(std::declval<Arg>()))>> : std::true_type
     {};
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_IS_FUNCTOR_HPP_INCLUDED

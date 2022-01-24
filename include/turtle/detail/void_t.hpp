@@ -9,10 +9,7 @@
 #ifndef MOCK_VOID_T_HPP_INCLUDED
 #define MOCK_VOID_T_HPP_INCLUDED
 
-namespace mock
-{
-namespace detail
-{
+namespace mock { namespace detail {
     template<typename...>
     struct make_void
     {
@@ -21,7 +18,6 @@ namespace detail
     /// Standard helper to implement the detection idiom. Returns always void
     template<typename... Ts>
     using void_t = typename make_void<Ts...>::type;
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_VOID_T_HPP_INCLUDED

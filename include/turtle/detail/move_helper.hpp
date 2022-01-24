@@ -11,17 +11,9 @@
 
 #include <type_traits>
 
-namespace mock
-{
-namespace detail
-{
-    template< typename T >
-    using ref_arg = std::conditional<
-          std::is_reference< T >::value,
-          T,
-          std::add_rvalue_reference_t< T >
-    >;
-}
-}
+namespace mock { namespace detail {
+    template<typename T>
+    using ref_arg = std::conditional<std::is_reference<T>::value, T, std::add_rvalue_reference_t<T>>;
+}} // namespace mock::detail
 
-#endif  // MOCK_MOVE_HELPER_HPP_INCLUDED
+#endif // MOCK_MOVE_HELPER_HPP_INCLUDED

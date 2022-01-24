@@ -12,14 +12,13 @@
 #include "config.hpp"
 #include "detail/formatter.hpp"
 
-namespace mock
+namespace mock {
+template<typename T>
+detail::formatter<T> format(const T& t)
 {
-    template< typename T >
-    detail::formatter< T > format( const T& t )
-    {
-        return detail::formatter< T >( t );
-    }
+    return detail::formatter<T>(t);
+}
 
-} // mock
+} // namespace mock
 
 #endif // MOCK_FORMAT_HPP_INCLUDED

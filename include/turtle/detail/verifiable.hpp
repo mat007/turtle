@@ -11,10 +11,7 @@
 
 #include "../config.hpp"
 
-namespace mock
-{
-namespace detail
-{
+namespace mock { namespace detail {
     class verifiable
     {
     public:
@@ -27,7 +24,6 @@ namespace detail
 
         virtual void reset() = 0;
     };
-}
-} // mock
+}} // namespace mock::detail
 
 #endif // MOCK_VERIFIABLE_HPP_INCLUDED
