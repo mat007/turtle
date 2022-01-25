@@ -21,7 +21,8 @@ endif()
 find_package(Boost 1.58 REQUIRED)
 
 set(MOCK_VERSION "\"${PROJECT_VERSION}\"")
-configure_file(version.hpp.cmake ${CMAKE_CURRENT_BINARY_DIR}/include/turtle/version.hpp @ONLY)
+set(_turtleVersionFile ${CMAKE_CURRENT_BINARY_DIR}/include/turtle/version.hpp)
+configure_file(version.hpp.cmake ${_turtleVersionFile} @ONLY)
 
 add_library(turtle INTERFACE)
 add_library(turtle::turtle ALIAS turtle)
@@ -29,6 +30,14 @@ target_include_directories(turtle INTERFACE $<BUILD_INTERFACE:include;${CMAKE_CU
 target_compile_features(turtle INTERFACE cxx_std_14)
 
 target_link_libraries(turtle INTERFACE Boost::boost Boost::disable_autolinking)
+
+if(NOT CMAKE_VERSION VERSION_LESS 3.19)
+  file(GLOB _turtleHeaders include/turtle/*.hpp)
+  file(GLOB _turtleHeadersDetail include/turtle/detail/*.hpp)
+  source_group(turtle FILES ${_turtleHeaders} ${_turtleVersionFile})
+  source_group(turtle/detail FILES ${_turtleHeadersDetail})
+  target_sources(turtle PRIVATE ${_turtleHeaders} ${_turtleVersionFile} ${_turtleHeadersDetail})
+endif()
 
 if(BUILD_TESTING)
   add_subdirectory(test)
