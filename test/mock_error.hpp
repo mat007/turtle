@@ -15,6 +15,7 @@
 #include <sstream>
 #include <stdexcept>
 
+/// Container to hold data about mocked function calls (and expectation errors)
 struct mock_error_data_t : mock::detail::singleton<mock_error_data_t>
 {
     void reset()
@@ -41,16 +42,15 @@ struct mock_error_data_t : mock::detail::singleton<mock_error_data_t>
         ++error_count;
     }
 
-    int error_count;
-    int call_count;
-    std::string last_message;
-    std::string last_context;
-    std::string last_file;
-    int last_line;
+    int call_count = 0;
+    int error_count = 0;
+    std::string last_message, last_context, last_file;
+    int last_line = 0;
     MOCK_SINGLETON_CONS(mock_error_data_t);
 };
 MOCK_SINGLETON_INST(mock_error_data)
 
+/// Error handler that populates the mock_error_data singleton instead of failing
 template<typename Result>
 struct mock_error
 {
@@ -73,6 +73,8 @@ struct mock_error
     }
 };
 
+/// Fixture to use CHECK_CALLS & CHECK_ERROR: Initializes the mock_error_data singleton
+/// Verifies there are no pending verifications on end of the test
 struct mock_error_fixture
 {
     mock_error_fixture() { mock_error_data.reset(); }
@@ -83,9 +85,15 @@ struct mock_error_fixture
     }
 };
 
+/// Check that the number of calls to mocked function equals the given amount
+/// and resets them (for the next check and cleanup)
 #define CHECK_CALLS(calls)                                \
     BOOST_CHECK_EQUAL(calls, mock_error_data.call_count); \
     mock_error_data.call_count = 0;
+/// Similar to BOOST_CHECK_THROW:
+/// Checks that running `expr` leads to an error of the set expectations,
+/// that the error message equals `error`, with the given `context`
+/// and `calls` mocked functions were called.
 #define CHECK_ERROR(expr, error, calls, context)              \
     BOOST_CHECK(mock_error_data.verify());                    \
     try                                                       \
