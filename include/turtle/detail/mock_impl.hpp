@@ -19,9 +19,9 @@
 #include <type_traits>
 
 namespace mock { namespace detail {
-    /// Used in MOCK_PROTECT_FUNCTION_SIG to unwrap the passed function signature
+    /// Used in MOCK_PROTECT_SIGNATURE to unwrap the passed function signature
     template<typename T>
-    using unwrap_function_sig_t = std::remove_pointer_t<parameter_type_t<T>>;
+    using unwrap_signature_t = std::remove_pointer_t<parameter_type_t<T>>;
 }} // namespace mock::detail
 
 #define MOCK_HELPER(t) t##_mock(mock::detail::root, BOOST_PP_STRINGIZE(t))

@@ -312,11 +312,11 @@ BOOST_FIXTURE_TEST_CASE(mock_static_function_is_named, mock_error_fixture)
 namespace {
 MOCK_CLASS(round_parenthesized_signature)
 {
-    MOCK_METHOD(m0, 0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()), m0)
-    MOCK_STATIC_METHOD(m1, 0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()), m1)
-    MOCK_FUNCTOR(f0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()));
+    MOCK_METHOD(m0, 0, MOCK_PROTECT_SIGNATURE(std::map<int, int>()), m0)
+    MOCK_STATIC_METHOD(m1, 0, MOCK_PROTECT_SIGNATURE(std::map<int, int>()), m1)
+    MOCK_FUNCTOR(f0, MOCK_PROTECT_SIGNATURE(std::map<int, int>()));
 };
-MOCK_FUNCTION(fun0, 0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()), fun0)
+MOCK_FUNCTION(fun0, 0, MOCK_PROTECT_SIGNATURE(std::map<int, int>()), fun0)
 } // namespace
 
 namespace {
@@ -363,7 +363,7 @@ MOCK_BASE_CLASS(comma_base, std::map<int, int>)
 
 MOCK_FUNCTION(fun1, 0, void())
 MOCK_FUNCTION(fun2, 0, void(), fun2)
-MOCK_FUNCTION(fun3, 0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()))
+MOCK_FUNCTION(fun3, 0, MOCK_PROTECT_SIGNATURE(std::map<int, int>()))
 
 MOCK_FUNCTOR(f_variadic, std::map<int, int>());
 } // namespace

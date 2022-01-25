@@ -221,8 +221,8 @@ namespace member_function_example_8 {
 //[ member_function_example_8
 MOCK_CLASS(mock_class)
 {
-    // the signature must be wrapped in MOCK_PROTECT_FUNCTION_SIG if the return type contains a comma
-    MOCK_METHOD(method, 0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()))
+    // the signature must be wrapped in MOCK_PROTECT_SIGNATURE if the return type contains a comma
+    MOCK_METHOD(method, 0, MOCK_PROTECT_SIGNATURE(std::map<int, int>()))
 };
 //]
 

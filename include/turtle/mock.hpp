@@ -24,9 +24,9 @@
 /// Define a class deriving from a base class
 #define MOCK_BASE_CLASS(name, ...) struct name : __VA_ARGS__, mock::object, mock::detail::base<__VA_ARGS__>
 
-/// MOCK_PROTECT_FUNCTION_SIG( signature )
+/// MOCK_PROTECT_SIGNATURE( signature )
 /// Use this with MOCK_FUNCTION/MOCK_*_METHOD if the return type contains commas
-#define MOCK_PROTECT_FUNCTION_SIG(...) mock::detail::unwrap_function_sig_t<void(__VA_ARGS__)>
+#define MOCK_PROTECT_SIGNATURE(...) mock::detail::unwrap_signature_t<void(__VA_ARGS__)>
 
 /// MOCK_FUNCTOR( name, signature )
 /// Define a callable variable/member
