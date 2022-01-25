@@ -47,12 +47,9 @@ namespace mock { namespace detail {
 
 #define MOCK_FORWARD_PARAM(z, n, d) BOOST_PP_COMMA_IF(n) d, n >> (p##n)
 #define MOCK_FORWARD_PARAMS(n, S) BOOST_PP_REPEAT(n, MOCK_FORWARD_PARAM, std::forward < MOCK_PARAM(S))
-#define MOCK_METHOD_AUX(M, n, S, t, c)                                                \
-    MOCK_DECL(M, n, S, c)                                                             \
-    {                                                                                 \
-        static_assert(n == mock::detail::function_arity<S>::value, "Arity mismatch"); \
-        return MOCK_ANONYMOUS_HELPER(t)(MOCK_FORWARD_PARAMS(n, S));                   \
-    }
+#define MOCK_METHOD_AUX(M, n, S, t, c)                                            \
+    static_assert(n == mock::detail::function_arity<S>::value, "Arity mismatch"); \
+    MOCK_DECL(M, n, S, c) { return MOCK_ANONYMOUS_HELPER(t)(MOCK_FORWARD_PARAMS(n, S)); }
 
 #define MOCK_METHOD_EXT(M, n, S, t)    \
     MOCK_METHOD_AUX(M, n, S, t, )      \
