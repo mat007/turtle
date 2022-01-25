@@ -60,7 +60,9 @@ namespace mock { namespace detail {
     template<typename Signature, std::size_t n>
     struct parameter
     {
-        static_assert(n < function_arity<Signature>::value, "Function signature has not that many parameters");
+        // This assertion is usually triggered when the arity passed to e.g. MOCK_METHOD exceeds the number of
+        // parameters of the mocked function or the passed function signature
+        static_assert(n < function_arity<Signature>::value, "Parameter index exceeds the number of parameters");
         using type = typename tuple_element<n, typename parameter_types<Signature>::type>::type;
     };
     template<typename T, std::size_t n>
