@@ -225,11 +225,20 @@ namespace member_function_example_8 {
 //[ member_function_example_8
 MOCK_CLASS(mock_class)
 {
-    MOCK_METHOD(
-      method, 0, BOOST_IDENTITY_TYPE((std::map<int, int>()))) // the signature must be wrapped in BOOST_IDENTITY_TYPE if
-                                                              // the return type contains a comma
+    // the signature must be wrapped in MOCK_PROTECT_FUNCTION_SIG if the return type contains a comma
+    MOCK_METHOD(method, 0, MOCK_PROTECT_FUNCTION_SIG(std::map<int, int>()))
 };
 //]
+MOCK_CLASS(legacy_mock_class)
+{
+    MOCK_METHOD(method, 0, BOOST_IDENTITY_TYPE((std::map<int, int>())))
+};
+
+static_assert(std::is_same<decltype(std::declval<mock_class>().method()), std::map<int, int>>::value,
+              "Wrong return value");
+static_assert(std::is_same<decltype(std::declval<legacy_mock_class>().method()), std::map<int, int>>::value,
+              "Wrong return value");
+
 } // namespace member_function_example_8
 
 #ifdef BOOST_MSVC
