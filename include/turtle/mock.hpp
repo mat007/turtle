@@ -26,11 +26,11 @@
 
 /// MOCK_PROTECT_FUNCTION_SIG( signature )
 /// Use this with MOCK_FUNCTION/MOCK_*_METHOD if the return type contains commas
-#define MOCK_PROTECT_FUNCTION_SIG(...) mock::detail::parameter_type_t<void(__VA_ARGS__)>
+#define MOCK_PROTECT_FUNCTION_SIG(...) mock::detail::unwrap_function_sig_t<void(__VA_ARGS__)>
 
 /// MOCK_FUNCTOR( name, signature )
 /// Define a callable variable/member
-#define MOCK_FUNCTOR(name, ...) mock::detail::functor<MOCK_FUNCTION_TYPE(__VA_ARGS__)> name, name##_mock
+#define MOCK_FUNCTOR(name, ...) mock::detail::functor<__VA_ARGS__> name, name##_mock
 
 /// MOCK_CONVERSION_OPERATOR( [calling convention] name, type, identifier )
 /// generates both const and non-const conversion operators
