@@ -11,17 +11,26 @@
 
 #include "function.hpp"
 #include "functor.hpp"
-#include "parameter.hpp"
 #include "signature.hpp"
+#include "signature_traits.hpp"
 #include "type_name.hpp"
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <type_traits>
 
 namespace mock { namespace detail {
-    /// Used in MOCK_PROTECT_SIGNATURE to unwrap the passed function signature
+    /// Simplified trait to extract the argument type of a function signature with 1 argument
     template<typename T>
-    using unwrap_signature_t = std::remove_pointer_t<parameter_type_t<T>>;
+    struct arg_type;
+    template<typename T, typename U>
+    struct arg_type<T(U)>
+    {
+        using type = U;
+    };
+    /// Used in MOCK_PROTECT_SIGNATURE to unwrap the passed function signature
+    /// T is something like `void(std::map<int, float>)`
+    template<typename T>
+    using unwrap_signature_t = std::remove_pointer_t<typename arg_type<T>::type>;
 }} // namespace mock::detail
 
 #define MOCK_HELPER(t) t##_mock(mock::detail::root, BOOST_PP_STRINGIZE(t))
@@ -47,8 +56,8 @@ namespace mock { namespace detail {
 
 #define MOCK_FORWARD_PARAM(z, n, d) BOOST_PP_COMMA_IF(n) d, n >> (p##n)
 #define MOCK_FORWARD_PARAMS(n, S) BOOST_PP_REPEAT(n, MOCK_FORWARD_PARAM, std::forward < MOCK_PARAM(S))
-#define MOCK_METHOD_AUX(M, n, S, t, c)                                            \
-    static_assert(n == mock::detail::function_arity<S>::value, "Arity mismatch"); \
+#define MOCK_METHOD_AUX(M, n, S, t, c)                                              \
+    static_assert(n == mock::detail::function_arity_t<S>::value, "Arity mismatch"); \
     MOCK_DECL(M, n, S, c) { return MOCK_ANONYMOUS_HELPER(t)(MOCK_FORWARD_PARAMS(n, S)); }
 
 #define MOCK_METHOD_EXT(M, n, S, t)    \
@@ -73,13 +82,10 @@ namespace mock { namespace detail {
     T(MOCK_DECL_PARAMS(n, void A)) { MOCK_HELPER(t)(MOCK_FORWARD_PARAMS(n, void A)); } \
     MOCK_FUNCTION_HELPER(void A, t, static)
 
-#define MOCK_FUNCTION_AUX(F, n, S, t, s)                                              \
-    MOCK_FUNCTION_HELPER(S, t, s)                                                     \
-    s MOCK_DECL(F, n, S, )                                                            \
-    {                                                                                 \
-        static_assert(n == mock::detail::function_arity<S>::value, "Arity mismatch"); \
-        return MOCK_HELPER(t)(MOCK_FORWARD_PARAMS(n, S));                             \
-    }
+#define MOCK_FUNCTION_AUX(F, n, S, t, s)                                            \
+    MOCK_FUNCTION_HELPER(S, t, s)                                                   \
+    static_assert(n == mock::detail::function_arity_t<S>::value, "Arity mismatch"); \
+    s MOCK_DECL(F, n, S, ) { return MOCK_HELPER(t)(MOCK_FORWARD_PARAMS(n, S)); }
 
 #define MOCK_VARIADIC_ELEM_0(e0, ...) e0
 #define MOCK_VARIADIC_ELEM_1(e0, e1, ...) e1
