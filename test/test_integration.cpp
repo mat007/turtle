@@ -17,7 +17,7 @@
 namespace {
 struct my_custom_mock
 {
-    MOCK_METHOD_EXT(my_method, 0, void(), my_tag)
+    MOCK_METHOD(my_method, 0, void(), my_tag)
 };
 } // namespace
 
@@ -32,7 +32,7 @@ BOOST_FIXTURE_TEST_CASE(custom_mock_object_without_macros_and_without_inheriting
 namespace {
 struct my_custom_mock_object
 {
-    MOCK_METHOD_EXT(my_method, 0, void(), my_tag)
+    MOCK_METHOD(my_method, 0, void(), my_tag)
 };
 } // namespace
 
@@ -47,7 +47,7 @@ BOOST_FIXTURE_TEST_CASE(custom_mock_object_without_macros, mock_error_fixture)
 namespace {
 MOCK_CLASS(my_mock)
 {
-    MOCK_METHOD_EXT(my_method, 1, int(int), my_tag)
+    MOCK_METHOD(my_method, 1, int(int), my_tag)
 };
 } // namespace
 
@@ -89,8 +89,8 @@ public:
 
 MOCK_BASE_CLASS(my_ambiguited_mock, my_ambiguited_interface)
 {
-    MOCK_METHOD_EXT(my_method, 0, void(), my_tag1)
-    MOCK_METHOD_EXT(my_method, 1, void(int), my_tag_2)
+    MOCK_METHOD(my_method, 0, void(), my_tag1)
+    MOCK_METHOD(my_method, 1, void(int), my_tag_2)
 };
 } // namespace
 
@@ -116,8 +116,8 @@ public:
 
 MOCK_BASE_CLASS(my_const_ambiguited_mock, my_const_ambiguited_interface)
 {
-    MOCK_NON_CONST_METHOD_EXT(my_method, 0, void(), tag1)
-    MOCK_CONST_METHOD_EXT(my_method, 0, void(), tag_2)
+    MOCK_NON_CONST_METHOD(my_method, 0, void(), tag1)
+    MOCK_CONST_METHOD(my_method, 0, void(), tag_2)
 };
 } // namespace
 
@@ -133,7 +133,7 @@ BOOST_FIXTURE_TEST_CASE(mock_object_method_const_disambiguation, mock_error_fixt
 namespace {
 MOCK_CLASS(my_undefined_mock)
 {
-    MOCK_METHOD_EXT(m, 1, void(undefined&), t)
+    MOCK_METHOD(m, 1, void(undefined&), t)
 };
 } // namespace
 
@@ -186,9 +186,9 @@ namespace {
 template<typename T>
 struct my_template_mock
 {
-    MOCK_METHOD_EXT(my_method, 0, void(), my_tag)
-    MOCK_METHOD_EXT_TPL(my_method, 2, void(T, std::string), my_tpl_tag)
-    MOCK_METHOD_EXT_TPL(my_other_method, 0, void(), my_other_tag)
+    MOCK_METHOD(my_method, 0, void(), my_tag)
+    MOCK_METHOD(my_method, 2, void(T, std::string), my_tpl_tag)
+    MOCK_METHOD(my_other_method, 0, void(), my_other_tag)
 };
 } // namespace
 
@@ -212,8 +212,8 @@ struct my_template_base_class
 template<typename T>
 MOCK_BASE_CLASS(my_template_base_class_mock, my_template_base_class<T>)
 {
-    MOCK_METHOD_EXT_TPL(my_method, 1, void(T), my_method)
-    MOCK_METHOD_EXT_TPL(my_other_method, 0, void(), my_other_method)
+    MOCK_METHOD(my_method, 1, void(T), my_method)
+    MOCK_METHOD(my_other_method, 0, void(), my_other_method)
 };
 } // namespace
 
@@ -307,7 +307,7 @@ namespace {
 template<typename T>
 MOCK_CLASS(my_constructed_template_class)
 {
-    MOCK_CONSTRUCTOR_TPL(my_constructed_template_class, 2, (T, const std::string&), constructor)
+    MOCK_CONSTRUCTOR(my_constructed_template_class, 2, (T, const std::string&), constructor)
 };
 } // namespace
 
@@ -366,7 +366,7 @@ BOOST_FIXTURE_TEST_CASE(failed_sequence_in_mocked_destructor_does_not_throw, moc
 namespace {
 MOCK_CLASS(boost_optional)
 {
-    MOCK_METHOD_EXT(method, 0, boost::optional<my_observer&>(), tag)
+    MOCK_METHOD(method, 0, boost::optional<my_observer&>(), tag)
 };
 } // namespace
 
@@ -451,7 +451,7 @@ void nothing(T)
 
 struct member_pointer_mock_class
 {
-    MOCK_CONST_METHOD_EXT(my_method, 0, void(), my_method)
+    MOCK_CONST_METHOD(my_method, 0, void(), my_method)
 };
 } // namespace
 
@@ -511,7 +511,7 @@ namespace {
 template<typename T>
 struct some_template_class
 {
-    MOCK_STATIC_METHOD_TPL(some_static_method, 1, void(T), some_static_method)
+    MOCK_STATIC_METHOD(some_static_method, 1, void(T), some_static_method)
 };
 } // namespace
 
@@ -532,7 +532,7 @@ BOOST_FIXTURE_TEST_CASE(a_static_method_in_a_template_class_can_be_mocked, mock_
 namespace {
 MOCK_CLASS(mock_class)
 {
-    MOCK_METHOD_EXT(m, 0, void(), t);
+    MOCK_METHOD(m, 0, void(), t);
 };
 } // namespace
 
@@ -550,7 +550,7 @@ BOOST_FIXTURE_TEST_CASE(resetting_referenced_mock_class_does_not_crash, mock_err
 namespace {
 MOCK_CLASS(mock_class2)
 {
-    MOCK_METHOD_EXT(m, 0, mock_class2(), t);
+    MOCK_METHOD(m, 0, mock_class2(), t);
 };
 } // namespace
 
@@ -646,8 +646,8 @@ BOOST_FIXTURE_TEST_CASE(mock_class_is_thread_safe, mock_error_fixture)
 namespace {
 MOCK_CLASS(my_multi_mock)
 {
-    MOCK_METHOD_EXT(m1, 1, void(int), m1);
-    MOCK_METHOD_EXT(m2, 2, void(int, int), m2);
+    MOCK_METHOD(m1, 1, void(int), m1);
+    MOCK_METHOD(m2, 2, void(int, int), m2);
 };
 } // namespace
 
@@ -742,6 +742,6 @@ BOOST_FIXTURE_TEST_CASE(std_unique_ptr_argument_is_supported_in_retrieve_constra
 struct my_unique_ptr_class
 {
     MOCK_CONSTRUCTOR(my_unique_ptr_class, 1, (std::unique_ptr<int>), constructor)
-    MOCK_METHOD_EXT(m, 1, void(std::unique_ptr<int>), m)
+    MOCK_METHOD(m, 1, void(std::unique_ptr<int>), m)
     MOCK_STATIC_METHOD(ms, 1, void(std::unique_ptr<int>), ms)
 };

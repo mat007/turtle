@@ -16,8 +16,8 @@
 namespace {
 struct my_custom_mock
 {
-    MOCK_METHOD_EXT(method, MOCK_MAX_ARGS, void(BOOST_PP_ENUM(MOCK_MAX_ARGS, IDENTITY, int)), tag)
-    MOCK_METHOD_EXT(method2, MOCK_MAX_ARGS, int(BOOST_PP_ENUM(MOCK_MAX_ARGS, IDENTITY, int)), tag_2)
+    MOCK_METHOD(method, MOCK_MAX_ARGS, void(BOOST_PP_ENUM(MOCK_MAX_ARGS, IDENTITY, int)), tag)
+    MOCK_METHOD(method2, MOCK_MAX_ARGS, int(BOOST_PP_ENUM(MOCK_MAX_ARGS, IDENTITY, int)), tag_2)
 };
 } // namespace
 

@@ -88,8 +88,8 @@ class base
 
 struct name : base, mock::object // equivalent to using MOCK_BASE_CLASS
 {
-    typedef base
-      base_type; // this is required for the shortest form of MOCK_METHOD to work when not using MOCK_BASE_CLASS
+    // this is required for the shortest form of MOCK_METHOD to work when not using MOCK_BASE_CLASS
+    using base_type = base;
 };
 //]
 } // namespace class_example_7
@@ -103,7 +103,7 @@ struct base
 template<typename T>
 struct name : base<T>, mock::object
 {
-    typedef base<T> base_type;
+    using base_type = base<T>;
 };
 //]
 } // namespace class_example_8
@@ -134,15 +134,10 @@ struct base_class
 
 MOCK_BASE_CLASS(mock_class, base_class)
 {
-    MOCK_METHOD(
-      method,
-      2,
-      void(int, const std::string&),
-      identifier_1) // both the signature and identifier must be specified because of ambiguity due to overloading
-    MOCK_METHOD(method,
-                1,
-                void(float),
-                identifier_2) // the identifier must differ from the previous one in order to fully disambiguate methods
+    // both the signature and identifier must be specified because of ambiguity due to overloading
+    MOCK_METHOD(method, 2, void(int, const std::string&), identifier_1)
+    // the identifier must differ from the previous one in order to fully disambiguate methods
+    MOCK_METHOD(method, 1, void(float), identifier_2)
 };
 //]
 } // namespace member_function_example_2
@@ -174,9 +169,10 @@ struct base_class
 
 MOCK_BASE_CLASS(mock_class, base_class)
 {
-    MOCK_CONST_METHOD(method, 1, void(float), identifier_1) // this generates only the const version
-    MOCK_NON_CONST_METHOD(
-      method, 1, void(float), identifier_2) // this generates only the non-const version, with a different identifier
+    // this generates only the const version
+    MOCK_CONST_METHOD(method, 1, void(float), identifier_1)
+    // this generates only the non-const version, with a different identifier
+    MOCK_NON_CONST_METHOD(method, 1, void(float), identifier_2)
 };
 //]
 } // namespace member_function_example_4
@@ -191,7 +187,7 @@ struct base_class
 
 struct mock_class : base_class
 {
-    typedef base_class base_type; // this is required for MOCK_METHOD to work when not using MOCK_BASE_CLASS
+    using base_type = base_class; // this is required for MOCK_METHOD to work when not using MOCK_BASE_CLASS
 
     MOCK_METHOD(method, 1)
 };
@@ -215,10 +211,8 @@ namespace member_function_example_7 {
 template<typename T>
 MOCK_CLASS(mock_class)
 {
-    MOCK_METHOD_TPL(
-      method,
-      1,
-      void(const T&)) // the _TPL variants must be used if the signature includes a template parameter of the class
+    // includes a template parameter of the class
+    MOCK_METHOD(method, 1, void(const T&))
 };
 //]
 } // namespace member_function_example_7
@@ -227,11 +221,14 @@ namespace member_function_example_8 {
 //[ member_function_example_8
 MOCK_CLASS(mock_class)
 {
-    MOCK_METHOD(
-      method, 0, BOOST_IDENTITY_TYPE((std::map<int, int>()))) // the signature must be wrapped in BOOST_IDENTITY_TYPE if
-                                                              // the return type contains a comma
+    // the signature must be wrapped in MOCK_PROTECT_SIGNATURE if the return type contains a comma
+    MOCK_METHOD(method, 0, MOCK_PROTECT_SIGNATURE(std::map<int, int>()))
 };
 //]
+
+static_assert(std::is_same<decltype(std::declval<mock_class>().method()), std::map<int, int>>::value,
+              "Wrong return value");
+
 } // namespace member_function_example_8
 
 #ifdef BOOST_MSVC
@@ -239,10 +236,8 @@ namespace member_function_example_9 {
 //[ member_function_example_9
 MOCK_CLASS(mock_class)
 {
-    MOCK_METHOD(__stdcall method,
-                0,
-                void(),
-                method) // all parameters must be provided when specifying a different calling convention
+    // all parameters must be provided when specifying a different calling convention
+    MOCK_METHOD(__stdcall method, 0, void(), method)
 };
 //]
 } // namespace member_function_example_9
@@ -262,7 +257,7 @@ namespace static_member_function_example_2 {
 template<typename T>
 MOCK_CLASS(mock_class)
 {
-    MOCK_STATIC_METHOD_TPL(method, 1, void(T))
+    MOCK_STATIC_METHOD(method, 1, void(T)) // includes a template parameter of the class
 };
 //]
 } // namespace static_member_function_example_2
@@ -272,10 +267,8 @@ namespace static_member_function_example_3 {
 //[ static_member_function_example_3
 MOCK_CLASS(mock_class)
 {
-    MOCK_STATIC_METHOD(__stdcall method,
-                       0,
-                       void(),
-                       method) // all parameters must be provided when specifying a different calling convention
+    // all parameters must be provided when specifying a different calling convention
+    MOCK_STATIC_METHOD(__stdcall method, 0, void(), method)
 };
 //]
 } // namespace static_member_function_example_3
@@ -296,7 +289,7 @@ template<typename T>
 MOCK_CLASS(mock_class)
 {
     MOCK_CONSTRUCTOR(mock_class, 2, (int, const std::string&), identifier)
-    MOCK_CONSTRUCTOR_TPL(mock_class, 2, (T, const std::string&), identifier_2)
+    MOCK_CONSTRUCTOR(mock_class, 2, (T, const std::string&), identifier_2) // includes a template parameter of the class
 };
 //]
 } // namespace constructor_example_2
@@ -347,8 +340,7 @@ namespace conversion_operator_example_2 {
 template<typename T>
 MOCK_CLASS(mock_class)
 {
-    MOCK_CONVERSION_OPERATOR_TPL(operator, T, conversion_to_T) // the _TPL variants must be used if the signature
-                                                               // includes a template parameter of the class
+    MOCK_CONVERSION_OPERATOR(operator, T, conversion_to_T) // includes a template parameter of the class
     MOCK_CONST_CONVERSION_OPERATOR(operator, const std::string&, const_conversion_to_string)
     MOCK_NON_CONST_CONVERSION_OPERATOR(operator, const std::string&, non_const_conversion_to_string)
 };
@@ -381,10 +373,8 @@ BOOST_AUTO_TEST_CASE(demonstrates_instantiating_a_mock_function)
 #ifdef BOOST_MSVC
 namespace function_example_2 {
 //[ function_example_2
-MOCK_FUNCTION(__stdcall f,
-              0,
-              void(),
-              f) // all parameters must be provided when specifying a different calling convention
+// all parameters must be provided when specifying a different calling convention
+MOCK_FUNCTION(__stdcall f, 0, void(), f)
 //]
 } // namespace function_example_2
 #endif
@@ -898,11 +888,10 @@ BOOST_AUTO_TEST_CASE(mock_constraint_0_arity)
 
 namespace helpers_example_2 {
 //[ helpers_example_2
-MOCK_CONSTRAINT(equal, expected, actual == expected) // this is how mock::equal could be defined
-MOCK_CONSTRAINT(near,
-                expected,
-                std::abs(actual - expected) <
-                  0.01) // this defines a 'near' constraint which can be used as 'near( 42 )'
+// this is how mock::equal could be defined
+MOCK_CONSTRAINT(equal, expected, actual == expected)
+// this defines a 'near' constraint which can be used as 'near( 42 )'
+MOCK_CONSTRAINT(near, expected, std::abs(actual - expected) < 0.01)
 
 BOOST_AUTO_TEST_CASE(mock_constraint_1_arity)
 {
@@ -915,10 +904,8 @@ BOOST_AUTO_TEST_CASE(mock_constraint_1_arity)
 
 namespace helpers_example_3 {
 //[ helpers_example_3
-MOCK_CONSTRAINT(near,
-                expected,
-                tolerance,
-                std::abs(actual - expected) < tolerance) // this is how mock::near could be defined
+// this is how mock::near could be defined
+MOCK_CONSTRAINT(near, expected, tolerance, std::abs(actual - expected) <= tolerance)
 
 BOOST_AUTO_TEST_CASE(mock_constraint_2_arity)
 {

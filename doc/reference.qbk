@@ -90,16 +90,12 @@ Synopsis :
  MOCK_METHOD( [calling convention] name, arity[, signature[, identifier]] )             // generates both const and non-const methods
  MOCK_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )       // generates only the const version of the method
  MOCK_NON_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )   // generates only the non-const version of the method
- 
- MOCK_METHOD_TPL( [calling convention] name, arity, signature[, identifier] )           // must be used if the signature uses a template parameter of the class, generates both const and non-const methods
- MOCK_CONST_METHOD_TPL( [calling convention] name, arity, signature[, identifier] )     // must be used if the signature uses a template parameter of the class, generates only the const version of the method
- MOCK_NON_CONST_METHOD_TPL( [calling convention] name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method
 
 [note If the identifier is omitted it will default to the method name.]
 
 [note If the method name is not ambiguous both the signature and the identifier can be omitted in the context of a derived MOCK_BASE_CLASS or base_type typedef.]
 
-[note The signature cannot be omitted for the _TPL familly of macros, see the related [link turtle.limitations.template_base_class_methods_cannot_be_mocked_without_specifying_the_signature limitation section].]
+[note The signature cannot be omitted if it uses a template parameter of the class, see the related [link turtle.limitations.template_base_class_methods_cannot_be_mocked_without_specifying_the_signature limitation section].]
 
 [note [link turtle.reference.creation.constructor Constructors], [link turtle.reference.creation.destructor destructors] and [link turtle.reference.creation.conversion_operator conversion operators] require special care.]
 
@@ -107,13 +103,9 @@ Synopsis :
 
 Synopsis :
  
- MOCK_METHOD_EXT( [calling convention] name, arity, signature, identifier )               // generates both const and non-const methods
- MOCK_CONST_METHOD_EXT( [calling convention] name, arity, signature, identifier )         // generates only the const version of the method
- MOCK_NON_CONST_METHOD_EXT( [calling convention] name, arity, signature, identifier )     // generates only the non-const version of the method
- 
- MOCK_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )           // must be used if the signature uses a template parameter of the class, generates both const and non-const methods
- MOCK_CONST_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier )     // must be used if the signature uses a template parameter of the class, generates only the const version of the method
- MOCK_NON_CONST_METHOD_EXT_TPL( [calling convention] name, arity, signature, identifier ) // must be used if the signature uses a template parameter of the class, generates only the non-const version of the method
+ MOCK_METHOD( [calling convention] name, arity, signature, identifier )               // generates both const and non-const methods
+ MOCK_CONST_METHOD( [calling convention] name, arity, signature, identifier )         // generates only the const version of the method
+ MOCK_NON_CONST_METHOD( [calling convention] name, arity, signature, identifier )     // generates only the non-const version of the method
 
 Example :
 
@@ -158,8 +150,6 @@ Example for gcc :
 Synopsis :
 
  MOCK_STATIC_METHOD( [calling convention] name, arity, signature[, identifier] )     // if 'identifier' is omitted it will default to 'name'
- 
- MOCK_STATIC_METHOD_TPL( [calling convention] name, arity, signature[, identifier] ) // must be used if the signature uses a template parameter of the class, if 'identifier' is omitted it will default to 'name'
 
 [note A static object is used behind the scene in order to keep track of the expectations of a mock static method, therefore to ensure all tests run in isolation it is strongly suggested to manually [link turtle.reference.verification verify] and [link turtle.reference.reset reset] the static method at the end of each test, see the related [link turtle.patterns.managing_static_mock_objects pattern section].]
 
@@ -189,8 +179,6 @@ Synopsis :
 
  MOCK_CONSTRUCTOR( [calling convention] name, arity, parameters, identifier )
  
- MOCK_CONSTRUCTOR_TPL( [calling convention] name, arity, parameters, identifier ) // must be used if the signature uses a template parameter of the class
-
 [note As constructors do not have a return type, the usual signature gets restricted here to just the parameters.]
 
 Example :
@@ -241,10 +229,6 @@ Synopsis :
  MOCK_CONST_CONVERSION_OPERATOR( [calling convention] name, type, identifier )         // generates only a const operator
  MOCK_NON_CONST_CONVERSION_OPERATOR( [calling convention] name, type, identifier )     // generates only a non-const operator
  
- MOCK_CONVERSION_OPERATOR_TPL( [calling convention] name, type, identifier )           // must be used if the signature uses a template parameter of the class
- MOCK_CONST_CONVERSION_OPERATOR_TPL( [calling convention] name, type, identifier )     // must be used if the signature uses a template parameter of the class
- MOCK_NON_CONST_CONVERSION_OPERATOR_TPL( [calling convention] name, type, identifier ) // must be used if the signature uses a template parameter of the class
-
 Example :
 
 [conversion_operator_example_1]
@@ -293,8 +277,6 @@ Synopsis :
 
  MOCK_FUNCTOR( [calling convention] name, signature );
  
- MOCK_FUNCTOR_TPL( [calling convention] name, signature ); // must be used if the signature uses a template parameter
-
 Example :
 
 [functor_example_1]
