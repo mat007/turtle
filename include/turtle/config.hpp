@@ -18,10 +18,6 @@
 #    define MOCK_USE_BOOST_TEST
 #endif
 
-#ifndef MOCK_MAX_ARGS
-#    define MOCK_MAX_ARGS 9
-#endif
-
 #ifndef MOCK_MAX_SEQUENCES
 #    define MOCK_MAX_SEQUENCES 10
 #endif

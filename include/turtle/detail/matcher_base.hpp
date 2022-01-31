@@ -6,14 +6,15 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#define MOCK_REF_ARG(z, n, d) typename ref_arg<T##n>::type
+#ifndef MOCK_MATCHER_BASE_HPP_INCLUDED
+#define MOCK_MATCHER_BASE_HPP_INCLUDED
+
+#include "move_helper.hpp"
+#include <ostream>
 
 namespace mock { namespace detail {
-    template<typename Signature>
-    class matcher_base;
-
-    template<BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, typename T)>
-    class matcher_base<void(BOOST_PP_ENUM_PARAMS(MOCK_NUM_ARGS, T))>
+    template<typename... Ts>
+    class matcher_base
     {
     public:
         matcher_base() = default;
@@ -21,7 +22,7 @@ namespace mock { namespace detail {
         matcher_base& operator=(const matcher_base&) = delete;
         virtual ~matcher_base() = default;
 
-        virtual bool operator()(BOOST_PP_ENUM(MOCK_NUM_ARGS, MOCK_REF_ARG, _)) = 0;
+        virtual bool operator()(typename ref_arg<Ts>::type...) = 0;
 
         friend std::ostream& operator<<(std::ostream& s, const matcher_base& m)
         {
@@ -34,4 +35,4 @@ namespace mock { namespace detail {
     };
 }} // namespace mock::detail
 
-#undef MOCK_REF_ARG
+#endif // MOCK_MATCHER_BASE_HPP_INCLUDED

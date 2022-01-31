@@ -15,6 +15,7 @@ Released -
 * Removed MOCK_*_TPL as they are no longer required, use the non _TPL variant even for templates
 * Added MOCK_PROTECT_SIGNATURE to pass function signatures with commas in the return type
 * Remove support for protecting function signatures via BOOST_IDENTITY_TYPE, use MOCK_PROTECT_SIGNATURE instead
+* Add support for unlimitted number of arguments making MOCK_MAX_ARGS superflous
 
 [endsect]
 

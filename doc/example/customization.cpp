@@ -145,12 +145,6 @@ BOOST_AUTO_TEST_CASE(near_constraint_works_with_with_float_wrapper_and_cref)
 }
 } // namespace near_constraint_cref_test
 
-#undef MOCK_MAX_ARGS
-//[ max_args
-#define MOCK_MAX_ARGS 20
-#include <turtle/mock.hpp>
-//]
-
 #if defined(__GNUC__)
 #    pragma GCC diagnostic push
 #    pragma GCC diagnostic ignored "-Wunused-parameter"
