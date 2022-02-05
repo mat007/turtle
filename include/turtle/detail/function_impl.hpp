@@ -69,6 +69,9 @@ namespace mock { namespace detail {
 #endif
     }
 
+    template<typename... Arg>
+    class lazy_args;
+
     template<typename Signature>
     class function_impl;
 
@@ -133,7 +136,7 @@ namespace mock { namespace detail {
         {
         private:
             typedef wrapper_base<R, expectation_type> base_type;
-            static constexpr auto arity = sizeof...(Args);
+            static constexpr std::size_t arity = sizeof...(Args);
 
         public:
             wrapper(const std::shared_ptr<mutex>& m, expectation_type& e) : base_type(e), lock_(m) {}
@@ -238,8 +241,9 @@ namespace mock { namespace detail {
         R operator()(Args... args) const
         {
 // Due to lifetime rules of references this must be created and consumed in one line
-#define MOCK_FUNCTION_CONTEXT \
-    boost::unit_test::lazy_ostream::instance() << lazy_context(this) << lazy_args(args...) << lazy_expectations(this)
+#define MOCK_FUNCTION_CONTEXT                  \
+    boost::unit_test::lazy_ostream::instance() \
+      << lazy_context(this) << lazy_args<Args...>(args...) << lazy_expectations(this)
 
             lock _(mutex_);
             valid_ = false;
@@ -316,35 +320,49 @@ namespace mock { namespace detail {
             const function_impl* impl_;
         };
 
-        struct lazy_args
-        {
-            lazy_args(std::add_lvalue_reference_t<Args>... args) : args_(args...) {}
-            friend std::ostream& operator<<(std::ostream& s, const lazy_args& a)
-            {
-                return a.print_impl(std::make_index_sequence<sizeof...(Args)>{}, s);
-            }
-
-        private:
-            std::tuple<std::add_lvalue_reference_t<Args>...> args_;
-
-            template<std::size_t... I>
-            std::ostream& print_impl(std::index_sequence<I...>, std::ostream& s) const
-            {
-                s << '(';
-                using expander = int[];
-                (void)expander{
-                    0, (s << ' ' << mock::format(std::get<I>(args_)) << (sizeof...(Args) - 1u == I ? ' ' : ','), 0)...
-                };
-                return s << ')';
-            }
-        };
-
         std::list<expectation_type> expectations_;
         context* context_;
         mutable bool valid_;
         const int exceptions_;
         const std::shared_ptr<mutex> mutex_;
     };
+
+    template<typename ArgFirst, typename... ArgRest>
+    class lazy_args<ArgFirst, ArgRest...> : lazy_args<ArgRest...>
+    {
+        ArgFirst& arg_;
+
+    public:
+        lazy_args(ArgFirst& arg, std::add_lvalue_reference_t<ArgRest>... args)
+            : lazy_args<ArgRest...>(args...), arg_(arg)
+        {}
+        std::ostream& print(std::ostream& s) const
+        {
+            s << ' ' << mock::format(arg_) << ',';
+            return lazy_args<ArgRest...>::print(s);
+        }
+    };
+    template<typename ArgFirst>
+    class lazy_args<ArgFirst>
+    {
+        ArgFirst& arg_;
+
+    public:
+        lazy_args(ArgFirst& arg) : arg_(arg) {}
+        std::ostream& print(std::ostream& s) const { return s << ' ' << mock::format(arg_) << ' '; }
+    };
+    template<>
+    class lazy_args<>
+    {
+    public:
+        std::ostream& print(std::ostream& s) const { return s; }
+    };
+    template<typename... Args>
+    std::ostream& operator<<(std::ostream& s, const lazy_args<Args...>& a)
+    {
+        s << '(';
+        return a.print(s) << ')';
+    }
 }} // namespace mock::detail
 
 #endif // MOCK_FUNCTION_IMPL_HPP_INCLUDED
