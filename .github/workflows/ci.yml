@@ -146,6 +146,7 @@ jobs:
         with:
           path-to-lcov: ${{env.PROJECT_DIR}}/coverage.info
           github-token: ${{secrets.GITHUB_TOKEN}}
+          base-path: ${{env.PROJECT_DIR}}
 
       - name: Build required boost libs
         working-directory: boost-root
