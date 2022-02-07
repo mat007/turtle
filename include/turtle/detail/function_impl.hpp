@@ -13,8 +13,6 @@
 #include "expectation.hpp"
 #include "mutex.hpp"
 #include "verifiable.hpp"
-#include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/test/utils/lazy_ostream.hpp>
 #include <list>
 #include <memory>
@@ -187,19 +185,14 @@ namespace mock { namespace detail {
                 return *this;
             }
 
-#define MOCK_FUNCTION_IN_ADD(z, n, d) this->e_->add(s##n);
-
-#define MOCK_FUNCTION_IN(z, n, d)                     \
-    wrapper& in(BOOST_PP_ENUM_PARAMS(n, sequence& s)) \
-    {                                                 \
-        BOOST_PP_REPEAT(n, MOCK_FUNCTION_IN_ADD, _)   \
-        return *this;                                 \
-    }
-
-            BOOST_PP_REPEAT(MOCK_MAX_SEQUENCES, MOCK_FUNCTION_IN, _)
-
-#undef MOCK_FUNCTION_IN
-#undef MOCK_FUNCTION_IN_ADD
+            /// Ensure the expectation is met in the given sequence(s)
+            template<class... MockSequences>
+            wrapper& in(sequence& s0, MockSequences&... s)
+            {
+                using expander = int[];
+                (void)expander{ (e_->add(s0), 0), (e_->add(s), 0)... };
+                return *this;
+            }
 
             template<typename TT>
             void calls(TT t)

@@ -449,10 +449,7 @@ Synopsis :
 
 Each sequence is an instance of mock::sequence.
 
-The maximum number of sequences that can be set is MOCK_MAX_SEQUENCES which defaults to 10. If needed the value can be increased before including the library :
-
- #define MOCK_MAX_SEQUENCES 12
- #include <turtle/mock.hpp>
+The maximum number of sequences that can be set is basically unlimited.
 
 Example :
 
@@ -467,7 +464,7 @@ An action performs additional treatments after an expectation has been deemed va
 Synopsis :
 
  MOCK_EXPECT( identifier ).returns( value );    // stored internally by copy
- MOCK_EXPECT( identifier ).moves( value );      // stored internally by copy
+ MOCK_EXPECT( identifier ).moves( value );      // stored internally by copy/move
  MOCK_EXPECT( identifier ).throws( exception ); // stored internally by copy
  MOCK_EXPECT( identifier ).calls( functor );    // stored internally by copy, throws std::invalid_argument if empty
 
