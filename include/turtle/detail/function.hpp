@@ -54,7 +54,7 @@ namespace mock { namespace detail {
         }
         expectation_type expect() { return impl_->expect(); }
 
-        R operator()(Ts... args) const { return (*impl_)(std::forward<Ts>(args)...); }
+        R operator()(Ts... args) const { return (*impl_)(static_cast<ref_arg_t<Ts>>(args)...); }
 
         friend std::ostream& operator<<(std::ostream& s, const function& f) { return s << *f.impl_; }
 

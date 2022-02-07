@@ -24,7 +24,7 @@ namespace mock { namespace detail {
     class default_matcher : public matcher_base<Args...>
     {
     private:
-        bool operator()(typename ref_arg<Args>::type...) override { return true; }
+        bool operator()(ref_arg_t<Args>...) override { return true; }
         void serialize(std::ostream& s) const override
         {
             constexpr auto arity = sizeof...(Args);
@@ -51,16 +51,16 @@ namespace mock { namespace detail {
 
     private:
         template<std::size_t... I>
-        bool is_valid_impl(std::index_sequence<I...>, typename ref_arg<Args>::type... t)
+        bool is_valid_impl(std::index_sequence<I...>, ref_arg_t<Args>... t)
         {
             using expander = bool[];
             bool result = true;
-            (void)expander{ result &= std::get<I>(matchers_)(std::forward<Args>(t))... };
+            (void)expander{ result &= std::get<I>(matchers_)(static_cast<ref_arg_t<Args>>(t))... };
             return result;
         }
-        bool operator()(typename ref_arg<Args>::type... t) override
+        bool operator()(ref_arg_t<Args>... t) override
         {
-            return is_valid_impl(std::make_index_sequence<sizeof...(Args)>{}, std::forward<Args>(t)...);
+            return is_valid_impl(std::make_index_sequence<sizeof...(Args)>{}, static_cast<ref_arg_t<Args>>(t)...);
         }
         template<std::size_t... I>
         void serialize_impl(std::index_sequence<I...>, std::ostream& s) const
@@ -87,7 +87,7 @@ namespace mock { namespace detail {
         multi_matcher(const F& f) : f_(f) {}
 
     private:
-        bool operator()(typename ref_arg<Args>::type... t) override { return f_(std::forward<Args>(t)...); }
+        bool operator()(ref_arg_t<Args>... t) override { return f_(static_cast<ref_arg_t<Args>>(t)...); }
         void serialize(std::ostream& s) const override { s << mock::format(f_); }
 
     private:
@@ -143,9 +143,9 @@ namespace mock { namespace detail {
 
         bool verify() const { return invocation_->verify(); }
 
-        bool is_valid(typename ref_arg<Args>::type... t) const
+        bool is_valid(ref_arg_t<Args>... t) const
         {
-            return !invocation_->exhausted() && (*matcher_)(std::forward<Args>(t)...);
+            return !invocation_->exhausted() && (*matcher_)(static_cast<ref_arg_t<Args>>(t)...);
         }
 
         bool invoke() const

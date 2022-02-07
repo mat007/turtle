@@ -9,11 +9,11 @@
 #ifndef MOCK_MATCHER_BASE_HPP_INCLUDED
 #define MOCK_MATCHER_BASE_HPP_INCLUDED
 
-#include "move_helper.hpp"
+#include "ref_arg.hpp"
 #include <ostream>
 
 namespace mock { namespace detail {
-    template<typename... Ts>
+    template<typename... Args>
     class matcher_base
     {
     public:
@@ -22,7 +22,7 @@ namespace mock { namespace detail {
         matcher_base& operator=(const matcher_base&) = delete;
         virtual ~matcher_base() = default;
 
-        virtual bool operator()(typename ref_arg<Ts>::type...) = 0;
+        virtual bool operator()(ref_arg_t<Args>...) = 0;
 
         friend std::ostream& operator<<(std::ostream& s, const matcher_base& m)
         {

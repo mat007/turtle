@@ -249,7 +249,7 @@ namespace mock { namespace detail {
             valid_ = false;
             for(const auto& expectation : expectations_)
             {
-                if(expectation.is_valid(std::forward<Args>(args)...))
+                if(expectation.is_valid(static_cast<ref_arg_t<Args>>(args)...))
                 {
                     if(!expectation.invoke())
                     {
@@ -266,7 +266,7 @@ namespace mock { namespace detail {
                     valid_ = true;
                     error_type::call(MOCK_FUNCTION_CONTEXT, expectation.file(), expectation.line());
                     if(expectation.functor())
-                        return expectation.functor()(std::forward<Args>(args)...);
+                        return expectation.functor()(static_cast<ref_arg_t<Args>>(args)...);
                     return expectation.trigger();
                 }
             }
