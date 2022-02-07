@@ -190,7 +190,7 @@ namespace mock { namespace detail {
             wrapper& in(sequence& s0, MockSequences&... s)
             {
                 using expander = int[];
-                (void)expander{ (e_->add(s0), 0), (e_->add(s), 0)... };
+                (void)expander{ (this->e_->add(s0), 0), (this->e_->add(s), 0)... };
                 return *this;
             }
 
