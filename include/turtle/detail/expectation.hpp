@@ -123,16 +123,14 @@ namespace mock { namespace detail {
         void invoke(std::unique_ptr<invocation> i) { invocation_ = std::move(i); }
 
         template<typename... Constraints>
-        std::enable_if_t<(arity > 0u) && sizeof...(Constraints) == arity, expectation&> with(Constraints... c)
+        std::enable_if_t<(arity > 0u) && sizeof...(Constraints) == arity> with(Constraints... c)
         {
             matcher_ = std::make_unique<single_matcher<void(Constraints...), Args...>>(c...);
-            return *this;
         }
         template<typename Constraint, std::size_t Arity = arity>
-        std::enable_if_t<(Arity > 1u), expectation&> with(const Constraint& c)
+        std::enable_if_t<(Arity > 1u)> with(const Constraint& c)
         {
             matcher_ = std::make_unique<multi_matcher<Constraint, Args...>>(c);
-            return *this;
         }
 
         void add(sequence& s)
