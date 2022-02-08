@@ -58,20 +58,13 @@ jobs:
 
     timeout-minutes: 120
     runs-on: ${{matrix.os}}
-    env:
-      BOOST_ROOT: ${{github.workspace}}/boost-root
-      PROJECT_DIR: ${{github.workspace}}/repo
 
     steps:
       - uses: actions/checkout@v2
-        if: '!matrix.coverage'
         with:
-          path: ${{env.PROJECT_DIR}}
-      - uses: actions/checkout@v2
-        if: 'matrix.coverage'
-        with:
-          path: ${{env.PROJECT_DIR}}
-          fetch-depth: 0
+          # For coverage builds fetch the whole history, else only 1 commit using a 'fake ternary'
+          fetch-depth: ${{ matrix.coverage && '0' || '1' }}
+
       # Checking out Boost and all its submodules takes ages...
       - name: Cache Boost
         uses: actions/cache@v2
@@ -105,6 +98,9 @@ jobs:
             fi
             echo "B2_TOOLSET=$B2_TOOLSET" >> $GITHUB_ENV
             echo "using $B2_TOOLSET : : $CXX ;" > ~/user-config.jam
+            # Move the Boost root to a sibling folder
+            mv boost-root ..
+            echo "BOOST_ROOT=${{github.workspace}}/../boost-root" >> $GITHUB_ENV
 
       - name: Cache ccache
         uses: hendrikmuhs/ccache-action@v1
@@ -112,11 +108,10 @@ jobs:
           key: ${{matrix.os}}-${{matrix.compiler}}-${{matrix.boostBranch}}
 
       - name: Prepare boost
-        working-directory: boost-root
+        working-directory: ${{env.BOOST_ROOT}}
         run: ./bootstrap.sh && ./b2 headers
 
       - name: Boost build
-        working-directory: ${{env.PROJECT_DIR}}
         run: |
           if [[ "${{matrix.boostBranch}}" == "master" ]]; then
             B2_FLAGS="cxxstd=${{matrix.cxxstd}}"
@@ -130,33 +125,30 @@ jobs:
 
       - name: Collect coverage
         if: matrix.coverage
-        working-directory: ${{env.PROJECT_DIR}}
         run: |
           lcov --version
-          lcov --gcov-tool=gcov-8 --directory "$PROJECT_DIR/test" --base-directory "$BOOST_ROOT" --capture --output-file all.info
+          lcov --gcov-tool=gcov-8 --directory "$GITHUB_WORKSPACE/test" --capture --output-file all.info
           # dump a summary on the console
           lcov --list all.info
           # Limit to our files (header-only in this case)
-          lcov --extract all.info "$PROJECT_DIR/include/*" --output-file coverage.info
+          lcov --extract all.info "$GITHUB_WORKSPACE/include/*" --output-file coverage.info
           # Output what was collected
           lcov --list coverage.info
       - name: Upload coverage
         if: matrix.coverage
         uses: coverallsapp/github-action@master
         with:
-          path-to-lcov: ${{env.PROJECT_DIR}}/coverage.info
+          path-to-lcov: ${{github.workspace}}/coverage.info
           github-token: ${{secrets.GITHUB_TOKEN}}
-          base-path: ${{env.PROJECT_DIR}}
 
       - name: Build required boost libs
-        working-directory: boost-root
+        working-directory: ${{env.BOOST_ROOT}}
         run: |
           ./b2 --toolset=$B2_TOOLSET --with-test --with-thread --with-chrono --with-system --with-atomic --with-date_time -a -j3
           # Add lib folder to LD_LIBRARY_PATH, so the tests can load them
           echo "LD_LIBRARY_PATH=$PWD/stage/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
       - name: CMake build
-        working-directory: ${{env.PROJECT_DIR}}
         run: |
           mkdir build && cd build
           CXX_STANDARD="${{matrix.cxxstd}}"
@@ -164,7 +156,7 @@ jobs:
           cmake --build . --config Debug -- -j3
           ctest --output-on-failure --build-config Debug -j3
 
-      - name: Cleanup Boost folder
+      - name: Cleanup Boost folder to reduce cache usage
         if: ${{ always() }}
-        working-directory: boost-root
+        working-directory: ${{env.BOOST_ROOT}}
         run: git clean -fxd
