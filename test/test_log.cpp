@@ -32,18 +32,23 @@
 #include <set>
 #include <vector>
 
+// Convention:
+// "Serializable: Implements operator<<(std::ostream&, ...)
+// "Streamable": Implements operator<<(mock::stream&, ...)
+// "Mock Streamable": Implements operator<<(stream&, ...) in namespace mock
+
 namespace {
 template<typename T>
 std::string to_string(const T& t)
 {
-    std::stringstream s;
+    std::ostringstream s;
     s << mock::format(t);
     return s.str();
 }
 template<typename T>
 std::string to_string(T* t)
 {
-    std::stringstream s;
+    std::ostringstream s;
     s << mock::format(t);
     return s.str();
 }
@@ -56,7 +61,6 @@ BOOST_AUTO_TEST_CASE(pointer_yields_its_value_when_serialized)
         std::ostringstream s;
         s << &i;
         const std::string pointerValue = s.str();
-        BOOST_CHECK_NE("?", to_string(&i));
         BOOST_CHECK_EQUAL(pointerValue, to_string(&i));
     }
     {
@@ -64,7 +68,6 @@ BOOST_AUTO_TEST_CASE(pointer_yields_its_value_when_serialized)
         std::ostringstream s;
         s << &i;
         const std::string pointerValue = s.str();
-        BOOST_CHECK_NE("?", to_string(&i));
         BOOST_CHECK_EQUAL(pointerValue, to_string(&i));
     }
 }
@@ -178,6 +181,19 @@ BOOST_AUTO_TEST_CASE(type_derived_from_streamable_yields_a_question_mark_when_se
 #endif
 }
 
+namespace {
+// Class which can be converted to many other types making implicit conversions ambiguous
+struct ambiguous_convertible
+{
+    operator float() const;
+    operator int() const;
+    operator serializable() const;
+    operator streamable() const;
+    template<typename T>
+    operator T() const;
+};
+} // namespace
+
 #ifndef MOCK_USE_CONVERSIONS // all this does not compile with conversions activated, which is precisely the purpose of
                              // having this compilation flag
 
@@ -217,33 +233,14 @@ BOOST_AUTO_TEST_CASE(type_convertible_to_streamable_yields_a_question_mark_when_
     BOOST_CHECK_EQUAL("?", to_string(convertible_to_streamable()));
 }
 
-namespace {
-struct ambiguous_convertible
-{
-    operator float() const;
-    operator int() const;
-    operator serializable() const;
-    operator streamable() const;
-    template<typename T>
-    operator T() const;
-};
-} // namespace
-
 BOOST_AUTO_TEST_CASE(type_ambiguous_convertible_yields_a_question_mark_when_serialized)
 {
     BOOST_CHECK_EQUAL("?", to_string(ambiguous_convertible()));
 }
 
 namespace {
-struct ambiguous_convertible_serializable
-{
-    operator float() const;
-    operator int() const;
-    operator serializable() const;
-    operator streamable() const;
-    template<typename T>
-    operator T() const;
-};
+struct ambiguous_convertible_serializable : public ambiguous_convertible
+{};
 std::ostream& operator<<(std::ostream& s, const ambiguous_convertible_serializable&)
 {
     return s << "ambiguous_convertible_serializable";
@@ -258,15 +255,8 @@ BOOST_AUTO_TEST_CASE(type_convertible_serializable_yields_its_value_when_seriali
 #endif // MOCK_USE_CONVERSIONS
 
 namespace {
-struct ambiguous_convertible_streamable
-{
-    operator float() const;
-    operator int() const;
-    operator serializable() const;
-    operator streamable() const;
-    template<typename T>
-    operator T() const;
-};
+struct ambiguous_convertible_streamable : public ambiguous_convertible
+{};
 BOOST_ATTRIBUTE_UNUSED std::ostream& operator<<(std::ostream& s, const ambiguous_convertible_streamable&)
 {
     BOOST_FAIL("should not have been called");
@@ -435,17 +425,17 @@ BOOST_AUTO_TEST_CASE(std_vectors_are_serialized)
 BOOST_AUTO_TEST_CASE(std_maps_are_serialized)
 {
     std::map<int, std::string> m;
-    m[12] = "12";
-    m[42] = "42";
-    BOOST_CHECK_EQUAL("((12,\"12\"),(42,\"42\"))", to_string(m));
+    m[12] = "15";
+    m[42] = "46";
+    BOOST_CHECK_EQUAL("((12,\"15\"),(42,\"46\"))", to_string(m));
 }
 
 BOOST_AUTO_TEST_CASE(std_multimaps_are_serialized)
 {
     std::multimap<int, std::string> m;
-    m.insert(std::make_pair(12, "12"));
-    m.insert(std::make_pair(42, "42"));
-    BOOST_CHECK_EQUAL("((12,\"12\"),(42,\"42\"))", to_string(m));
+    m.insert(std::make_pair(12, "15"));
+    m.insert(std::make_pair(42, "46"));
+    BOOST_CHECK_EQUAL("((12,\"15\"),(42,\"46\"))", to_string(m));
 }
 
 BOOST_AUTO_TEST_CASE(std_sets_are_serialized)
@@ -495,7 +485,7 @@ BOOST_AUTO_TEST_CASE(boost_assign_list_of_are_serialized)
 
 BOOST_AUTO_TEST_CASE(boost_assign_map_list_of_are_serialized)
 {
-    BOOST_CHECK_EQUAL("((12,\"12\"),(42,\"42\"))", to_string(boost::assign::map_list_of(12, "12")(42, "42")));
+    BOOST_CHECK_EQUAL("((12,\"16\"),(42,\"43\"))", to_string(boost::assign::map_list_of(12, "16")(42, "43")));
 }
 
 BOOST_AUTO_TEST_CASE(std_reference_wrappers_are_serialized)

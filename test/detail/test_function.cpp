@@ -10,6 +10,7 @@
 #include "../undefined.hpp"
 #include <turtle/constraints.hpp>
 #include <turtle/detail/function.hpp>
+#include <turtle/detail/void_t.hpp>
 #include <boost/test/unit_test.hpp>
 #include <functional>
 #include <memory>
@@ -24,6 +25,42 @@ static_assert(std::is_same<void, decltype(mock::detail::function<void()>{}())>::
 static_assert(std::is_same<int, decltype(mock::detail::function<int()>{}())>::value, "!");
 static_assert(std::is_same<void, decltype(mock::detail::function<void(float)>{}(std::declval<float>()))>::value, "!");
 static_assert(std::is_same<int, decltype(mock::detail::function<int(float)>{}(std::declval<float>()))>::value, "!");
+
+template<class TFunction, typename... TParams>
+using with_call_t = decltype(std::declval<TFunction>().expect().with(std::declval<TParams>()...));
+template<class AlwaysVoid, class TFunction, typename... TParams>
+struct with_is_callable : std::false_type
+{};
+template<class TFunction, class... TParams>
+struct with_is_callable<mock::detail::void_t<with_call_t<TFunction, TParams...>>, TFunction, TParams...> :
+    std::true_type
+{};
+// Detect if we can call function.expect().with(params)
+template<class TFunction, class... TParams>
+using with_is_callable_t = with_is_callable<void, TFunction, TParams...>;
+
+// For function with no parameters `with` can never be called
+using function_0_args = mock::detail::function<int()>;
+static_assert(!with_is_callable_t<function_0_args>::value, "Can't call with()");
+static_assert(!with_is_callable_t<function_0_args, int>::value, "Can't call with(int)");
+static_assert(!with_is_callable_t<function_0_args, bool()>::value, "Can't call with custom constraint");
+
+// For functions with parameters `with` can be called with a custom constraint (taking all params)
+// or exactly as many parameters as the function has (here 1 and 4 respectively)
+using function_1_args = mock::detail::function<int(int)>;
+static_assert(!with_is_callable_t<function_1_args>::value, "Can't call with()");
+static_assert(with_is_callable_t<function_1_args, int>::value, "Can call with(int)");
+static_assert(with_is_callable_t<function_1_args, bool(int)>::value, "Can call with custom constraint");
+static_assert(!with_is_callable_t<function_1_args, int, int>::value, "Can't call with(int, int)");
+
+using function_4_args = mock::detail::function<int(int, int, int, int)>;
+static_assert(!with_is_callable_t<function_4_args>::value, "Can't call with()");
+static_assert(with_is_callable_t<function_4_args, bool(int, int, int, int)>::value, "Can call with custom constraint");
+static_assert(!with_is_callable_t<function_4_args, int, int>::value, "Can't call with(int, int)");
+static_assert(!with_is_callable_t<function_4_args, int, int, int>::value, "Can't call with(int, int, int)");
+static_assert(with_is_callable_t<function_4_args, int, int, int, int>::value, "Can call with(int, int, int, int)");
+static_assert(!with_is_callable_t<function_4_args, int, int, int, int, int>::value,
+              "Can't call with(int, int, int, int, int)");
 } // namespace
 
 // functor
@@ -714,11 +751,18 @@ BOOST_FIXTURE_TEST_CASE(expectation_can_be_serialized_to_be_human_readable, mock
     {
         mock::detail::function<void(int)> f;
         f.expect().once().with(1);
-        f.expect().once().with(2);
+        f.expect().once().with(mock::close(3, 1));
+        int target = 0;
+        f.expect().once().with(mock::retrieve(target));
+        f.expect().once().with(mock::same(target));
         BOOST_CHECK_NO_THROW(f(2));
-        const std::string expected = "?\n"
-                                     ". once().with( 1 )\n"
-                                     "v once().with( 2 )";
+        std::string expected = "?\n";                   // Not in a current call context
+        expected += ". once().with( 1 )\n";             // Unmet/Unverified expectation with value
+        expected += "v once().with( close( 3, 1 ) )\n"; // Verified expectation with constraint
+        target = 42;
+        // (Unverified) expectation with retrieve/same constraint print current value
+        expected += ". once().with( retrieve( 42 ) )\n";
+        expected += ". once().with( same( 42 ) )";
         BOOST_CHECK_EQUAL(expected, to_string(f));
         CHECK_CALLS(1);
         f.reset();

@@ -726,12 +726,12 @@ BOOST_FIXTURE_TEST_CASE(std_unique_ptr_argument_is_supported_in_retrieve_constra
     }
     {
         std::unique_ptr<int> i;
-        MOCK_FUNCTOR(f, void(std::unique_ptr<int>));
-        MOCK_EXPECT(f).once().with(nullptr);
-        MOCK_EXPECT(f).once().with(mock::retrieve(i));
-        f(0);
+        MOCK_FUNCTOR(f, void(std::unique_ptr<int>, std::unique_ptr<int>, std::unique_ptr<int>));
+        MOCK_EXPECT(f).once().with(nullptr, nullptr, nullptr);
+        MOCK_EXPECT(f).once().with(nullptr, mock::retrieve(i), nullptr);
+        f(nullptr, nullptr, nullptr);
         std::unique_ptr<int> j(new int(7));
-        f(std::move(j));
+        f(nullptr, std::move(j), nullptr);
         BOOST_CHECK(!j);
         BOOST_REQUIRE(i);
         BOOST_CHECK_EQUAL(7, *i);
@@ -745,3 +745,20 @@ struct my_unique_ptr_class
     MOCK_METHOD(m, 1, void(std::unique_ptr<int>), m)
     MOCK_STATIC_METHOD(ms, 1, void(std::unique_ptr<int>), ms)
 };
+
+BOOST_FIXTURE_TEST_CASE(unique_ptr_works_in_class, mock_error_fixture)
+{
+    MOCK_EXPECT(my_unique_ptr_class::constructor).once().with(nullptr);
+    MOCK_EXPECT(my_unique_ptr_class::ms).once().with(7);
+    my_unique_ptr_class instance(nullptr);
+    auto j = std::make_unique<int>(7);
+    my_unique_ptr_class::ms(std::move(j));
+    BOOST_TEST(!j); // Otherwise it wasn't a value parameter and we leak memory
+    MOCK_EXPECT(instance.ms).once().with(42);
+    j = std::make_unique<int>(42);
+    instance.ms(std::move(j));
+    BOOST_TEST(!j); // Same here
+
+    BOOST_TEST(mock::verify());
+    CHECK_CALLS(3);
+}

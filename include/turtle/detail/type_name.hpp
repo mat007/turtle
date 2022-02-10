@@ -47,10 +47,9 @@ namespace mock { namespace detail {
             };
             std::unique_ptr<const char, Deleter> demangled(abi::__cxa_demangle(name, 0, 0, &status));
             if(!status && demangled)
-                serialize(s, demangled.get());
-            else
+                name = demangled.get();
 #endif
-                serialize(s, name);
+            serialize(s, name);
         }
 
         typedef std::string::size_type size_type;
