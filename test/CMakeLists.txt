@@ -54,7 +54,7 @@ foreach(testFile IN LISTS testFiles)
   target_compile_definitions(${name}_use_conversions PRIVATE MOCK_USE_CONVERSIONS)
 
   target_link_libraries(${name}_thread_safe PRIVATE Boost::thread)
-  target_compile_definitions(${name}_thread_safe PRIVATE MOCK_THREAD_SAFE BOOST_THREAD_USES_MOVE)
+  target_compile_definitions(${name}_thread_safe PRIVATE MOCK_THREAD_SAFE)
 endforeach()
 
 # Link test only to check for a regression
