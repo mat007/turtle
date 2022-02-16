@@ -110,24 +110,6 @@ For more information about the serialization operator and the use of mock::forma
 
 [endsect]
 
-[section Number of arguments]
-
-The maximum number of arguments a mocked method can have is defined by MOCK_MAX_ARGS.
-By default this value is set to 9, but if needed it can be changed before including the library :
-
-[max_args]
-
-This means methods with up to 20 arguments will then be accepted.
-
-The mock object library uses several boost libraries and will adjust some of their constants if they haven't already been defined :
-
-* Boost.Function with BOOST_FUNCTION_MAX_ARGS required at MOCK_MAX_ARGS or higher
-* Boost.FunctionTypes with BOOST_FT_MAX_ARITY required at MOCK_MAX_ARGS + 1 or higher
-
-A compilation error will happen if one of those constants is already defined too low.
-
-[endsect]
-
 [section Test framework integration]
 
 By default the library expects to be used in conjunction with Boost.Test e.g. :

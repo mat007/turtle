@@ -10,6 +10,7 @@
 #include <turtle/detail/function.hpp>
 #include <turtle/sequence.hpp>
 #include <boost/test/unit_test.hpp>
+#include <array>
 
 BOOST_FIXTURE_TEST_CASE(registering_to_a_sequence_and_calling_out_of_order_throws, mock_error_fixture)
 {
@@ -97,9 +98,13 @@ BOOST_FIXTURE_TEST_CASE(resetting_an_expectation_removes_it_from_order_call_enfo
 
 BOOST_FIXTURE_TEST_CASE(an_expectation_can_be_used_in_several_sequences, mock_error_fixture)
 {
-    mock::sequence s1, s2;
+    std::array<mock::sequence, 20> s;
     mock::detail::function<void()> e;
-    e.expect().once().in(s1, s2);
+    // One can use any amount of sequences if wanted
+    // clang-format off
+    e.expect().once().in(s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9],
+                         s[10], s[11], s[12], s[13], s[14], s[15], s[16], s[17], s[18], s[19]);
+    // clang-format on
     BOOST_CHECK_NO_THROW(e());
     BOOST_CHECK(e.verify());
     CHECK_CALLS(1);

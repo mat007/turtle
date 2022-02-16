@@ -12,7 +12,7 @@
 #include "config.hpp"
 #include "constraints.hpp"
 #include "detail/is_functor.hpp"
-#include "detail/move_helper.hpp"
+#include "detail/ref_arg.hpp"
 #include "log.hpp"
 #include <cstring>
 #include <functional>
@@ -51,10 +51,7 @@ class matcher<Actual, mock::constraint<Constraint>>
 {
 public:
     explicit matcher(const constraint<Constraint>& c) : c_(c.c_) {}
-    bool operator()(typename detail::ref_arg<Actual>::type actual)
-    {
-        return c_(std::forward<typename detail::ref_arg<Actual>::type>(actual));
-    }
+    bool operator()(detail::ref_arg_t<Actual> actual) { return c_(static_cast<detail::ref_arg_t<Actual>>(actual)); }
     friend std::ostream& operator<<(std::ostream& s, const matcher& m) { return s << mock::format(m.c_); }
 
 private:
@@ -66,10 +63,7 @@ class matcher<Actual, Functor, std::enable_if_t<detail::is_functor<Functor, Actu
 {
 public:
     explicit matcher(const Functor& f) : c_(f) {}
-    bool operator()(typename detail::ref_arg<Actual>::type actual)
-    {
-        return c_(std::forward<typename detail::ref_arg<Actual>::type>(actual));
-    }
+    bool operator()(detail::ref_arg_t<Actual> actual) { return c_(static_cast<detail::ref_arg_t<Actual>>(actual)); }
     friend std::ostream& operator<<(std::ostream& s, const matcher& m) { return s << mock::format(m.c_); }
 
 private:

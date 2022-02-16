@@ -6,7 +6,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <turtle/detail/function.hpp>
+#include <turtle/detail/expectation.hpp>
 #include <turtle/matcher.hpp>
 #include <boost/test/unit_test.hpp>
 #include <functional>
@@ -88,16 +88,16 @@ std::string serialize(const T& t)
 BOOST_AUTO_TEST_CASE(default_matcher_is_serialized_to_any)
 {
     using mock::detail::default_matcher;
-    BOOST_TEST(serialize(default_matcher<void()>{}) == "");
-    BOOST_TEST(serialize(default_matcher<void(int)>{}) == "any");
-    BOOST_TEST(serialize(default_matcher<void(int, int)>{}) == "any, any");
-    BOOST_TEST(serialize(default_matcher<void(int, int, int, int, int)>{}) == "any, any, any, any, any");
+    BOOST_TEST(serialize(default_matcher<>{}) == "");
+    BOOST_TEST(serialize(default_matcher<int>{}) == "any");
+    BOOST_TEST(serialize(default_matcher<int, int>{}) == "any, any");
+    BOOST_TEST(serialize(default_matcher<int, int, int, int, int>{}) == "any, any, any, any, any");
 }
 
 namespace {
 struct custom_constraint
 {
-    int expected_ = 42;
+    int expected_;
     custom_constraint(int expected = 42) : expected_(expected) {}
     friend std::ostream& operator<<(std::ostream& s, const custom_constraint& c)
     {
@@ -110,16 +110,15 @@ struct custom_constraint
 BOOST_AUTO_TEST_CASE(single_matcher_serializes)
 {
     using mock::detail::single_matcher;
-    BOOST_TEST(serialize(single_matcher<void(int), void(int)>(1)) == "1");
-    BOOST_TEST(serialize(single_matcher<void(int, int), void(int, int)>(1, 2)) == "1, 2");
+    BOOST_TEST(serialize(single_matcher<void(int), int>(1)) == "1");
+    BOOST_TEST(serialize(single_matcher<void(int, int), int, int>(1, 2)) == "1, 2");
     BOOST_TEST(
-      serialize(
-        single_matcher<void(int, int, mock::constraint<custom_constraint>, int, int), void(int, int, int, int, int)>(
-          1, 2, custom_constraint(), 4, 5)) == "1, 2, custom42, 4, 5");
+      serialize(single_matcher<void(int, int, mock::constraint<custom_constraint>, int, int), int, int, int, int, int>(
+        1, 2, custom_constraint(), 4, 5)) == "1, 2, custom42, 4, 5");
 }
 
 BOOST_AUTO_TEST_CASE(multi_matcher_serializes)
 {
     using mock::detail::multi_matcher;
-    BOOST_TEST(serialize(multi_matcher<custom_constraint, void(int)>(custom_constraint(1337))) == "custom1337");
+    BOOST_TEST(serialize(multi_matcher<custom_constraint, int>(custom_constraint(1337))) == "custom1337");
 }

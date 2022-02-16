@@ -6,8 +6,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef MOCK_PARAMETER_HPP_INCLUDED
-#define MOCK_PARAMETER_HPP_INCLUDED
+#ifndef MOCK_SIGNATURE_TRAITS_HPP_INCLUDED
+#define MOCK_SIGNATURE_TRAITS_HPP_INCLUDED
 
 #include "../config.hpp"
 #include <cstddef>
@@ -59,4 +59,4 @@ namespace mock { namespace detail {
 
 }} // namespace mock::detail
 
-#endif // MOCK_PARAMETER_HPP_INCLUDED
+#endif // MOCK_SIGNATURE_TRAITS_HPP_INCLUDED

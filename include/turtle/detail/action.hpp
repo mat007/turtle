@@ -62,6 +62,27 @@ namespace mock { namespace detail {
         action_type a_;
     };
 
+    /// Type erased value storage
+    struct value
+    {
+        value() = default;
+        value(const value&) = delete;
+        value& operator=(const value&) = delete;
+        virtual ~value() = default;
+    };
+    /// Actual value storage,
+    /// holds an instance of T (stripped of reference qualifiers)
+    template<typename T>
+    struct value_imp : value
+    {
+        using type = std::remove_const_t<std::remove_reference_t<T>>;
+
+        template<typename U>
+        value_imp(U&& t) : t_(std::forward<U>(t))
+        {}
+        type t_;
+    };
+
     template<typename Result, typename Signature>
     class action : public action_base<Result, Signature>
     {
@@ -85,24 +106,6 @@ namespace mock { namespace detail {
         }
 
     private:
-        struct value
-        {
-            value() = default;
-            value(const value&) = delete;
-            value& operator=(const value&) = delete;
-            virtual ~value() = default;
-        };
-        template<typename T>
-        struct value_imp : value
-        {
-            typedef std::remove_const_t<std::remove_reference_t<T>> type;
-
-            template<typename U>
-            value_imp(U&& t) : t_(std::forward<U>(t))
-            {}
-            type t_;
-        };
-
         template<typename T>
         typename value_imp<T>::type& store(T&& t)
         {

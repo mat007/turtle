@@ -10,88 +10,72 @@
 #define MOCK_FUNCTION_HPP_INCLUDED
 
 #include "../config.hpp"
-#include "../constraints.hpp"
-#include "../error.hpp"
 #include "../log.hpp"
-#include "../matcher.hpp"
 #include "../sequence.hpp"
-#include "action.hpp"
 #include "context.hpp"
-#include "invocation.hpp"
-#include "move_helper.hpp"
-#include "mutex.hpp"
+#include "function_impl.hpp"
 #include "type_name.hpp"
-#include "verifiable.hpp"
 #include <boost/optional.hpp>
-#include <boost/preprocessor/comparison/equal.hpp>
-#include <boost/preprocessor/comparison/greater.hpp>
-#include <boost/preprocessor/iteration/iterate.hpp>
-#include <boost/preprocessor/repetition/enum_binary_params.hpp>
-#include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
-#include <boost/test/utils/lazy_ostream.hpp>
-#include <list>
 #include <ostream>
-#include <vector>
 
 namespace mock { namespace detail {
-    template<typename R, typename E>
-    struct wrapper_base
-    {
-        wrapper_base(E& e) : e_(&e) {}
+    template<typename Signature>
+    class function;
 
-        template<typename T>
-        void returns(T t)
+    template<typename R, typename... Ts>
+    class function<R(Ts...)>
+    {
+    private:
+        typedef function_impl<R(Ts...)> impl_type;
+        typedef typename impl_type::wrapper_type expectation_type;
+        typedef typename impl_type::error_type error_type;
+
+    public:
+        function() : impl_(std::make_shared<impl_type>()) {}
+
+        bool verify() const { return impl_->verify(); }
+        bool verify(const char* file, int line) const
         {
-            e_->returns(t);
+            error_type::pass(file, line);
+            return impl_->verify();
+        }
+        void reset() { impl_->reset(); }
+        void reset(const char* file, int line)
+        {
+            error_type::pass(file, line);
+            impl_->reset();
         }
 
-        E* e_;
-    };
-    template<typename E>
-    struct wrapper_base<void, E>
-    {
-        wrapper_base(E& e) : e_(&e) {}
-
-        E* e_;
-    };
-    template<typename R, typename E>
-    struct wrapper_base<R*, E>
-    {
-        wrapper_base(E& e) : e_(&e) {}
-
-        void returns(R* r) { e_->returns(r); }
-        template<typename Y>
-        void returns(const std::reference_wrapper<Y>& r)
+        expectation_type expect(const char* file, int line)
         {
-            e_->returns(r);
+            error_type::pass(file, line);
+            return impl_->expect(file, line);
+        }
+        expectation_type expect() { return impl_->expect(); }
+
+        R operator()(Ts... args) const { return (*impl_)(static_cast<ref_arg_t<Ts>>(args)...); }
+
+        friend std::ostream& operator<<(std::ostream& s, const function& f) { return s << *f.impl_; }
+
+        function& operator()(context& c, boost::unit_test::const_string instance)
+        {
+            impl_->add(c, impl_.get(), instance, boost::none, "");
+            return *this;
         }
 
-        E* e_;
-    };
+        void configure(context& c,
+                       const void* p,
+                       boost::unit_test::const_string instance,
+                       boost::optional<type_name> type,
+                       boost::unit_test::const_string name) const
+        {
+            impl_->add(c, p, instance, type, name);
+        }
 
-    inline int exceptions()
-    {
-#ifdef MOCK_UNCAUGHT_EXCEPTIONS
-        using namespace std;
-        return uncaught_exceptions();
-#else
-        return std::uncaught_exception() ? 1 : 0;
-#endif
-    }
+    private:
+        std::shared_ptr<impl_type> impl_;
+    };
 }} // namespace mock::detail
-
-#define MOCK_NUM_ARGS 0
-#define MOCK_NUM_ARGS_0
-#include "function_template.hpp"
-#undef MOCK_NUM_ARGS_0
-#undef MOCK_NUM_ARGS
-
-#define BOOST_PP_FILENAME_1 <turtle/detail/function_iterate.hpp>
-#define BOOST_PP_ITERATION_LIMITS (1, MOCK_MAX_ARGS)
-#include BOOST_PP_ITERATE()
-#undef BOOST_PP_FILENAME_1
-#undef BOOST_PP_ITERATION_LIMITS
 
 #endif // MOCK_FUNCTION_HPP_INCLUDED

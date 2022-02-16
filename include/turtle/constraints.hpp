@@ -11,7 +11,6 @@
 
 #include "config.hpp"
 #include "constraint.hpp"
-#include "detail/move_helper.hpp"
 #include "detail/void_t.hpp"
 #include "unwrap_reference.hpp"
 #include <boost/version.hpp>
