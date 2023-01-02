@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(ref_to_int_and_int_can_be_compared)
 namespace {
 struct fixture
 {
-    fixture() : text("same text"), actual(text.c_str())
+    fixture() : text("same text"), actual(text.c_str()), null_str(nullptr)
     {
         const char* static_string = "same text";
         BOOST_REQUIRE(actual != static_string);
@@ -44,6 +44,7 @@ struct fixture
     }
     std::string text;
     const char* actual;
+    const char* null_str;
 };
 } // namespace
 
@@ -73,6 +74,13 @@ BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_std_string_can_be_compared, fixtu
 {
     BOOST_CHECK(match(std::string("same text"), actual));
     BOOST_CHECK(!match(std::string("different text"), actual));
+}
+
+BOOST_FIXTURE_TEST_CASE(null_const_char_pointers_can_be_compared, fixture)
+{
+    BOOST_CHECK(match(null_str, null_str));
+    BOOST_CHECK(!match(null_str, "non-null string"));
+    BOOST_CHECK(!match("non-null string", null_str));
 }
 
 namespace {

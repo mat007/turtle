@@ -89,6 +89,14 @@ BOOST_AUTO_TEST_CASE(strings_are_serialized_with_double_quotes)
     BOOST_CHECK_EQUAL("\"string\"", to_string(std::string("string")));
 }
 
+BOOST_AUTO_TEST_CASE(null_c_strings_are_serialized_to_nullptr)
+{
+    const char* const null_str = nullptr;
+    BOOST_CHECK_EQUAL("nullptr", to_string(null_str));
+    // Note the lack of double quotes in the output, as opposed to when the
+    // string "nullptr" is serialized.
+}
+
 namespace {
 struct non_serializable
 {};
