@@ -158,6 +158,56 @@ BOOST_FIXTURE_TEST_CASE(triggering_several_once_expectations_is_valid, mock_erro
     }
 }
 
+BOOST_FIXTURE_TEST_CASE(string_likes_are_matched, mock_error_fixture)
+{
+    const char* c_string = "value";
+    const char c_string2[] = "value";
+    BOOST_REQUIRE(c_string != c_string2); // Different pointers
+    const std::string string = c_string;
+    {
+        mock::detail::function<void(std::string)> f;
+
+        f.expect().once().with(string);
+        f(string);
+        BOOST_TEST(f.verify());
+
+        f.reset();
+        f.expect().once().with(c_string);
+        f(string);
+        BOOST_TEST(f.verify());
+
+        f.reset();
+        f.expect().once().with(c_string2);
+        f(string);
+        BOOST_TEST(f.verify());
+
+        CHECK_CALLS(3);
+    }
+    {
+        mock::detail::function<void(const char*)> f;
+
+        f.expect().once().with(c_string);
+        f(c_string);
+        BOOST_TEST(f.verify());
+
+        f.reset();
+        f.expect().once().with(c_string);
+        f(c_string2);
+        BOOST_TEST(f.verify());
+
+        f.reset();
+        f.expect().once().with(c_string2);
+        f(c_string);
+        BOOST_TEST(f.verify());
+
+        f.reset();
+        f.expect().once().with(string);
+        f(c_string);
+        BOOST_TEST(f.verify());
+        CHECK_CALLS(4);
+    }
+}
+
 BOOST_FIXTURE_TEST_CASE(triggering_a_once_expectation_calls_unexpected_call_error_after_one_call, mock_error_fixture)
 {
     {
