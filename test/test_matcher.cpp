@@ -10,6 +10,7 @@
 #include <turtle/matcher.hpp>
 #include <boost/test/unit_test.hpp>
 #include <functional>
+#include <string>
 
 namespace {
 template<typename Expected, typename Actual>
@@ -33,35 +34,49 @@ BOOST_AUTO_TEST_CASE(ref_to_int_and_int_can_be_compared)
     BOOST_CHECK(!match(4, std::cref(i)));
 }
 
-BOOST_AUTO_TEST_CASE(const_char_pointer_and_const_char_pointer_can_be_compared)
+namespace {
+struct fixture
+{
+    fixture() : text("same text")
+    {
+        // Get a pointer to unique memory containing "same text"
+        actual = text.c_str();
+    }
+    const char* actual;
+
+private:
+    std::string text;
+};
+} // namespace
+
+BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_const_char_pointer_can_be_compared, fixture)
 {
     const char* expected = "same text";
-    const char* actual = "same text";
-    BOOST_REQUIRE(expected != actual); // Different pointer values
+    BOOST_REQUIRE(expected != actual);
+    BOOST_REQUIRE(std::string(expected) == actual);
+
     BOOST_CHECK(match(expected, actual));
     const char* unexpected = "different text";
-    BOOST_CHECK(!match(actual, unexpected));
+    BOOST_CHECK(!match(unexpected, actual));
 }
 
-BOOST_AUTO_TEST_CASE(const_char_pointer_and_string_literal_can_be_compared)
+BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_string_literal_can_be_compared, fixture)
 {
-    const char* actual = "same text";
     BOOST_CHECK(match("same text", actual));
     BOOST_CHECK(!match("different text", actual));
 }
 
-BOOST_AUTO_TEST_CASE(const_char_pointer_and_const_char_array_can_be_compared)
+BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_const_char_array_can_be_compared, fixture)
 {
-    const char* actual = "same text";
     const char expected[] = "same text";
+    BOOST_REQUIRE(expected != actual);
     BOOST_CHECK(match(expected, actual));
     const char unexpected[] = "different text";
     BOOST_CHECK(!match(unexpected, actual));
 }
 
-BOOST_AUTO_TEST_CASE(const_char_pointer_and_std_string_can_be_compared)
+BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_std_string_can_be_compared, fixture)
 {
-    const char* actual = "same text";
     BOOST_CHECK(match(std::string("same text"), actual));
     BOOST_CHECK(match(actual, std::string("same text")));
     BOOST_CHECK(!match(std::string("different text"), actual));
