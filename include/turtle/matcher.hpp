@@ -41,7 +41,7 @@ public:
     explicit matcher(const char* expected) : expected_(expected) {}
     bool operator()(const char* actual)
     {
-        if (nullptr == actual || nullptr == expected_)
+        if(!actual || !expected_)
             return actual == expected_;
         return std::strcmp(actual, expected_) == 0;
     }

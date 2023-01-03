@@ -108,7 +108,7 @@ namespace detail {
     }
     inline void serialize(stream& s, const char* const str)
     {
-        if (nullptr != str)
+        if(str)
             s << '"' << str << '"';
         else
             s << "nullptr";
