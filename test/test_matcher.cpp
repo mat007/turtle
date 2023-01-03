@@ -75,6 +75,14 @@ BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_std_string_can_be_compared, fixtu
     BOOST_CHECK(!match(std::string("different text"), actual));
 }
 
+BOOST_AUTO_TEST_CASE(null_const_char_pointers_can_be_compared)
+{
+    const char* const null_str = nullptr;
+    BOOST_CHECK(match(null_str, null_str));
+    BOOST_CHECK(!match(null_str, "non-null string"));
+    BOOST_CHECK(!match("non-null string", null_str));
+}
+
 namespace {
 template<typename T>
 std::string serialize(const T& t)

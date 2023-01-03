@@ -80,6 +80,15 @@ BOOST_AUTO_TEST_CASE(equal_constraint_deref)
     }
 }
 
+BOOST_AUTO_TEST_CASE(equal_null_c_string)
+{
+    const char* const null_str = nullptr;
+
+    BOOST_CHECK(mock::equal(null_str).c_(null_str));
+    BOOST_CHECK(!mock::equal(null_str).c_("non-null string"));
+    BOOST_CHECK(!mock::equal("non-null-string").c_(null_str));
+}
+
 BOOST_AUTO_TEST_CASE(same_constraint)
 {
     {
