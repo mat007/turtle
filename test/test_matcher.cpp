@@ -121,6 +121,11 @@ struct custom_constraint
     }
     bool operator()(int actual) { return actual == expected_; }
 };
+
+bool custom_constraint_func(int)
+{
+    return false;
+}
 } // namespace
 
 BOOST_AUTO_TEST_CASE(single_matcher_serializes)
@@ -131,6 +136,30 @@ BOOST_AUTO_TEST_CASE(single_matcher_serializes)
     BOOST_TEST(
       serialize(single_matcher<void(int, int, mock::constraint<custom_constraint>, int, int), int, int, int, int, int>(
         1, 2, custom_constraint(), 4, 5)) == "1, 2, custom42, 4, 5");
+}
+
+BOOST_AUTO_TEST_CASE(string_matcher_serializes)
+{
+    using mock::detail::single_matcher;
+    BOOST_TEST(serialize(single_matcher<void(const char*), const char*>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(const std::string&), const char*>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(const char*), const std::string&>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(const std::string&), const std::string&>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(std::string), const char*>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(const char*), std::string>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(std::string), std::string>("foo")) == "\"foo\"");
+    // Mixed types
+    BOOST_TEST(serialize(single_matcher<void(const char*, int), const char*, int>("bar", 2)) == "\"bar\", 2");
+}
+
+BOOST_AUTO_TEST_CASE(functor_matcher_serializes)
+{
+    using mock::detail::single_matcher;
+    using Functor = decltype(custom_constraint_func);
+    BOOST_TEST(serialize(single_matcher<void(Functor), int>(custom_constraint_func)) == "?");
+    BOOST_TEST(serialize(single_matcher<void(Functor), short>(custom_constraint_func)) == "?");
+    // Mixed types
+    BOOST_TEST(serialize(single_matcher<void(Functor, int), short, int>(custom_constraint_func, 2)) == "?, 2");
 }
 
 BOOST_AUTO_TEST_CASE(multi_matcher_serializes)
