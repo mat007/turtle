@@ -33,6 +33,10 @@ environment:
       CMAKE: true
 
 install:
+  - appveyor-retry powershell Invoke-WebRequest http://www.oasis-open.org/docbook/xml/4.2/docbook-xml-4.2.zip -OutFile docbook-xml.zip
+  - appveyor-retry powershell Invoke-WebRequest https://github.com/docbook/xslt10-stylesheets/releases/download/release/1.79.2/docbook-xsl-1.79.2.zip -OutFile docbook-xsl.zip
+  - 7z x -oC:\Boost\share\docbook-xml docbook-xml.zip
+  - 7z x -oC:\Boost\share docbook-xsl.zip
   - mkdir %APPVEYOR_BUILD_FOLDER%\bin
   - cd %APPVEYOR_BUILD_FOLDER%\bin
   - appveyor-retry powershell Invoke-WebRequest ftp://ftp.zlatkovic.com/libxml/iconv-1.9.2.win32.zip -OutFile iconv.zip

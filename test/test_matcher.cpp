@@ -10,6 +10,7 @@
 #include <turtle/matcher.hpp>
 #include <boost/test/unit_test.hpp>
 #include <functional>
+#include <string>
 
 namespace {
 template<typename Expected, typename Actual>
@@ -36,23 +37,27 @@ BOOST_AUTO_TEST_CASE(ref_to_int_and_int_can_be_compared)
 namespace {
 struct fixture
 {
-    fixture() : text("same text"), actual(text.c_str())
+    fixture() : text("same text")
     {
-        const char* static_string = "same text";
-        BOOST_REQUIRE(actual != static_string);
-        BOOST_REQUIRE(actual == std::string(static_string));
+        // Get a pointer to unique memory containing "same text"
+        actual = text.c_str();
     }
-    std::string text;
     const char* actual;
+
+private:
+    std::string text;
 };
 } // namespace
 
 BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_const_char_pointer_can_be_compared, fixture)
 {
     const char* expected = "same text";
+    BOOST_REQUIRE(expected != actual);
+    BOOST_REQUIRE(std::string(expected) == actual);
+
     BOOST_CHECK(match(expected, actual));
     const char* unexpected = "different text";
-    BOOST_CHECK(!match(actual, unexpected));
+    BOOST_CHECK(!match(unexpected, actual));
 }
 
 BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_string_literal_can_be_compared, fixture)
@@ -63,16 +68,19 @@ BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_string_literal_can_be_compared, f
 
 BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_const_char_array_can_be_compared, fixture)
 {
-    const char expected[10] = "same text";
+    const char expected[] = "same text";
+    BOOST_REQUIRE(expected != actual);
     BOOST_CHECK(match(expected, actual));
-    const char unexpected[15] = "different text";
+    const char unexpected[] = "different text";
     BOOST_CHECK(!match(unexpected, actual));
 }
 
 BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_std_string_can_be_compared, fixture)
 {
     BOOST_CHECK(match(std::string("same text"), actual));
+    BOOST_CHECK(match(actual, std::string("same text")));
     BOOST_CHECK(!match(std::string("different text"), actual));
+    BOOST_CHECK(!match(actual, std::string("different text")));
 }
 
 BOOST_AUTO_TEST_CASE(null_const_char_pointers_can_be_compared)
@@ -113,6 +121,11 @@ struct custom_constraint
     }
     bool operator()(int actual) { return actual == expected_; }
 };
+
+bool custom_constraint_func(int)
+{
+    return false;
+}
 } // namespace
 
 BOOST_AUTO_TEST_CASE(single_matcher_serializes)
@@ -123,6 +136,30 @@ BOOST_AUTO_TEST_CASE(single_matcher_serializes)
     BOOST_TEST(
       serialize(single_matcher<void(int, int, mock::constraint<custom_constraint>, int, int), int, int, int, int, int>(
         1, 2, custom_constraint(), 4, 5)) == "1, 2, custom42, 4, 5");
+}
+
+BOOST_AUTO_TEST_CASE(string_matcher_serializes)
+{
+    using mock::detail::single_matcher;
+    BOOST_TEST(serialize(single_matcher<void(const char*), const char*>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(const std::string&), const char*>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(const char*), const std::string&>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(const std::string&), const std::string&>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(std::string), const char*>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(const char*), std::string>("foo")) == "\"foo\"");
+    BOOST_TEST(serialize(single_matcher<void(std::string), std::string>("foo")) == "\"foo\"");
+    // Mixed types
+    BOOST_TEST(serialize(single_matcher<void(const char*, int), const char*, int>("bar", 2)) == "\"bar\", 2");
+}
+
+BOOST_AUTO_TEST_CASE(functor_matcher_serializes)
+{
+    using mock::detail::single_matcher;
+    using Functor = decltype(custom_constraint_func);
+    BOOST_TEST(serialize(single_matcher<void(Functor), int>(custom_constraint_func)) == "?");
+    BOOST_TEST(serialize(single_matcher<void(Functor), short>(custom_constraint_func)) == "?");
+    // Mixed types
+    BOOST_TEST(serialize(single_matcher<void(Functor, int), short, int>(custom_constraint_func, 2)) == "?, 2");
 }
 
 BOOST_AUTO_TEST_CASE(multi_matcher_serializes)
