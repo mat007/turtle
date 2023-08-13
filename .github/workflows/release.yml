@@ -17,8 +17,8 @@ jobs:
       BOOST_VERSION: 1.71.0
       BOOST_ROOT: ${{github.workspace}}/dependencies/boost
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           repository: boostorg/boost
           ref: boost-${{env.BOOST_VERSION}}
