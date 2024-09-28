@@ -9,3 +9,5 @@ Distributed under the [Boost Software License, Version 1.0](http://boost.org/LIC
 [![Coverage Status](https://coveralls.io/repos/mat007/turtle/badge.png)](https://coveralls.io/r/mat007/turtle)
 
 Boost and a C++14 compatible compiler is required.
+
+More information in the [documentation](http://turtle.sourceforge.net).
