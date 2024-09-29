@@ -26,7 +26,7 @@ jobs:
   Formatting:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Formatting
       uses: DoozyX/clang-format-lint-action@v0.13
       with:
@@ -42,17 +42,19 @@ jobs:
       matrix:
         include:
           # Linux, gcc
-          - { compiler: gcc-5, cxxstd: '14',       boostBranch: boost-1.65.0, os: ubuntu-22.04, container: 'ubuntu:18.04' }
-          - { compiler: gcc-5, cxxstd: '14',       boostBranch: boost-1.77.0, os: ubuntu-22.04, container: 'ubuntu:18.04' }
-          - { compiler: gcc-12,cxxstd: '14,17,20', boostBranch: master,       os: ubuntu-22.04 }
-          
+          - { compiler: gcc-7,  cxxstd: '14,17',    boostBranch: boost-1.86.0, os: ubuntu-20.04 }
+          - { compiler: gcc-10, cxxstd: '14,17,20', boostBranch: boost-1.86.0, os: ubuntu-22.04 }
+          - { compiler: gcc-12, cxxstd: '14,17,20', boostBranch: master,       os: ubuntu-22.04 }
+          - { compiler: gcc-14, cxxstd: '14,17,20', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
+          - { compiler: gcc-14, cxxstd: '14,17,20', boostBranch: master,       os: ubuntu-24.04 }
+
           # Linux, clang
-          - { compiler: clang-5.0, cxxstd: '14',       boostBranch: boost-1.65.0, os: ubuntu-22.04, container: 'ubuntu:18.04' }
-          - { compiler: clang-5.0, cxxstd: '14',       boostBranch: boost-1.77.0, os: ubuntu-22.04, container: 'ubuntu:18.04' }
-          - { compiler: clang-14,  cxxstd: '14,17,20', boostBranch: master,       os: ubuntu-22.04 }
+          - { compiler: clang-14,  cxxstd: '14,17,20', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
+          - { compiler: clang-18,  cxxstd: '14,17,20', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
+          - { compiler: clang-18,  cxxstd: '14,17,20', boostBranch: master,       os: ubuntu-24.04 }
 
           - { name: Collect coverage, coverage: yes,
-              compiler: gcc-8,     cxxstd: '14',       boostBranch: master,       os: ubuntu-20.04 }
+              compiler: gcc-8, cxxstd: '14', boostBranch: boost-1.86.0, os: ubuntu-20.04 }
 
     timeout-minutes: 120
     runs-on: ${{matrix.os}}
@@ -74,7 +76,7 @@ jobs:
             apt-get -o Acquire::Retries=$NET_RETRY_COUNT install -y g++ git cmake
             git config --global pack.threads 0
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # For coverage builds fetch the whole history, else only 1 commit using a 'fake ternary'
           fetch-depth: ${{ matrix.coverage && '0' || '1' }}
@@ -86,7 +88,7 @@ jobs:
           path: boost-root
           key: boost-${{matrix.boostBranch}}
       - name: Checkout Boost
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: boostorg/boost
           ref: ${{matrix.boostBranch}}
@@ -127,11 +129,7 @@ jobs:
 
       - name: Boost build
         run: |
-          if [[ "${{matrix.boostBranch}}" == "master" ]]; then
-            B2_FLAGS="cxxstd=${{matrix.cxxstd}}"
-          else
-            B2_FLAGS="cxxflags=-std=c++${{matrix.cxxstd}}"
-          fi
+          B2_FLAGS="cxxstd=${{matrix.cxxstd}}"
           if [[ "${{matrix.coverage}}" == "yes" ]]; then
             B2_FLAGS="$B2_FLAGS cxxflags=--coverage linkflags=--coverage"
           fi
