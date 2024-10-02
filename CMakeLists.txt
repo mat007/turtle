@@ -3,7 +3,7 @@
 # See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
 
 cmake_minimum_required(VERSION 3.8)
-project(turtle VERSION 1.3.2 LANGUAGES CXX)
+project(turtle VERSION 2.0.0 LANGUAGES CXX)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   set(IS_ROOT_PROJECT ON)
