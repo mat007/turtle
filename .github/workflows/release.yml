@@ -1,4 +1,4 @@
-# Copyright 2020 Alexander Grund
+# Copyright 2020-2025 Alexander Grund
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at http://boost.org/LICENSE_1_0.txt)
 
@@ -14,7 +14,7 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     env:
-      BOOST_VERSION: 1.71.0
+      BOOST_VERSION: 1.87.0
       BOOST_ROOT: ${{github.workspace}}/dependencies/boost
     steps:
       - uses: actions/checkout@v4
