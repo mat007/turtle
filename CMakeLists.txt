@@ -1,8 +1,8 @@
-# Copyright 2019 Alexander Grund
+# Copyright 2019-2025 Alexander Grund
 # Distributed under the Boost Software License, Version 1.0.
 # See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
 
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.16..3.20)
 project(turtle VERSION 2.0.0 LANGUAGES CXX)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
@@ -67,14 +67,7 @@ if(TURTLE_INSTALL)
     INSTALL_DESTINATION ${configInstallDestination}
   )
 
-  if(NOT CMAKE_VERSION VERSION_LESS 3.14)
-    write_basic_package_version_file(${versionFile} COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)
-  else()
-    set(OLD_CMAKE_SIZEOF_VOID_P ${CMAKE_SIZEOF_VOID_P})
-    set(CMAKE_SIZEOF_VOID_P "")
-    write_basic_package_version_file(${versionFile} COMPATIBILITY SameMajorVersion)
-    set(CMAKE_SIZEOF_VOID_P ${OLD_CMAKE_SIZEOF_VOID_P})
-  endif()
+  write_basic_package_version_file(${versionFile} COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)
 
   install(FILES ${configFile} ${versionFile} DESTINATION ${configInstallDestination})
 
