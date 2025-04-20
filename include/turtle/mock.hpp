@@ -72,36 +72,45 @@
     }                                            \
     MOCK_METHOD_HELPER(void(), identifier)
 
-/// MOCK_METHOD( [calling convention] name, arity[, signature[, identifier]] )
-/// generates both const and non-const methods
+/// MOCK_METHOD( [calling convention] name, arity[, signature[, identifier, [, specifiers]]] )
+/// generates both const and non-const methods by default, but can be changed by passing a specifier tuple.
 /// The 'signature' can be omitted if it can be uniquely identified from the base class
 /// if 'identifier' is omitted it will default to 'name'
-#define MOCK_METHOD(M, ...)                                                      \
-    MOCK_METHOD_EXT(M,                                                           \
-                    BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ),                    \
-                    BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
-                    BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ),              \
-                    (const, ))
+/// 'specifiers' is a potentially empty, tuple of method specifiers, e.g. (&, &&) or (const override)
+#define MOCK_METHOD(M, ...)                                                        \
+    MOCK_METHOD_EXT_I(M,                                                           \
+                      BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ),                    \
+                      BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
+                      BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ),              \
+                      BOOST_PP_VARIADIC_ELEM(3, __VA_ARGS__, (const, ), (const, ), (const, ), ))
 /// MOCK_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )
 /// generates only the const version of the method
 /// The 'signature' can be omitted if it can be uniquely identified from the base class
 /// if 'identifier' is omitted it will default to 'name'
-#define MOCK_CONST_METHOD(M, ...)                                                \
-    MOCK_METHOD_EXT(M,                                                           \
-                    BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ),                    \
-                    BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
-                    BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ),              \
-                    (const))
+#define MOCK_CONST_METHOD(M, ...)                                                  \
+    MOCK_METHOD_EXT_I(M,                                                           \
+                      BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ),                    \
+                      BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
+                      BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ),              \
+                      (const))
 /// MOCK_NON_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )
 /// generates only the non-const version of the method
 /// The 'signature' can be omitted if it can be uniquely identified from the base class
 /// if 'identifier' is omitted it will default to 'name'
-#define MOCK_NON_CONST_METHOD(M, ...)                                            \
-    MOCK_METHOD_EXT(M,                                                           \
-                    BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ),                    \
-                    BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
-                    BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ),              \
-                    ())
+#define MOCK_NON_CONST_METHOD(M, ...)                                              \
+    MOCK_METHOD_EXT_I(M,                                                           \
+                      BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ),                    \
+                      BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
+                      BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ),              \
+                      ())
+
+/// MOCK_METHOD_EXT( [calling convention] name, arity, qualifiers [, signature, [identifier]] )
+#define MOCK_METHOD_EXT(M, arity, ...)                                             \
+    MOCK_METHOD_EXT_I(M,                                                           \
+                      arity,                                                       \
+                      BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
+                      BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ),              \
+                      BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ))
 
 /// MOCK_FUNCTION( [calling convention] name, arity, signature[, identifier] )
 /// if 'identifier' is omitted it will default to 'name'

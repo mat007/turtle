@@ -327,6 +327,15 @@ struct base
     virtual void m1() = 0;
     virtual void m10() const = 0;
     virtual void m11() = 0;
+    virtual void m12() noexcept = 0;
+    virtual void m13() && = 0;
+    virtual void m14() = 0;
+    virtual void m14(int, float) = 0;
+    virtual void m14(int, int) = 0;
+    virtual void m14(int) = 0;
+    virtual void m14(int) const noexcept = 0;
+    virtual void m15() & = 0;
+    virtual void m15() && = 0;
 };
 
 MOCK_BASE_CLASS(variadic, base)
@@ -340,9 +349,28 @@ MOCK_BASE_CLASS(variadic, base)
     MOCK_NON_CONST_METHOD(m11, 0)
     MOCK_NON_CONST_METHOD(m6, 0, void())
     MOCK_NON_CONST_METHOD(m7, 0, void(), m7)
+
+    MOCK_METHOD_EXT(m12, 0, (noexcept override))
+    MOCK_METHOD_EXT(m13, 0, (&&override))
+    // Overloaded method
+    MOCK_METHOD(m14, 0, void(), m14_empty)
+    MOCK_METHOD(m14, 2, void(int, float), m14_int_float, ())
+    MOCK_METHOD(m14, 2, void(int, int), m14_int_int, (override))
+    MOCK_METHOD(m14, 1, void(int), m14_int, (override, const noexcept override))
+    MOCK_METHOD_EXT(m15, 0, (&override, &&override), void())
     MOCK_STATIC_METHOD(m8, 0, void())
     MOCK_STATIC_METHOD(m9, 0, void(), m9)
 };
+void instantiate_class()
+{
+    variadic inst; // If this compiles all pure virtual methods were mocked
+    const variadic& cinst = inst;
+    static_assert(noexcept(inst.m12()), "noexcept should be kept");
+    static_assert(!noexcept(inst.m14()), "noexcept should not be set");
+    static_assert(noexcept(cinst.m14(1)), "noexcept should be kept");
+    static_assert(!noexcept(inst.m14(1)), "noexcept should not be set");
+    static_assert(noexcept(std::declval<const variadic>().m14(1)), "noexcept should be kept");
+}
 
 template<typename T>
 MOCK_BASE_CLASS(variadic_tpl, base)
