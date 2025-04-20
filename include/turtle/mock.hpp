@@ -80,7 +80,8 @@
     MOCK_METHOD_EXT(M,                                                           \
                     BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ),                    \
                     BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
-                    BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ))
+                    BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ),              \
+                    (const, ))
 /// MOCK_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )
 /// generates only the const version of the method
 /// The 'signature' can be omitted if it can be uniquely identified from the base class
