@@ -75,7 +75,7 @@ namespace mock { namespace detail {
                     BOOST_PP_TUPLE_ELEM(3, M_n_S_t), \
                     qualifier)
 
-#define MOCK_METHOD_EXT(name, arity, signature, identifier, qualifiers)                         \
+#define MOCK_METHOD_EXT_I(name, arity, signature, identifier, qualifiers)                       \
     static_assert(arity == mock::detail::function_arity_t<signature>::value, "Arity mismatch"); \
     MOCK_PP_TUPLE_FOR_EACH(MOCK_METHOD_ITER, (name, arity, signature, identifier), qualifiers)  \
     MOCK_METHOD_HELPER(signature, identifier)
