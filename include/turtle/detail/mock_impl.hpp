@@ -80,9 +80,6 @@ namespace mock { namespace detail {
     MOCK_PP_TUPLE_FOR_EACH(MOCK_METHOD_ITER, (name, arity, signature, identifier), qualifiers)  \
     MOCK_METHOD_HELPER(signature, identifier)
 
-#define MOCK_CONST_METHOD_EXT(M, n, S, t) MOCK_METHOD_EXT(M, n, S, t, (const))
-#define MOCK_NON_CONST_METHOD_EXT(M, n, S, t) MOCK_METHOD_EXT(M, n, S, t, ())
-
 #define MOCK_FUNCTION_HELPER(signature, identifier, prefix)                                              \
     prefix mock::detail::function<signature>& identifier##_mock(mock::detail::context& context,          \
                                                                 boost::unit_test::const_string instance) \
