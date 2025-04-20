@@ -1,6 +1,7 @@
 // http://turtle.sourceforge.net
 //
 // Copyright Mathieu Champlon 2008
+// Copyright 2020-2025 Alexander Grund
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -17,6 +18,7 @@
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
+#include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/preprocessor/variadic/size.hpp>
 #include <functional>
