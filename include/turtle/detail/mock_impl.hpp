@@ -16,8 +16,6 @@
 #include "signature.hpp"
 #include "signature_traits.hpp"
 #include "type_name.hpp"
-#include <boost/preprocessor/comparison/less_equal.hpp>
-#include <boost/preprocessor/if.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/preprocessor/tuple/elem.hpp>
@@ -77,18 +75,10 @@ namespace mock { namespace detail {
                     BOOST_PP_TUPLE_ELEM(3, M_n_S_t), \
                     qualifier)
 
-#define MOCK_METHOD_EXT_IMPL(name, arity, signature, identifier, qualifiers)                    \
+#define MOCK_METHOD_EXT(name, arity, signature, identifier, qualifiers)                         \
     static_assert(arity == mock::detail::function_arity_t<signature>::value, "Arity mismatch"); \
     MOCK_PP_TUPLE_FOR_EACH(MOCK_METHOD_ITER, (name, arity, signature, identifier), qualifiers)  \
     MOCK_METHOD_HELPER(signature, identifier)
-
-/// MOCK_METHOD_EXT( name, arity, signature, identifier [ , qualifiers] )
-/// If qualifiers is not given, defaults to (const, ), i.e. const and non-const
-#define MOCK_METHOD_EXT(name, arity, signature, ...)                         \
-    MOCK_METHOD_EXT_IMPL                                                     \
-    BOOST_PP_IF(BOOST_PP_LESS_EQUAL(BOOST_PP_VARIADIC_SIZE(__VA_ARGS__), 1), \
-                (name, arity, signature, __VA_ARGS__, (const, )),            \
-                (name, arity, signature, __VA_ARGS__))
 
 #define MOCK_CONST_METHOD_EXT(M, n, S, t) MOCK_METHOD_EXT(M, n, S, t, (const))
 #define MOCK_NON_CONST_METHOD_EXT(M, n, S, t) MOCK_METHOD_EXT(M, n, S, t, ())
