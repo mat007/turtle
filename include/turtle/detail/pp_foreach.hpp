@@ -9,12 +9,17 @@
 #ifndef MOCK_PP_FOREACH_HPP_INCLUDED
 #define MOCK_PP_FOREACH_HPP_INCLUDED
 
-#include <boost/preprocessor/expand.hpp>
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/empty.hpp>
 #include <boost/preprocessor/facilities/overload.hpp>
+#include <boost/preprocessor/tuple/rem.hpp>
 
-/// Expand to `macro(data, elem)` for each element passed, similar to BOOST_PP_*_FOR_EACH
-/// It supports empty arguments,
+/// Expand to `macro(data, elem)` for each element in the tuple.
+/// Same as BOOST_PP_TUPLE_FOR_EACH but supports empty elements,
 /// without causing a C4003 "not enough arguments for function-like macro invocation" warning on MSVC
+#define MOCK_PP_TUPLE_FOR_EACH(macro, data, tuple) MOCK_PP_FOR_EACH(macro, data, BOOST_PP_REM tuple)
+
+/// Expand to `macro(data, elem)` for each variadic element passed
 #if BOOST_PP_VARIADICS_MSVC
 #    define MOCK_PP_FOR_EACH(macro, data, ...) \
         BOOST_PP_CAT(BOOST_PP_OVERLOAD(MOCK_PP_INVOKE_, __VA_ARGS__)(macro, data, __VA_ARGS__), BOOST_PP_EMPTY())
