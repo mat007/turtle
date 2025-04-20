@@ -1,6 +1,7 @@
 // http://turtle.sourceforge.net
 //
 // Copyright Mathieu Champlon 2008
+// Copyright 2022-2025 Alexander Grund
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -14,7 +15,7 @@
 #include "signature.hpp"
 #include "signature_traits.hpp"
 #include "type_name.hpp"
-#include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <type_traits>
 
@@ -49,47 +50,47 @@ namespace mock { namespace detail {
         return t##_mock_;                                                                                             \
     }
 
-#define MOCK_PARAM(S) mock::detail::parameter_t < S
-#define MOCK_DECL_PARAM(z, n, d) BOOST_PP_COMMA_IF(n) d, n > p##n
-#define MOCK_DECL_PARAMS(n, S) BOOST_PP_REPEAT(n, MOCK_DECL_PARAM, MOCK_PARAM(S))
-#define MOCK_DECL(M, n, S, c) mock::detail::result_type_t<S> M(MOCK_DECL_PARAMS(n, S)) c
+#define MOCK_PARAM(S, n) mock::detail::parameter_t<S, n>
 
-#define MOCK_FORWARD_PARAM(z, n, d) BOOST_PP_COMMA_IF(n) d, n >> (p##n)
-#define MOCK_FORWARD_PARAMS(n, S) BOOST_PP_REPEAT(n, MOCK_FORWARD_PARAM, std::forward < MOCK_PARAM(S))
-#define MOCK_METHOD_AUX(M, n, S, t, c)                                              \
-    static_assert(n == mock::detail::function_arity_t<S>::value, "Arity mismatch"); \
-    MOCK_DECL(M, n, S, c) { return MOCK_ANONYMOUS_HELPER(t)(MOCK_FORWARD_PARAMS(n, S)); }
+#define MOCK_DECL_PARAM(z, n, S) MOCK_PARAM(S, n) p##n
+#define MOCK_DECL_PARAMS(n, S) BOOST_PP_ENUM(n, MOCK_DECL_PARAM, S)
+#define MOCK_DECL(name, arity, signature, qualifier) \
+    mock::detail::result_type_t<signature> name(MOCK_DECL_PARAMS(arity, signature)) qualifier
 
-#define MOCK_METHOD_EXT(M, n, S, t)    \
-    MOCK_METHOD_AUX(M, n, S, t, )      \
-    MOCK_METHOD_AUX(M, n, S, t, const) \
-    MOCK_METHOD_HELPER(S, t)
-#define MOCK_CONST_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_AUX(M, n, S, t, const)    \
-    MOCK_METHOD_HELPER(S, t)
-#define MOCK_NON_CONST_METHOD_EXT(M, n, S, t) \
-    MOCK_METHOD_AUX(M, n, S, t, )             \
-    MOCK_METHOD_HELPER(S, t)
-
-#define MOCK_FUNCTION_HELPER(S, t, s)                                                                              \
-    s mock::detail::function<S>& t##_mock(mock::detail::context& context, boost::unit_test::const_string instance) \
-    {                                                                                                              \
-        static mock::detail::function<S> f;                                                                        \
-        return f(context, instance);                                                                               \
+#define MOCK_FORWARD_PARAM(z, n, S) std::forward<MOCK_PARAM(S, n)>(p##n)
+#define MOCK_FORWARD_PARAMS(n, S) BOOST_PP_ENUM(n, MOCK_FORWARD_PARAM, S)
+#define MOCK_METHOD_AUX(name, arity, signature, identifier, qualifier)                   \
+    MOCK_DECL(name, arity, signature, qualifier)                                         \
+    {                                                                                    \
+        return MOCK_ANONYMOUS_HELPER(identifier)(MOCK_FORWARD_PARAMS(arity, signature)); \
     }
 
-#define MOCK_CONSTRUCTOR_AUX(T, n, A, t)                                               \
-    T(MOCK_DECL_PARAMS(n, void A)) { MOCK_HELPER(t)(MOCK_FORWARD_PARAMS(n, void A)); } \
-    MOCK_FUNCTION_HELPER(void A, t, static)
+#define MOCK_METHOD_EXT(name, arity, signature, identifier)    \
+    MOCK_METHOD_AUX(name, arity, signature, identifier, )      \
+    MOCK_METHOD_AUX(name, arity, signature, identifier, const) \
+    MOCK_METHOD_HELPER(signature, identifier)
+#define MOCK_CONST_METHOD_EXT(name, arity, signature, identifier) \
+    MOCK_METHOD_AUX(name, arity, signature, identifier, const)    \
+    MOCK_METHOD_HELPER(signature, identifier)
+#define MOCK_NON_CONST_METHOD_EXT(name, arity, signature, identifier) \
+    MOCK_METHOD_AUX(name, arity, signature, identifier, )             \
+    MOCK_METHOD_HELPER(signature, identifier)
 
-#define MOCK_FUNCTION_AUX(F, n, S, t, s)                                            \
-    MOCK_FUNCTION_HELPER(S, t, s)                                                   \
-    static_assert(n == mock::detail::function_arity_t<S>::value, "Arity mismatch"); \
-    s MOCK_DECL(F, n, S, ) { return MOCK_HELPER(t)(MOCK_FORWARD_PARAMS(n, S)); }
+#define MOCK_FUNCTION_HELPER(signature, identifier, prefix)                                              \
+    prefix mock::detail::function<signature>& identifier##_mock(mock::detail::context& context,          \
+                                                                boost::unit_test::const_string instance) \
+    {                                                                                                    \
+        static mock::detail::function<signature> f;                                                      \
+        return f(context, instance);                                                                     \
+    }
 
-#define MOCK_VARIADIC_ELEM_0(e0, ...) e0
-#define MOCK_VARIADIC_ELEM_1(e0, e1, ...) e1
-#define MOCK_VARIADIC_ELEM_2(e0, e1, e2, ...) e2
+#define MOCK_FUNCTION_AUX(name, arity, signature, identifier, prefix)                           \
+    MOCK_FUNCTION_HELPER(signature, identifier, prefix)                                         \
+    static_assert(arity == mock::detail::function_arity_t<signature>::value, "Arity mismatch"); \
+    prefix MOCK_DECL(name, arity, signature, )                                                  \
+    {                                                                                           \
+        return MOCK_HELPER(identifier)(MOCK_FORWARD_PARAMS(arity, signature));                  \
+    }
 
 #define MOCK_REPLACED_MACRO_ERROR(oldName, newName) static_assert(false, #oldName " has been replaced by " #newName)
 // Replaced macros

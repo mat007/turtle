@@ -1,6 +1,7 @@
 // http://turtle.sourceforge.net
 //
 // Copyright Mathieu Champlon 2008
+// Copyright 2022-2025 Alexander Grund
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -15,6 +16,7 @@
 #include "object.hpp"
 #include "reset.hpp"
 #include "verify.hpp"
+#include <boost/preprocessor/variadic/elem.hpp>
 
 /// MOCK_CLASS( name )
 /// Define a class
@@ -51,7 +53,12 @@
 
 /// MOCK_CONSTRUCTOR( [calling convention] name, arity, parameters, identifier )
 /// As constructors do not have a return type, the usual signature gets restricted here to just the parameters.
-#define MOCK_CONSTRUCTOR(T, arity, parameters, identifier) MOCK_CONSTRUCTOR_AUX(T, arity, parameters, identifier)
+#define MOCK_CONSTRUCTOR(T, arity, parameters, identifier)                    \
+    T(MOCK_DECL_PARAMS(arity, void parameters))                               \
+    {                                                                         \
+        MOCK_HELPER(identifier)(MOCK_FORWARD_PARAMS(arity, void parameters)); \
+    }                                                                         \
+    MOCK_FUNCTION_HELPER(void parameters, identifier, static)
 
 /// MOCK_DESTRUCTOR( [calling convention] ~name, identifier )
 #define MOCK_DESTRUCTOR(T, identifier)           \
@@ -69,39 +76,41 @@
 /// generates both const and non-const methods
 /// The 'signature' can be omitted if it can be uniquely identified from the base class
 /// if 'identifier' is omitted it will default to 'name'
-#define MOCK_METHOD(M, ...)                                                 \
-    MOCK_METHOD_EXT(M,                                                      \
-                    MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ),                    \
-                    MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M), ), \
-                    MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M, ))
+#define MOCK_METHOD(M, ...)                                                      \
+    MOCK_METHOD_EXT(M,                                                           \
+                    BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ),                    \
+                    BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
+                    BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ))
 /// MOCK_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )
 /// generates only the const version of the method
 /// The 'signature' can be omitted if it can be uniquely identified from the base class
 /// if 'identifier' is omitted it will default to 'name'
-#define MOCK_CONST_METHOD(M, ...)                                                 \
-    MOCK_CONST_METHOD_EXT(M,                                                      \
-                          MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ),                    \
-                          MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M), ), \
-                          MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M, ))
+#define MOCK_CONST_METHOD(M, ...)                                                      \
+    MOCK_CONST_METHOD_EXT(M,                                                           \
+                          BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ),                    \
+                          BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
+                          BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ))
 /// MOCK_NON_CONST_METHOD( [calling convention] name, arity[, signature[, identifier]] )
 /// generates only the non-const version of the method
 /// The 'signature' can be omitted if it can be uniquely identified from the base class
 /// if 'identifier' is omitted it will default to 'name'
-#define MOCK_NON_CONST_METHOD(M, ...)                                                 \
-    MOCK_NON_CONST_METHOD_EXT(M,                                                      \
-                              MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ),                    \
-                              MOCK_VARIADIC_ELEM_1(__VA_ARGS__, MOCK_SIGNATURE(M), ), \
-                              MOCK_VARIADIC_ELEM_2(__VA_ARGS__, M, M, ))
+#define MOCK_NON_CONST_METHOD(M, ...)                                                      \
+    MOCK_NON_CONST_METHOD_EXT(M,                                                           \
+                              BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ),                    \
+                              BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, MOCK_SIGNATURE(M), ), \
+                              BOOST_PP_VARIADIC_ELEM(2, __VA_ARGS__, M, M, ))
 
 /// MOCK_FUNCTION( [calling convention] name, arity, signature[, identifier] )
 /// if 'identifier' is omitted it will default to 'name'
 #define MOCK_FUNCTION(F, arity, ...) \
-    MOCK_FUNCTION_AUX(F, arity, MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), inline)
+    MOCK_FUNCTION_AUX(               \
+      F, arity, BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ), BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, F, ), inline)
 
 /// MOCK_STATIC_METHOD( [calling convention] name, arity, signature[, identifier] )
 /// if 'identifier' is omitted it will default to 'name'
 #define MOCK_STATIC_METHOD(F, arity, ...) \
-    MOCK_FUNCTION_AUX(F, arity, MOCK_VARIADIC_ELEM_0(__VA_ARGS__, ), MOCK_VARIADIC_ELEM_1(__VA_ARGS__, F, ), static)
+    MOCK_FUNCTION_AUX(                    \
+      F, arity, BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__, ), BOOST_PP_VARIADIC_ELEM(1, __VA_ARGS__, F, ), static)
 
 /// MOCK_EXPECT( identifier )
 /// Begin setting up expectation for the identifier
