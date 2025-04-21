@@ -42,7 +42,7 @@ jobs:
       matrix:
         include:
           # Linux, gcc
-          - { compiler: gcc-7,  cxxstd: '14,17',    boostBranch: boost-1.86.0, os: ubuntu-20.04 }
+          - { compiler: gcc-7,  cxxstd: '14,17',    boostBranch: boost-1.86.0, os: ubuntu-latest, container: 'ubuntu:20.04' }
           - { compiler: gcc-10, cxxstd: '14,17,20', boostBranch: boost-1.86.0, os: ubuntu-22.04 }
           - { compiler: gcc-12, cxxstd: '14,17,20', boostBranch: master,       os: ubuntu-22.04 }
           - { compiler: gcc-14, cxxstd: '14,17,20', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
@@ -54,7 +54,7 @@ jobs:
           - { compiler: clang-18,  cxxstd: '14,17,20', boostBranch: master,       os: ubuntu-24.04 }
 
           - { name: Collect coverage, coverage: yes,
-              compiler: gcc-8, cxxstd: '14', boostBranch: boost-1.86.0, os: ubuntu-20.04 }
+              compiler: gcc-8, cxxstd: '14', boostBranch: boost-1.86.0, os: ubuntu-latest, container: 'ubuntu:20.04' }
 
     timeout-minutes: 120
     runs-on: ${{matrix.os}}
@@ -83,7 +83,7 @@ jobs:
 
       # Checking out Boost and all its submodules takes ages...
       - name: Cache Boost
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: boost-root
           key: boost-${{matrix.boostBranch}}
