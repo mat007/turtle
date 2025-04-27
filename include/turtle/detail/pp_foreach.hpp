@@ -27,6 +27,9 @@
 #    define MOCK_PP_FOR_EACH(macro, data, ...) BOOST_PP_OVERLOAD(MOCK_PP_INVOKE_, __VA_ARGS__)(macro, data, __VA_ARGS__)
 #endif
 
+// When the compiler supports detection of empty variadic element (e.g. Clang & GCC) Boost.PP returns a size of zero.
+// However an empty variadic is a valid case: A single invocation with an empty element.
+#define MOCK_PP_INVOKE_0(macro, data, x) macro(data, x)
 #define MOCK_PP_INVOKE_1(macro, data, x) macro(data, x)
 #define MOCK_PP_INVOKE_2(macro, data, x, ...) macro(data, x) MOCK_PP_INVOKE_1(macro, data, __VA_ARGS__)
 #define MOCK_PP_INVOKE_3(macro, data, x, ...) macro(data, x) MOCK_PP_INVOKE_2(macro, data, __VA_ARGS__)
