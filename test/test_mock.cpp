@@ -365,6 +365,7 @@ void instantiate_class()
 {
     variadic inst; // If this compiles all pure virtual methods were mocked
     const variadic& cinst = inst;
+    (void)cinst; // Avoid unused variable warning
     static_assert(noexcept(inst.m12()), "noexcept should be kept");
     static_assert(!noexcept(inst.m14()), "noexcept should not be set");
     static_assert(noexcept(cinst.m14(1)), "noexcept should be kept");
