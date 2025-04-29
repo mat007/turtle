@@ -29,7 +29,7 @@ environment:
       BOOST: 1_65_1
       CMAKE: true
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      BOOST: 1_77_0
+      BOOST: 1_83_0
       CMAKE: true
 
 install:
