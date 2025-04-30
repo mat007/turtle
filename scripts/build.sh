@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Copyright (C) 2015 Mathieu Champlon
+# Copyright (C) 2025 Alexander Grund
 #
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
@@ -18,3 +19,6 @@ scripts/build_doc.sh "$@"
 
 cd "$BOOST_ROOT"
 ./b2 "$PROJECT_DIR/doc//mock_examples" -q "$@"
+
+cd "$BOOST_ROOT"
+./b2 "$PROJECT_DIR/test//inspect" -q "$@"
