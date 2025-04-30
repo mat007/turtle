@@ -1,6 +1,7 @@
 // http://turtle.sourceforge.net
 //
 // Copyright Mathieu Champlon 2009
+// Copyright 2020-2025 Alexander Grund
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -28,6 +29,19 @@
 #    ifndef MOCK_NO_UNCAUGHT_EXCEPTIONS
 #        define MOCK_UNCAUGHT_EXCEPTIONS
 #    endif
+#endif
+
+#if BOOST_VERSION >= 107700
+#    define MOCK_CXX_VERSION BOOST_CXX_VERSION
+#elif defined(_MSC_VER)
+#    ifdef _MSVC_LANG
+#        define MOCK_CXX_VERSION _MSVC_LANG
+#    elif defined(_HAS_CXX17)
+#        define MOCK_CXX_VERSION 201703L
+#    endif
+#endif
+#ifndef MOCK_CXX_VERSION
+#    define MOCK_CXX_VERSION __cplusplus
 #endif
 
 #endif // MOCK_CONFIG_HPP_INCLUDED
