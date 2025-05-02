@@ -67,6 +67,8 @@ BOOST_AUTO_TEST_CASE(function_pointer_is_functor)
     is_not_functor(&f2);
 }
 
+// ptr_fun, bin1st is removed in C++17
+#if MOCK_CXX_VERSION < 201703L
 BOOST_AUTO_TEST_CASE(std_ptr_fun_is_functor)
 {
     is_functor(std::ptr_fun(&f1));
@@ -77,6 +79,7 @@ BOOST_AUTO_TEST_CASE(std_bind_first_is_functor)
 {
     is_functor(std::bind1st(std::ptr_fun(&f2), ""));
 }
+#endif
 
 BOOST_AUTO_TEST_CASE(bind_is_functor)
 {

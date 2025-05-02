@@ -1,4 +1,5 @@
-# Copyright Mathieu Champlon 2012
+# Copyright 2012 Mathieu Champlon
+# Copyright 2025 Alexander Grund
 #
 # Distributed under the Boost Software License version 1.0. (See
 # accompanying file LICENSE_1_0.txt or copy at
@@ -15,11 +16,8 @@ project
 
 path-constant parent : .. ;
 
-alias mock_inspect :
-  [ run /boost/tools/inspect//inspect/<variant>release
-       : $(parent) -text -brief : : : inspect
-  ]
-;
+run /boost/tools/inspect//inspect/<variant>release : $(parent) -text -brief : : <test-info>always_show_run_output : inspect ;
+explicit inspect ;
 
 rule run-test ( name )
 {
