@@ -544,6 +544,7 @@ bool custom_constraint(int expected, int actual)
     return expected == actual;
 }
 
+#if MOCK_CXX_VERSION < 201703L
 BOOST_AUTO_TEST_CASE(demonstrates_adding_a_custom_constraint_with_a_standard_library_functor)
 {
     mock_class c;
@@ -551,6 +552,7 @@ BOOST_AUTO_TEST_CASE(demonstrates_adding_a_custom_constraint_with_a_standard_lib
       std::bind1st(std::ptr_fun(&custom_constraint), 42)); // std::ptr_fun creates an std::unary_function
     c.method(42);
 }
+#endif
 //]
 } // namespace constraints_example_3
 
