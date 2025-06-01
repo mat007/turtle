@@ -194,7 +194,7 @@ jobs:
           else
             compiler_launcher_arg=-DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           fi
-          cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_STANDARD="${CXX_STANDARD##*,}" $compiler_launcher_arg -DCMAKE_VERBOSE_MAKEFILE=ON
+          cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_STANDARD="${CXX_STANDARD##*,}" $compiler_launcher_arg -DCMAKE_VERBOSE_MAKEFILE=ON -DBoost_DEBUG=ON -DBoost_VERBOSE=ON
           cmake --build . --config Debug -- -j3
           ctest --output-on-failure --build-config Debug -j3
 
