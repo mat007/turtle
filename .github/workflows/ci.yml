@@ -1,4 +1,4 @@
-# Copyright 2022 Alexander Grund
+# Copyright 2022-2025 Alexander Grund
 #
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at http://boost.org/LICENSE_1_0.txt)
@@ -32,7 +32,7 @@ jobs:
       with:
         clangFormatVersion: 10
 
-  posix:
+  Build:
     defaults:
       run:
         shell: bash
@@ -52,6 +52,11 @@ jobs:
           - { compiler: clang-14,  cxxstd: '14,17,20', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
           - { compiler: clang-18,  cxxstd: '14,17,20', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
           - { compiler: clang-18,  cxxstd: '14,17,20', boostBranch: master,       os: ubuntu-24.04 }
+
+          # Windows
+          - { toolset: msvc-14.2, os: windows-2019,  cxxstd: 14, generator: 'Visual Studio 16 2019' }
+          - { toolset: gcc,       os: windows-2019,  cxxstd: 17, generator: 'Visual Studio 16 2019' }
+          - { toolset: msvc-14.3, os: windows-2022,  cxxstd: 20, generator: 'Visual Studio 17 2022' }
 
           - { name: Collect coverage, coverage: yes,
               compiler: gcc-8, cxxstd: '14', boostBranch: boost-1.86.0, os: ubuntu-latest, container: 'ubuntu:20.04' }
@@ -99,6 +104,8 @@ jobs:
 
       - name: Install packages and setup env
         run: |
+          B2_TOOLSET=${{matrix.toolset}}
+          if [[ ! "${{matrix.os}}" == "windows-"* ]]; then
             sudo apt-get -o Acquire::Retries=$NET_RETRY_COUNT update
             CXX=${{matrix.compiler}}
             CXX="${CXX/gcc-/g++-}"
@@ -108,19 +115,23 @@ jobs:
             CXX="ccache ${CXX/clang-/clang++-}"
             echo "CXX=$CXX" >> $GITHUB_ENV
             echo "CC=${{matrix.compiler}}" >> $GITHUB_ENV
-            if [[ "$CXX" =~ clang ]]; then
-              B2_TOOLSET=clang
-            else
-              B2_TOOLSET=gcc
+            if [[ -z $B2_TOOLSET ]]; then
+              if [[ "$CXX" =~ clang ]]; then
+                B2_TOOLSET=clang
+              else
+                B2_TOOLSET=gcc
+              fi
             fi
-            echo "B2_TOOLSET=$B2_TOOLSET" >> $GITHUB_ENV
-            echo "using $B2_TOOLSET : : $CXX ;" > ~/user-config.jam
-            # Move the Boost root to a sibling folder
-            mv boost-root ..
-            echo "BOOST_ROOT=${{github.workspace}}/../boost-root" >> $GITHUB_ENV
+            [[ -z $CXX ]] || echo "using $B2_TOOLSET : : $CXX ;" > ~/user-config.jam
+          fi
+          echo "B2_TOOLSET=$B2_TOOLSET" >> $GITHUB_ENV
+          # Move the Boost root to a sibling folder
+          mv boost-root ..
+          echo "BOOST_ROOT=${{github.workspace}}/../boost-root" >> $GITHUB_ENV
 
       - name: Cache ccache
         uses: hendrikmuhs/ccache-action@v1
+        if: startsWith(matrix.os, 'ubuntu')
         with:
           key: ${{matrix.os}}-${{matrix.compiler}}-${{matrix.boostBranch}}
 
@@ -165,7 +176,12 @@ jobs:
         run: |
           mkdir build && cd build
           CXX_STANDARD="${{matrix.cxxstd}}"
-          cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-std=c++${CXX_STANDARD##*,}" -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_VERBOSE_MAKEFILE=ON
+          if [[ "${{matrix.os}}" == "windows-"* ]]; then
+            compiler_launcher_arg=
+          else
+            compiler_launcher_arg=-DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          fi
+          cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_STANDARD="${CXX_STANDARD##*,}" $compiler_launcher_arg -DCMAKE_VERBOSE_MAKEFILE=ON
           cmake --build . --config Debug -- -j3
           ctest --output-on-failure --build-config Debug -j3
 
