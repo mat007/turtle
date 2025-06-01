@@ -125,6 +125,13 @@ jobs:
             [[ -z $CXX ]] || echo "using $B2_TOOLSET : : $CXX ;" > ~/user-config.jam
           fi
           echo "B2_TOOLSET=$B2_TOOLSET" >> $GITHUB_ENV
+
+          B2_FLAGS+=" --toolset=$B2_TOOLSET cxxstd=${{matrix.cxxstd}}"
+          if [[ "${{matrix.coverage}}" == "yes" ]]; then
+            B2_FLAGS+=" cxxflags=--coverage linkflags=--coverage"
+          fi
+          echo "B2_FLAGS=$B2_FLAGS" >> $GITHUB_ENV
+
           # Move the Boost root to a sibling folder
           mv boost-root ..
           echo "BOOST_ROOT=${{github.workspace}}/../boost-root" >> $GITHUB_ENV
@@ -141,11 +148,17 @@ jobs:
 
       - name: Boost build
         run: |
-          B2_FLAGS="cxxstd=${{matrix.cxxstd}}"
-          if [[ "${{matrix.coverage}}" == "yes" ]]; then
-            B2_FLAGS="$B2_FLAGS cxxflags=--coverage linkflags=--coverage"
-          fi
-          scripts/build.sh --toolset=$B2_TOOLSET $B2_FLAGS -j3
+          ./b2 "$GITHUB_WORKSPACE/test" -q $B2_FLAGS -j3
+          ./b2 "$GITHUB_WORKSPACE/doc//mock_examples" -q $B2_FLAGS "$@"
+        working-directory: ${{env.BOOST_ROOT}}
+
+      - name: Run inspect check
+        run: ./b2 "$GITHUB_WORKSPACE/test//inspect" -q $B2_FLAGS
+        working-directory: ${{env.BOOST_ROOT}}
+
+      - name: Build doc
+        if: startsWith(matrix.os, 'ubuntu')
+        run: scripts/build_doc.sh $B2_FLAGS -j3
 
       - name: Collect coverage
         if: matrix.coverage
