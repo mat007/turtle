@@ -197,6 +197,9 @@ jobs:
           if [[ -n "${{matrix.generator}}" ]]; then
             extra_args+=(-G "${{matrix.generator}}")
           fi
+          if [[ "${{matrix.generator}}" == "MinGW"* ]]; then
+            extra_args+=(-DCMAKE_CXX_FLAGS="-Wa,-mbig-obj")
+          fi
           echo "Using extra args: ${extra_args[*]}"
           cmake .. -DCMAKE_BUILD_TYPE=Debug -DBoost_ROOT="$BOOST_ROOT/stage" -DCMAKE_CXX_STANDARD="${CXX_STANDARD##*,}" "${extra_args[@]}" -DCMAKE_VERBOSE_MAKEFILE=ON -DBoost_DEBUG=ON -DBoost_VERBOSE=ON
           cmake --build . --config Debug --parallel 3
