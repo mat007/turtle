@@ -195,8 +195,8 @@ jobs:
             compiler_launcher_arg=-DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           fi
           cmake .. -DCMAKE_BUILD_TYPE=Debug -DBoost_ROOT="$BOOST_ROOT/stage" -DCMAKE_CXX_STANDARD="${CXX_STANDARD##*,}" $compiler_launcher_arg -DCMAKE_VERBOSE_MAKEFILE=ON -DBoost_DEBUG=ON -DBoost_VERBOSE=ON
-          cmake --build . --config Debug -- -j3
-          ctest --output-on-failure --build-config Debug -j3
+          cmake --build . --config Debug --parallel 3
+          ctest --output-on-failure --build-config Debug --parallel 3
 
       - name: Cleanup Boost folder to reduce cache usage
         if: ${{ always() }}
