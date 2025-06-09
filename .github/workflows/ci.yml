@@ -55,7 +55,7 @@ jobs:
 
           # Windows
           - { toolset: msvc-14.2, os: windows-2019,  cxxstd: 14, generator: 'Visual Studio 16 2019' }
-          - { toolset: gcc,       os: windows-2019,  cxxstd: 17, generator: 'Visual Studio 16 2019' }
+          - { toolset: gcc,       os: windows-2019,  cxxstd: 17, generator: 'MinGW Makefiles' }
           - { toolset: msvc-14.3, os: windows-2022,  cxxstd: 20, generator: 'Visual Studio 17 2022' }
 
           - { name: Collect coverage, coverage: yes,
@@ -190,13 +190,17 @@ jobs:
           mkdir build && cd build
           CXX_STANDARD="${{matrix.cxxstd}}"
           if [[ "${{matrix.os}}" == "windows-"* ]]; then
-            compiler_launcher_arg=
+            extra_args=()
           else
-            compiler_launcher_arg=-DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+            extra_args=(-DCMAKE_CXX_COMPILER_LAUNCHER=ccache)
           fi
-          cmake .. -DCMAKE_BUILD_TYPE=Debug -DBoost_ROOT="$BOOST_ROOT/stage" -DCMAKE_CXX_STANDARD="${CXX_STANDARD##*,}" $compiler_launcher_arg -DCMAKE_VERBOSE_MAKEFILE=ON -DBoost_DEBUG=ON -DBoost_VERBOSE=ON
+          if [[ -n "${{matrix.generator}}" ]]; then
+            extra_args+=(-G "${{matrix.generator}}")
+          fi
+          echo "Using extra args: ${extra_args[*]}"
+          cmake .. -DCMAKE_BUILD_TYPE=Debug -DBoost_ROOT="$BOOST_ROOT/stage" -DCMAKE_CXX_STANDARD="${CXX_STANDARD##*,}" "${extra_args[@]}" -DCMAKE_VERBOSE_MAKEFILE=ON -DBoost_DEBUG=ON -DBoost_VERBOSE=ON
           cmake --build . --config Debug --parallel 3
-          ctest --output-on-failure --build-config Debug --parallel 3
+          ctest --output-on-failure --build-config Debug
 
       - name: Cleanup Boost folder to reduce cache usage
         if: ${{ always() }}
