@@ -25,8 +25,9 @@
 #    endif
 #endif
 
-#if defined(__cpp_lib_uncaught_exceptions) || defined(_MSC_VER) && (_MSC_VER >= 1900)
-#    ifndef MOCK_NO_UNCAUGHT_EXCEPTIONS
+#ifndef MOCK_NO_UNCAUGHT_EXCEPTIONS
+#    if(defined(__cpp_lib_uncaught_exceptions) && __cpp_lib_uncaught_exceptions >= 201411) || \
+      (defined(_MSC_VER) && _MSC_VER >= 1900)
 #        define MOCK_UNCAUGHT_EXCEPTIONS
 #    endif
 #endif
