@@ -19,16 +19,24 @@ path-constant parent : .. ;
 run /boost/tools/inspect//inspect/<variant>release : $(parent) -text -brief : : <test-info>always_show_run_output : inspect ;
 explicit inspect ;
 
-rule run-test ( name )
+rule run-test ( name : options * )
 {
-  run $(name) defined_1.cpp defined_2.cpp undefined.cpp /boost//unit_test_framework : : : : $(name)_ ;
-  run $(name) undefined.cpp /boost//unit_test_framework : : : <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
-  run $(name) undefined.cpp /boost//unit_test_framework /boost//thread : : : <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE <threading>multi : $(name)_thread_safe ;
+  run $(name) defined_1.cpp defined_2.cpp undefined.cpp /boost//unit_test_framework : : : $(options) : $(name)_ ;
+  run $(name) undefined.cpp /boost//unit_test_framework : : : $(options) <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
+  run $(name) undefined.cpp /boost//unit_test_framework /boost//thread : : : $(options) <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE <threading>multi : $(name)_thread_safe ;
 }
 
 rule run-tests
 {
-  for name in [ glob test_*.cpp detail/test_*.cpp ] { run-test $(name) ; }
+  for name in [ glob test_*.cpp ] { run-test $(name) ; }
+  # Avoid object file getting to big on MinGW
+  run-test detail/test_function.cpp :
+    <toolset>gcc,<target-os>windows:<inlining>on
+    <toolset>gcc,<target-os>windows:<optimization>space ;
+  run-test detail/test_invocation.cpp ;
+  run-test detail/test_is_functor.cpp ;
+  run-test detail/test_signature.cpp ;
+  run-test detail/test_type_name.cpp ;
 }
 
 alias mock_tests : [ run-tests ] ;

@@ -1,6 +1,7 @@
 // http://turtle.sourceforge.net
 //
-// Copyright Mathieu Champlon 2012
+// Copyright 2012 Mathieu Champlon
+// Copyright 2025 Alexander Grund
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -80,7 +81,7 @@ namespace mock { namespace detail {
         typedef safe_error<R, MOCK_ERROR_POLICY<R>> error_type;
 
     public:
-        function_impl() : context_(0), valid_(true), exceptions_(exceptions()), mutex_(std::make_shared<mutex>()) {}
+        function_impl() : exceptions_(exceptions()), mutex_(std::make_shared<mutex>()) {}
         virtual ~function_impl()
         {
             if(valid_ && exceptions_ >= exceptions())
@@ -314,8 +315,8 @@ namespace mock { namespace detail {
         };
 
         std::list<expectation_type> expectations_;
-        context* context_;
-        mutable bool valid_;
+        context* context_ = nullptr;
+        mutable bool valid_ = true;
         const int exceptions_;
         const std::shared_ptr<mutex> mutex_;
     };

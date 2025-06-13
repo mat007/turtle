@@ -82,6 +82,7 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - if NOT "%CXX_STANDARD%"=="" set CXX_FLAGS=cxxstd=%CXX_STANDARD%
   - set BUILD_ARGS=address-model=%ADDRESS_MODEL% variant=%VARIANT%
+  - set BOOST_TEST_LOG_LEVEL=all
   - call scripts\build.bat --toolset=%TOOLSET% %CXX_FLAGS% -j3
 
 for:
