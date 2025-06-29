@@ -12,11 +12,13 @@
 
 #include "function.hpp"
 #include "functor.hpp"
+#include "pp_foreach.hpp"
 #include "signature.hpp"
 #include "signature_traits.hpp"
 #include "type_name.hpp"
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/stringize.hpp>
+#include <boost/preprocessor/tuple/elem.hpp>
 #include <type_traits>
 
 namespace mock { namespace detail {
@@ -65,15 +67,17 @@ namespace mock { namespace detail {
         return MOCK_ANONYMOUS_HELPER(identifier)(MOCK_FORWARD_PARAMS(arity, signature)); \
     }
 
-#define MOCK_METHOD_EXT(name, arity, signature, identifier)    \
-    MOCK_METHOD_AUX(name, arity, signature, identifier, )      \
-    MOCK_METHOD_AUX(name, arity, signature, identifier, const) \
-    MOCK_METHOD_HELPER(signature, identifier)
-#define MOCK_CONST_METHOD_EXT(name, arity, signature, identifier) \
-    MOCK_METHOD_AUX(name, arity, signature, identifier, const)    \
-    MOCK_METHOD_HELPER(signature, identifier)
-#define MOCK_NON_CONST_METHOD_EXT(name, arity, signature, identifier) \
-    MOCK_METHOD_AUX(name, arity, signature, identifier, )             \
+/// MOCK_METHOD_ITER((name, arity, signature, identifier), qualifier)
+#define MOCK_METHOD_ITER(M_n_S_t, qualifier)         \
+    MOCK_METHOD_AUX(BOOST_PP_TUPLE_ELEM(0, M_n_S_t), \
+                    BOOST_PP_TUPLE_ELEM(1, M_n_S_t), \
+                    BOOST_PP_TUPLE_ELEM(2, M_n_S_t), \
+                    BOOST_PP_TUPLE_ELEM(3, M_n_S_t), \
+                    qualifier)
+
+#define MOCK_METHOD_EXT_I(name, arity, signature, identifier, qualifiers)                       \
+    static_assert(arity == mock::detail::function_arity_t<signature>::value, "Arity mismatch"); \
+    MOCK_PP_TUPLE_FOR_EACH(MOCK_METHOD_ITER, (name, arity, signature, identifier), qualifiers)  \
     MOCK_METHOD_HELPER(signature, identifier)
 
 #define MOCK_FUNCTION_HELPER(signature, identifier, prefix)                                              \
