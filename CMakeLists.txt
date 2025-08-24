@@ -18,7 +18,11 @@ option(TURTLE_INSTALL "Enable to add install target" ${IS_ROOT_PROJECT})
 if(WIN32 AND NOT DEFINED Boost_USE_STATIC_LIBS)
   set(Boost_USE_STATIC_LIBS ON)
 endif()
-find_package(Boost 1.58 REQUIRED)
+
+# Allows boost to be build by parent project
+if(NOT TARGET Boost::boost)
+  find_package(Boost 1.58 REQUIRED)
+endif()
 
 set(MOCK_VERSION "\"${PROJECT_VERSION}\"")
 set(_turtleVersionFile ${CMAKE_CURRENT_BINARY_DIR}/include/turtle/version.hpp)
