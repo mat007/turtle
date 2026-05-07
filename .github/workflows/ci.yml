@@ -1,9 +1,13 @@
-# Copyright 2022-2025 Alexander Grund
+# Copyright 2022-2026 Alexander Grund
 #
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at http://boost.org/LICENSE_1_0.txt)
 
 name: CI
+
+
+permissions:
+  contents: read
 
 on:
   pull_request:
@@ -31,6 +35,20 @@ jobs:
       uses: DoozyX/clang-format-lint-action@bcb4eb2cb0d707ee4f3e5cc3b456eb075f12cf73 # v0.20
       with:
         clangFormatVersion: 10
+
+  call-boost-ci:
+    name: Run Build
+    uses: boostorg/boost-ci/.github/workflows/reusable.yml@master
+    with:
+      library_folder: turtle
+      branch_coverage: false
+      enable_cmake: false
+      enable_32bit: false
+      enable_multiarch: false
+      enable_reflection: false
+      exclude_compiler: gcc-4.4,gcc-4.6,gcc-4.7,gcc-4.8,gcc-4.9,gcc-5,gcc-6,clang-3.5,clang-3.6,clang-3.7,clang-3.8,clang-3.9,clang-4.0,clang-5.0,clang-6.0
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   Build:
     defaults:
