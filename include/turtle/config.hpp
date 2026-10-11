@@ -66,4 +66,6 @@
 #    define MOCK_CXX_VERSION __cplusplus
 #endif
 
+static_assert(MOCK_CXX_VERSION >= 201402L, "Turtle requires C++14");
+
 #endif // MOCK_CONFIG_HPP_INCLUDED
