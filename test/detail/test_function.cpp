@@ -799,16 +799,16 @@ std::string to_string(const T& t)
 BOOST_FIXTURE_TEST_CASE(expectation_can_be_serialized_to_be_human_readable, mock_error_fixture)
 {
     {
-        mock::detail::function<void(int)> f;
+        mock::detail::function<void(float)> f;
         f.expect().once().with(1);
-        f.expect().once().with(mock::close(3, 1));
-        int target = 0;
+        f.expect().once().with(mock::close(2, 5));
+        float target = 0;
         f.expect().once().with(mock::retrieve(target));
         f.expect().once().with(mock::same(target));
-        BOOST_CHECK_NO_THROW(f(2));
+        BOOST_CHECK_NO_THROW(f(2.1f));
         std::string expected = "?\n";                   // Not in a current call context
         expected += ". once().with( 1 )\n";             // Unmet/Unverified expectation with value
-        expected += "v once().with( close( 3, 1 ) )\n"; // Verified expectation with constraint
+        expected += "v once().with( close( 2, 5 ) )\n"; // Verified expectation with constraint
         target = 42;
         // (Unverified) expectation with retrieve/same constraint print current value
         expected += ". once().with( retrieve( 42 ) )\n";
