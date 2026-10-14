@@ -366,8 +366,12 @@ BOOST_AUTO_TEST_CASE(type_with_overloaded_address_operator_can_be_used_in_constr
 
 BOOST_AUTO_TEST_CASE(close_constraint)
 {
-    BOOST_CHECK(mock::close(12.0, 0.0001).c_(12));
-    BOOST_CHECK(!mock::close(12.0, 0.0001).c_(13));
+    BOOST_CHECK(mock::close(10.2, 2).c_(10));
+    BOOST_CHECK(!mock::close(10.2, 1).c_(10));
+    BOOST_CHECK(mock::close(2, 10.01).c_(2.2));
+    BOOST_CHECK(!mock::close(2, 9.9).c_(2.2));
+    BOOST_CHECK(mock::close(2, 50).c_(3));
+    BOOST_CHECK(!mock::close(2, 49).c_(3));
 }
 
 BOOST_AUTO_TEST_CASE(close_fraction_constraint)
