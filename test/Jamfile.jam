@@ -31,8 +31,7 @@ rule run-tests
   for name in [ glob test_*.cpp ] { run-test $(name) ; }
   # Avoid object file getting to big on MinGW
   run-test detail/test_function.cpp :
-    <toolset>gcc,<target-os>windows:<inlining>on
-    <toolset>gcc,<target-os>windows:<optimization>space ;
+    <toolset>gcc,<target-os>windows:<inlining>on ;
   run-test detail/test_invocation.cpp ;
   run-test detail/test_is_functor.cpp ;
   run-test detail/test_signature.cpp ;
