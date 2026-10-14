@@ -103,19 +103,22 @@ namespace detail {
     struct has_equal_to<T, U, void_t<decltype(std::declval<T>() == std::declval<U>())>> : std::true_type
     {};
 
+    template<class T, class U>
+    constexpr bool has_equal_to_v = has_equal_to<T, U>::value;
+
     template<typename Expected>
     struct equal
     {
         explicit equal(Expected expected) : expected_(expected) {}
         template<typename Actual>
         bool operator()(const Actual& actual,
-                        std::enable_if_t<has_equal_to<Actual, unwrap_reference_t<Expected>>::value>* = 0) const
+                        std::enable_if_t<has_equal_to_v<Actual, unwrap_reference_t<Expected>>>* = 0) const
         {
             return actual == unwrap_ref(expected_);
         }
         template<typename Actual>
         bool operator()(const Actual& actual,
-                        std::enable_if_t<!has_equal_to<Actual, unwrap_reference_t<Expected>>::value>* = 0) const
+                        std::enable_if_t<!has_equal_to_v<Actual, unwrap_reference_t<Expected>>>* = 0) const
         {
             return actual && *actual == unwrap_ref(expected_);
         }
@@ -127,19 +130,25 @@ namespace detail {
     };
 
     template<typename Expected>
-    struct same
+    class same
     {
+        using ExpectedPtr = const unwrap_reference_t<Expected>*;
+
+    public:
         explicit same(const Expected& expected) : expected_(std::addressof(unwrap_ref(expected))) {}
         template<typename Actual>
         bool operator()(const Actual& actual) const
         {
-            return std::addressof(actual) == expected_;
+            auto actual_addr = std::addressof(actual);
+            static_assert(has_equal_to_v<decltype(actual_addr), ExpectedPtr>,
+                          "Type used for mock::same is incompatible with actual type");
+            return actual_addr == expected_;
         }
         friend std::ostream& operator<<(std::ostream& os, const same& s)
         {
             return os << "same( " << mock::format(*s.expected_) << " )";
         }
-        const unwrap_reference_t<Expected>* expected_;
+        ExpectedPtr expected_;
     };
 
     template<typename Expected>
