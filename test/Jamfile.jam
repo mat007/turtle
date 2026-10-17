@@ -1,5 +1,5 @@
 # Copyright 2012 Mathieu Champlon
-# Copyright 2025 Alexander Grund
+# Copyright 2026 Alexander Grund
 #
 # Distributed under the Boost Software License version 1.0. (See
 # accompanying file LICENSE_1_0.txt or copy at
@@ -29,13 +29,7 @@ rule run-test ( name : options * )
 rule run-tests
 {
   for name in [ glob test_*.cpp ] { run-test $(name) ; }
-  # Avoid object file getting to big on MinGW
-  run-test detail/test_function.cpp :
-    <toolset>gcc,<target-os>windows:<inlining>on ;
-  run-test detail/test_invocation.cpp ;
-  run-test detail/test_is_functor.cpp ;
-  run-test detail/test_signature.cpp ;
-  run-test detail/test_type_name.cpp ;
+  for name in [ glob detail/test_*.cpp ] { run-test $(name) ; }
 }
 
 alias mock_tests : [ run-tests ] ;

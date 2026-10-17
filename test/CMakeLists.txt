@@ -44,7 +44,7 @@ endif()
 
 # Regular unit tests in variations
 file(GLOB_RECURSE testFiles CONFIGURE_DEPENDS test_*.cpp)
-set(testsUsingUndefinedCPP test_function test_integration)
+set(testsUsingUndefinedCPP test_actions_on_function test_integration)
 foreach(testFile IN LISTS testFiles)
   get_filename_component(name ${testFile} NAME_WE)
 
