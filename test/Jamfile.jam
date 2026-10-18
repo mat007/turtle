@@ -19,11 +19,20 @@ path-constant parent : .. ;
 run /boost/tools/inspect//inspect/<variant>release : $(parent) -text -brief : : <test-info>always_show_run_output : inspect ;
 explicit inspect ;
 
+obj undefined_obj : undefined.cpp ;
+
 rule run-test ( name : options * )
 {
-  run $(name) defined_1.cpp defined_2.cpp undefined.cpp /boost//unit_test_framework : : : $(options) : $(name)_ ;
-  run $(name) undefined.cpp /boost//unit_test_framework : : : $(options) <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
-  run $(name) undefined.cpp /boost//unit_test_framework /boost//thread : : : $(options) <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE <threading>multi : $(name)_thread_safe ;
+  local sources = $(name) /boost//unit_test_framework ;
+
+  if $(name:B) in test_integration test_actions_on_function
+  {
+    sources += undefined_obj ;
+  }
+
+  run $(sources) defined_1.cpp defined_2.cpp : : : $(options) : $(name)_ ;
+  run $(sources) : : : $(options) <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
+  run $(sources) /boost//thread : : : $(options) <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE <threading>multi : $(name)_thread_safe ;
 }
 
 rule run-tests
