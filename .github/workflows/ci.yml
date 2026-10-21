@@ -30,7 +30,7 @@ jobs:
   Formatting:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - name: Formatting
       uses: DoozyX/clang-format-lint-action@bcb4eb2cb0d707ee4f3e5cc3b456eb075f12cf73 # v0.20
       with:
@@ -41,237 +41,42 @@ jobs:
     uses: boostorg/boost-ci/.github/workflows/reusable.yml@master
     with:
       library_folder: turtle
+      b2_targets: "libs/turtle/test libs/turtle/doc//mock_examples"
       branch_coverage: false
+      coverage_service: coveralls
       enable_cmake: false
       enable_32bit: false
       enable_multiarch: false
       enable_reflection: false
       exclude_compiler: gcc-4.4,gcc-4.6,gcc-4.7,gcc-4.8,gcc-4.9,gcc-5,gcc-6,clang-3.5,clang-3.6,clang-3.7,clang-3.8,clang-3.9,clang-4.0,clang-5.0,clang-6.0
       exclude_cxxstd: 98,03,0x,11
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  Build:
-    defaults:
-      run:
-        shell: bash
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # Linux, gcc
-          - { compiler: gcc-7,  cxxstd: '14,17',          boostBranch: boost-1.86.0, os: ubuntu-latest, container: 'ubuntu:20.04' }
-          - { compiler: gcc-10, cxxstd: '14,17,20',       boostBranch: boost-1.86.0, os: ubuntu-22.04 }
-          - { compiler: gcc-12, cxxstd: '14,17,20',       boostBranch: master,       os: ubuntu-22.04 }
-          - { compiler: gcc-14, cxxstd: '14,17,20,23,2c', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
-          - { compiler: gcc-14, cxxstd: '14,17,20,23,2c', boostBranch: master,       os: ubuntu-24.04 }
-          - { compiler: gcc-15, cxxstd: '14,17,20,23,2c', boostBranch: boost-1.86.0, os: ubuntu-26.04 }
-          - { compiler: gcc-16, cxxstd: '14,17,20,23,26', boostBranch: boost-1.86.0, os: ubuntu-26.04 }
-          - { compiler: gcc-16, cxxstd: '14,17,20,23,26', boostBranch: master,       os: ubuntu-26.04 }
-
-          # Linux, clang
-          - { compiler: clang-14,  cxxstd: '14,17,20',       boostBranch: boost-1.86.0, os: ubuntu-24.04 }
-          - { compiler: clang-18,  cxxstd: '14,17,20,23,2c', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
-          - { compiler: clang-18,  cxxstd: '14,17,20,23,2c', boostBranch: master,       os: ubuntu-24.04 }
-          - { compiler: clang-19,  cxxstd: '14,17,20,23,2c', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
-          - { compiler: clang-20,  cxxstd: '14,17,20,23,2c', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
-          - { compiler: clang-21,  cxxstd: '14,17,20,23,2c', boostBranch: boost-1.86.0, os: ubuntu-26.04 }
-          - { compiler: clang-22,  cxxstd: '14,17,20,23,2c', boostBranch: boost-1.86.0, os: ubuntu-26.04, cxxflags: '-Wno-c2y-extensions' }
-          - { compiler: clang-22,  cxxstd: '14,17,20,23,2c', boostBranch: master,       os: ubuntu-26.04, cxxflags: '-Wno-c2y-extensions' }
-
-          # Windows
-          - { toolset: gcc,       os: windows-2022,         cxxstd: 17,     generator: 'MinGW Makefiles' }
-          - { toolset: msvc-14.3, os: windows-2022,         cxxstd: 20,     generator: 'Visual Studio 17 2022' }
-          - { toolset: msvc-14.5, os: windows-2025-vs2026,  cxxstd: 20,     generator: 'Visual Studio 18 2026' }
-          - { toolset: msvc-14.5, os: windows-2025-vs2026,  cxxstd: latest, generator: 'Visual Studio 18 2026' }
-
-          - { name: Collect coverage, coverage: yes,
-              compiler: gcc-13, cxxstd: '14,2b', boostBranch: boost-1.86.0, os: ubuntu-24.04 }
-
-    timeout-minutes: 120
-    runs-on: ${{matrix.os}}
-    container: ${{matrix.container}}
-    env:
-      B2_CXXFLAGS: ${{matrix.cxxflags}}
-
+  docs:
+    runs-on: ubuntu-latest
     steps:
-      - name: Prepare container environment
-        if: matrix.container
-        run: |
-            export DEBIAN_FRONTEND=noninteractive
-            apt-get -o Acquire::Retries=$NET_RETRY_COUNT update
-            apt-get -o Acquire::Retries=$NET_RETRY_COUNT install -y sudo software-properties-common curl lsb-release
-            # Need (newer) git & cmake, and the older Ubuntu container may require requesting the key manually using port 80
-            curl -sSL --retry ${NET_RETRY_COUNT:-5} 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xE1DD270288B4E6030699E45FA1715D88E1DF1F24' | sudo gpg --dearmor > /etc/apt/trusted.gpg.d/git-core_ubuntu_ppa.gpg
-            for i in {1..${NET_RETRY_COUNT:-5}}; do sudo -E add-apt-repository -y ppa:git-core/ppa && break || sleep 10; done
-            curl -sSL --retry ${NET_RETRY_COUNT:-5} 'https://apt.kitware.com/keys/kitware-archive-latest.asc' | sudo gpg --dearmor > /etc/apt/trusted.gpg.d/kitware-archive-latest.gpg
-            for i in {1..${NET_RETRY_COUNT:-5}}; do sudo -E add-apt-repository -y "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main" && break || sleep 10; done
-            apt-get -o Acquire::Retries=$NET_RETRY_COUNT update
-            apt-get -o Acquire::Retries=$NET_RETRY_COUNT install -y g++ git cmake
-            git config --global pack.threads 0
-            git config --global --add safe.directory "$GITHUB_WORKSPACE"  # Avoid ownership issues of repo in container
-
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          # For coverage builds fetch the whole history, else only 1 commit using a 'fake ternary'
-          fetch-depth: ${{ matrix.coverage && '0' || '1' }}
-
-      # Checking out Boost and all its submodules takes ages...
-      - name: Cache Boost
-        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6.0.0
-        with:
-          path: boost-root
-          key: boost-${{matrix.boostBranch}}
-      - name: Checkout Boost
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: boostorg/boost
-          ref: ${{matrix.boostBranch}}
-          submodules: true
-          path: boost-root
-          persist-credentials: false
-
-      - name: Install packages and setup env
-        run: |
-          B2_TOOLSET=${{matrix.toolset}}
-          if [[ ! "${{matrix.os}}" == "windows-"* ]]; then
-            sudo apt-get -o Acquire::Retries=$NET_RETRY_COUNT update
-            CXX=${{matrix.compiler}}
-            CXX="${CXX/gcc-/g++-}"
-            # Package names are g++-* and clang-*, so set this before correcting CXX for Clang
-            pkgs="$CXX xsltproc docbook-xsl docbook-xml lcov ccache"
-            sudo apt-get -o Acquire::Retries=$NET_RETRY_COUNT install -y $pkgs
-            CXX="ccache ${CXX/clang-/clang++-}"
-            echo "CXX=$CXX" >> $GITHUB_ENV
-            echo "CC=${{matrix.compiler}}" >> $GITHUB_ENV
-            if [[ -z $B2_TOOLSET ]]; then
-              if [[ "$CXX" =~ clang ]]; then
-                B2_TOOLSET=clang
-              else
-                B2_TOOLSET=gcc
-              fi
-            fi
-            [[ -z $CXX ]] || echo "using $B2_TOOLSET : : $CXX ;" > ~/user-config.jam
-          fi
-          echo "B2_TOOLSET=$B2_TOOLSET" >> $GITHUB_ENV
-
-          B2_FLAGS+=" --toolset=$B2_TOOLSET cxxstd=${{matrix.cxxstd}}"
-          if [[ "${{matrix.coverage}}" == "yes" ]]; then
-            B2_FLAGS+=" cxxflags=--coverage linkflags=--coverage"
-          fi
-          if [[ -n $B2_CXXFLAGS ]]; then
-            B2_FLAGS+=" cxxflags='$B2_CXXFLAGS'"
-          fi
-          echo "B2_FLAGS=$B2_FLAGS" >> $GITHUB_ENV
-
-          # Move the Boost root to a sibling folder
-          mv boost-root ..
-          echo "BOOST_ROOT=${{github.workspace}}/../boost-root" >> $GITHUB_ENV
-
-      - name: Cache ccache
-        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
-        if: startsWith(matrix.os, 'ubuntu')
-        with:
-          key: ${{matrix.os}}-${{matrix.compiler}}-${{matrix.boostBranch}}
-
-      - name: Prepare boost
-        working-directory: ${{env.BOOST_ROOT}}
-        run: ./bootstrap.sh && ./b2 headers
-
-      - name: Boost build
-        run: |
-          set -x
-          ./b2 "$GITHUB_WORKSPACE/test" -q $B2_FLAGS -j3
-          ./b2 "$GITHUB_WORKSPACE/doc//mock_examples" -q $B2_FLAGS "$@"
-        working-directory: ${{env.BOOST_ROOT}}
-
-      - name: Run inspect check
-        run: ./b2 "$GITHUB_WORKSPACE/test//inspect" -q $B2_FLAGS
-        working-directory: ${{env.BOOST_ROOT}}
-
-      - name: Build doc
-        if: startsWith(matrix.os, 'ubuntu')
-        run: scripts/build_doc.sh $B2_FLAGS -j3
-
-      - name: Collect coverage
-        if: matrix.coverage
-        working-directory: ${{github.workspace}} # Make sure file is found by upload action
-        run: |
-          B2_COMPILER=${{matrix.compiler}}
-          if [[ "$B2_COMPILER" =~ gcc- ]]; then
-            ver="${B2_COMPILER##*gcc-}"
-          else
-            ver=8
-          fi
-          GCOV=gcov-${ver}
-          lcov --version
-          LCOV_OPTIONS=()
-          LCOV_OPTIONS+=(--rc "branch_coverage=0")
-          LCOV_OPTIONS+=(--ignore-errors "inconsistent,mismatch,unused")
-
-          lcov "${LCOV_OPTIONS[@]}" --gcov-tool="$GCOV" --directory "$GITHUB_WORKSPACE/test" --capture --output-file all.info
-          # dump a summary on the console
-          lcov "${LCOV_OPTIONS[@]}" --list all.info
-          # Limit to our files (header-only in this case)
-          lcov "${LCOV_OPTIONS[@]}" --extract all.info "$GITHUB_WORKSPACE/include/*" --output-file coverage.info
-          # Output what was collected
-          lcov "${LCOV_OPTIONS[@]}" --list coverage.info
-      - name: Upload coverage
-        if: matrix.coverage
-        uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2.3.7
-        with:
-          path-to-lcov: ${{github.workspace}}/coverage.info
-          github-token: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Build required boost libs
-        working-directory: ${{env.BOOST_ROOT}}
-        run: |
-          ./b2 --toolset=$B2_TOOLSET --with-test --with-thread --with-chrono --with-system --with-atomic --with-date_time -a -j3
-          # Add lib folder to LD_LIBRARY_PATH, so the tests can load them
-          echo "LD_LIBRARY_PATH=$PWD/stage/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
-
-      - name: CMake build
-        env:
-          CXX_STD: ${{matrix.cxxstd}}
-        run: |
-          mkdir build && cd build
-          if [[ "${{matrix.os}}" == "windows-"* ]]; then
-            extra_args=()
-          else
-            extra_args=(-DCMAKE_CXX_COMPILER_LAUNCHER=ccache)
-          fi
-          if [[ -n "${{matrix.generator}}" ]]; then
-            extra_args+=(-G "${{matrix.generator}}")
-          fi
-          if [[ "${{matrix.generator}}" == "MinGW"* ]]; then
-            # GHA has 2 MinGWs installed which must not be mixed,
-            # so make sure the executables pick up the libraries/DLLs matching the compiler
-            gcc_folder=$(dirname "$(which g++)")
-            prefix=${gcc_folder%/bin}
-            echo "GCC prefix: $prefix"
-            export PATH="$prefix/bin:$prefix/lib:$PATH"
-          fi
-          if [[ -n $B2_CXXFLAGS ]]; then
-            extra_args+=(-DCMAKE_CXX_FLAGS="$B2_CXXFLAGS")
-          fi
-
-          CXX_STD=${CXX_STD##*,}  # Extract last value
-          case "$CXX_STD" in
-            latest) CXX_STD="" ;; # MSVC: Use default
-            # Use older ones instead of aliases
-            2b) CXX_STD=20 ;;
-            2c) CXX_STD=23 ;;
-          esac
-          if [[ -n "$CXX_STD" ]]; then
-            extra_args+=(-DCMAKE_CXX_STANDARD="$CXX_STD")
-          fi
-          set +x
-          cmake .. -DCMAKE_BUILD_TYPE=Debug -DBoost_ROOT="$BOOST_ROOT/stage" "${extra_args[@]}" -DCMAKE_VERBOSE_MAKEFILE=ON -DBoost_DEBUG=ON -DBoost_VERBOSE=ON
-          cmake --build . --config Debug --parallel 3
-          ctest --output-on-failure --build-config Debug
-
-      - name: Cleanup Boost folder to reduce cache usage
-        if: ${{ always() }}
-        working-directory: ${{env.BOOST_ROOT}}
-        run: git clean -fxd
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        repository: boostorg/boost
+        ref: master
+        path: boost-root
+        submodules: false
+    - name: Install packages
+      run: sudo apt-get -o Acquire::Retries=3 install -y xsltproc docbook-xsl docbook-xml
+    - name: Init submodules for doc build
+      working-directory: boost-root
+      run: |
+        git submodule update -q --init tools/boostdep tools/boostbook tools/quickbook tools/inspect
+        python tools/boostdep/depinst/depinst.py ../tools/boostbook
+        python tools/boostdep/depinst/depinst.py ../tools/quickbook
+        python tools/boostdep/depinst/depinst.py ../tools/inspect
+    - name: Bootstrap b2
+      working-directory: boost-root
+      run: ./bootstrap.sh
+    - name: Build doc
+      run: scripts/build_doc.sh
+      env:
+        BOOST_ROOT: ${{ github.workspace }}/boost-root
+    - name: Build and run inspect
+      working-directory: boost-root
+      run: ./b2 "$GITHUB_WORKSPACE/test//inspect" -q
