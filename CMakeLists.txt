@@ -21,7 +21,7 @@ endif()
 
 # Allows boost to be build by parent project
 if(NOT TARGET Boost::boost)
-  find_package(Boost 1.58 REQUIRED)
+  find_package(Boost 1.63 REQUIRED)
 endif()
 
 set(MOCK_VERSION "\"${PROJECT_VERSION}\"")

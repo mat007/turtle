@@ -2,7 +2,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
 
-find_package(Boost 1.58 REQUIRED COMPONENTS unit_test_framework thread)
+find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework thread)
 
 add_library(TurtleTestMain INTERFACE)
 target_link_libraries(TurtleTestMain INTERFACE Boost::unit_test_framework Boost::disable_autolinking)
