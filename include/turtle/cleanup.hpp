@@ -23,10 +23,7 @@ struct cleanup
 };
 
 #ifdef MOCK_USE_BOOST_TEST
-BOOST_GLOBAL_FIXTURE(cleanup)
-#    if BOOST_VERSION >= 105900
-  ;
-#    endif
+BOOST_GLOBAL_FIXTURE(cleanup);
 #endif
 
 } // namespace mock

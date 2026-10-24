@@ -34,16 +34,6 @@ MOCK_NARY_CONSTRAINT(greater, 1, (expected), actual > expected)
 MOCK_NARY_CONSTRAINT(less_equal, 1, (expected), actual <= expected)
 MOCK_NARY_CONSTRAINT(greater_equal, 1, (expected), actual >= expected)
 
-#if BOOST_VERSION < 105900
-
-#    define MOCK_SMALL() boost::test_tools::check_is_small(actual, tolerance)
-#    define MOCK_PERCENT_TOLERANCE() \
-        boost::test_tools::check_is_close(actual, expected, boost::test_tools::percent_tolerance(tolerance))
-#    define MOCK_FRACTION_TOLERANCE() \
-        boost::test_tools::check_is_close(actual, expected, boost::test_tools::fraction_tolerance(tolerance))
-
-#else // BOOST_VERSION < 105900
-
 namespace detail {
     template<typename T, typename Tolerance>
     bool is_small(const T& t, const Tolerance& tolerance)
@@ -61,28 +51,23 @@ namespace detail {
     }
 } // namespace detail
 
-#    define MOCK_SMALL() detail::is_small(actual, tolerance)
-#    define MOCK_PERCENT_TOLERANCE() detail::is_close(actual, expected, boost::math::fpc::percent_tolerance(tolerance))
-#    define MOCK_FRACTION_TOLERANCE() detail::is_close(actual, expected, tolerance)
-
-#endif // BOOST_VERSION < 105900
-
 #ifdef small
 #    pragma push_macro("small")
 #    undef small
 #    define MOCK_SMALL_DEFINED
 #endif
-MOCK_NARY_CONSTRAINT(small, 1, (tolerance), (MOCK_SMALL()))
+MOCK_NARY_CONSTRAINT(small, 1, (tolerance), detail::is_small(actual, tolerance))
 #ifdef MOCK_SMALL_DEFINED
 #    pragma pop_macro("small")
+#    undef MOCK_SMALL_DEFINED
 #endif
 
-MOCK_NARY_CONSTRAINT(close, 2, (expected, tolerance), (MOCK_PERCENT_TOLERANCE()))
+MOCK_NARY_CONSTRAINT(close,
+                     2,
+                     (expected, tolerance),
+                     detail::is_close(actual, expected, boost::math::fpc::percent_tolerance(tolerance)))
 
-MOCK_NARY_CONSTRAINT(close_fraction, 2, (expected, tolerance), (MOCK_FRACTION_TOLERANCE()))
-
-#undef MOCK_PERCENT_TOLERANCE
-#undef MOCK_FRACTION_TOLERANCE
+MOCK_NARY_CONSTRAINT(close_fraction, 2, (expected, tolerance), detail::is_close(actual, expected, tolerance))
 
 #ifdef near
 #    pragma push_macro("near")
@@ -92,6 +77,7 @@ MOCK_NARY_CONSTRAINT(close_fraction, 2, (expected, tolerance), (MOCK_FRACTION_TO
 MOCK_NARY_CONSTRAINT(near, 2, (expected, tolerance), std::abs(actual - expected) <= tolerance)
 #ifdef MOCK_NEAR_DEFINED
 #    pragma pop_macro("near")
+#    undef MOCK_NEAR_DEFINED
 #endif
 
 namespace detail {

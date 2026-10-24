@@ -84,9 +84,7 @@ BOOST_AUTO_TEST_CASE(std_bind_first_is_functor)
 BOOST_AUTO_TEST_CASE(bind_is_functor)
 {
     {
-#if BOOST_VERSION >= 106000
         using namespace boost::placeholders;
-#endif
         is_functor(boost::bind(&f0));
         is_functor(boost::bind(&f1, _1));
         is_functor(boost::bind(&f2, "", _1));
