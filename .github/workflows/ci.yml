@@ -135,7 +135,7 @@ jobs:
           ./bootstrap.sh && ./b2 headers
           echo "::endgroup::"
           echo "::group::Build required Boost libs"
-          ./b2 toolset=${{matrix.toolset}} --with-test --with-thread --with-chrono --with-atomic --with-date_time -a -j3
+          ./b2 toolset=${{matrix.toolset}} address-model=64 --with-test --with-thread --with-chrono --with-atomic --with-date_time -a -j3
           echo "::endgroup::"
           echo "LD_LIBRARY_PATH=$PWD/stage/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
