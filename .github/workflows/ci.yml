@@ -70,15 +70,17 @@ jobs:
         python tools/boostdep/depinst/depinst.py ../tools/boostbook
         python tools/boostdep/depinst/depinst.py ../tools/quickbook
         python tools/boostdep/depinst/depinst.py ../tools/inspect
+        # Move the Boost root to a sibling folder to avoid that inspect runs on entire Boost too
+        BOOST_ROOT="${{github.workspace}}/../boost-root"
+        mv ../boost-root "$BOOST_ROOT"
+        echo "BOOST_ROOT=$BOOST_ROOT" >> $GITHUB_ENV
     - name: Bootstrap b2
-      working-directory: boost-root
+      working-directory:  ${{env.BOOST_ROOT}}
       run: ./bootstrap.sh
     - name: Build doc
       run: scripts/build_doc.sh
-      env:
-        BOOST_ROOT: ${{ github.workspace }}/boost-root
     - name: Build and run inspect
-      working-directory: boost-root
+      working-directory: ${{env.BOOST_ROOT}}
       run: ./b2 "$GITHUB_WORKSPACE/test//inspect" -q
 
   CMake:
