@@ -94,7 +94,7 @@ jobs:
       matrix:
         include:
           # MSVC
-          - {os: windows-2022, toolset: msvc-14.3, cxxstd: 20, boostBranch: boost-1.63.0, generator: 'Visual Studio 17 2022'}
+          - {os: windows-2022, toolset: msvc-14.3, cxxstd: 20, boostBranch: boost-1.78.0, generator: 'Visual Studio 17 2022'}
           - {os: windows-2022, toolset: msvc-14.3, cxxstd: 20, boostBranch: master,       generator: 'Visual Studio 17 2022'}
           # MinGW
           - {os: windows-2022, toolset: gcc,       cxxstd: 17, boostBranch: boost-1.86.0, generator: 'MinGW Makefiles'}
