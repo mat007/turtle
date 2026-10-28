@@ -54,8 +54,10 @@ namespace detail {
     template<typename T1, typename T2, typename Tolerance>
     bool is_close(const T1& t1, const T2& t2, const Tolerance& tolerance)
     {
-        typedef std::common_type_t<T1, T2> common_type;
-        return boost::math::fpc::close_at_tolerance<common_type>(tolerance, boost::math::fpc::FPC_STRONG)(t1, t2);
+        using common_type = std::common_type_t<T1, T2>;
+        using FPT = std::conditional_t<std::is_floating_point<common_type>::value, common_type, double>;
+        return boost::math::fpc::close_at_tolerance<FPT>(tolerance, boost::math::fpc::FPC_STRONG)(static_cast<FPT>(t1),
+                                                                                                  static_cast<FPT>(t2));
     }
 } // namespace detail
 
