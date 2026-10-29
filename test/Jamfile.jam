@@ -30,9 +30,17 @@ rule run-test ( name : options * )
     sources += undefined_obj ;
   }
 
-  run $(sources) defined_1.cpp defined_2.cpp : : : $(options) : $(name)_ ;
-  run $(sources) : : : $(options) <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
-  run $(sources) /boost//thread : : : $(options) <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE <threading>multi : $(name)_thread_safe ;
+  local action = run ;
+      ECHO "name: $(name) B-name $(name:B)" ;
+  if [ MATCH "^(test_fail_)" : $(name:B) ]
+  {
+    ECHO "MATCH: $(name)" ;
+    action = run-fail ;
+  }
+
+  $(action) $(sources) defined_1.cpp defined_2.cpp : : : $(options) : $(name)_ ;
+  $(action) $(sources) : : : $(options) <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
+  $(action) $(sources) /boost//thread : : : $(options) <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE <threading>multi : $(name)_thread_safe ;
 }
 
 rule run-tests
