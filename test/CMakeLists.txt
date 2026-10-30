@@ -43,7 +43,7 @@ elseif(MSVC)
 endif()
 
 # Regular unit tests in variations
-file(GLOB_RECURSE testFiles test_*.cpp)
+file(GLOB_RECURSE testFiles CONFIGURE_DEPENDS test_*.cpp)
 set(testsUsingUndefinedCPP test_function test_integration)
 foreach(testFile IN LISTS testFiles)
   get_filename_component(name ${testFile} NAME_WE)
@@ -70,7 +70,7 @@ target_link_libraries(link-test_defined PRIVATE turtle::turtle TurtleTestMain)
 add_test(NAME link-test_defined COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target link-test_defined --config $<CONFIG>)
 
 # Should fail to compile
-file(GLOB_RECURSE compileFailureTestFiles fail_*.cpp)
+file(GLOB_RECURSE compileFailureTestFiles CONFIGURE_DEPENDS fail_*.cpp)
 foreach(testFile IN LISTS compileFailureTestFiles)
   get_filename_component(name ${testFile} NAME_WE)
 
@@ -81,7 +81,7 @@ foreach(testFile IN LISTS compileFailureTestFiles)
 endforeach()
 
 # Examples are runnable tests
-file(GLOB_RECURSE exampleFiles ${PROJECT_SOURCE_DIR}/doc/example/*.cpp)
+file(GLOB_RECURSE exampleFiles CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/doc/example/*.cpp)
 foreach(testFile IN LISTS exampleFiles)
   get_filename_component(name ${testFile} NAME_WE)
   set(name "example_${name}")
@@ -90,7 +90,7 @@ foreach(testFile IN LISTS exampleFiles)
   add_test(NAME ${name} COMMAND ${name})
 endforeach()
 
-file(GLOB_RECURSE exampleTargetFiles ${PROJECT_SOURCE_DIR}/doc/example/*.hpp)
+file(GLOB_RECURSE exampleTargetFiles CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/doc/example/*.hpp)
 foreach(name IN ITEMS customization getting_started motivation rationale)
   target_sources(example_${name} PUBLIC ${exampleTargetFiles})
 endforeach()
@@ -103,7 +103,7 @@ foreach(name IN ITEMS example_patterns_async_call)
 endforeach()
 
 # Compile benchmarks
-file(GLOB_RECURSE benchFiles bench_*.cpp)
+file(GLOB_RECURSE benchFiles CONFIGURE_DEPENDS bench_*.cpp)
 foreach(testFile IN LISTS benchFiles)
   get_filename_component(name ${testFile} NAME_WE)
   add_executable(${name} EXCLUDE_FROM_ALL ${testFile})
