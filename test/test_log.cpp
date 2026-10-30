@@ -61,39 +61,39 @@ BOOST_AUTO_TEST_CASE(pointer_yields_its_value_when_serialized)
         std::ostringstream s;
         s << &i;
         const std::string pointerValue = s.str();
-        BOOST_CHECK_EQUAL(pointerValue, to_string(&i));
+        BOOST_TEST(to_string(&i) == pointerValue);
     }
     {
         const int i = 0;
         std::ostringstream s;
         s << &i;
         const std::string pointerValue = s.str();
-        BOOST_CHECK_EQUAL(pointerValue, to_string(&i));
+        BOOST_TEST(to_string(&i) == pointerValue);
     }
 }
 
 BOOST_AUTO_TEST_CASE(base_type_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("42", to_string(42));
+    BOOST_TEST(to_string(42) == "42");
 }
 
 BOOST_AUTO_TEST_CASE(booleans_are_serialized_as_bool_alpha)
 {
-    BOOST_CHECK_EQUAL("true", to_string(true));
-    BOOST_CHECK_EQUAL("false", to_string(false));
+    BOOST_TEST(to_string(true) == "true");
+    BOOST_TEST(to_string(false) == "false");
 }
 
 BOOST_AUTO_TEST_CASE(strings_are_serialized_with_double_quotes)
 {
-    BOOST_CHECK_EQUAL("\"string\"", to_string("string"));
-    BOOST_CHECK_EQUAL("\"string\"", to_string(std::string("string")));
+    BOOST_TEST(to_string("string") == "\"string\"");
+    BOOST_TEST(to_string(std::string("string")) == "\"string\"");
 }
 
 BOOST_AUTO_TEST_CASE(null_c_strings_are_serialized_to_nullptr)
 {
     const char* const null_str = nullptr;
-    BOOST_CHECK_EQUAL("nullptr", to_string(null_str));
-    BOOST_CHECK_EQUAL("\"nullptr\"", to_string("nullptr"));
+    BOOST_TEST(to_string(null_str) == "nullptr");
+    BOOST_TEST(to_string("nullptr") == "\"nullptr\"");
 }
 
 namespace {
@@ -103,7 +103,7 @@ struct non_serializable
 
 BOOST_AUTO_TEST_CASE(non_serializable_type_yields_a_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL("?", to_string(non_serializable()));
+    BOOST_TEST(to_string(non_serializable()) == "?");
 }
 
 namespace {
@@ -117,7 +117,7 @@ std::ostream& operator<<(std::ostream& s, const serializable&)
 
 BOOST_AUTO_TEST_CASE(serializable_type_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("serializable", to_string(serializable()));
+    BOOST_TEST(to_string(serializable()) == "serializable");
 }
 
 namespace {
@@ -136,7 +136,7 @@ mock::stream& operator<<(mock::stream& s, const streamable&)
 
 BOOST_AUTO_TEST_CASE(streamable_type_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("streamable", to_string(streamable()));
+    BOOST_TEST(to_string(streamable()) == "streamable");
 }
 
 namespace {
@@ -157,7 +157,7 @@ stream& operator<<(stream& s, const mock_streamable&)
 
 BOOST_AUTO_TEST_CASE(mock_streamable_type_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("mock_streamable", to_string(mock_streamable()));
+    BOOST_TEST(to_string(mock_streamable()) == "mock_streamable");
 }
 
 namespace {
@@ -168,9 +168,9 @@ struct derived_from_serializable : serializable
 BOOST_AUTO_TEST_CASE(type_derived_from_serializable_yields_a_question_mark_when_serialized)
 {
 #ifdef MOCK_USE_CONVERSIONS
-    BOOST_CHECK_EQUAL("serializable", to_string(derived_from_serializable()));
+    BOOST_TEST(to_string(derived_from_serializable()) == "serializable");
 #else
-    BOOST_CHECK_EQUAL("?", to_string(derived_from_serializable()));
+    BOOST_TEST(to_string(derived_from_serializable()) == "?");
 #endif
 }
 
@@ -182,9 +182,9 @@ struct derived_from_streamable : streamable
 BOOST_AUTO_TEST_CASE(type_derived_from_streamable_yields_a_question_mark_when_serialized)
 {
 #ifdef MOCK_USE_CONVERSIONS
-    BOOST_CHECK_EQUAL("streamable", to_string(derived_from_streamable()));
+    BOOST_TEST(to_string(derived_from_streamable()) == "streamable");
 #else
-    BOOST_CHECK_EQUAL("?", to_string(derived_from_streamable()));
+    BOOST_TEST(to_string(derived_from_streamable()) == "?");
 #endif
 }
 
@@ -213,7 +213,7 @@ struct convertible_to_base
 
 BOOST_AUTO_TEST_CASE(type_convertible_to_base_yields_a_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL("?", to_string(convertible_to_base()));
+    BOOST_TEST(to_string(convertible_to_base()) == "?");
 }
 
 namespace {
@@ -225,7 +225,7 @@ struct convertible_to_serializable
 
 BOOST_AUTO_TEST_CASE(type_convertible_to_serializable_yields_a_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL("?", to_string(convertible_to_serializable()));
+    BOOST_TEST(to_string(convertible_to_serializable()) == "?");
 }
 
 namespace {
@@ -237,12 +237,12 @@ struct convertible_to_streamable
 
 BOOST_AUTO_TEST_CASE(type_convertible_to_streamable_yields_a_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL("?", to_string(convertible_to_streamable()));
+    BOOST_TEST(to_string(convertible_to_streamable()) == "?");
 }
 
 BOOST_AUTO_TEST_CASE(type_ambiguous_convertible_yields_a_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL("?", to_string(ambiguous_convertible()));
+    BOOST_TEST(to_string(ambiguous_convertible()) == "?");
 }
 
 namespace {
@@ -256,7 +256,7 @@ std::ostream& operator<<(std::ostream& s, const ambiguous_convertible_serializab
 
 BOOST_AUTO_TEST_CASE(type_convertible_serializable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("ambiguous_convertible_serializable", to_string(ambiguous_convertible_serializable()));
+    BOOST_TEST(to_string(ambiguous_convertible_serializable()) == "ambiguous_convertible_serializable");
 }
 
 #endif // MOCK_USE_CONVERSIONS
@@ -277,7 +277,7 @@ mock::stream& operator<<(mock::stream& s, const ambiguous_convertible_streamable
 
 BOOST_AUTO_TEST_CASE(type_ambiguous_convertible_streamable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("ambiguous_convertible_streamable", to_string(ambiguous_convertible_streamable()));
+    BOOST_TEST(to_string(ambiguous_convertible_streamable()) == "ambiguous_convertible_streamable");
 }
 
 namespace {
@@ -305,7 +305,7 @@ stream& operator<<(stream& s, const ambiguous_convertible_mock_streamable&)
 
 BOOST_AUTO_TEST_CASE(type_ambiguous_convertible_mock_streamable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("ambiguous_convertible_mock_streamable", to_string(ambiguous_convertible_mock_streamable()));
+    BOOST_TEST(to_string(ambiguous_convertible_mock_streamable()) == "ambiguous_convertible_mock_streamable");
 }
 
 namespace {
@@ -321,7 +321,7 @@ std::ostream& operator<<(std::ostream& s, const template_serializable<T>&)
 
 BOOST_AUTO_TEST_CASE(template_type_serializable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("template_serializable", to_string(template_serializable<int>()));
+    BOOST_TEST(to_string(template_serializable<int>()) == "template_serializable");
 }
 
 namespace {
@@ -343,7 +343,7 @@ mock::stream& operator<<(mock::stream& s, const template_streamable<T>&)
 
 BOOST_AUTO_TEST_CASE(template_template_streamable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("template_streamable", to_string(template_streamable<int>()));
+    BOOST_TEST(to_string(template_streamable<int>()) == "template_streamable");
 }
 
 namespace {
@@ -367,42 +367,42 @@ stream& operator<<(stream& s, const template_mock_streamable<T>&)
 
 BOOST_AUTO_TEST_CASE(template_mock_streamable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("template_mock_streamable", to_string(template_mock_streamable<int>()));
+    BOOST_TEST(to_string(template_mock_streamable<int>()) == "template_mock_streamable");
 }
 
 BOOST_AUTO_TEST_CASE(std_pairs_are_serialized)
 {
-    BOOST_CHECK_EQUAL("(3,42)", to_string(std::make_pair(3, 42.f)));
+    BOOST_TEST(to_string(std::make_pair(3, 42.f)) == "(3,42)");
 }
 
 BOOST_AUTO_TEST_CASE(boost_shared_ptr_are_serialized)
 {
-    BOOST_CHECK_NE("?", to_string(boost::shared_ptr<int>()));
-    BOOST_CHECK_NE("?", to_string(boost::shared_ptr<int>(new int(42))));
+    BOOST_TEST(to_string(boost::shared_ptr<int>()) != "?");
+    BOOST_TEST(to_string(boost::shared_ptr<int>(new int(42))) != "?");
 }
 
 BOOST_AUTO_TEST_CASE(boost_weak_ptr_are_serialized)
 {
-    BOOST_CHECK_NE("?", to_string(boost::weak_ptr<int>(boost::shared_ptr<int>())));
-    BOOST_CHECK_NE("?", to_string(boost::weak_ptr<int>(boost::shared_ptr<int>(new int(42)))));
+    BOOST_TEST(to_string(boost::weak_ptr<int>(boost::shared_ptr<int>())) != "?");
+    BOOST_TEST(to_string(boost::weak_ptr<int>(boost::shared_ptr<int>(new int(42)))) != "?");
 }
 
 BOOST_AUTO_TEST_CASE(std_shared_ptr_are_serialized)
 {
-    BOOST_CHECK_NE("?", to_string(std::shared_ptr<int>()));
-    BOOST_CHECK_NE("?", to_string(std::shared_ptr<int>(new int(42))));
+    BOOST_TEST(to_string(std::shared_ptr<int>()) != "?");
+    BOOST_TEST(to_string(std::shared_ptr<int>(new int(42))) != "?");
 }
 
 BOOST_AUTO_TEST_CASE(std_weak_ptr_are_serialized)
 {
-    BOOST_CHECK_NE("?", to_string(std::weak_ptr<int>(std::shared_ptr<int>())));
-    BOOST_CHECK_NE("?", to_string(std::weak_ptr<int>(std::shared_ptr<int>(new int(42)))));
+    BOOST_TEST(to_string(std::weak_ptr<int>(std::shared_ptr<int>())) != "?");
+    BOOST_TEST(to_string(std::weak_ptr<int>(std::shared_ptr<int>(new int(42)))) != "?");
 }
 
 BOOST_AUTO_TEST_CASE(std_unique_ptr_are_serialized)
 {
-    BOOST_CHECK_NE("?", to_string(std::unique_ptr<int>()));
-    BOOST_CHECK_NE("?", to_string(std::unique_ptr<int>(new int(42))));
+    BOOST_TEST(to_string(std::unique_ptr<int>()) != "?");
+    BOOST_TEST(to_string(std::unique_ptr<int>(new int(42))) != "?");
 }
 
 BOOST_AUTO_TEST_CASE(std_deques_are_serialized)
@@ -410,7 +410,7 @@ BOOST_AUTO_TEST_CASE(std_deques_are_serialized)
     std::deque<int> d;
     d.push_back(12);
     d.push_back(42);
-    BOOST_CHECK_EQUAL("(12,42)", to_string(d));
+    BOOST_TEST(to_string(d) == "(12,42)");
 }
 
 BOOST_AUTO_TEST_CASE(std_lists_are_serialized)
@@ -418,7 +418,7 @@ BOOST_AUTO_TEST_CASE(std_lists_are_serialized)
     std::list<int> l;
     l.push_back(12);
     l.push_back(42);
-    BOOST_CHECK_EQUAL("(12,42)", to_string(l));
+    BOOST_TEST(to_string(l) == "(12,42)");
 }
 
 BOOST_AUTO_TEST_CASE(std_vectors_are_serialized)
@@ -426,7 +426,7 @@ BOOST_AUTO_TEST_CASE(std_vectors_are_serialized)
     std::vector<int> v;
     v.push_back(12);
     v.push_back(42);
-    BOOST_CHECK_EQUAL("(12,42)", to_string(v));
+    BOOST_TEST(to_string(v) == "(12,42)");
 }
 
 BOOST_AUTO_TEST_CASE(std_maps_are_serialized)
@@ -434,7 +434,7 @@ BOOST_AUTO_TEST_CASE(std_maps_are_serialized)
     std::map<int, std::string> m;
     m[12] = "15";
     m[42] = "46";
-    BOOST_CHECK_EQUAL("((12,\"15\"),(42,\"46\"))", to_string(m));
+    BOOST_TEST(to_string(m) == "((12,\"15\"),(42,\"46\"))");
 }
 
 BOOST_AUTO_TEST_CASE(std_multimaps_are_serialized)
@@ -442,7 +442,7 @@ BOOST_AUTO_TEST_CASE(std_multimaps_are_serialized)
     std::multimap<int, std::string> m;
     m.insert(std::make_pair(12, "15"));
     m.insert(std::make_pair(42, "46"));
-    BOOST_CHECK_EQUAL("((12,\"15\"),(42,\"46\"))", to_string(m));
+    BOOST_TEST(to_string(m) == "((12,\"15\"),(42,\"46\"))");
 }
 
 BOOST_AUTO_TEST_CASE(std_sets_are_serialized)
@@ -450,7 +450,7 @@ BOOST_AUTO_TEST_CASE(std_sets_are_serialized)
     std::set<int> s;
     s.insert(12);
     s.insert(42);
-    BOOST_CHECK_EQUAL("(12,42)", to_string(s));
+    BOOST_TEST(to_string(s) == "(12,42)");
 }
 
 BOOST_AUTO_TEST_CASE(std_multisets_are_serialized)
@@ -458,7 +458,7 @@ BOOST_AUTO_TEST_CASE(std_multisets_are_serialized)
     std::multiset<int> s;
     s.insert(12);
     s.insert(42);
-    BOOST_CHECK_EQUAL("(12,42)", to_string(s));
+    BOOST_TEST(to_string(s) == "(12,42)");
 }
 
 BOOST_AUTO_TEST_CASE(std_deques_of_vectors_are_serialized)
@@ -470,7 +470,7 @@ BOOST_AUTO_TEST_CASE(std_deques_of_vectors_are_serialized)
     v2.push_back(77);
     v.push_back(v1);
     v.push_back(v2);
-    BOOST_CHECK_EQUAL("((12),(42,77))", to_string(v));
+    BOOST_TEST(to_string(v) == "((12),(42,77))");
 }
 
 BOOST_AUTO_TEST_CASE(std_vectors_of_deques_are_serialized)
@@ -482,24 +482,24 @@ BOOST_AUTO_TEST_CASE(std_vectors_of_deques_are_serialized)
     v2.push_back(77);
     v.push_back(v1);
     v.push_back(v2);
-    BOOST_CHECK_EQUAL("((12),(42,77))", to_string(v));
+    BOOST_TEST(to_string(v) == "((12),(42,77))");
 }
 
 BOOST_AUTO_TEST_CASE(boost_assign_list_of_are_serialized)
 {
-    BOOST_CHECK_EQUAL("(12,42)", to_string(boost::assign::list_of(12)(42)));
+    BOOST_TEST(to_string(boost::assign::list_of(12)(42)) == "(12,42)");
 }
 
 BOOST_AUTO_TEST_CASE(boost_assign_map_list_of_are_serialized)
 {
-    BOOST_CHECK_EQUAL("((12,\"16\"),(42,\"43\"))", to_string(boost::assign::map_list_of(12, "16")(42, "43")));
+    BOOST_TEST(to_string(boost::assign::map_list_of(12, "16")(42, "43")) == "((12,\"16\"),(42,\"43\"))");
 }
 
 BOOST_AUTO_TEST_CASE(std_reference_wrappers_are_serialized)
 {
     const int i = 3;
-    BOOST_CHECK_EQUAL("3", to_string(std::cref(i)));
-    BOOST_CHECK_EQUAL("\"string\"", to_string(std::cref("string")));
+    BOOST_TEST(to_string(std::cref(i)) == "3");
+    BOOST_TEST(to_string(std::cref("string")) == "\"string\"");
 }
 
 namespace {
@@ -508,8 +508,8 @@ void callable_builtin() {}
 
 BOOST_AUTO_TEST_CASE(callable_builtin_yields_a_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL("?", to_string(callable_builtin));
-    BOOST_CHECK_EQUAL("?", to_string(&callable_builtin));
+    BOOST_TEST(to_string(callable_builtin) == "?");
+    BOOST_TEST(to_string(&callable_builtin) == "?");
 }
 
 namespace {
@@ -523,7 +523,7 @@ std::ostream& operator<<(std::ostream& s, const serialized_using_format&)
 
 BOOST_AUTO_TEST_CASE(type_can_use_format_when_serialized)
 {
-    BOOST_CHECK_EQUAL("\"string\"", to_string(serialized_using_format()));
+    BOOST_TEST(to_string(serialized_using_format()) == "\"string\"");
 }
 
 namespace {
@@ -537,7 +537,7 @@ mock::stream& operator<<(mock::stream& s, const streamed_using_format&)
 
 BOOST_AUTO_TEST_CASE(type_can_use_format_when_streamed)
 {
-    BOOST_CHECK_EQUAL("\"string\"", to_string(streamed_using_format()));
+    BOOST_TEST(to_string(streamed_using_format()) == "\"string\"");
 }
 
 namespace {
@@ -551,7 +551,7 @@ mock::stream& operator<<(mock::stream& s, const std_string_streamed&)
 
 BOOST_AUTO_TEST_CASE(std_string_streamed_is_not_a_container)
 {
-    BOOST_CHECK_EQUAL("string", to_string(std_string_streamed()));
+    BOOST_TEST(to_string(std_string_streamed()) == "string");
 }
 
 namespace mock { namespace detail {
@@ -567,7 +567,7 @@ namespace mock { namespace detail {
 
 BOOST_AUTO_TEST_CASE(mock_detail_template_type_serializable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("mock::detail::template_serializable", to_string(mock::detail::template_serializable<int>()));
+    BOOST_TEST(to_string(mock::detail::template_serializable<int>()) == "mock::detail::template_serializable");
 }
 
 namespace mock { namespace detail {
@@ -589,12 +589,12 @@ namespace mock { namespace detail {
 
 BOOST_AUTO_TEST_CASE(mock_detail_template_template_streamable_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("mock::detail::template_streamable", to_string(mock::detail::template_streamable<int>()));
+    BOOST_TEST(to_string(mock::detail::template_streamable<int>()) == "mock::detail::template_streamable");
 }
 
 BOOST_AUTO_TEST_CASE(unsigned_char_is_serialized_as_int)
 {
-    BOOST_CHECK_EQUAL(std::to_string(static_cast<int>('a')), to_string<unsigned char>('a'));
+    BOOST_TEST(to_string<unsigned char>('a') == std::to_string(static_cast<int>('a')));
 }
 
 namespace {
@@ -606,36 +606,36 @@ bool some_function()
 
 BOOST_AUTO_TEST_CASE(boost_phoenix_functor_yields_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL("?", to_string(boost::phoenix::bind(&some_function)));
-    BOOST_CHECK_EQUAL("?", to_string(boost::phoenix::arg_names::_1 < 42));
+    BOOST_TEST(to_string(boost::phoenix::bind(&some_function)) == "?");
+    BOOST_TEST(to_string(boost::phoenix::arg_names::_1 < 42) == "?");
 }
 
 BOOST_AUTO_TEST_CASE(bind_functor_yields_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL("?", to_string(boost::bind(&some_function)));
-    BOOST_CHECK_EQUAL("?", to_string(std::bind(&some_function)));
+    BOOST_TEST(to_string(boost::bind(&some_function)) == "?");
+    BOOST_TEST(to_string(std::bind(&some_function)) == "?");
 }
 
 #ifndef BOOST_MSVC // this produces an ICE with all versions of MSVC
 
 BOOST_AUTO_TEST_CASE(boost_lambda_functor_yields_question_mark_when_serialized)
 {
-    BOOST_CHECK_EQUAL("?", to_string(boost::lambda::bind(&some_function)));
-    BOOST_CHECK_EQUAL("?", to_string(boost::lambda::_1 < 42));
+    BOOST_TEST(to_string(boost::lambda::bind(&some_function)) == "?");
+    BOOST_TEST(to_string(boost::lambda::_1 < 42) == "?");
 }
 
 #endif
 
 BOOST_AUTO_TEST_CASE(nullptr_is_serialized)
 {
-    BOOST_CHECK_EQUAL("nullptr", to_string(nullptr));
+    BOOST_TEST(to_string(nullptr) == "nullptr");
 }
 
 BOOST_AUTO_TEST_CASE(mock_boost_optional_yields_its_value_when_serialized)
 {
-    BOOST_CHECK_EQUAL("7", to_string(boost::optional<int>(7)));
-    BOOST_CHECK_EQUAL("?", to_string(boost::optional<non_serializable>(non_serializable())));
-    BOOST_CHECK_EQUAL("none", to_string(boost::optional<int>()));
-    BOOST_CHECK_EQUAL("none", to_string(boost::optional<non_serializable>()));
-    BOOST_CHECK_EQUAL("none", to_string(boost::none));
+    BOOST_TEST(to_string(boost::optional<int>(7)) == "7");
+    BOOST_TEST(to_string(boost::optional<non_serializable>(non_serializable())) == "?");
+    BOOST_TEST(to_string(boost::optional<int>()) == "none");
+    BOOST_TEST(to_string(boost::optional<non_serializable>()) == "none");
+    BOOST_TEST(to_string(boost::none) == "none");
 }

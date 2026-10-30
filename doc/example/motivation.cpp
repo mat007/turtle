@@ -29,7 +29,7 @@ int calculator::add(int a, int b)
 BOOST_AUTO_TEST_CASE(zero_plus_zero_is_zero)
 {
     calculator c;
-    BOOST_CHECK_EQUAL(0, c.add(0, 0));
+    BOOST_TEST(c.add(0, 0) == 0);
 }
 //]
 } // namespace simple
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE(zero_plus_zero_is_zero_without_mock_object)
     calculator c(v);
     c.add(0, 0);
     BOOST_REQUIRE(v.called);
-    BOOST_CHECK_EQUAL(0, v.value);
+    BOOST_TEST(v.value == 0);
 }
 //]
 } // namespace without_mock_object

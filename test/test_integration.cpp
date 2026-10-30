@@ -56,21 +56,21 @@ BOOST_FIXTURE_TEST_CASE(basic_mock_object_usage, mock_error_fixture)
     my_mock m;
     {
         MOCK_EXPECT(m.my_tag).once().returns(0);
-        BOOST_CHECK_EQUAL(0, m.my_method(13));
+        BOOST_TEST(m.my_method(13) == 0);
         CHECK_CALLS(1);
     }
     mock::verify();
     mock::reset();
     {
         MOCK_EXPECT(m.my_tag).once().with(42).returns(7);
-        BOOST_CHECK_EQUAL(7, m.my_method(42));
+        BOOST_TEST(m.my_method(42) == 7);
         CHECK_CALLS(1);
     }
     mock::verify();
     mock::reset();
     {
         MOCK_EXPECT(m.my_tag).once().returns(51);
-        BOOST_CHECK_EQUAL(51, m.my_method(27));
+        BOOST_TEST(m.my_method(27) == 51);
         CHECK_CALLS(1);
     }
 }
@@ -152,7 +152,7 @@ BOOST_FIXTURE_TEST_CASE(mock_functor_in_namespace_is_supported, mock_error_fixtu
     std::function<int(float, const std::string&)> func;
     MOCK_EXPECT(gf).once().with(3, "op").returns(42);
     func = gf;
-    BOOST_CHECK_EQUAL(42, func(3, "op"));
+    BOOST_TEST(func(3, "op") == 42);
     CHECK_CALLS(1);
 }
 
@@ -164,7 +164,7 @@ BOOST_FIXTURE_TEST_CASE(mock_functor_in_function_is_supported, mock_error_fixtur
         MOCK_EXPECT(f).once().with(3, "op").returns(42);
         func = f;
     }
-    BOOST_CHECK_EQUAL(42, func(3, "op"));
+    BOOST_TEST(func(3, "op") == 42);
     CHECK_CALLS(1);
 }
 
@@ -178,7 +178,7 @@ struct functor_fixture : mock_error_fixture
 BOOST_FIXTURE_TEST_CASE(mock_functor_in_fixture_is_supported, functor_fixture)
 {
     MOCK_EXPECT(f).once().with(3, "op").returns(42);
-    BOOST_CHECK_EQUAL(42, f(3.f, "op"));
+    BOOST_TEST(f(3.f, "op") == 42);
     CHECK_CALLS(1);
 }
 
@@ -197,7 +197,7 @@ BOOST_FIXTURE_TEST_CASE(mocking_a_template_class_method_is_supported, mock_error
     my_template_mock<int> m;
     MOCK_EXPECT(m.my_tpl_tag).with(3, "");
     m.my_method(3, "");
-    BOOST_CHECK(MOCK_VERIFY(m.my_tpl_tag));
+    BOOST_TEST(MOCK_VERIFY(m.my_tpl_tag));
     CHECK_CALLS(1);
 }
 
@@ -222,7 +222,7 @@ BOOST_FIXTURE_TEST_CASE(mocking_a_template_base_class_method_is_supported, mock_
     my_template_base_class_mock<int> m;
     MOCK_EXPECT(m.my_method).once().with(3);
     m.my_method(3);
-    BOOST_CHECK(MOCK_VERIFY(m.my_method));
+    BOOST_TEST(MOCK_VERIFY(m.my_method));
     CHECK_CALLS(1);
 }
 
@@ -299,7 +299,7 @@ BOOST_FIXTURE_TEST_CASE(mocking_a_constructor, mock_error_fixture)
 {
     MOCK_EXPECT(my_constructed_class::constructor).with(42, "some text").once();
     my_constructed_class(42, "some text");
-    BOOST_CHECK(MOCK_VERIFY(my_constructed_class::constructor));
+    BOOST_TEST(MOCK_VERIFY(my_constructed_class::constructor));
     CHECK_CALLS(1);
 }
 
@@ -315,7 +315,7 @@ BOOST_FIXTURE_TEST_CASE(mocking_a_template_class_constructor, mock_error_fixture
 {
     MOCK_EXPECT(my_constructed_template_class<int>::constructor).with(42, "some text").once();
     my_constructed_template_class<int>(42, "some text");
-    BOOST_CHECK(MOCK_VERIFY(my_constructed_template_class<int>::constructor));
+    BOOST_TEST(MOCK_VERIFY(my_constructed_template_class<int>::constructor));
     CHECK_CALLS(1);
 }
 
@@ -410,7 +410,7 @@ BOOST_FIXTURE_TEST_CASE(constraints_and_arguments_are_serialized_lazily, mock_er
     MOCK_FUNCTOR(f, void(const custom_argument&));
     MOCK_EXPECT(f).with(custom_constraint());
     f(custom_argument());
-    BOOST_CHECK(!serialized);
+    BOOST_TEST(!serialized);
     CHECK_CALLS(1);
 }
 
@@ -468,10 +468,10 @@ BOOST_FIXTURE_TEST_CASE(a_free_function_can_be_mocked, mock_error_fixture)
 {
     MOCK_EXPECT(free_function).once();
     CHECK_ERROR(
-      BOOST_CHECK(!MOCK_VERIFY(free_function)), "verification failed", 0, "free_function\n. once().with( any )");
+      BOOST_TEST(!MOCK_VERIFY(free_function)), "verification failed", 0, "free_function\n. once().with( any )");
     free_function(42);
     CHECK_CALLS(1);
-    BOOST_CHECK(MOCK_VERIFY(free_function));
+    BOOST_TEST(MOCK_VERIFY(free_function));
     MOCK_RESET(free_function);
 }
 
@@ -485,13 +485,13 @@ struct some_class : mock::object
 BOOST_FIXTURE_TEST_CASE(a_static_method_can_be_mocked, mock_error_fixture)
 {
     MOCK_EXPECT(some_class::some_static_method).once();
-    CHECK_ERROR(BOOST_CHECK(!MOCK_VERIFY(some_class::some_static_method)),
+    CHECK_ERROR(BOOST_TEST(!MOCK_VERIFY(some_class::some_static_method)),
                 "verification failed",
                 0,
                 "some_class::some_static_method\n. once().with( any )");
     some_class::some_static_method(42);
     CHECK_CALLS(1);
-    BOOST_CHECK(MOCK_VERIFY(some_class::some_static_method));
+    BOOST_TEST(MOCK_VERIFY(some_class::some_static_method));
     MOCK_RESET(some_class::some_static_method);
 }
 
@@ -500,7 +500,7 @@ BOOST_FIXTURE_TEST_CASE(a_static_method_is_not_reset_when_resetting_an_instance_
     MOCK_EXPECT(some_class::some_static_method).once();
     some_class c;
     mock::reset(c);
-    CHECK_ERROR(BOOST_CHECK(!MOCK_VERIFY(some_class::some_static_method)),
+    CHECK_ERROR(BOOST_TEST(!MOCK_VERIFY(some_class::some_static_method)),
                 "verification failed",
                 0,
                 "some_class::some_static_method\n. once().with( any )");
@@ -518,13 +518,13 @@ struct some_template_class
 BOOST_FIXTURE_TEST_CASE(a_static_method_in_a_template_class_can_be_mocked, mock_error_fixture)
 {
     MOCK_EXPECT(some_template_class<int>::some_static_method).once();
-    CHECK_ERROR(BOOST_CHECK(!MOCK_VERIFY(some_template_class<int>::some_static_method)),
+    CHECK_ERROR(BOOST_TEST(!MOCK_VERIFY(some_template_class<int>::some_static_method)),
                 "verification failed",
                 0,
                 "some_template_class<int>::some_static_method\n. once().with( any )");
     some_template_class<int>::some_static_method(42);
-    BOOST_CHECK(mock::verify());
-    BOOST_CHECK(MOCK_VERIFY(some_template_class<int>::some_static_method));
+    BOOST_TEST(mock::verify());
+    BOOST_TEST(MOCK_VERIFY(some_template_class<int>::some_static_method));
     MOCK_RESET(some_template_class<int>::some_static_method);
     CHECK_CALLS(1);
 }
@@ -627,7 +627,7 @@ namespace {
 void iterate(my_mock& m)
 {
     MOCK_EXPECT(m.my_tag).once().with(3).returns(42);
-    BOOST_CHECK_EQUAL(42, m.my_method(3));
+    BOOST_TEST(m.my_method(3) == 42);
 }
 } // namespace
 
@@ -719,9 +719,9 @@ BOOST_FIXTURE_TEST_CASE(std_unique_ptr_argument_is_supported_in_retrieve_constra
         MOCK_EXPECT(f).once().with(mock::retrieve(i));
         std::unique_ptr<int> j(new int(7));
         f(std::move(j));
-        BOOST_CHECK(!j);
+        BOOST_TEST(!j);
         BOOST_REQUIRE(i);
-        BOOST_CHECK_EQUAL(7, *i);
+        BOOST_TEST(*i == 7);
         CHECK_CALLS(1);
     }
     {
@@ -732,9 +732,9 @@ BOOST_FIXTURE_TEST_CASE(std_unique_ptr_argument_is_supported_in_retrieve_constra
         f(nullptr, nullptr, nullptr);
         std::unique_ptr<int> j(new int(7));
         f(nullptr, std::move(j), nullptr);
-        BOOST_CHECK(!j);
+        BOOST_TEST(!j);
         BOOST_REQUIRE(i);
-        BOOST_CHECK_EQUAL(7, *i);
+        BOOST_TEST(*i == 7);
         CHECK_CALLS(2);
     }
 }
