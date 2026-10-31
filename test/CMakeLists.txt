@@ -70,6 +70,7 @@ endforeach()
 set_tests_properties(test_error_policy PROPERTIES
                      PASS_REGULAR_EXPRESSION "untriggered expectation: f_unfullfilled")
 set_tests_properties(test_fail_error_policy_passpoint PROPERTIES
+                     WILL_FAIL FALSE # Revert this to only check the output
                      PASS_REGULAR_EXPRESSION [[test_fail_error_policy_passpoint.cpp\(42\):.*last checkpoint]])
 
 # Link test only to check for a regression
