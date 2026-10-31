@@ -42,7 +42,7 @@ BOOST_FIXTURE_TEST_CASE(registering_to_a_sequence_and_calling_in_order_is_valid,
     e.expect().once().with(2).in(s);
     BOOST_CHECK_NO_THROW(e(1));
     BOOST_CHECK_NO_THROW(e(2));
-    BOOST_CHECK(e.verify());
+    BOOST_TEST(e.verify());
     CHECK_CALLS(2);
 }
 
@@ -56,7 +56,7 @@ BOOST_FIXTURE_TEST_CASE(registering_to_a_sequence_and_multiply_calling_in_order_
     BOOST_CHECK_NO_THROW(e(1));
     BOOST_CHECK_NO_THROW(e(2));
     BOOST_CHECK_NO_THROW(e(2));
-    BOOST_CHECK(e.verify());
+    BOOST_TEST(e.verify());
     CHECK_CALLS(4);
 }
 
@@ -91,8 +91,8 @@ BOOST_FIXTURE_TEST_CASE(resetting_an_expectation_removes_it_from_order_call_enfo
     e2.expect().once().in(s);
     e1.reset();
     BOOST_CHECK_NO_THROW(e2());
-    BOOST_CHECK(e1.verify());
-    BOOST_CHECK(e2.verify());
+    BOOST_TEST(e1.verify());
+    BOOST_TEST(e2.verify());
     CHECK_CALLS(1);
 }
 
@@ -106,7 +106,7 @@ BOOST_FIXTURE_TEST_CASE(an_expectation_can_be_used_in_several_sequences, mock_er
                          s[10], s[11], s[12], s[13], s[14], s[15], s[16], s[17], s[18], s[19]);
     // clang-format on
     BOOST_CHECK_NO_THROW(e());
-    BOOST_CHECK(e.verify());
+    BOOST_TEST(e.verify());
     CHECK_CALLS(1);
 }
 
@@ -115,7 +115,7 @@ BOOST_FIXTURE_TEST_CASE(a_result_specification_is_set_after_a_sequence, mock_err
     mock::sequence s;
     mock::detail::function<int()> e;
     e.expect().once().in(s).returns(3);
-    BOOST_CHECK_EQUAL(3, e());
-    BOOST_CHECK(e.verify());
+    BOOST_TEST(e() == 3);
+    BOOST_TEST(e.verify());
     CHECK_CALLS(1);
 }

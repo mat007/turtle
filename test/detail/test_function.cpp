@@ -238,11 +238,11 @@ BOOST_FIXTURE_TEST_CASE(verifying_an_unconfigured_function_succeeds, mock_error_
 {
     {
         mock::detail::function<void()> f;
-        BOOST_CHECK(f.verify());
+        BOOST_TEST(f.verify());
     }
     {
         mock::detail::function<int(int, const std::string&)> f;
-        BOOST_CHECK(f.verify());
+        BOOST_TEST(f.verify());
     }
 }
 
@@ -251,13 +251,13 @@ BOOST_FIXTURE_TEST_CASE(verifying_an_unlimited_expectation_succeeds, mock_error_
     {
         mock::detail::function<void()> f;
         f.expect();
-        BOOST_CHECK(f.verify());
+        BOOST_TEST(f.verify());
         CHECK_CALLS(0);
     }
     {
         mock::detail::function<int(int, const std::string&)> f;
         f.expect();
-        BOOST_CHECK(f.verify());
+        BOOST_TEST(f.verify());
         CHECK_CALLS(0);
     }
 }
@@ -268,14 +268,14 @@ BOOST_FIXTURE_TEST_CASE(verifying_a_once_expectation_after_one_call_succeeds, mo
         mock::detail::function<void()> f;
         f.expect().once();
         f();
-        BOOST_CHECK(f.verify());
+        BOOST_TEST(f.verify());
         CHECK_CALLS(1);
     }
     {
         mock::detail::function<void(int, const std::string&)> f;
         f.expect().once();
         f(1, "s");
-        BOOST_CHECK(f.verify());
+        BOOST_TEST(f.verify());
         CHECK_CALLS(1);
     }
 }
@@ -285,12 +285,12 @@ BOOST_FIXTURE_TEST_CASE(verifying_a_once_expectation_before_the_call_fails, mock
     {
         mock::detail::function<void()> f;
         f.expect().once();
-        CHECK_ERROR(BOOST_CHECK(!f.verify()), "verification failed", 0, "?\n. once()");
+        CHECK_ERROR(BOOST_TEST(!f.verify()), "verification failed", 0, "?\n. once()");
     }
     {
         mock::detail::function<int(int, const std::string&)> f;
         f.expect().once();
-        CHECK_ERROR(BOOST_CHECK(!f.verify()), "verification failed", 0, "?\n. once().with( any, any )");
+        CHECK_ERROR(BOOST_TEST(!f.verify()), "verification failed", 0, "?\n. once().with( any, any )");
     }
 }
 
@@ -298,9 +298,9 @@ BOOST_FIXTURE_TEST_CASE(verifying_a_once_expectation_after_a_verify_and_one_call
 {
     mock::detail::function<void()> f;
     f.expect().once();
-    CHECK_ERROR(BOOST_CHECK(!f.verify()), "verification failed", 0, "?\n. once()");
+    CHECK_ERROR(BOOST_TEST(!f.verify()), "verification failed", 0, "?\n. once()");
     f();
-    BOOST_CHECK(f.verify());
+    BOOST_TEST(f.verify());
     CHECK_CALLS(1);
 }
 
@@ -328,13 +328,13 @@ BOOST_FIXTURE_TEST_CASE(verifying_a_reset_function_succeeds, mock_error_fixture)
         mock::detail::function<void()> f;
         f.expect();
         f.reset();
-        BOOST_CHECK(f.verify());
+        BOOST_TEST(f.verify());
     }
     {
         mock::detail::function<int(int, const std::string&)> f;
         f.expect();
         f.reset();
-        BOOST_CHECK(f.verify());
+        BOOST_TEST(f.verify());
     }
 }
 
@@ -487,14 +487,14 @@ BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_returns_the_set_value, mock_er
     {
         mock::detail::function<int()> f;
         f.expect().returns(42);
-        BOOST_CHECK_EQUAL(42, f());
+        BOOST_TEST(f() == 42);
         CHECK_CALLS(1);
     }
     {
         mock::detail::function<int()> f;
         const int i = 42;
         f.expect().returns(i);
-        BOOST_CHECK_EQUAL(i, f());
+        BOOST_TEST(f() == i);
         CHECK_CALLS(1);
     }
     {
@@ -502,20 +502,20 @@ BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_returns_the_set_value, mock_er
         int i = 42;
         f.expect().returns(std::ref(i));
         i = 43;
-        BOOST_CHECK_EQUAL(43, f());
+        BOOST_TEST(f() == 43);
         CHECK_CALLS(1);
     }
     {
         mock::detail::function<int&()> f;
         f.expect().returns(42);
-        BOOST_CHECK_EQUAL(42, f());
+        BOOST_TEST(f() == 42);
         CHECK_CALLS(1);
     }
     {
         mock::detail::function<int&()> f;
         const int result = 42;
         f.expect().returns(result);
-        BOOST_CHECK_EQUAL(result, f());
+        BOOST_TEST(f() == result);
         CHECK_CALLS(1);
     }
     {
@@ -523,7 +523,7 @@ BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_returns_the_set_value, mock_er
         int i = 42;
         f.expect().returns(i);
         i = 43;
-        BOOST_CHECK_EQUAL(42, f());
+        BOOST_TEST(f() == 42);
         CHECK_CALLS(1);
     }
     {
@@ -531,27 +531,27 @@ BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_returns_the_set_value, mock_er
         int i = 42;
         f.expect().returns(std::ref(i));
         i = 43;
-        BOOST_CHECK_EQUAL(43, f());
-        BOOST_CHECK_EQUAL(12, f() = 12);
-        BOOST_CHECK_EQUAL(12, i);
+        BOOST_TEST(f() == 43);
+        BOOST_TEST((f() = 12) == 12);
+        BOOST_TEST(i == 12);
         CHECK_CALLS(2);
     }
     {
         mock::detail::function<std::string()> f;
         f.expect().returns("result");
-        BOOST_CHECK_EQUAL("result", f());
+        BOOST_TEST(f() == "result");
         CHECK_CALLS(1);
     }
     {
         mock::detail::function<const std::string&()> f;
         f.expect().returns("result");
-        BOOST_CHECK_EQUAL("result", f());
+        BOOST_TEST(f() == "result");
         CHECK_CALLS(1);
     }
     {
         mock::detail::function<int*()> f;
         f.expect().returns(0);
-        BOOST_CHECK(!f());
+        BOOST_TEST(!f());
         CHECK_CALLS(1);
     }
 #ifdef BOOST_MSVC // this produces a warning with gcc
@@ -559,26 +559,26 @@ BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_returns_the_set_value, mock_er
         mock::detail::function<int* const()> f;
         int i = 0;
         f.expect().returns(&i);
-        BOOST_CHECK_EQUAL(&i, f());
+        BOOST_TEST(f() == &i);
         CHECK_CALLS(1);
     }
 #endif
     {
         mock::detail::function<int()> f;
         f.expect().returns(0);
-        BOOST_CHECK_EQUAL(0, f());
+        BOOST_TEST(f() == 0);
         CHECK_CALLS(1);
     }
     {
         mock::detail::function<int&()> f;
         f.expect().returns(0);
-        BOOST_CHECK_EQUAL(0, f());
+        BOOST_TEST(f() == 0);
         CHECK_CALLS(1);
     }
     {
         mock::detail::function<unsigned int()> f;
         f.expect().returns(0);
-        BOOST_CHECK_EQUAL(0u, f());
+        BOOST_TEST(f() == 0u);
         CHECK_CALLS(1);
     }
 }
@@ -696,7 +696,7 @@ BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_calls_the_custom_functor, mock
 {
     mock::detail::function<int()> f;
     f.expect().calls(&custom_result);
-    BOOST_CHECK_EQUAL(42, f());
+    BOOST_TEST(f() == 42);
     CHECK_CALLS(1);
 }
 
@@ -711,7 +711,7 @@ BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_calls_the_custom_functor_with_
 {
     mock::detail::function<int(int)> f;
     f.expect().calls(&custom_result_with_parameter);
-    BOOST_CHECK_EQUAL(42, f(42));
+    BOOST_TEST(f(42) == 42);
     CHECK_CALLS(1);
 }
 
@@ -720,7 +720,7 @@ BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_calls_the_custom_functor_witho
 {
     mock::detail::function<int(int)> f;
     f.expect().calls(std::bind(&custom_result));
-    BOOST_CHECK_EQUAL(42, f(17));
+    BOOST_TEST(f(17) == 42);
     CHECK_CALLS(1);
 }
 
@@ -733,7 +733,7 @@ BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_throws_the_set_exception, mock
         f();
     } catch(std::runtime_error& f)
     {
-        BOOST_CHECK_EQUAL("some exception", f.what());
+        BOOST_TEST(f.what() == "some exception");
         CHECK_CALLS(1);
         return;
     }
@@ -813,7 +813,7 @@ BOOST_FIXTURE_TEST_CASE(expectation_can_be_serialized_to_be_human_readable, mock
         // (Unverified) expectation with retrieve/same constraint print current value
         expected += ". once().with( retrieve( 42 ) )\n";
         expected += ". once().with( same( 42 ) )";
-        BOOST_CHECK_EQUAL(expected, to_string(f));
+        BOOST_TEST(to_string(f) == expected);
         CHECK_CALLS(1);
         f.reset();
     }
@@ -822,7 +822,7 @@ BOOST_FIXTURE_TEST_CASE(expectation_can_be_serialized_to_be_human_readable, mock
         f.expect().never().with(1);
         const std::string expected = "?\n"
                                      "v never().with( 1 )";
-        BOOST_CHECK_EQUAL(expected, to_string(f));
+        BOOST_TEST(to_string(f) == expected);
         f.reset();
     }
     {
@@ -834,14 +834,14 @@ BOOST_FIXTURE_TEST_CASE(expectation_can_be_serialized_to_be_human_readable, mock
             const std::string expected = "?\n"
                                          "v never().with( less( \"first\" ) )\n"
                                          ". exactly( 1/2 ).with( \"second\" )";
-            BOOST_CHECK_EQUAL(expected, to_string(f));
+            BOOST_TEST(to_string(f) == expected);
         }
         BOOST_CHECK_NO_THROW(f("second"));
         {
             const std::string expected = "?\n"
                                          "v never().with( less( \"first\" ) )\n"
                                          "v exactly( 2/2 ).with( \"second\" )";
-            BOOST_CHECK_EQUAL(expected, to_string(f));
+            BOOST_TEST(to_string(f) == expected);
             CHECK_CALLS(2);
         }
         f.reset();
@@ -851,7 +851,7 @@ BOOST_FIXTURE_TEST_CASE(expectation_can_be_serialized_to_be_human_readable, mock
         f.expect().once();
         const std::string expected = "?\n"
                                      ". once().with( any )";
-        BOOST_CHECK_EQUAL(expected, to_string(f));
+        BOOST_TEST(to_string(f) == expected);
         f.reset();
     }
     {
@@ -859,7 +859,7 @@ BOOST_FIXTURE_TEST_CASE(expectation_can_be_serialized_to_be_human_readable, mock
         f.expect().once().with(mock::any);
         const std::string expected = "?\n"
                                      ". once().with( any )";
-        BOOST_CHECK_EQUAL(expected, to_string(f));
+        BOOST_TEST(to_string(f) == expected);
         f.reset();
     }
     {
@@ -867,7 +867,7 @@ BOOST_FIXTURE_TEST_CASE(expectation_can_be_serialized_to_be_human_readable, mock
         f.expect().once();
         const std::string expected = "?\n"
                                      ". once().with( any )";
-        BOOST_CHECK_EQUAL(expected, to_string(f));
+        BOOST_TEST(to_string(f) == expected);
         f.reset();
     }
     {
@@ -875,7 +875,7 @@ BOOST_FIXTURE_TEST_CASE(expectation_can_be_serialized_to_be_human_readable, mock
         f.expect().once().with(&custom_constraint);
         const std::string expected = "?\n"
                                      ". once().with( ? )";
-        BOOST_CHECK_EQUAL(expected, to_string(f));
+        BOOST_TEST(to_string(f) == expected);
         f.reset();
     }
 }
@@ -928,8 +928,8 @@ BOOST_FIXTURE_TEST_CASE(adding_file_and_line_number_information, mock_error_fixt
     mock::detail::function<void()> f;
     f.expect("file name", 42).once();
     CHECK_ERROR(f.verify(), "verification failed", 0, "?\n. once()");
-    BOOST_CHECK_EQUAL("file name", mock_error_data.last_file);
-    BOOST_CHECK_EQUAL(42, mock_error_data.last_line);
+    BOOST_TEST(mock_error_data.last_file == "file name");
+    BOOST_TEST(mock_error_data.last_line == 42);
 }
 
 #ifdef MOCK_THREAD_SAFE

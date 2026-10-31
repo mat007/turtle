@@ -80,31 +80,31 @@ struct mock_error_fixture
     mock_error_fixture() { mock_error_data.reset(); }
     ~mock_error_fixture()
     {
-        BOOST_CHECK(mock_error_data.verify());
-        BOOST_CHECK_EQUAL(0, mock_error_data.call_count);
+        BOOST_TEST(mock_error_data.verify());
+        BOOST_TEST(mock_error_data.call_count == 0);
     }
 };
 
 /// Check that the number of calls to mocked function equals the given amount
 /// and resets them (for the next check and cleanup)
-#define CHECK_CALLS(calls)                                \
-    BOOST_CHECK_EQUAL(calls, mock_error_data.call_count); \
+#define CHECK_CALLS(calls)                           \
+    BOOST_TEST(mock_error_data.call_count == calls); \
     mock_error_data.call_count = 0;
 /// Similar to BOOST_CHECK_THROW:
 /// Checks that running `expr` leads to an error of the set expectations,
 /// that the error message equals `error`, with the given `context`
 /// and `calls` mocked functions were called.
-#define CHECK_ERROR(expr, error, calls, context)              \
-    BOOST_CHECK(mock_error_data.verify());                    \
-    try                                                       \
-    {                                                         \
-        expr;                                                 \
-    } catch(...)                                              \
-    {}                                                        \
-    BOOST_CHECK_EQUAL(1, mock_error_data.error_count);        \
-    BOOST_CHECK_EQUAL(error, mock_error_data.last_message);   \
-    BOOST_CHECK_EQUAL(context, mock_error_data.last_context); \
-    CHECK_CALLS(calls);                                       \
+#define CHECK_ERROR(expr, error, calls, context)         \
+    BOOST_TEST(mock_error_data.verify());                \
+    try                                                  \
+    {                                                    \
+        expr;                                            \
+    } catch(...)                                         \
+    {}                                                   \
+    BOOST_TEST(mock_error_data.error_count == 1);        \
+    BOOST_TEST(mock_error_data.last_message == error);   \
+    BOOST_TEST(mock_error_data.last_context == context); \
+    CHECK_CALLS(calls);                                  \
     mock_error_data.reset();
 
 #endif // MOCK_TEST_MOCK_ERROR_HPP_INCLUDED

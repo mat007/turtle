@@ -22,16 +22,16 @@ bool match(Expected expected, Actual actual)
 
 BOOST_AUTO_TEST_CASE(int_and_int_can_be_compared)
 {
-    BOOST_CHECK(match(3, 3));
-    BOOST_CHECK(!match(3, 4));
-    BOOST_CHECK(!match(4, 3));
+    BOOST_TEST(match(3, 3));
+    BOOST_TEST(!match(3, 4));
+    BOOST_TEST(!match(4, 3));
 }
 
 BOOST_AUTO_TEST_CASE(ref_to_int_and_int_can_be_compared)
 {
     const int i = 3;
-    BOOST_CHECK(match(3, std::cref(i)));
-    BOOST_CHECK(!match(4, std::cref(i)));
+    BOOST_TEST(match(3, std::cref(i)));
+    BOOST_TEST(!match(4, std::cref(i)));
 }
 
 namespace {
@@ -55,40 +55,40 @@ BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_const_char_pointer_can_be_compare
     BOOST_REQUIRE(expected != actual);
     BOOST_REQUIRE(std::string(expected) == actual);
 
-    BOOST_CHECK(match(expected, actual));
+    BOOST_TEST(match(expected, actual));
     const char* unexpected = "different text";
-    BOOST_CHECK(!match(unexpected, actual));
+    BOOST_TEST(!match(unexpected, actual));
 }
 
 BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_string_literal_can_be_compared, fixture)
 {
-    BOOST_CHECK(match("same text", actual));
-    BOOST_CHECK(!match("different text", actual));
+    BOOST_TEST(match("same text", actual));
+    BOOST_TEST(!match("different text", actual));
 }
 
 BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_const_char_array_can_be_compared, fixture)
 {
     const char expected[] = "same text";
     BOOST_REQUIRE(expected != actual);
-    BOOST_CHECK(match(expected, actual));
+    BOOST_TEST(match(expected, actual));
     const char unexpected[] = "different text";
-    BOOST_CHECK(!match(unexpected, actual));
+    BOOST_TEST(!match(unexpected, actual));
 }
 
 BOOST_FIXTURE_TEST_CASE(const_char_pointer_and_std_string_can_be_compared, fixture)
 {
-    BOOST_CHECK(match(std::string("same text"), actual));
-    BOOST_CHECK(match(actual, std::string("same text")));
-    BOOST_CHECK(!match(std::string("different text"), actual));
-    BOOST_CHECK(!match(actual, std::string("different text")));
+    BOOST_TEST(match(std::string("same text"), actual));
+    BOOST_TEST(match(actual, std::string("same text")));
+    BOOST_TEST(!match(std::string("different text"), actual));
+    BOOST_TEST(!match(actual, std::string("different text")));
 }
 
 BOOST_AUTO_TEST_CASE(null_const_char_pointers_can_be_compared)
 {
     const char* const null_str = nullptr;
-    BOOST_CHECK(match(null_str, null_str));
-    BOOST_CHECK(!match(null_str, "non-null string"));
-    BOOST_CHECK(!match("non-null string", null_str));
+    BOOST_TEST(match(null_str, null_str));
+    BOOST_TEST(!match(null_str, "non-null string"));
+    BOOST_TEST(!match("non-null string", null_str));
 }
 
 namespace {

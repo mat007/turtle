@@ -23,7 +23,7 @@ object static_o;
 BOOST_FIXTURE_TEST_CASE(verifying_an_empty_object_succeeds, mock_error_fixture)
 {
     object o;
-    BOOST_CHECK(mock::verify(o));
+    BOOST_TEST(mock::verify(o));
 }
 
 namespace {
@@ -38,24 +38,24 @@ struct fixture : mock_error_fixture
 BOOST_FIXTURE_TEST_CASE(verifying_an_object_containing_a_failing_expectation_fails, fixture)
 {
     e.expect().once();
-    CHECK_ERROR(BOOST_CHECK(!mock::verify(o)), "verification failed", 0, "instanceobject::name\n. once()");
+    CHECK_ERROR(BOOST_TEST(!mock::verify(o)), "verification failed", 0, "instanceobject::name\n. once()");
     mock::reset(o);
-    BOOST_CHECK(mock::verify(o));
+    BOOST_TEST(mock::verify(o));
 }
 
 BOOST_FIXTURE_TEST_CASE(verifying_all_objects_with_one_of_them_containing_a_failing_expectation_fails, fixture)
 {
     e.expect().once();
-    CHECK_ERROR(BOOST_CHECK(!mock::verify()), "verification failed", 0, "instanceobject::name\n. once()");
+    CHECK_ERROR(BOOST_TEST(!mock::verify()), "verification failed", 0, "instanceobject::name\n. once()");
     mock::reset();
-    BOOST_CHECK(mock::verify());
+    BOOST_TEST(mock::verify());
 }
 
 BOOST_FIXTURE_TEST_CASE(resetting_an_object_containing_a_failing_expectation_and_verifying_it_succeeds, fixture)
 {
     e.expect().once();
     mock::reset(o);
-    BOOST_CHECK(mock::verify(o));
+    BOOST_TEST(mock::verify(o));
 }
 
 BOOST_FIXTURE_TEST_CASE(an_object_is_assignable_by_sharing_its_state, mock_error_fixture)
@@ -67,10 +67,10 @@ BOOST_FIXTURE_TEST_CASE(an_object_is_assignable_by_sharing_its_state, mock_error
         mock::detail::configure(o2, e, "instance", mock::detail::make_type_name(o2), "name");
         e.expect().once();
         o1 = o2;
-        CHECK_ERROR(BOOST_CHECK(!mock::verify(o1)), "verification failed", 0, "instanceobject::name\n. once()");
-        CHECK_ERROR(BOOST_CHECK(!mock::verify(o2)), "verification failed", 0, "instanceobject::name\n. once()");
+        CHECK_ERROR(BOOST_TEST(!mock::verify(o1)), "verification failed", 0, "instanceobject::name\n. once()");
+        CHECK_ERROR(BOOST_TEST(!mock::verify(o2)), "verification failed", 0, "instanceobject::name\n. once()");
     }
-    CHECK_ERROR(BOOST_CHECK(!mock::verify(o1)), "verification failed", 0, "instanceobject::name\n. once()");
+    CHECK_ERROR(BOOST_TEST(!mock::verify(o1)), "verification failed", 0, "instanceobject::name\n. once()");
 }
 
 BOOST_FIXTURE_TEST_CASE(an_object_is_copiable_by_sharing_its_state, mock_error_fixture)
@@ -80,8 +80,8 @@ BOOST_FIXTURE_TEST_CASE(an_object_is_copiable_by_sharing_its_state, mock_error_f
     mock::detail::function<void()> e;
     mock::detail::configure(*o2, e, "instance", mock::detail::make_type_name(*o2), "name");
     e.expect().once();
-    CHECK_ERROR(BOOST_CHECK(!mock::verify(*o2)), "verification failed", 0, "instanceobject::name\n. once()");
-    CHECK_ERROR(BOOST_CHECK(!mock::verify(o1)), "verification failed", 0, "instanceobject::name\n. once()");
+    CHECK_ERROR(BOOST_TEST(!mock::verify(*o2)), "verification failed", 0, "instanceobject::name\n. once()");
+    CHECK_ERROR(BOOST_TEST(!mock::verify(o1)), "verification failed", 0, "instanceobject::name\n. once()");
     o2.reset();
-    CHECK_ERROR(BOOST_CHECK(!mock::verify(o1)), "verification failed", 0, "instanceobject::name\n. once()");
+    CHECK_ERROR(BOOST_TEST(!mock::verify(o1)), "verification failed", 0, "instanceobject::name\n. once()");
 }

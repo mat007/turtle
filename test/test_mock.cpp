@@ -57,7 +57,7 @@ BOOST_FIXTURE_TEST_CASE(mock_conversion_operator, mock_error_fixture)
 {
     mock_class_with_conversion_operator m;
     MOCK_EXPECT(m.conversion).once().returns(42);
-    BOOST_CHECK_EQUAL(42, static_cast<int>(m));
+    BOOST_TEST(static_cast<int>(m) == 42);
     CHECK_CALLS(1);
 }
 
@@ -73,7 +73,7 @@ BOOST_FIXTURE_TEST_CASE(mock_template_conversion_operator, mock_error_fixture)
 {
     mock_template_class_with_conversion_operator<int> m;
     MOCK_EXPECT(m.conversion).once().returns(42);
-    BOOST_CHECK_EQUAL(42, static_cast<int>(m));
+    BOOST_TEST(static_cast<int>(m) == 42);
     CHECK_CALLS(1);
 }
 
@@ -89,7 +89,7 @@ BOOST_FIXTURE_TEST_CASE(mock_const_conversion_operator, mock_error_fixture)
     mock_class_with_const_conversion_operator m;
     MOCK_EXPECT(m.conversion).once().returns(42);
     int i = m;
-    BOOST_CHECK_EQUAL(42, i);
+    BOOST_TEST(i == 42);
     CHECK_CALLS(1);
 }
 
@@ -105,7 +105,7 @@ BOOST_FIXTURE_TEST_CASE(mock_non_const_conversion_operator, mock_error_fixture)
     mock_class_with_non_const_conversion_operator m;
     MOCK_EXPECT(m.conversion).once().returns(42);
     int i = m;
-    BOOST_CHECK_EQUAL(42, i);
+    BOOST_TEST(i == 42);
     CHECK_CALLS(1);
 }
 
@@ -121,7 +121,7 @@ BOOST_FIXTURE_TEST_CASE(mock_template_const_conversion_operator, mock_error_fixt
 {
     mock_template_class_with_const_conversion_operator<int> m;
     MOCK_EXPECT(m.conversion).once().returns(42);
-    BOOST_CHECK_EQUAL(42, static_cast<int>(m));
+    BOOST_TEST(static_cast<int>(m) == 42);
     CHECK_CALLS(1);
 }
 
@@ -137,7 +137,7 @@ BOOST_FIXTURE_TEST_CASE(mock_template_non_const_conversion_operator, mock_error_
 {
     mock_template_class_with_non_const_conversion_operator<int> m;
     MOCK_EXPECT(m.conversion).once().returns(42);
-    BOOST_CHECK_EQUAL(42, static_cast<int>(m));
+    BOOST_TEST(static_cast<int>(m) == 42);
     CHECK_CALLS(1);
 }
 
@@ -189,30 +189,30 @@ std::string to_string(const T& t)
 BOOST_FIXTURE_TEST_CASE(mock_object_is_named, mock_error_fixture)
 {
     my_mock m;
-    BOOST_CHECK_EQUAL("?.my_mock::my_method", to_string(MOCK_ANONYMOUS_HELPER(m.my_method)));
-    BOOST_CHECK_EQUAL("?.my_mock::my_method_2", to_string(MOCK_ANONYMOUS_HELPER(m.my_method_2)));
-    BOOST_CHECK_EQUAL("m.my_mock::my_method", to_string(MOCK_HELPER(m.my_method)));
-    BOOST_CHECK_EQUAL("m.my_mock::my_method_2", to_string(MOCK_ANONYMOUS_HELPER(m.my_method_2)));
-    BOOST_CHECK_EQUAL("m.my_mock::my_method", to_string(MOCK_ANONYMOUS_HELPER(m.my_method)));
-    BOOST_CHECK_EQUAL("m.my_mock::my_method", to_string(MOCK_HELPER(m.my_method)));
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_method)) == "?.my_mock::my_method");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_method_2)) == "?.my_mock::my_method_2");
+    BOOST_TEST(to_string(MOCK_HELPER(m.my_method)) == "m.my_mock::my_method");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_method_2)) == "m.my_mock::my_method_2");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_method)) == "m.my_mock::my_method");
+    BOOST_TEST(to_string(MOCK_HELPER(m.my_method)) == "m.my_mock::my_method");
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_object_shared_pointer_is_named, mock_error_fixture)
 {
     std::shared_ptr<my_mock> m(new my_mock);
-    BOOST_CHECK_EQUAL("?.my_mock::my_method", to_string(MOCK_ANONYMOUS_HELPER(m->my_method)));
-    BOOST_CHECK_EQUAL("m->my_mock::my_method", to_string(MOCK_HELPER(m->my_method)));
-    BOOST_CHECK_EQUAL("m->my_mock::my_method", to_string(MOCK_ANONYMOUS_HELPER(m->my_method)));
-    BOOST_CHECK_EQUAL("m->my_mock::my_method", to_string(MOCK_HELPER(m->my_method)));
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m->my_method)) == "?.my_mock::my_method");
+    BOOST_TEST(to_string(MOCK_HELPER(m->my_method)) == "m->my_mock::my_method");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m->my_method)) == "m->my_mock::my_method");
+    BOOST_TEST(to_string(MOCK_HELPER(m->my_method)) == "m->my_mock::my_method");
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_object_const_shared_pointer_is_named, mock_error_fixture)
 {
     const std::shared_ptr<my_mock> m(new my_mock);
-    BOOST_CHECK_EQUAL("?.my_mock::my_method", to_string(MOCK_ANONYMOUS_HELPER(m->my_method)));
-    BOOST_CHECK_EQUAL("m->my_mock::my_method", to_string(MOCK_HELPER(m->my_method)));
-    BOOST_CHECK_EQUAL("m->my_mock::my_method", to_string(MOCK_ANONYMOUS_HELPER(m->my_method)));
-    BOOST_CHECK_EQUAL("m->my_mock::my_method", to_string(MOCK_HELPER(m->my_method)));
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m->my_method)) == "?.my_mock::my_method");
+    BOOST_TEST(to_string(MOCK_HELPER(m->my_method)) == "m->my_mock::my_method");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m->my_method)) == "m->my_mock::my_method");
+    BOOST_TEST(to_string(MOCK_HELPER(m->my_method)) == "m->my_mock::my_method");
 }
 
 namespace {
@@ -227,12 +227,12 @@ BOOST_FIXTURE_TEST_CASE(custom_mock_object_without_macros_and_without_inheriting
                         mock_error_fixture)
 {
     my_custom_mock m;
-    BOOST_CHECK_EQUAL("?.my_custom_mock::my_tag", to_string(MOCK_ANONYMOUS_HELPER(m.my_tag)));
-    BOOST_CHECK_EQUAL("?.my_custom_mock::my_tag_2", to_string(MOCK_ANONYMOUS_HELPER(m.my_tag_2)));
-    BOOST_CHECK_EQUAL("m.my_custom_mock::my_tag", to_string(MOCK_HELPER(m.my_tag)));
-    BOOST_CHECK_EQUAL("m.my_custom_mock::my_tag_2", to_string(MOCK_ANONYMOUS_HELPER(m.my_tag_2)));
-    BOOST_CHECK_EQUAL("m.my_custom_mock::my_tag", to_string(MOCK_ANONYMOUS_HELPER(m.my_tag)));
-    BOOST_CHECK_EQUAL("m.my_custom_mock::my_tag", to_string(MOCK_HELPER(m.my_tag)));
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_tag)) == "?.my_custom_mock::my_tag");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_tag_2)) == "?.my_custom_mock::my_tag_2");
+    BOOST_TEST(to_string(MOCK_HELPER(m.my_tag)) == "m.my_custom_mock::my_tag");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_tag_2)) == "m.my_custom_mock::my_tag_2");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_tag)) == "m.my_custom_mock::my_tag");
+    BOOST_TEST(to_string(MOCK_HELPER(m.my_tag)) == "m.my_custom_mock::my_tag");
 }
 
 namespace {
@@ -246,12 +246,12 @@ struct my_custom_mock_object : mock::object
 BOOST_FIXTURE_TEST_CASE(custom_mock_object_without_macros_is_named, mock_error_fixture)
 {
     my_custom_mock_object m;
-    BOOST_CHECK_EQUAL("?.my_custom_mock_object::my_tag", to_string(MOCK_ANONYMOUS_HELPER(m.my_tag)));
-    BOOST_CHECK_EQUAL("?.my_custom_mock_object::my_tag_2", to_string(MOCK_ANONYMOUS_HELPER(m.my_tag_2)));
-    BOOST_CHECK_EQUAL("m.my_custom_mock_object::my_tag", to_string(MOCK_HELPER(m.my_tag)));
-    BOOST_CHECK_EQUAL("m.my_custom_mock_object::my_tag_2", to_string(MOCK_ANONYMOUS_HELPER(m.my_tag_2)));
-    BOOST_CHECK_EQUAL("m.my_custom_mock_object::my_tag", to_string(MOCK_ANONYMOUS_HELPER(m.my_tag)));
-    BOOST_CHECK_EQUAL("m.my_custom_mock_object::my_tag", to_string(MOCK_HELPER(m.my_tag)));
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_tag)) == "?.my_custom_mock_object::my_tag");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_tag_2)) == "?.my_custom_mock_object::my_tag_2");
+    BOOST_TEST(to_string(MOCK_HELPER(m.my_tag)) == "m.my_custom_mock_object::my_tag");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_tag_2)) == "m.my_custom_mock_object::my_tag_2");
+    BOOST_TEST(to_string(MOCK_ANONYMOUS_HELPER(m.my_tag)) == "m.my_custom_mock_object::my_tag");
+    BOOST_TEST(to_string(MOCK_HELPER(m.my_tag)) == "m.my_custom_mock_object::my_tag");
 }
 
 BOOST_FIXTURE_TEST_CASE(mock_functor, mock_error_fixture)
@@ -285,7 +285,7 @@ BOOST_FIXTURE_TEST_CASE(mock_functor_verify, mock_error_fixture)
 BOOST_FIXTURE_TEST_CASE(mock_functor_is_named, mock_error_fixture)
 {
     MOCK_FUNCTOR(f, void());
-    BOOST_CHECK_EQUAL("f", to_string(MOCK_HELPER(f)));
+    BOOST_TEST(to_string(MOCK_HELPER(f)) == "f");
 }
 
 namespace {
@@ -294,7 +294,7 @@ MOCK_FUNCTION(mock_function, 1, float(int), mock_function)
 
 BOOST_FIXTURE_TEST_CASE(mock_function_is_named, mock_error_fixture)
 {
-    BOOST_CHECK_EQUAL("mock_function", to_string(MOCK_HELPER(mock_function)));
+    BOOST_TEST(to_string(MOCK_HELPER(mock_function)) == "mock_function");
 }
 
 namespace {
@@ -306,7 +306,7 @@ MOCK_CLASS(static_function_class)
 
 BOOST_FIXTURE_TEST_CASE(mock_static_function_is_named, mock_error_fixture)
 {
-    BOOST_CHECK_EQUAL("static_function_class::f", to_string(MOCK_HELPER(static_function_class::f)));
+    BOOST_TEST(to_string(MOCK_HELPER(static_function_class::f)) == "static_function_class::f");
 }
 
 namespace {

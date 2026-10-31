@@ -37,7 +37,7 @@ struct CheckReceivedValue
 {
     void teardown()
     {
-        BOOST_CHECK(receivedValue == 42); // functor was called and received the value 42
+        BOOST_TEST(receivedValue == 42); // functor was called and received the value 42
     }
 };
 // And force using it w/o showing that in the docs

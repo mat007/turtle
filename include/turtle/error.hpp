@@ -36,13 +36,7 @@ struct error
     template<typename Context>
     static void fail(const char* message, const Context& context, const char* file = "unknown location", int line = 0)
     {
-        boost::unit_test::framework::assertion_result(
-#    if BOOST_VERSION < 105900
-          false
-#    else
-          boost::unit_test::AR_FAILED
-#    endif
-        );
+        boost::unit_test::framework::assertion_result(boost::unit_test::AR_FAILED);
         boost::unit_test::unit_test_log << boost::unit_test::log::begin(file, static_cast<std::size_t>(line))
                                         << boost::unit_test::log_all_errors << message << ": " << context
                                         << boost::unit_test::log::end();
@@ -51,13 +45,7 @@ struct error
     template<typename Context>
     static void call(const Context& context, const char* file, int line)
     {
-        boost::unit_test::framework::assertion_result(
-#    if BOOST_VERSION < 105900
-          true
-#    else
-          boost::unit_test::AR_PASSED
-#    endif
-        );
+        boost::unit_test::framework::assertion_result(boost::unit_test::AR_PASSED);
         boost::unit_test::unit_test_log << boost::unit_test::log::begin(file, static_cast<std::size_t>(line))
                                         << boost::unit_test::log_successful_tests
                                         << "mock expectation fulfilled: " << context << boost::unit_test::log::end();

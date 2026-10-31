@@ -181,8 +181,8 @@ struct CatchFailureFixture : Fixture
     }
     void assert_failure(const std::string& required_message)
     {
-        BOOST_CHECK(aborted);
-        BOOST_CHECK(fail_msg.find(required_message) != std::string::npos);
+        BOOST_TEST(aborted);
+        BOOST_TEST(fail_msg.find(required_message) != std::string::npos);
     }
 };
 bool CatchFailureFixture::aborted = false;
