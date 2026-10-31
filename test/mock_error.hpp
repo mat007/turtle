@@ -81,7 +81,8 @@ struct mock_error_fixture
     ~mock_error_fixture()
     {
         BOOST_TEST(mock_error_data.verify());
-        BOOST_TEST(mock_error_data.call_count == 0);
+        BOOST_TEST(mock_error_data.call_count == 0,
+                   mock_error_data.call_count << " unexpected calls or no CHECK_CALLS before exit");
     }
 };
 
