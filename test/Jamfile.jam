@@ -31,10 +31,8 @@ rule run-test ( name : options * )
   }
 
   local action = run ;
-      ECHO "name: $(name) B-name $(name:B)" ;
   if [ MATCH "^(test_fail_)" : $(name:B) ]
   {
-    ECHO "MATCH: $(name)" ;
     action = run-fail ;
   }
 
