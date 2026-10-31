@@ -690,38 +690,73 @@ int custom_result()
 {
     return 42;
 }
+int custom_result_with_parameter(int i)
+{
+    return i * 2;
+}
 } // namespace
 
 BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_calls_the_custom_functor, mock_error_fixture)
 {
-    mock::detail::function<int()> f;
-    f.expect().calls(&custom_result);
-    BOOST_TEST(f() == 42);
-    CHECK_CALLS(1);
+    {
+        mock::detail::function<int()> f;
+        f.expect().calls(&custom_result);
+        BOOST_TEST(f() == 42);
+    }
+
+    // Same with parameter
+    {
+        mock::detail::function<int(int)> f;
+        f.expect().calls(&custom_result_with_parameter);
+        BOOST_TEST(f(13) == 26);
+    }
+    CHECK_CALLS(2);
 }
 
-namespace {
-int custom_result_with_parameter(int i)
-{
-    return i;
-}
-} // namespace
-
-BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_calls_the_custom_functor_with_parameters, mock_error_fixture)
-{
-    mock::detail::function<int(int)> f;
-    f.expect().calls(&custom_result_with_parameter);
-    BOOST_TEST(f(42) == 42);
-    CHECK_CALLS(1);
-}
-
-BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_calls_the_custom_functor_without_parameters_thanks_to_std_bind,
-                        mock_error_fixture)
+BOOST_FIXTURE_TEST_CASE(can_call_std_function, mock_error_fixture)
 {
     mock::detail::function<int(int)> f;
-    f.expect().calls(std::bind(&custom_result));
-    BOOST_TEST(f(17) == 42);
+    std::function<int(int)> std_func;
+    // Must be bound
+    BOOST_CHECK_THROW(f.expect().calls(std_func), std::invalid_argument);
+    f.reset(); // Remove empty expectation set up by `expect` before `calls` failed
+    std_func = custom_result_with_parameter;
+    f.expect().calls(std_func);
+    BOOST_TEST(f(7) == 14);
     CHECK_CALLS(1);
+}
+
+BOOST_FIXTURE_TEST_CASE(can_call_lambda, mock_error_fixture)
+{
+    // Using lambda
+    mock::detail::function<int(int)> f;
+    f.expect().calls([](int i) { return i + 3; });
+    BOOST_TEST(f(7) == 10);
+    CHECK_CALLS(1);
+}
+
+BOOST_FIXTURE_TEST_CASE(call_functor_created_by_std_bind, mock_error_fixture)
+{
+    {
+        mock::detail::function<int()> f;
+        f.expect().once().calls(std::bind(&custom_result));
+        f.expect().once().calls(std::bind(&custom_result_with_parameter, 13));
+        BOOST_TEST(f() == 42);
+        BOOST_TEST(f() == 26);
+    }
+
+    // Function with argument
+    {
+        mock::detail::function<int(int)> f;
+        using namespace std::placeholders;
+        f.expect().once().calls(std::bind(&custom_result));
+        f.expect().once().calls(std::bind(&custom_result_with_parameter, 13));
+        f.expect().once().calls(std::bind(&custom_result_with_parameter, _1));
+        BOOST_TEST(f(3) == 42); // Swallows argument
+        BOOST_TEST(f(3) == 26);
+        BOOST_TEST(f(3) == 6);
+        CHECK_CALLS(5);
+    }
 }
 
 BOOST_FIXTURE_TEST_CASE(triggering_an_expectation_throws_the_set_exception, mock_error_fixture)

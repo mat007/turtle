@@ -56,6 +56,9 @@ foreach(testFile IN LISTS testFiles)
     endif()
     target_link_libraries(${curName} PRIVATE turtle::turtle TurtleTestMain)
     add_test(NAME ${curName} COMMAND ${curName})
+    if(testFile MATCHES "test_fail.*")
+      set_tests_properties(${curName} PROPERTIES WILL_FAIL TRUE)
+    endif()
   endforeach()
 
   target_compile_definitions(${name}_use_conversions PRIVATE MOCK_USE_CONVERSIONS)
@@ -63,6 +66,12 @@ foreach(testFile IN LISTS testFiles)
   target_link_libraries(${name}_thread_safe PRIVATE Boost::thread)
   target_compile_definitions(${name}_thread_safe PRIVATE MOCK_THREAD_SAFE)
 endforeach()
+
+set_tests_properties(test_error_policy PROPERTIES
+                     PASS_REGULAR_EXPRESSION "untriggered expectation: f_unfullfilled")
+set_tests_properties(test_fail_error_policy_passpoint PROPERTIES
+                     WILL_FAIL FALSE # Revert this to only check the output
+                     PASS_REGULAR_EXPRESSION [[test_fail_error_policy_passpoint.cpp\(42\): last checkpoint]])
 
 # Link test only to check for a regression
 add_executable(link-test_defined EXCLUDE_FROM_ALL test_exception.cpp defined_1.cpp defined_2.cpp)
