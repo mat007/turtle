@@ -36,9 +36,16 @@ public:
     {
         for(auto& s : saved_)
         {
+#if BOOST_VERSION >= 106700
             s.stream = bt::unit_test_log.get_stream(s.fmt);
+#else
+            s.stream = &std::cerr;
+#endif
             bt::unit_test_log.set_stream(s.fmt, buf_);
-            s.level = bt::unit_test_log.set_threshold_level(s.fmt, lev);
+#if BOOST_VERSION >= 107300
+            s.level =
+#endif
+              bt::unit_test_log.set_threshold_level(s.fmt, lev);
         }
     }
 
