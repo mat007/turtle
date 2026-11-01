@@ -22,14 +22,12 @@ class log_capture
         bt::output_format fmt;
         std::ostream* stream = nullptr;
         bt::log_level level = bt::invalid_log_level;
+
+        saved_state(bt::output_format f) : fmt(f) {}
     };
 
     std::ostringstream buf_;
-    saved_state saved_[5] = { { bt::OF_CLF },
-                              { bt::OF_XML },
-                              { bt::OF_JUNIT },
-                              { bt::OF_CUSTOM_LOGGER },
-                              { bt::OF_DOT } };
+    saved_state saved_[5] = { bt::OF_CLF, bt::OF_XML, bt::OF_JUNIT, bt::OF_CUSTOM_LOGGER, bt::OF_DOT };
 
 public:
     explicit log_capture(bt::log_level lev = bt::log_successful_tests)
