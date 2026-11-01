@@ -226,8 +226,6 @@ jobs:
             extra_args+=(-G "${{matrix.generator}}")
           fi
           if [[ "${{matrix.generator}}" == "MinGW"* ]]; then
-            # Avoid "Fatal error: can't write 1214 bytes to section .text of [...] 'file too big' [...] too many sections"
-            extra_args+=(-DCMAKE_CXX_FLAGS="-Wa,-mbig-obj")
             # GHA has 2 MinGWs installed which must not be mixed,
             # so make sure the executables pick up the libraries/DLLs matching the compiler
             gcc_folder=$(dirname "$(which g++)")
