@@ -13,8 +13,7 @@
 BOOST_AUTO_TEST_CASE(Setting_up_assertion_creates_passpoint)
 {
     MOCK_FUNCTOR(f, void());
-// Enforce the line for the CMake check
-#line 42
+    // Keep the following line number in sync with the CMake check
     MOCK_EXPECT(f).once();
     throw std::runtime_error("Intentionally uncaught");
 }

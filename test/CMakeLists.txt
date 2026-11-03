@@ -71,7 +71,7 @@ set_tests_properties(test_error_policy PROPERTIES
                      PASS_REGULAR_EXPRESSION "untriggered expectation: f_unfullfilled")
 set_tests_properties(test_fail_error_policy_passpoint PROPERTIES
                      WILL_FAIL FALSE # Revert this to only check the output
-                     PASS_REGULAR_EXPRESSION [[test_fail_error_policy_passpoint.cpp\(42\):.*last checkpoint]])
+                     PASS_REGULAR_EXPRESSION [[test_fail_error_policy_passpoint.cpp\(17\):.*last checkpoint]])
 
 # Link test only to check for a regression
 add_executable(link-test_defined EXCLUDE_FROM_ALL test_exception.cpp defined_1.cpp defined_2.cpp)
