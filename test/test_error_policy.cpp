@@ -51,7 +51,8 @@ public:
     {
         for(auto& s : saved_)
         {
-            bt::unit_test_log.set_stream(s.fmt, *s.stream);
+            if(s.stream)
+                bt::unit_test_log.set_stream(s.fmt, *s.stream);
             bt::unit_test_log.set_threshold_level(s.fmt, s.level);
         }
     }
