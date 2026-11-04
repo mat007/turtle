@@ -51,7 +51,8 @@ public:
     {
         for(auto& s : saved_)
         {
-            bt::unit_test_log.set_stream(s.fmt, *s.stream);
+            if(s.stream)
+                bt::unit_test_log.set_stream(s.fmt, *s.stream);
             bt::unit_test_log.set_threshold_level(s.fmt, s.level);
         }
     }
@@ -101,7 +102,10 @@ BOOST_AUTO_TEST_CASE(log_on_unfullfilled, *boost::unit_test::expected_failures(1
         MOCK_VERIFY(f);        // -> 1 failed assertion
         log_txt = log_stream;
     }
-    BOOST_TEST(log_txt.find("test_error_policy.cpp(" + std::to_string(line) + ")") != std::string::npos,
+    // Location info may differ on Macos
+    const std::string location1 = "test_error_policy.cpp(" + std::to_string(line) + "):";
+    const std::string location2 = "test_error_policy.cpp:" + std::to_string(line) + ":";
+    BOOST_TEST((log_txt.find(location1) != std::string::npos || log_txt.find(location2) != std::string::npos),
                "log was: " << log_txt);
     BOOST_TEST(log_txt.find("verification failed: f\n. once()") != std::string::npos, "log was: " << log_txt);
 }
