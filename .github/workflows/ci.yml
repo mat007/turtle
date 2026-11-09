@@ -18,7 +18,7 @@ on:
       - feature/**
 
 concurrency:
-  group: ${{format('{0}:{1}', github.repository, github.ref)}}
+  group: ${{format('ci-{0}:{1}', github.repository, github.ref)}}
   cancel-in-progress: true
 
 env:
@@ -51,39 +51,6 @@ jobs:
       exclude_compiler: gcc-4.4,gcc-4.6,gcc-4.7,gcc-4.8,gcc-4.9,gcc-5,gcc-6,clang-3.5,clang-3.6,clang-3.7,clang-3.8,clang-3.9,clang-4.0,clang-5.0,clang-6.0
       exclude_cxxstd: 98,03,0x,11
       timeout: 180
-
-  docs:
-    name: Build docs and run inspect tool
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        repository: boostorg/boost
-        ref: master
-        path: boost-root
-        submodules: false
-    - name: Install packages
-      run: sudo apt-get -o Acquire::Retries=3 install -y xsltproc docbook-xsl docbook-xml
-    - name: Init submodules for doc build
-      working-directory: boost-root
-      run: |
-        git submodule update -q --init tools/boostdep tools/boostbook tools/quickbook tools/inspect
-        python tools/boostdep/depinst/depinst.py ../tools/boostbook
-        python tools/boostdep/depinst/depinst.py ../tools/quickbook
-        python tools/boostdep/depinst/depinst.py ../tools/inspect
-        # Move the Boost root to a sibling folder to avoid that inspect runs on entire Boost too
-        BOOST_ROOT="${{github.workspace}}/../boost-root"
-        mv ../boost-root "$BOOST_ROOT"
-        echo "BOOST_ROOT=$BOOST_ROOT" >> $GITHUB_ENV
-    - name: Bootstrap b2
-      working-directory:  ${{env.BOOST_ROOT}}
-      run: ./bootstrap.sh
-    - name: Build doc
-      run: scripts/build_doc.sh
-    - name: Build and run inspect
-      working-directory: ${{env.BOOST_ROOT}}
-      run: ./b2 "$GITHUB_WORKSPACE/test//inspect" -q
 
   CMake:
     defaults:
