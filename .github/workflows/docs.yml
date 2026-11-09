@@ -16,6 +16,7 @@ on:
       - main
       - develop
       - feature/**
+  workflow_dispatch:
 
 concurrency:
   group: ${{format('docs-{0}:{1}', github.repository, github.ref)}}
@@ -54,8 +55,10 @@ jobs:
     - name: Bootstrap b2
       working-directory:  ${{env.BOOST_ROOT}}
       run: ./bootstrap.sh
-    - name: Build doc
-      run: scripts/build_doc.sh
     - name: Build and run inspect
       working-directory: ${{env.BOOST_ROOT}}
       run: ./b2 "$GITHUB_WORKSPACE/test//inspect" -q
+    - name: Build doc
+      run: scripts/build_doc.sh
+    - name: Show created docs
+      run: ls -1 doc/
