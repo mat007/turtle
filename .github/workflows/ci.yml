@@ -44,6 +44,7 @@ jobs:
       b2_targets: "libs/turtle/test libs/turtle/doc//mock_examples"
       branch_coverage: false
       coverage_service: coveralls
+      coverage_excludes: test/*
       enable_cmake: false
       enable_32bit: false
       enable_multiarch: false
