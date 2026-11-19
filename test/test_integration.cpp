@@ -575,6 +575,7 @@ MOCK_BASE_CLASS(my_boost_pp_comma_mock, my_base<int BOOST_PP_COMMA() int>)
 
 #ifdef MOCK_THREAD_SAFE
 
+#    include <boost/atomic/atomic.hpp>
 #    include <boost/thread.hpp>
 
 namespace {
@@ -624,20 +625,25 @@ BOOST_FIXTURE_TEST_CASE(mock_functor_creation_is_thread_safe, mock_error_fixture
 }
 
 namespace {
-void iterate(my_mock& m)
+void iterate(my_mock& m, boost::atomic<int>& errors)
 {
     MOCK_EXPECT(m.my_tag).once().with(3).returns(42);
-    BOOST_TEST(m.my_method(3) == 42);
+    // BOOST_TEST is not thread-safe, so don't assert from the worker threads
+    // collect the result and check it after join_all()
+    if(m.my_method(3) != 42)
+        ++errors;
 }
 } // namespace
 
 BOOST_FIXTURE_TEST_CASE(mock_class_is_thread_safe, mock_error_fixture)
 {
     my_mock m;
+    boost::atomic<int> errors{ 0 };
     boost::thread_group group;
     for(int i = 0; i < 100; ++i)
-        group.create_thread([&m]() { iterate(m); });
+        group.create_thread([&m, &errors]() { iterate(m, errors); });
     group.join_all();
+    BOOST_TEST(errors == 0);
     CHECK_CALLS(100);
 }
 
