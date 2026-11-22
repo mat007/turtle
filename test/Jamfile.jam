@@ -36,7 +36,7 @@ rule run-test ( name : options * )
     action = run-fail ;
   }
 
-  $(action) $(sources) defined_1.cpp defined_2.cpp : : : $(options) : $(name)_ ;
+  $(action) $(sources) : : : $(options) : $(name)_ ;
   $(action) $(sources) : : : $(options) <define>MOCK_USE_CONVERSIONS : $(name)_use_conversions ;
   $(action) $(sources) /boost//thread : : : $(options) <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE <threading>multi : $(name)_thread_safe ;
 }
@@ -48,6 +48,12 @@ rule run-tests
 }
 
 alias mock_tests : [ run-tests ] ;
+
+# Link-time regression test: a MOCK_FUNCTION defined in a header must be includable from
+# several translation units without duplicate-symbol errors.
+link test_exception.cpp defined_1.cpp defined_2.cpp : <library>/boost//unit_test_framework : link-test_defined ;
+link test_exception.cpp defined_1.cpp defined_2.cpp : <library>/boost//unit_test_framework <define>MOCK_USE_CONVERSIONS : link-test_defined_use_conversions ;
+link test_exception.cpp defined_1.cpp defined_2.cpp : <library>/boost//unit_test_framework <define>MOCK_THREAD_SAFE <define>BOOST_THREAD_USES_MOVE <threading>multi : link-test_defined_thread_safe ;
 
 rule run-failures
 {

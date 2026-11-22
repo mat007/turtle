@@ -6,6 +6,9 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+// Payload of the link regression test: a mock function defined with MOCK_FUNCTION in a
+// header and included from several translation units must not cause duplicate symbols.
+
 #ifndef MOCK_TEST_DEFINED_HPP_INCLUDED
 #define MOCK_TEST_DEFINED_HPP_INCLUDED
 

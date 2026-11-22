@@ -73,7 +73,8 @@ set_tests_properties(test_fail_error_policy_passpoint PROPERTIES
                      WILL_FAIL FALSE # Revert this to only check the output
                      PASS_REGULAR_EXPRESSION [[test_fail_error_policy_passpoint.cpp\(17\):.*last checkpoint]])
 
-# Link test only to check for a regression
+# Link test only to check for a regression: a MOCK_FUNCTION defined in a header and
+# included from several translation units must not cause duplicate-symbol errors.
 add_executable(link-test_defined EXCLUDE_FROM_ALL test_exception.cpp defined_1.cpp defined_2.cpp)
 target_link_libraries(link-test_defined PRIVATE turtle::turtle TurtleTestMain)
 add_test(NAME link-test_defined COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target link-test_defined --config $<CONFIG>)

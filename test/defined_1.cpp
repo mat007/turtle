@@ -6,4 +6,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+// Translation unit 1 of the link regression test - see defined.hpp; must remain a separate .cpp.
+
 #include "defined.hpp"
